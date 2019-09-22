@@ -1,12 +1,11 @@
 import React from 'react';
 import './App.scss';
+import Editor from './pages/editor/Editor';
 
 function App() {
-  let teste: String = "Code easy!";
-
   return (
-    <div className="App" >
-      <div>{teste}</div><br/>
+    <div className="App">
+      <Editor />
     </div>
   );
 }

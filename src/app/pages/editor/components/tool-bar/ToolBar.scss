@@ -1,0 +1,59 @@
+@import "./../../../../style/variables.scss";
+
+.tool-bar {
+  display: flex;
+  background: $color-tool-bar;
+  width: $size-fill;
+  justify-content: space-between;
+}
+
+.sistem-tabs {
+  padding: 3px;
+  display: flex;
+}
+
+.btn-editor:hover {
+  background-color: $color-top-bar-button-maximizar;
+  cursor: pointer;
+}
+.btn-editor:active {
+  opacity: 0.5;
+  color: $color-white;
+}
+.btn-open-editor-tab {
+  content: url(./assets/icons/btn-open-editor-tab.svg);
+}
+.btn-open-plugins-tab {
+  content: url(./assets/icons/btn-open-plugins-tab.svg);
+}
+.btn-open-properties-tab {
+  content: url(./assets/icons/btn-open-properties-tab.svg);
+}
+
+.btn-api-controls {
+  padding: 3px;
+  display: flex;
+}
+
+/* .btn-api-controls-build {
+    content: url(assets/icons/btn-build.svg);
+}
+.btn-api-controls-play {
+    content: url(assets/icons/btn-play.svg);
+}
+.btn-api-controls-stop {
+  content: url(assets/icons/btn-stop.svg);
+}
+.btn-api-controls-restart {
+  content: url(assets/icons/btn-restart.svg);
+} */
+
+.frame-btn:hover {
+  background-color: $color-top-bar-button-maximizar;
+  cursor: pointer;
+}
+
+.frame-btn:active {
+  opacity: 0.5;
+  color: $color-white;
+}

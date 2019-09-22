@@ -4,6 +4,8 @@ import './index.scss';
 import App from './app/App';
 import * as serviceWorker from './serviceWorker';
 
-ReactDOM.render(<App />, document.getElementById('root'));
+setInterval(() => {
+    ReactDOM.render(<App />, document.getElementById('root'));
+}, 200);
 
 serviceWorker.unregister();

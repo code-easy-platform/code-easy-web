@@ -1,0 +1,9 @@
+@import './../../style/variables.scss';
+
+.main-page {
+  background-color: $color-background;
+  height: $size-fill;
+  width: $size-fill;
+  display: flex;
+  flex-direction: column;
+}
