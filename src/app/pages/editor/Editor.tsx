@@ -5,14 +5,14 @@ import './Editor.scss';
 
 export default class Editor extends Component {
 
-    public changeCurrentTab = () => {
-        
+    private changeCurrentTab = (tab: String) => {
+        console.log(tab);
     }
 
     render() {
         return (
             <div className="main-page">
-                <ToolBar /* editorContext={this} *//>
+                <ToolBar changeCurrentTab={this.changeCurrentTab} />
             </div>
         );
     }
