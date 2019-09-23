@@ -1,0 +1,26 @@
+@import "./../../../../style/variables.scss";
+
+.col-left {
+    overflow: auto;
+    background-color: $color-background-col;
+    min-width: $size-38;
+    max-width: $size-half;
+}
+
+.col-center {
+    flex: 1;
+    overflow: auto;
+}
+
+.col-right {
+    flex: 1;
+    flex-direction: column;
+    background-color: $color-background-col;
+    min-width: $size-38;
+    max-width: $size-half;
+}
+
+.main-tab-editor {
+  flex: 1;
+  overflow: auto;
+}

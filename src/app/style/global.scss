@@ -21,6 +21,10 @@
     display: flex;
     background-color: $color-background;
   }
+
+  div {
+    display: flex;
+  }
   
   a {
     cursor: pointer;
@@ -77,6 +81,10 @@
   
   .btn:focus {
     outline: auto;
+  }
+
+  .flex1 {
+    flex: 1;
   }
   
   .primary {
