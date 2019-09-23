@@ -1,26 +1,54 @@
 @import "./../../../../style/variables.scss";
 
 .col-left {
-    overflow: auto;
-    background-color: $color-background-col;
-    min-width: $size-38;
-    max-width: $size-half;
+  overflow: auto;
+  justify-content: space-between;
+  background-color: $color-background-col;
+  min-width: $size-38;
+  max-width: $size-half;
 }
 
 .col-center {
-    flex: 1;
-    overflow: auto;
+  flex: 1;
+  overflow: auto;
 }
 
 .col-right {
-    flex: 1;
+  justify-content: space-between;
+  background-color: $color-background-col;
+  min-width: $size-38;
+  max-width: $size-half;
+  .content {
     flex-direction: column;
-    background-color: $color-background-col;
-    min-width: $size-38;
-    max-width: $size-half;
+  }
 }
 
 .main-tab-editor {
   flex: 1;
   overflow: auto;
+}
+
+.grabber-col-left,
+.grabber-col-right,
+.grabber-col-right-resize-y {
+  cursor: col-resize;
+  overflow: hidden;
+  background-color: $color-background-col;
+  height: $size-fill;
+  width: $size-2;
+  .grabber-col-left {
+    width: $size-2;
+    margin-left: auto;
+  }
+  .grabber-col-right-resize-y {
+    cursor: row-resize;
+    width: $size-fill;
+    height: $size-2;
+  }
+}
+
+.grabber-col-left:active,
+.grabber-col-right:active,
+.grabber-col-right-resize-y:active {
+  background-color: $color-top-bar;
 }

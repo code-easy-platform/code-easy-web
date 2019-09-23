@@ -7,46 +7,32 @@ import ResourcesTree from './components/resources-tree/ResourcesTree';
 import PropertiesEditor from './components/properties-editor/PropertiesEditor';
 
 import './EditorTab.scss';
+import ResizeColluns, { TypeColluns } from './components/resize-tamplate/ResizeTemplate';
 
 //#endregion
 
 export default class EditorTab extends Component {
-
-    state = {
-        isResizeColLeft: false,
-        colLeftX: 0,
-        x: 0,
-        y: 0,
-    }
-
-    mouseMove = (event: any) => {
-        if (this.state.isResizeColLeft === true) {
-            this.setState({ colLeftX: event.screenX });
-        }
-        this.setState({
-            x: event.screenX,
-            y: event.screenY,
-        });
-    }
-
     render() {
         return (
-            <div className="main-tab-editor" onMouseMove={this.mouseMove.bind(this)} onMouseUp={() => this.setState({isResizeColLeft: false})}>
-                <div className='col-left' style={{ width: this.state.colLeftX }}>
+            <div id="main-tab-editor" className="main-tab-editor">
+                <ResizeColluns type={TypeColluns.colLeft} idFatherComponent="main-tab-editor">
                     <ComponentsBar />
-                    <div onMouseDown={() => this.setState({isResizeColLeft: true})}>aqui</div>
-                </div>
+                </ResizeColluns>
+
                 <div className="col-center">
                     <CodeEditor />
                 </div>
-                <div className='col-right'>
-                    <div className="flex1">
-                        <ResourcesTree />
+
+                <ResizeColluns type={TypeColluns.colRight}>
+                    <div className="content">
+                        <div className="flex1">
+                            <ResourcesTree />
+                        </div>
+                        <div className="flex1">
+                            <PropertiesEditor />
+                        </div>
                     </div>
-                    <div className="flex1">
-                        <PropertiesEditor />
-                    </div>
-                </div>
+                </ResizeColluns>
             </div>
         );
     }
