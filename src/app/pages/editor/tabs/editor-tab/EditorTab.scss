@@ -23,11 +23,6 @@
   }
 }
 
-.main-tab-editor {
-  flex: 1;
-  overflow: auto;
-}
-
 .grabber-col-left,
 .grabber-col-right,
 .grabber-col-right-resize-y {
@@ -36,15 +31,17 @@
   background-color: $color-background-col;
   height: $size-fill;
   width: $size-2;
-  .grabber-col-left {
-    width: $size-2;
-    margin-left: auto;
-  }
-  .grabber-col-right-resize-y {
-    cursor: row-resize;
-    width: $size-fill;
-    height: $size-2;
-  }
+}
+
+.grabber-col-left {
+  width: $size-2;
+  margin-left: auto;
+}
+
+.grabber-col-right-resize-y {
+  cursor: row-resize;
+  width: $size-fill;
+  height: $size-2;
 }
 
 .grabber-col-left:active,

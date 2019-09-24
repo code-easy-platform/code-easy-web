@@ -7,33 +7,19 @@ import ResourcesTree from './components/resources-tree/ResourcesTree';
 import PropertiesEditor from './components/properties-editor/PropertiesEditor';
 
 import './EditorTab.scss';
-import ResizeColluns, { TypeColluns } from './components/resize-tamplate/ResizeTemplate';
+import EditorTabTemplate from './components/resize-tamplate/EditorTabTemplate';
+import ColRightTemplate from './components/resize-tamplate/ColRightTemplate';
 
 //#endregion
 
 export default class EditorTab extends Component {
     render() {
         return (
-            <div id="main-tab-editor" className="main-tab-editor">
-                <ResizeColluns type={TypeColluns.colLeft} idFatherComponent="main-tab-editor">
-                    <ComponentsBar />
-                </ResizeColluns>
-
-                <div className="col-center">
-                    <CodeEditor />
-                </div>
-
-                <ResizeColluns type={TypeColluns.colRight}>
-                    <div className="content">
-                        <div className="flex1">
-                            <ResourcesTree />
-                        </div>
-                        <div className="flex1">
-                            <PropertiesEditor />
-                        </div>
-                    </div>
-                </ResizeColluns>
-            </div>
+            <EditorTabTemplate
+                columnLeft={<ComponentsBar />}
+                columnCenter={<CodeEditor />}
+                columnRight={<ColRightTemplate rowTop={<ResourcesTree />} rowBottom={<PropertiesEditor />} />}
+            />
         );
     }
 }
