@@ -6,7 +6,6 @@ import CodeEditor from './components/code-editor/CodeEditor';
 import ResourcesTree from './components/resources-tree/ResourcesTree';
 import PropertiesEditor from './components/properties-editor/PropertiesEditor';
 
-import './EditorTab.scss';
 import EditorTabTemplate from './components/resize-tamplate/EditorTabTemplate';
 import ColRightTemplate from './components/resize-tamplate/ColRightTemplate';
 

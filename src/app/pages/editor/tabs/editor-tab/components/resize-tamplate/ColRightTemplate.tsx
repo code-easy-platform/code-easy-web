@@ -1,5 +1,7 @@
 import React, { Component } from 'react';
 
+import './ResizeTemplate.scss';
+
 interface IRecipeProps {
     rowTop: any,
     rowBottom: any,
@@ -26,14 +28,14 @@ export class ColRightTemplate extends Component<IRecipeProps, IRecipeState> {
     render() {
         return (
             <div className="flex1 content" onMouseMove={this.mouseMove.bind(this)} onMouseUp={this.mouseUp}>
-                <div className="flex1">
+                <div className="flex1 padding6">
                     <div style={{width: '100%', overflowY: 'auto'}}>
                         {this.props.rowTop}
                     </div>
                 </div>
                 <div style={{ flexDirection: 'column', height: this.state.rowBottomY }}>
                     <div className="grabber-col-right-resize-y" onMouseDown={this.mouseDown}></div>
-                    <div>
+                    <div className="padding6">
                         {this.props.rowBottom}
                     </div>
                 </div>
