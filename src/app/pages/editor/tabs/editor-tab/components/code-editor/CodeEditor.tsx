@@ -1,36 +1,25 @@
 import React, { Component } from 'react';
-import Message from '../../../../../../shared/context/Context';
+import { CodeEditorContext } from '../../../../shared/code-editor-context/CodeEditorContext';
+import { TypeOfStatus, MessagesOfStatus, StatusBar, ColorsOfStatus } from '../../enuns/TypeOfStatus';
 
 export default class CodeEditor extends Component {
-    state = {
-        message: 'Minha',
-        toggle: ()=>{this.setState({message: 'teste'});}, // Não funciona
+
+    statusDefault: StatusBar = {
+        status: TypeOfStatus.OutroStatus,
+        message: MessagesOfStatus.EscutandoApi,
+        messageLong: '',
+        color: ColorsOfStatus.OutroStatus,
+        isShowLoadingBar: false,
     }
 
     render() {
         return (
             <>
-                <Message.Provider value={this.state}>
-
-
-                    <Message.Consumer>
-                        {({ message, toggle }) => (<Msg message={message} toggle={toggle} />)}
-                    </Message.Consumer>
-
-
-                </Message.Provider>
-
+                <CodeEditorContext.Consumer>
+                    {({ toggleStatusbar }) => (<button onClick={()=>toggleStatusbar(this.statusDefault)}>Teste</button>)}
+                </CodeEditorContext.Consumer>
             </>
         );
     }
 }
-
-const Msg = (props: any) => {
-    return (
-        <>
-            <button onClick={() => props.toggle}>Teste</button>
-            <div>{props.message}</div>
-        </>
-    );
-}
-
+CodeEditor.contextType = CodeEditorContext;

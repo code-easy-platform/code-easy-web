@@ -9,14 +9,29 @@ import EditorTab from './tabs/editor-tab/EditorTab';
 import PluginsTab from './tabs/plugins-tab/PluginsTab';
 import PropertiesTab from './tabs/properties-tab/PropertiesTab';
 import BottonStatusBar from './components/botton-status-bar/BottonStatusBar';
+import CodeEditorContext from './shared/code-editor-context/CodeEditorContext';
+import { StatusBar, TypeOfStatus, MessagesOfStatus, ColorsOfStatus } from './tabs/editor-tab/enuns/TypeOfStatus';
 
 //#endregion
 
 export default class Editor extends Component {
+    toggleStatusBar = (statusBar: StatusBar) => {
+        this.setState({
+            statusBar: statusBar,
+        });
+    }
 
     state = {
         currentTab: <EditorTab />,
-    }
+        statusBar: {
+            status: TypeOfStatus.OutroStatus,
+            message: MessagesOfStatus.OutroStatus,
+            messageLong: '',
+            color: ColorsOfStatus.OutroStatus,
+            isShowLoadingBar: false,
+        },
+        toggleStatusbar: this.toggleStatusBar,
+    };
 
     private changeCurrentTab = (tab: String) => {
         if (tab === CurrentTab.editor) {
@@ -30,15 +45,17 @@ export default class Editor extends Component {
 
     render() {
         return (
-            <div className="main-page">
-                <ToolBar changeCurrentTab={this.changeCurrentTab} />
+            <CodeEditorContext.Provider value={this.state}>
+                <div className="main-page">
+                    <ToolBar changeCurrentTab={this.changeCurrentTab} />
 
-                <div style={{flex: 1}}>
-                    {this.state.currentTab}
+                    <div style={{ flex: 1 }}>
+                        {this.state.currentTab}
+                    </div>
+
+                    <BottonStatusBar />
                 </div>
-
-                <BottonStatusBar />
-            </div>
+            </CodeEditorContext.Provider>
         );
     }
 }
