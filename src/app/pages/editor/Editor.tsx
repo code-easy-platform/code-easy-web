@@ -10,27 +10,17 @@ import PluginsTab from './tabs/plugins-tab/PluginsTab';
 import PropertiesTab from './tabs/properties-tab/PropertiesTab';
 import BottonStatusBar from './components/botton-status-bar/BottonStatusBar';
 import CodeEditorContext from './shared/code-editor-context/CodeEditorContext';
-import { StatusBar, TypeOfStatus, MessagesOfStatus, ColorsOfStatus } from './tabs/editor-tab/enuns/TypeOfStatus';
+import Status, { StatusBar } from './tabs/editor-tab/enuns/TypeOfStatus';
 
 //#endregion
 
 export default class Editor extends Component {
-    toggleStatusBar = (statusBar: StatusBar) => {
-        this.setState({
-            statusBar: statusBar,
-        });
-    }
 
     state = {
+        toggleStatusbar: (statusBar: StatusBar) => this.setState({ statusBar }),
+        statusBar: Status.OUTRO_STATUS,
+
         currentTab: <EditorTab />,
-        statusBar: {
-            status: TypeOfStatus.OutroStatus,
-            message: MessagesOfStatus.OutroStatus,
-            messageLong: '',
-            color: ColorsOfStatus.OutroStatus,
-            isShowLoadingBar: false,
-        },
-        toggleStatusbar: this.toggleStatusBar,
     };
 
     private changeCurrentTab = (tab: String) => {

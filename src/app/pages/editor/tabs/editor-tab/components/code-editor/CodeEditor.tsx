@@ -1,23 +1,20 @@
 import React, { Component } from 'react';
 import { CodeEditorContext } from '../../../../shared/code-editor-context/CodeEditorContext';
-import { TypeOfStatus, MessagesOfStatus, StatusBar, ColorsOfStatus } from '../../enuns/TypeOfStatus';
+import Status from '../../enuns/TypeOfStatus';
+import BottonStatusBar from '../../../../components/botton-status-bar/BottonStatusBar';
 
 export default class CodeEditor extends Component {
 
-    statusDefault: StatusBar = {
-        status: TypeOfStatus.OutroStatus,
-        message: MessagesOfStatus.EscutandoApi,
-        messageLong: '',
-        color: ColorsOfStatus.OutroStatus,
-        isShowLoadingBar: false,
-    }
+    constructor(
+        public props: any,
+        private bottonStatusBar: BottonStatusBar,
+    ) { super(props) }
 
     render() {
+        
         return (
             <>
-                <CodeEditorContext.Consumer>
-                    {({ toggleStatusbar }) => (<button onClick={()=>toggleStatusbar(this.statusDefault)}>Teste</button>)}
-                </CodeEditorContext.Consumer>
+                <button onClick={() => this.bottonStatusBar.toggleStatusbar(Status.ESCUTANDO_API)}>Teste</button>
             </>
         );
     }

@@ -1,17 +1,9 @@
 import React from 'react';
-import { TypeOfStatus, ColorsOfStatus, MessagesOfStatus, StatusBar } from '../../tabs/editor-tab/enuns/TypeOfStatus';
-
-const statusDefault: StatusBar = {
-    status: TypeOfStatus.OutroStatus,
-    message: MessagesOfStatus.OutroStatus,
-    messageLong: '',
-    color: ColorsOfStatus.OutroStatus,
-    isShowLoadingBar: false,
-}
+import Status, { StatusBar } from '../../tabs/editor-tab/enuns/TypeOfStatus';
 
 export const CodeEditorContext = React.createContext({
-    statusBar: statusDefault,
-    toggleStatusbar: (statusBar: StatusBar)=>{},
+    statusBar: Status.OUTRO_STATUS,
+    toggleStatusbar: (statusBar: StatusBar) => { },
 });
 
 export default CodeEditorContext;
