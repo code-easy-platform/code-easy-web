@@ -76,3 +76,7 @@ export class Status {
     }
 }
 export default Status;
+
+
+// EXEMPLO DE USO
+/* <button onClick={() => this.bottonStatusBar.toggleStatusbar(Status.ESCUTANDO_API)}>Teste</button> */
