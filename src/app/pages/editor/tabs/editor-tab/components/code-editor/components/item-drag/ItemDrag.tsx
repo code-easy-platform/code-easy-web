@@ -1,7 +1,6 @@
 import React from 'react'
 import { ConnectDragSource } from 'react-dnd'
 import { DragSource } from 'react-dnd'
-import { Line } from '../../../../../../../../shared/components/lines/Line'
 
 const style: React.CSSProperties = {
     position: 'absolute',
@@ -30,7 +29,6 @@ const ItemDrag: React.FC<ItemDragProps> = ({ left, top, connectDragSource, isDra
     return connectDragSource(
         <div style={{ ...style, left, top }}>
             {children}
-            {/* <Line top1="0" left1="0" top2="90" left2="90" width="4" color="blue" /> */}
         </div>
     );
 
