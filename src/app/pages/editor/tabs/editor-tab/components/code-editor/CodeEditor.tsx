@@ -6,6 +6,7 @@ import ItemDrag, { ItemTypes } from './components/item-drag/ItemDrag';
 import update from 'immutability-helper';
 import { Line } from '../../../../../../shared/components/lines/Line';
 import FluxoList from './enuns/FluxoList';
+import { Utils } from '../../../../../../shared/services/Utils';
 
 
 
@@ -70,18 +71,18 @@ class CodeEditor extends Component<CodeEditorProps, CodeEditorState> {
                 </svg>
                 {Object.keys(fluxoList).map(key => {
                     const { left, top, title } = fluxoList[key];
-                    return <ItemDrag key={key} id={key} left={left} top={top}>{title}</ItemDrag>;
+                    return <ItemDrag key={key} id={key} left={left} top={top} title={title}>{title}</ItemDrag>;
                 })}
             </div>,
         )
     }
 
-    public moveBox(id: string, left: number, top: number) {
+    public moveBox(id: string, left: number, top: number, title: string) {
         this.setState(
             update(this.state, {
                 fluxoList: {
                     [id]: {
-                        $merge: { left, top },
+                        $merge: { left, top, title },
                     },
                 },
             }),
@@ -93,20 +94,44 @@ CodeEditor.contextType = CodeEditorContext;
 export default DropTarget(
     ItemTypes.BOX,
     {
-        drop(
-            props: CodeEditorProps,
-            monitor: DropTargetMonitor,
-            component: CodeEditor | null,
-        ) {
-            if (!component) {
-                return
-            }
-            const item = monitor.getItem()
-            const delta = monitor.getDifferenceFromInitialOffset() as XYCoord
-            const left = Math.round(item.left + delta.x)
-            const top = Math.round(item.top + delta.y)
+        drop(props: CodeEditorProps, monitor: DropTargetMonitor, component: CodeEditor | null, ) {
+            if (!component) return;
 
-            component.moveBox(item.id, left, top)
+            const item = monitor.getItem();
+            const delta = monitor.getDifferenceFromInitialOffset() as XYCoord;
+            const left = Math.round((item.left ? item.left : 0) + delta.x)
+            const top = Math.round((item.top ? item.top : 0) + delta.y)
+
+            if (!item.id) {
+                let newKey;
+                let isExistentItem; 
+
+                // Vai encontrar uma key que não estaja em uso.
+                do {
+                    newKey = Utils.getRandomKey(10, 1000);
+                    isExistentItem = component.state.fluxoList[newKey];
+                } while (isExistentItem);
+
+                if (!isExistentItem) {
+                    component.state.fluxoList[newKey] = {
+                        antecessorKey: "",
+                        isHaveAntecessor: false,
+                        isHaveSucessor: false,
+                        sucessorKey: "",
+                        title: item.title + newKey,
+                        width: 80,
+                        height: 80,
+                        left: left,
+                        top: top,
+                    }
+                    component.setState({});
+
+                    item.id = newKey;
+                    item.title = item.title + newKey;
+                }
+            }
+            component.moveBox(item.id, left, top, item.title);
+
         },
     },
     (connect: any) => ({

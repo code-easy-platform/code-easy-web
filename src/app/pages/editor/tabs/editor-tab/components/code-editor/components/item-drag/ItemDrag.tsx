@@ -12,9 +12,10 @@ const style: React.CSSProperties = {
 }
 
 export interface ItemDragProps {
-    id: any
-    left: number
-    top: number
+    id?: any
+    left?: number
+    top?: number
+    title: string
     hideSourceOnDrag?: boolean
 
     // Collected Props
@@ -41,8 +42,8 @@ export const ItemTypes = {
 export default DragSource(
     ItemTypes.BOX, {
     beginDrag(props: ItemDragProps) {
-        const { id, left, top } = props
-        return { id, left, top }
+        const { id, left, top, title } = props
+        return { id, left, top, title }
     },
 },
     (connect, monitor) => ({
