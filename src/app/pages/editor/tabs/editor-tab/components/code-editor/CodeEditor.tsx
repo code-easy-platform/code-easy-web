@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { CodeEditorContext } from '../../../../shared/code-editor-context/CodeEditorContext';
+import { CodeEditorContext } from '../../../../shared/services/code-editor-context/CodeEditorContext';
 // import BottonStatusBar from '../../../../components/botton-status-bar/BottonStatusBar';
 import { ConnectDropTarget, DropTarget, DropTargetMonitor, XYCoord } from 'react-dnd';
 import ItemDrag, { ItemTypes } from './components/item-drag/ItemDrag';

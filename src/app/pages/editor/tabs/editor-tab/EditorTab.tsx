@@ -17,7 +17,12 @@ export default class EditorTab extends Component {
             <EditorTabTemplate
                 columnLeft={<ComponentsBar />}
                 columnCenter={<CodeEditor />}
-                columnRight={<ColRightTemplate rowTop={<ResourcesTree />} rowBottom={<PropertiesEditor />} />}
+                columnRight={
+                    <ColRightTemplate
+                        rowTop={<ResourcesTree />}
+                        rowBottom={<PropertiesEditor />}
+                    />
+                }
             />
         );
     }

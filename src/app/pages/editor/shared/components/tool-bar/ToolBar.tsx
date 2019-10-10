@@ -1,6 +1,6 @@
 import React from 'react';
 import './ToolBar.scss';
-import { CurrentTab } from '../../../../shared/enuns/CurrentTab';
+import { CurrentTab } from '../../../../../shared/enuns/CurrentTab';
 
 export const ToolBar = (props: any) => {
     return (

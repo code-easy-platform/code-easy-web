@@ -1,15 +1,15 @@
 //#region Imports
 
 import React, { Component } from 'react';
-import ToolBar from './components/tool-bar/ToolBar';
+import ToolBar from './shared/components/tool-bar/ToolBar';
 
 import './Editor.scss';
 import { CurrentTab } from '../../shared/enuns/CurrentTab';
 import EditorTab from './tabs/editor-tab/EditorTab';
 import PluginsTab from './tabs/plugins-tab/PluginsTab';
 import PropertiesTab from './tabs/properties-tab/PropertiesTab';
-import BottonStatusBar from './components/botton-status-bar/BottonStatusBar';
-import CodeEditorContext from './shared/code-editor-context/CodeEditorContext';
+import BottonStatusBar from './shared/components/botton-status-bar/BottonStatusBar';
+import CodeEditorContext from './shared/services/code-editor-context/CodeEditorContext';
 import Status, { StatusBar } from './tabs/editor-tab/enuns/TypeOfStatus';
 
 //#endregion
