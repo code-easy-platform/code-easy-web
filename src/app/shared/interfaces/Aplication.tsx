@@ -24,6 +24,7 @@ interface ContentTab {
  */
 interface Pasta {
     configs: ItemConfigs;
+    pastas: Pasta[];
     items: FlowItem[];
 }
 

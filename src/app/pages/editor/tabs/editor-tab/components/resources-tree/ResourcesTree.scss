@@ -1,0 +1,13 @@
+@import "./../../../../../../style/variables.scss";
+
+.res-main {
+  display: flex;
+  background: $color-tool-bar;
+  width: $size-fill;
+  justify-content: space-between;
+  height: 40px;
+  .btn-tab {
+    justify-content: center;
+    align-items: center;
+  }
+}

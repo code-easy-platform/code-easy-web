@@ -12,14 +12,6 @@
   display: flex;
 }
 
-.btn-editor:hover {
-  background-color: $color-top-bar-button-maximizar;
-  cursor: pointer;
-}
-.btn-editor:active {
-  opacity: 0.5;
-  color: $color-white;
-}
 .btn-open-editor-tab {
   content: url(./assets/icons/btn-open-editor-tab.svg);
 }

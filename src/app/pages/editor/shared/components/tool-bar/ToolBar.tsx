@@ -1,14 +1,38 @@
-import React from 'react';
+import React, { useState } from 'react';
 import './ToolBar.scss';
 import { CurrentTab } from '../../../../../shared/enuns/CurrentTab';
+import { TabButton } from '../../../../../shared/components/tab-button/TabButton';
 
 export const ToolBar = (props: any) => {
+
+    const [currentTab, setCurrentTab] = useState(CurrentTab.editor);
+
+    function changeCurrentTab(tab: CurrentTab) {
+        setCurrentTab(tab);
+        props.changeCurrentTab(tab);
+    } 
+
     return (
         <div className="tool-bar">
             <div className="sistem-tabs">
-                <div onClick={() => props.changeCurrentTab(CurrentTab.editor)} className="btn-editor btn-open-editor-tab" title="Editor"></div>
-                <div onClick={() => props.changeCurrentTab(CurrentTab.properties)} className="btn-editor btn-open-properties-tab" title="Propriedades do projeto"></div>
-                <div onClick={() => props.changeCurrentTab(CurrentTab.plugins)} className="btn-editor btn-open-plugins-tab" title="Adicione e remova dependências do projeto"></div >
+                <TabButton
+                    onClick={() => changeCurrentTab(CurrentTab.editor)}
+                    className=" btn-open-editor-tab"
+                    isSelected={currentTab === CurrentTab.editor}
+                    title="Editor"
+                />
+                <TabButton
+                    onClick={() => changeCurrentTab(CurrentTab.properties)}
+                    className=" btn-open-properties-tab"
+                    isSelected={currentTab === CurrentTab.properties}
+                    title="Propriedades do projeto"
+                />
+                <TabButton
+                    onClick={() => changeCurrentTab(CurrentTab.plugins)}
+                    className=" btn-open-plugins-tab"
+                    isSelected={currentTab === CurrentTab.plugins}
+                    title="Adicione e remova dependências do projeto"
+                />
             </div>
         </div>
     );

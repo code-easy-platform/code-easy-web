@@ -13,8 +13,8 @@ export class EditorTabTemplate extends Component<IRecipeProps, IRecipeState> {
     state = {
         isResizeColLeft: false,
         isResizeColRight: false,
-        colLeftX: 200,
-        colRightX: 200,
+        colLeftX: 300,
+        colRightX: 300,
     }
 
     mouseUp = () => {
