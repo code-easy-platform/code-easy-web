@@ -1,4 +1,5 @@
 import React from 'react';
+import ItemDrag from '../../../pages/editor/tabs/editor-tab/components/code-editor/components/item-drag/ItemDrag';
 
 export const Line = (props: any) => {
     const top1: number = props.top1;
@@ -8,17 +9,38 @@ export const Line = (props: any) => {
     const width: number = props.width;
     const color: string = props.color;
 
+    const polygonTop: number = (top2 - 10);
+    const polygonBotton: number = top2;
+    const polygonLeft: number = (left2 - 5);
+    const polygonRight: number = (left2 + 5);
+    const polygonBottonCenter: number = left2;
+
     return (
-        <line
-            x1={left1}
-            x2={left2}
-            y1={top1}
-            y2={top2}
-            stroke-width={width}
-            stroke={color}
-            stroke-line-cap="round"
-        />
+        <g fill="none">
+            <line
+                x1={left1}
+                x2={left2}
+                y1={top1}
+                y2={top2 - 10}
+                strokeWidth={width || 1}
+                stroke={color || "blue"}
+                stroke-line-cap="round"
+            />
+            <polygon
+                points={
+                    polygonLeft + ", " +
+                    polygonTop + ", " +
+                    polygonRight + ", " +
+                    polygonTop + ", " +
+                    polygonBottonCenter + ", " +
+                    polygonBotton
+                }
+                style={{
+                    fill: color || "blue",
+                    stroke: color || "blue",
+                    strokeWidth: width || 1
+                }}
+            />
+        </g>
     );
 }
-
-

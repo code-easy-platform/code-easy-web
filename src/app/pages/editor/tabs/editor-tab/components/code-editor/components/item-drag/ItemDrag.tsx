@@ -1,6 +1,6 @@
-import React from 'react'
-import { ConnectDragSource } from 'react-dnd'
-import { DragSource } from 'react-dnd'
+import React from 'react';
+import { ConnectDragSource } from 'react-dnd';
+import { DragSource } from 'react-dnd';
 
 const style: React.CSSProperties = {
     position: 'absolute',
@@ -51,4 +51,3 @@ export default DragSource(
         isDragging: monitor.isDragging(),
     }),
 )(ItemDrag)
-

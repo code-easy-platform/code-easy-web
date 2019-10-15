@@ -53,16 +53,17 @@ class CodeEditor extends Component<CodeEditorProps, CodeEditorState> {
                             left2 = fluxoList[sucessorKey].left;
                             height2 = fluxoList[sucessorKey].height;
                             width2 = fluxoList[sucessorKey].width;
-                        } catch (e) { console.error(e); }
+                        } catch (e) { console.error("[Erro mapeado]: " + e); }
 
                         return (
                             isHaveSucessor
                                 ? <Line
-                                    top1={top + (height / 2)}
+                                    top1={top + height - 15}
+                                    top2={top2 - 5}
+
                                     left1={left + (width / 2)}
-                                    top2={top2 + (height2 / 2)}
                                     left2={left2 + (width2 / 2)}
-                                    width="4"
+
                                     color="blue"
                                 />
                                 : undefined
@@ -104,7 +105,7 @@ export default DropTarget(
 
             if (!item.id) {
                 let newKey;
-                let isExistentItem; 
+                let isExistentItem;
 
                 // Vai encontrar uma key que não estaja em uso.
                 do {

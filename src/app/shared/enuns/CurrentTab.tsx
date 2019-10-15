@@ -3,3 +3,9 @@ export enum CurrentTab {
     plugins = 'plugins',
     properties = 'properties',
 }
+
+export enum CurrentResTreeTab {
+    router = 'router',
+    action = 'action',
+    data = 'data',
+}
