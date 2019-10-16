@@ -11,6 +11,8 @@ interface props {
     isSelected?: boolean;
 }
 
+export const TabGroup = (props: any) => <div className="tab-group">{props.children}</div>;
+
 export const TabButton = (props: props) => {
     return (
         <div

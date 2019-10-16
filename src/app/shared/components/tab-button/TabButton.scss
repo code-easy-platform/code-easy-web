@@ -1,5 +1,18 @@
 @import './../../../style/variables.scss';
 
+.tab-group {
+  display: flex;
+  background: $color-tool-bar;
+  width: $size-fill;
+  justify-content: space-between;
+  height: $size-8;
+  font-size: $font-size-4;
+  .btn-tab {
+    justify-content: center;
+    align-items: center;
+  }
+}
+
 .btn-tab:hover {
   background-color: $color-top-bar-button-maximizar;
   cursor: pointer;
