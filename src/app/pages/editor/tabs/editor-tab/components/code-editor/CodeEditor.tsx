@@ -1,13 +1,12 @@
 import React, { Component } from 'react';
 import { CodeEditorContext } from '../../../../shared/services/code-editor-context/CodeEditorContext';
 // import BottonStatusBar from '../../../../components/botton-status-bar/BottonStatusBar';
-import { ConnectDropTarget, DropTarget, DropTargetMonitor, XYCoord } from 'react-dnd';
-import ItemDrag, { ItemTypes } from './components/item-drag/ItemDrag';
+import { ConnectDropTarget, DropTarget, DropTargetMonitor, XYCoord, useDrop } from 'react-dnd';
+import { ItemToDrag, ItemTypes } from './components/item-drag/ItemDrag';
 import update from 'immutability-helper';
 import { Line } from '../../../../../../shared/components/lines/Line';
 import FluxoList from './enuns/FluxoList';
 import { Utils } from '../../../../../../shared/services/Utils';
-
 
 
 const styles: React.CSSProperties = {
@@ -40,18 +39,17 @@ class CodeEditor extends Component<CodeEditorProps, CodeEditorState> {
 
         return connectDropTarget(
             <div style={styles}>
+
                 <svg style={{ width: '100%', height: '100%' }}>
                     {Object.keys(fluxoList).map(key => {
                         const { left, top, width, height, isHaveSucessor, sucessorKey } = fluxoList[key];
 
                         let top2: number = 0;
                         let left2: number = 0;
-                        let height2: number = 0;
                         let width2: number = 0;
                         try {
                             top2 = fluxoList[sucessorKey].top;
                             left2 = fluxoList[sucessorKey].left;
-                            height2 = fluxoList[sucessorKey].height;
                             width2 = fluxoList[sucessorKey].width;
                         } catch (e) { console.error("[Erro mapeado]: " + e); }
 
@@ -70,9 +68,10 @@ class CodeEditor extends Component<CodeEditorProps, CodeEditorState> {
                         );
                     })}
                 </svg>
+
                 {Object.keys(fluxoList).map(key => {
                     const { left, top, title } = fluxoList[key];
-                    return <ItemDrag key={key} id={key} left={left} top={top} title={title}>{title}</ItemDrag>;
+                    return <ItemToDrag key={key} id={key} left={left} top={top} title={title}>{title}</ItemToDrag>;
                 })}
             </div>,
         )
@@ -135,7 +134,5 @@ export default DropTarget(
 
         },
     },
-    (connect: any) => ({
-        connectDropTarget: connect.dropTarget(),
-    }),
+    (connect: any) => ({ connectDropTarget: connect.dropTarget() }),
 )(CodeEditor)

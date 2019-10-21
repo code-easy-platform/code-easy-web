@@ -1,5 +1,4 @@
 import React from 'react';
-import ItemDrag from '../../../pages/editor/tabs/editor-tab/components/code-editor/components/item-drag/ItemDrag';
 
 export const Line = (props: any) => {
     const top1: number = props.top1;
