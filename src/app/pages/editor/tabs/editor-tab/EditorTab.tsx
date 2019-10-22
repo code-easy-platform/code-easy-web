@@ -2,7 +2,7 @@
 
 import React, { Component } from 'react';
 import ComponentsBar from './components/components-bar/ComponentsBar';
-import CodeEditor from './components/code-editor/CodeEditor';
+import {CodeEditor} from './components/code-editor/CodeEditor';
 import ResourcesTree from './components/resources-tree/ResourcesTree';
 import PropertiesEditor from './components/properties-editor/PropertiesEditor';
 
