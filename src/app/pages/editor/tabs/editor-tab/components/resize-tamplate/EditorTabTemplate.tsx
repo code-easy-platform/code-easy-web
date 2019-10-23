@@ -13,7 +13,7 @@ export class EditorTabTemplate extends Component<IRecipeProps, IRecipeState> {
     state = {
         isResizeColLeft: false,
         isResizeColRight: false,
-        colLeftX: 300,
+        colLeftX: 150,
         colRightX: 300,
     }
 
@@ -26,7 +26,7 @@ export class EditorTabTemplate extends Component<IRecipeProps, IRecipeState> {
 
     mouseMove(event: any) {
         if (this.state.isResizeColLeft === true) {
-            this.setState({ colLeftX: event.pageX + 5 });
+            // this.setState({ colLeftX: event.pageX + 5 });
         } else if (this.state.isResizeColRight === true) {
             this.setState({ colRightX: (window.innerWidth - event.pageX) + 4 });
         }

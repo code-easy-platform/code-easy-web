@@ -1,13 +1,11 @@
-import React, { Component, useRef, useState } from 'react';
-import { CodeEditorContext } from '../../../../shared/services/code-editor-context/CodeEditorContext';
+import React, { useState } from 'react';
 // import BottonStatusBar from '../../../../components/botton-status-bar/BottonStatusBar';
-import { ConnectDropTarget, DropTarget, DropTargetMonitor, XYCoord, useDrop } from 'react-dnd';
+import { ConnectDropTarget, DropTargetMonitor, XYCoord, useDrop } from 'react-dnd';
 import { ItemToDrag, ItemTypes } from './components/item-drag/ItemDrag';
 import update from 'immutability-helper';
 import { Line } from '../../../../../../shared/components/lines/Line';
 import FluxoList from './enuns/FluxoList';
 import { Utils } from '../../../../../../shared/services/Utils';
-import { tsExternalModuleReference } from '@babel/types';
 
 
 const styles: React.CSSProperties = {
@@ -32,18 +30,17 @@ export const CodeEditor = () => {
         4: { antecessorKey: 3, sucessorKey: "", isHaveSucessor: false, isHaveAntecessor: true, top: 400, left: 40, width: 80, height: 80, title: 'Drag me 4' },
     });
 
-    const [mousePosition, setMousePosition] = useState<{
-        top: number,
-        left: number
-    }>();
+    const positionChange = (position: any) => {
+        const top = position.top;
+        const left = position.left;
 
-    function mouseMove(event: any) {
-        console.log(event);
-        setMousePosition({
-            left: event.pageX,
-            top: event.pageY
-        });
-        console.log(mousePosition);
+        setFluxoList(
+            update(fluxoList, {
+                [position.itemId]: {
+                    $merge: { left, top },
+                },
+            }),
+        );
     }
 
     const [, drop] = useDrop({
@@ -51,9 +48,9 @@ export const CodeEditor = () => {
         drop(item: any, monitor: DropTargetMonitor) {
             if (!item) return;
 
-            const delta = monitor.getDifferenceFromInitialOffset() as XYCoord
-            const left = Math.round((item.itemDetail.left || 0) + delta.x)
-            const top = Math.round((item.itemDetail.top || 0) + delta.y)
+            const delta = monitor.getDifferenceFromInitialOffset() as XYCoord;
+            const left = Math.round((item.itemDetail.left || 0) + delta.x - 150);
+            const top = Math.round((item.itemDetail.top || 0) + delta.y - 40);
 
             if (!item.itemDetail.id) {
                 let newKey;
@@ -96,7 +93,7 @@ export const CodeEditor = () => {
     });
 
     return (
-        <div ref={drop} style={styles} onMouseMove={mouseMove} >
+        <div id="CODEEDITOR" ref={drop} style={styles}>
             <svg style={{ width: '100%', height: '100%' }}>
                 {Object.keys(fluxoList).map(key => {
                     const { left, top, width, height, isHaveSucessor, sucessorKey } = fluxoList[key];
@@ -108,18 +105,19 @@ export const CodeEditor = () => {
                         top2 = fluxoList[sucessorKey].top;
                         left2 = fluxoList[sucessorKey].left;
                         width2 = fluxoList[sucessorKey].width;
-                    } catch (e) { console.error("[Erro mapeado]: " + e); }
+                    } catch (e) { /* console.error("[Erro mapeado]: " + e); */ }
 
                     return (
                         isHaveSucessor
                             ? <Line
+                                key={key}
                                 top1={top + height - 15}
                                 top2={top2 - 5}
 
                                 left1={left + (width / 2)}
                                 left2={left2 + (width2 / 2)}
 
-                                color="blue"
+                                color="gray"
                             />
                             : undefined
                     );
@@ -128,7 +126,7 @@ export const CodeEditor = () => {
 
             {Object.keys(fluxoList).map(key => {
                 const { left, top, title } = fluxoList[key];
-                return <ItemToDrag key={key} id={key} left={left} top={top} title={title}>{title}</ItemToDrag>;
+                return <ItemToDrag key={key} id={key} left={left} top={top} title={title} outputPosition={positionChange}>{title}</ItemToDrag>;
             })}
         </div>
     )

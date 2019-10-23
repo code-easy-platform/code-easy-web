@@ -24,7 +24,7 @@
   }
 }
 
-.grabber-col-left,
+// .grabber-col-left,
 .grabber-col-right,
 .grabber-col-right-resize-y {
   cursor: col-resize;
@@ -46,7 +46,7 @@
   border-top: $border-size-1 
 }
 
-.grabber-col-left:active,
+// .grabber-col-left:active,
 .grabber-col-right:active,
 .grabber-col-right-resize-y:active {
   background-color: $color-top-bar;

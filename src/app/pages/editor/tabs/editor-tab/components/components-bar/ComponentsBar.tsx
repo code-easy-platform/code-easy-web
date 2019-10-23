@@ -6,9 +6,9 @@ export default class ComponentsBar extends Component {
         return (
             <div id="toolList" className="draggable-list">
                 <div className="draggable-item">
-                    <ItemToDrag id={null} allowDrag={true} title="Drag me " />
+                    <ItemToDrag id={null} allowDrag={true} title="Drag me " outputPosition={()=>{}} />
                 </div >
             </div >
-        );
+        )
     }
 }
