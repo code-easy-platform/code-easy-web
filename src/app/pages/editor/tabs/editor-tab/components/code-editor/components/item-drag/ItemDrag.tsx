@@ -7,7 +7,6 @@ const style: React.CSSProperties = {
     backgroundColor: 'gray',
     padding: '0.5rem 1rem',
     cursor: 'move',
-    height: '50px',
 }
 
 export const ItemTypes = {
@@ -18,20 +17,29 @@ export interface ItemDragProps {
     id?: any
     left?: number
     top?: number
+    width?: number
+    height?: number
+    border?: number
     title: string
     hideSourceOnDrag?: boolean
     allowDrag?: boolean
     outputPosition: Function
 }
 
-export const ItemToDrag: React.FC<ItemDragProps> = ({ id, left, top, title, allowDrag, outputPosition, children }) => {
+export const ItemToDrag: React.FC<ItemDragProps> = ({ id, left, top, width, height, border, title, allowDrag, outputPosition, children }) => {
+    const [{ isDragging }, dragRef] = useDrag({
+        item: { type: ItemTypes.BOX, itemDetail: { id, left, top, title } },
+        collect: monitor => ({ isDragging: monitor.isDragging() }),
+    });
 
-    var elemento: any;
+    const [isSelecionado, setIsSelecionado] = useState(false);
+    
+    let elemento: any;
 
-    const [itemTop, setItemTop] = useState<number>(top || 0);
-    const [itemLeft, setItemLeft] = useState<number>(left || 0);
+    window.onmouseup = () => mousePress(false);
 
     const mousePress = (value: boolean) => {
+        setIsSelecionado(value);
         if (value) {
             try {
                 elemento = window.document.getElementById("CODEEDITOR") || <div></div>;
@@ -45,28 +53,32 @@ export const ItemToDrag: React.FC<ItemDragProps> = ({ id, left, top, title, allo
         }
     }
 
-    window.onmouseup = () => mousePress(false);
-
     const mouseMove = (event: any) => {
-        outputPosition({ itemId: id, top: event.clientY - 40, left: event.clientX - (150 + ((60 || 0) / 2)) });
-        setItemTop(event.clientY - 40);
-        setItemLeft(event.clientX - (150 + ((60 || 0) / 2)));
+        outputPosition({
+            itemId: id,
+            top: event.clientY - (40 + ((height || 0) / 2)),
+            left: event.clientX - (150 + ((width || 0) / 2))
+        });
     }
-
-    const [{ isDragging }, dragRef] = useDrag({
-        item: { type: ItemTypes.BOX, itemDetail: { id, left, top, title } },
-        collect: monitor => ({ isDragging: monitor.isDragging() }),
-    });
 
     if (allowDrag)
         return <div id={id} ref={dragRef} style={{ ...style, left, top, backgroundColor: isDragging ? "blue" : "gray" }}>{children}</div>;
     else
-        return <div
-            id={id}
-            onMouseDown={() => mousePress(true)}
-            style={{ ...style, left: itemLeft, top: itemTop, backgroundColor: isDragging ? "blue" : "gray" }}
-            title={title}
-        >
-            {children}
-        </div>;
+        return (
+            <rect
+                id={id}
+                y={top}
+                x={left}
+                width={width}
+                height={height}
+                ry={border}
+                rx={border}
+                style={{ ...style, fill: "gray", stroke: isSelecionado ? "blue" : "gray", strokeWidth: 1}}
+                onMouseDown={() => mousePress(true)}
+                onMouseUp={() => mousePress(false)}
+            >
+                <text x={top} y={left} style={{zIndex: 100}} fill="white">{children}</text>
+            </rect>
+        );
+
 }

@@ -105,7 +105,7 @@ export const CodeEditor = () => {
                         top2 = fluxoList[sucessorKey].top;
                         left2 = fluxoList[sucessorKey].left;
                         width2 = fluxoList[sucessorKey].width;
-                    } catch (e) { /* console.error("[Erro mapeado]: " + e); */ }
+                    } catch (e) {}
 
                     return (
                         isHaveSucessor
@@ -122,12 +122,23 @@ export const CodeEditor = () => {
                             : undefined
                     );
                 })}
+
+                {Object.keys(fluxoList).map(key => {
+                    const { left, top, title, width, height } = fluxoList[key];
+                    return <ItemToDrag
+                        key={key}
+                        id={key}
+                        left={left}
+                        top={top}
+                        width={width}
+                        height={height}
+                        title={title}
+                        outputPosition={positionChange}
+                    >{title}</ItemToDrag>;
+                })}
+
             </svg>
 
-            {Object.keys(fluxoList).map(key => {
-                const { left, top, title } = fluxoList[key];
-                return <ItemToDrag key={key} id={key} left={left} top={top} title={title} outputPosition={positionChange}>{title}</ItemToDrag>;
-            })}
         </div>
     )
 }
