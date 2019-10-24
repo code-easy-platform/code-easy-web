@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useDrag } from 'react-dnd';
+import { FluxoItemTypes } from '../../enuns/FluxoList';
 
 const style: React.CSSProperties = {
     position: 'absolute',
@@ -7,10 +8,6 @@ const style: React.CSSProperties = {
     backgroundColor: 'gray',
     padding: '0.5rem 1rem',
     cursor: 'move',
-}
-
-export const ItemTypes = {
-    BOX: 'box',
 }
 
 export interface ItemDragProps {
@@ -23,34 +20,30 @@ export interface ItemDragProps {
     title: string
     hideSourceOnDrag?: boolean
     allowDrag?: boolean
+    refItemPai?: any
     outputPosition: Function
 }
 
-export const ItemToDrag: React.FC<ItemDragProps> = ({ id, left, top, width, height, border, title, allowDrag, outputPosition, children }) => {
+export const ItemToDrag: React.FC<ItemDragProps> = ({ id, left, top, width, height, border, title, allowDrag, refItemPai, outputPosition, children }) => {
     const [{ isDragging }, dragRef] = useDrag({
-        item: { type: ItemTypes.BOX, itemDetail: { id, left, top, title } },
+        item: { type: FluxoItemTypes.flowItem, itemDetail: { id, left, top, title } },
         collect: monitor => ({ isDragging: monitor.isDragging() }),
     });
 
     const [isSelecionado, setIsSelecionado] = useState(false);
-    
-    let elemento: any;
 
-    window.onmouseup = () => mousePress(false);
+    window.onmouseup = () => mouseUp;
 
-    const mousePress = (value: boolean) => {
-        setIsSelecionado(value);
-        if (value) {
-            try {
-                elemento = window.document.getElementById("CODEEDITOR") || <div></div>;
-                elemento.onmousemove = mouseMove;
-            } catch (e) { }
-        } else {
-            try {
-                elemento = window.document.getElementById("CODEEDITOR") || <div></div>;
-                elemento.onmousemove = null;
-            } catch (e) { }
-        }
+    const mouseDown = () => {
+        setIsSelecionado(true);
+        if (refItemPai.current)
+            refItemPai.current.onmousemove = mouseMove;
+    }
+
+    const mouseUp = () => {
+        setIsSelecionado(false);
+        if (refItemPai.current)
+            refItemPai.current.onmousemove = null;
     }
 
     const mouseMove = (event: any) => {
@@ -73,11 +66,11 @@ export const ItemToDrag: React.FC<ItemDragProps> = ({ id, left, top, width, heig
                 height={height}
                 ry={border}
                 rx={border}
-                style={{ ...style, fill: "gray", stroke: isSelecionado ? "blue" : "gray", strokeWidth: 1}}
-                onMouseDown={() => mousePress(true)}
-                onMouseUp={() => mousePress(false)}
+                style={{ ...style, fill: "gray", stroke: isSelecionado ? "blue" : "gray", strokeWidth: 1 }}
+                onMouseDown={mouseDown}
+                onMouseUp={mouseUp}
             >
-                <text x={top} y={left} style={{zIndex: 100}} fill="white">{children}</text>
+                <text x={top} y={left} style={{ zIndex: 100 }} fill="white">{children}</text>
             </rect>
         );
 

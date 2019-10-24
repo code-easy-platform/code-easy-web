@@ -1,35 +1,22 @@
-import React, { useState } from 'react';
-// import BottonStatusBar from '../../../../components/botton-status-bar/BottonStatusBar';
-import { ConnectDropTarget, DropTargetMonitor, XYCoord, useDrop } from 'react-dnd';
-import { ItemToDrag, ItemTypes } from './components/item-drag/ItemDrag';
+import React, { useState, useRef } from 'react';
+import { DropTargetMonitor, XYCoord, useDrop } from 'react-dnd';
 import update from 'immutability-helper';
+import FluxoList, { FluxoItemTypes } from './enuns/FluxoList';
 import { Line } from '../../../../../../shared/components/lines/Line';
-import FluxoList from './enuns/FluxoList';
 import { Utils } from '../../../../../../shared/services/Utils';
-
-
-const styles: React.CSSProperties = {
-    width: '100%',
-    height: '100%',
-    position: 'relative',
-}
-
-export interface CodeEditorState {
-    fluxoList: FluxoList;
-}
-
-export interface CodeEditorProps {
-    connectDropTarget: ConnectDropTarget
-}
+import { ItemToDrag } from './components/item-drag/ItemDrag';
 
 export const CodeEditor = () => {
+
+    // Dados apenas para mock.
     const [fluxoList, setFluxoList] = useState<FluxoList>({
-        1: { antecessorKey: "", sucessorKey: 2, isHaveSucessor: true, isHaveAntecessor: false, top: 100, left: 40, width: 80, height: 80, title: 'Drag me 1' },
-        2: { antecessorKey: 1, sucessorKey: 3, isHaveSucessor: true, isHaveAntecessor: true, top: 200, left: 40, width: 80, height: 80, title: 'Drag me 2' },
-        3: { antecessorKey: 2, sucessorKey: 4, isHaveSucessor: true, isHaveAntecessor: true, top: 300, left: 40, width: 80, height: 80, title: 'Drag me 3' },
-        4: { antecessorKey: 3, sucessorKey: "", isHaveSucessor: false, isHaveAntecessor: true, top: 400, left: 40, width: 80, height: 80, title: 'Drag me 4' },
+        1: { fluxoItemTypes: FluxoItemTypes.flowItem, antecessorKey: "", sucessorKey: 2, isHaveSucessor: true, isHaveAntecessor: false, top: 100, left: 40, width: 80, height: 80, title: 'Drag me 1' },
+        2: { fluxoItemTypes: FluxoItemTypes.flowItem, antecessorKey: 1, sucessorKey: 3, isHaveSucessor: true, isHaveAntecessor: true, top: 200, left: 40, width: 80, height: 80, title: 'Drag me 2' },
+        3: { fluxoItemTypes: FluxoItemTypes.flowItem, antecessorKey: 2, sucessorKey: 4, isHaveSucessor: true, isHaveAntecessor: true, top: 300, left: 40, width: 80, height: 80, title: 'Drag me 3' },
+        4: { fluxoItemTypes: FluxoItemTypes.flowItem, antecessorKey: 3, sucessorKey: "", isHaveSucessor: false, isHaveAntecessor: true, top: 400, left: 40, width: 80, height: 80, title: 'Drag me 4' },
     });
 
+    // Muda a posição do item de fluxo.
     const positionChange = (position: any) => {
         const top = position.top;
         const left = position.left;
@@ -43,8 +30,9 @@ export const CodeEditor = () => {
         );
     }
 
+    // Permite ser possível soltar im item no fluxo.
     const [, drop] = useDrop({
-        accept: ItemTypes.BOX,
+        accept: FluxoItemTypes.flowItem,
         drop(item: any, monitor: DropTargetMonitor) {
             if (!item) return;
 
@@ -64,6 +52,7 @@ export const CodeEditor = () => {
 
                 if (!isExistentItem) {
                     fluxoList[newKey] = {
+                        fluxoItemTypes: FluxoItemTypes.flowItem,
                         antecessorKey: "",
                         isHaveAntecessor: false,
                         isHaveSucessor: false,
@@ -92,35 +81,52 @@ export const CodeEditor = () => {
 
     });
 
+    // Permite referenciar um item deste componente a partir de outro.
+    const ref = useRef<HTMLInputElement>(null);
+
+    // Agrupa as referencias do drop com as da ref.
+    drop(ref);
+
+    // Muda o sucessor do item que está sendo recebido por parâmetro.
+    const onSucessorChange = (itemId: string, sucessorKey: string) => {
+        const isHaveSucessor = true;
+        
+        setFluxoList(
+            update(fluxoList, {
+                [itemId]: {
+                    $merge: { sucessorKey, isHaveSucessor },
+                },
+            }),
+        );
+    }
+
     return (
-        <div id="CODEEDITOR" ref={drop} style={styles}>
-            <svg style={{ width: '100%', height: '100%' }}>
+        <div ref={ref} style={{ width: '100%' }}>
+            <svg style={{ width: '100%' }}>
                 {Object.keys(fluxoList).map(key => {
                     const { left, top, width, height, isHaveSucessor, sucessorKey } = fluxoList[key];
 
-                    let top2: number = 0;
-                    let left2: number = 0;
-                    let width2: number = 0;
+                    let top2 = 0;
+                    let left2 = 0;
+                    let width2 = 0;
                     try {
                         top2 = fluxoList[sucessorKey].top;
                         left2 = fluxoList[sucessorKey].left;
                         width2 = fluxoList[sucessorKey].width;
-                    } catch (e) {}
+                    } catch (e) { }
 
-                    return (
-                        isHaveSucessor
-                            ? <Line
-                                key={key}
-                                top1={top + height - 15}
-                                top2={top2 - 5}
-
-                                left1={left + (width / 2)}
-                                left2={left2 + (width2 / 2)}
-
-                                color="gray"
-                            />
-                            : undefined
-                    );
+                    return <Line
+                        id={key}
+                        key={key}
+                        color="gray"
+                        top2={top2 - 5}
+                        top1={top + height - 15}
+                        left1={left + (width / 2)}
+                        left2={left2 + (width2 / 2)}
+                        isHaveSucessor={isHaveSucessor}
+                        onSucessorChange={onSucessorChange}
+                        refItemPai={ref}
+                    />;
                 })}
 
                 {Object.keys(fluxoList).map(key => {
@@ -133,12 +139,11 @@ export const CodeEditor = () => {
                         width={width}
                         height={height}
                         title={title}
+                        refItemPai={ref}
                         outputPosition={positionChange}
                     >{title}</ItemToDrag>;
                 })}
-
             </svg>
-
         </div>
     )
 }

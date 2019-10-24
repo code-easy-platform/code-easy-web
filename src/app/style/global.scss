@@ -39,6 +39,11 @@
     color: $color-white;
     opacity: 0.5;
   }
+
+  .full-width-height {
+    width: $size-fill;
+    height: $size-fill;
+  }
   
   .item-com-erro {
     border: thin dotted red;
