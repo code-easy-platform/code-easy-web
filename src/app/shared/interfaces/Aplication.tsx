@@ -1,5 +1,6 @@
 import ProjectType from "../enuns/ProjectType";
 import ItemType from "../enuns/ItemType";
+import { FluxoItemTypes } from "../../pages/editor/tabs/editor-tab/components/code-editor/enuns/FluxoList";
 
 /**
  * Interface para o projeto que está sendo desenvolvido no momento!
@@ -34,6 +35,17 @@ interface Pasta {
  */
 interface FlowItem {
     configs: ItemConfigs;
+    key: number,
+    fluxoItemTypes: FluxoItemTypes,
+    antecessorKey: string,
+    sucessorKey: number,
+    isHaveSucessor: boolean,
+    isHaveAntecessor: boolean,
+    top: number,
+    left: number,
+    width: number,
+    height: number,
+    title: string
 }
 
 /**
@@ -59,4 +71,3 @@ interface ProjectConfigs {
     autor: string;
     currentProcess: string;
 }
-

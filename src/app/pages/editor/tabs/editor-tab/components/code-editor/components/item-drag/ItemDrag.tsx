@@ -31,8 +31,13 @@ export const ItemToDrag: React.FC<ItemDragProps> = ({ id, left, top, width, heig
     });
 
     const [isSelecionado, setIsSelecionado] = useState(false);
+    const [isMenuOpen, setIsMenuOpen] = useState(false);
 
     window.onmouseup = () => mouseUp;
+    window.onmousedown = () => {
+        if (isMenuOpen)
+            setIsMenuOpen(false);
+    };
 
     const mouseDown = () => {
         setIsSelecionado(true);
@@ -54,24 +59,30 @@ export const ItemToDrag: React.FC<ItemDragProps> = ({ id, left, top, width, heig
         });
     }
 
+    const contextMenu = (event: any) => {
+        setIsMenuOpen(true);
+        event.preventDefault();
+    }
+
     if (allowDrag)
         return <div id={id} ref={dragRef} style={{ ...style, left, top, backgroundColor: isDragging ? "blue" : "gray" }}>{children}</div>;
     else
         return (
-            <rect
-                id={id}
-                y={top}
-                x={left}
-                width={width}
-                height={height}
-                ry={border}
-                rx={border}
-                style={{ ...style, fill: "gray", stroke: isSelecionado ? "blue" : "gray", strokeWidth: 1 }}
-                onMouseDown={mouseDown}
-                onMouseUp={mouseUp}
-            >
-                <text x={top} y={left} style={{ zIndex: 100 }} fill="white">{children}</text>
-            </rect>
+            <>
+                <rect
+                    id={id}
+                    y={top}
+                    x={left}
+                    ry={border}
+                    rx={border}
+                    width={width}
+                    height={height}
+                    style={{ ...style, fill: "gray", stroke: isSelecionado ? "blue" : "gray", strokeWidth: 1 }}
+                    onContextMenu={contextMenu}
+                    onMouseDown={mouseDown}
+                    onMouseUp={mouseUp}
+                ></rect>
+            </>
         );
 
 }
