@@ -1,6 +1,5 @@
 import React, { useContext, useRef } from 'react';
 import { DropTargetMonitor, XYCoord, useDrop } from 'react-dnd';
-import update from 'immutability-helper';
 import { Line } from '../../../../../../shared/components/lines/Line';
 import { Utils } from '../../../../../../shared/services/Utils';
 import { ItemToDrag } from './components/item-drag/ItemDrag';
@@ -22,15 +21,10 @@ export const CodeEditor = () => {
         const top = position.top;
         const left = position.left;
 
-        let item = fluxoList.findIndex((item: any) => { if (item.key === position.itemId) return item; return; });
+        fluxoList[fluxoList.findIndex((item: any) => { if (item.key === position.itemId) return item; return; })].top = top;
+        fluxoList[fluxoList.findIndex((item: any) => { if (item.key === position.itemId) return item; return; })].left = left;
 
-        if (!item) return;
-
-        update(fluxoList, {
-            [item]: {
-                $merge: { left, top },
-            },
-        });
+        changeFluxoState();
     }
 
     // Permite ser possível soltar im item no fluxo.
@@ -68,7 +62,7 @@ export const CodeEditor = () => {
                         top: top,
                     });
 
-                    /* setFluxoList(fluxoList); */
+                    changeFluxoState();
 
                     item.itemDetail.id = newKey;
                     item.itemDetail.title = item.title + newKey;
@@ -96,13 +90,10 @@ export const CodeEditor = () => {
     const onSucessorChange = (itemId: string, sucessorKey: string) => {
         const isHaveSucessor = true;
 
-        /* setFluxoList(
-            update(fluxoList, {
-                [itemId]: {
-                    $merge: { sucessorKey, isHaveSucessor },
-                },
-            }),
-        ); */
+        fluxoList[fluxoList.findIndex((item: any) => { if (item.key === itemId) return item; return; })].sucessorKey = sucessorKey;
+        fluxoList[fluxoList.findIndex((item: any) => { if (item.key === itemId) return item; return; })].isHaveSucessor = isHaveSucessor;
+
+        changeFluxoState();
     }
 
     return (
@@ -136,7 +127,7 @@ export const CodeEditor = () => {
 
                 {fluxoList.map((item: any) => {
                     const { left, top, title, width, height, key } = item;
-                    
+
                     return <ItemToDrag
                         key={key}
                         id={key}

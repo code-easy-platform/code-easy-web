@@ -21,7 +21,11 @@ export default class Editor extends Component {
     state = {
         toggleStatusbar: (statusBar: StatusBar) => this.setState({ statusBar }),
         changeAplicationState: (application: Aplication) => this.setState(application),
-        changeRouterFlowItem: (routerFlowItem: FlowItem[]) => { },
+        changeRouterFlowItem: (routerFlowItem: any) => {
+            let updateItens = this.state.application;
+            updateItens.routers.items = routerFlowItem;
+            this.setState({ application: updateItens });
+        },
         statusBar: Status.OUTRO_STATUS,
         application: {
             projectConfigs: {
