@@ -33,19 +33,19 @@ interface Pasta {
  * Item que está dentro das pastas nas tabs ou nas tabs, 
  * vai representar uma action, routa ou uma tabela na base.
  */
-interface FlowItem {
+export interface FlowItem {
     configs: ItemConfigs;
     key: number,
-    fluxoItemTypes: FluxoItemTypes,
-    antecessorKey: string,
-    sucessorKey: number,
-    isHaveSucessor: boolean,
-    isHaveAntecessor: boolean,
     top: number,
     left: number,
     width: number,
     height: number,
     title: string
+    fluxoItemTypes: FluxoItemTypes,
+    isHaveSucessor: boolean,
+    isHaveAntecessor: boolean,
+    antecessorKey: string | number,
+    sucessorKey: string | number,
 }
 
 /**

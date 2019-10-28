@@ -11,7 +11,7 @@ import PropertiesTab from './tabs/properties-tab/PropertiesTab';
 import BottonStatusBar from './shared/components/botton-status-bar/BottonStatusBar';
 import CodeEditorContext from './shared/services/code-editor-context/CodeEditorContext';
 import Status, { StatusBar } from './tabs/editor-tab/enuns/TypeOfStatus';
-import { Aplication } from '../../shared/interfaces/Aplication';
+import { Aplication, FlowItem } from '../../shared/interfaces/Aplication';
 import { FluxoItemTypes } from './tabs/editor-tab/components/code-editor/enuns/FluxoList';
 
 //#endregion
@@ -20,7 +20,8 @@ export default class Editor extends Component {
 
     state = {
         toggleStatusbar: (statusBar: StatusBar) => this.setState({ statusBar }),
-        changeAplicationState: (application: Aplication) => this.setState({}),
+        changeAplicationState: (application: Aplication) => this.setState(application),
+        changeRouterFlowItem: (routerFlowItem: FlowItem[]) => { },
         statusBar: Status.OUTRO_STATUS,
         application: {
             projectConfigs: {
@@ -33,33 +34,16 @@ export default class Editor extends Component {
             },
             routers: {
                 pastas: [],
-                items: [],
+                items: [
+                    {configs: { name: "", description: "", type: "", version: "", autor: "", currentProcess: "" }, key: 1, fluxoItemTypes: FluxoItemTypes.flowItem, antecessorKey: 0, sucessorKey: 2, isHaveSucessor: true, isHaveAntecessor: false, top: 100, left: 40, width: 80, height: 80, title: 'Drag me 1' },
+                    {configs: { name: "", description: "", type: "", version: "", autor: "", currentProcess: "" }, key: 2, fluxoItemTypes: FluxoItemTypes.flowItem, antecessorKey: 1,  sucessorKey: 3, isHaveSucessor: true, isHaveAntecessor: true, top: 200, left: 40, width: 80, height: 80, title: 'Drag me 2' },
+                    {configs: { name: "", description: "", type: "", version: "", autor: "", currentProcess: "" }, key: 3, fluxoItemTypes: FluxoItemTypes.flowItem, antecessorKey: 2,  sucessorKey: 4, isHaveSucessor: true, isHaveAntecessor: true, top: 300, left: 40, width: 80, height: 80, title: 'Drag me 3' },
+                    {configs: { name: "", description: "", type: "", version: "", autor: "", currentProcess: "" }, key: 4, fluxoItemTypes: FluxoItemTypes.flowItem, antecessorKey: 3,  sucessorKey: 0, isHaveSucessor: false, isHaveAntecessor: true, top: 400, left: 40, width: 80, height: 80, title: 'Drag me 4' },
+                ],
             },
             actions: {
                 pastas: [],
-                items: [
-                    {
-                        configs: {
-                            name: "",
-                            description: "",
-                            type: "",
-                            version: "",
-                            autor: "",
-                            currentProcess: ""
-                        },
-                        key: 1,
-                        fluxoItemTypes: FluxoItemTypes.flowItem,
-                        antecessorKey: "",
-                        sucessorKey: 2,
-                        isHaveSucessor: true,
-                        isHaveAntecessor: false,
-                        top: 100,
-                        left: 40,
-                        width: 80,
-                        height: 80,
-                        title: 'Drag me 1'
-                    },
-                ],
+                items: [],
             },
             data: {
                 pastas: [],

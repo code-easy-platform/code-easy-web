@@ -1,6 +1,6 @@
 import React from 'react';
 import Status, { StatusBar } from '../../../tabs/editor-tab/enuns/TypeOfStatus';
-import { Aplication } from '../../../../../shared/interfaces/Aplication';
+import { Aplication, FlowItem } from '../../../../../shared/interfaces/Aplication';
 import { FluxoItemTypes } from '../../../tabs/editor-tab/components/code-editor/enuns/FluxoList';
 
 export const CodeEditorContext = React.createContext({
@@ -17,7 +17,7 @@ export const CodeEditorContext = React.createContext({
         routers: {
             pastas: [],
             items: [
-                { key: 1, fluxoItemTypes: FluxoItemTypes.flowItem, antecessorKey: "", sucessorKey: 2, isHaveSucessor: true, isHaveAntecessor: false, top: 100, left: 40, width: 80, height: 80, title: 'Drag me 1' }
+                { key: 0, fluxoItemTypes: FluxoItemTypes.flowItem, antecessorKey: 0, sucessorKey: 0, isHaveSucessor: true, isHaveAntecessor: false, top: 0, left: 0, width: 0, height: 0, title: "" },
             ],
         },
         actions: {
@@ -31,6 +31,7 @@ export const CodeEditorContext = React.createContext({
     },
     toggleStatusbar: (statusBar: StatusBar) => { },
     changeAplicationState: (application: Aplication) => { },
+    changeRouterFlowItem: (routerFlowItem: FlowItem[]) => { },
 });
 
 export default CodeEditorContext;
