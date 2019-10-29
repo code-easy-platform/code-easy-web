@@ -10,4 +10,3 @@ export class Utils {
         return Math.floor(Math.random() * (max - min)) + min;
     }
 }
-

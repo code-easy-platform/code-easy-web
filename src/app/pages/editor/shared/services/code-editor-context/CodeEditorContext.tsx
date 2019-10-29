@@ -1,37 +1,21 @@
 import React from 'react';
 import Status, { StatusBar } from '../../../tabs/editor-tab/enuns/TypeOfStatus';
-import { Aplication, FlowItem } from '../../../../../shared/interfaces/Aplication';
-import { FluxoItemTypes } from '../../../tabs/editor-tab/components/code-editor/enuns/FluxoList';
+import { FlowItem, Application, ContentTabClass } from '../../../../../shared/interfaces/Aplication';
+import ProjectType from '../../../../../shared/enuns/ProjectType';
+
+const DEFAULT_PROJECT = new Application({
+    projectConfigs: { autor: "", currentProcess: "", description: "", name: "", type: ProjectType.api, version: "0.0.1" },
+    routers: new ContentTabClass({ pastas: [], litComponent: [] }),
+    actions: new ContentTabClass({ pastas: [], litComponent: [] }),
+    data: new ContentTabClass({ pastas: [], litComponent: [] })
+})
 
 export const CodeEditorContext = React.createContext({
     statusBar: Status.OUTRO_STATUS,
-    application: {
-        projectConfigs: {
-            name: "",
-            description: "",
-            type: "",
-            version: "",
-            autor: "",
-            currentProcess: "",
-        },
-        routers: {
-            pastas: [],
-            items: [
-                { key: 0, fluxoItemTypes: FluxoItemTypes.flowItem, antecessorKey: 0, sucessorKey: 0, isHaveSucessor: true, isHaveAntecessor: false, top: 0, left: 0, width: 0, height: 0, title: "" },
-            ],
-        },
-        actions: {
-            pastas: [],
-            items: [],
-        },
-        data: {
-            pastas: [],
-            items: [],
-        },
-    },
+    application: DEFAULT_PROJECT,
     toggleStatusbar: (statusBar: StatusBar) => { },
-    changeAplicationState: (application: Aplication) => { },
-    changeRouterFlowItem: (routerFlowItem: FlowItem[]) => { },
+    changeAplicationState: (application: Application) => { },
+    changeRouterFlowItem: (index: number, routerFlowItem: FlowItem[]) => { },
 });
 
 export default CodeEditorContext;
