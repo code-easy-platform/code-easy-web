@@ -6,9 +6,13 @@ import "./Tree.scss";
 export const Tree = (props: any) => {
     let listComponent: ListComponent = props.listComponent;
 
+    const onClick = () => {
+        alert();
+    }
+
     return (
         <div className="item-body">
-            <div className="item-list-pai">
+            <div className="item-list-pai" onClick={onClick}>
                 {listComponent.itemConfig.name}
             </div>
             {

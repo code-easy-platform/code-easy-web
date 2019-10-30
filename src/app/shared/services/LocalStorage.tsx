@@ -17,7 +17,34 @@ const DEFAULT_ROUTERS = new ContentTabClass({
             isExpanded: false,
             itens: [],
             pastas: [],
-            listComponent: []
+            listComponent: [
+                new ListComponent({
+                    itemConfig: new ItemConfigs({
+                        name: "RotaGetProds",
+                        description: "Usada para pegar uma lista de produtos.",
+                        type: ItemType.rota,
+                    }),
+                    isEditando: true,
+                    isSelecionado: false,
+                    isExpanded: false,
+                    itens: [],
+                    pastas: [],
+                    listComponent: []
+                }),
+                new ListComponent({
+                    itemConfig: new ItemConfigs({
+                        name: "RotaGetProds",
+                        description: "Usada para pegar uma lista de produtos.",
+                        type: ItemType.rota,
+                    }),
+                    isEditando: true,
+                    isSelecionado: false,
+                    isExpanded: false,
+                    itens: [],
+                    pastas: [],
+                    listComponent: []
+                })
+            ]
         })
     ]
 });
