@@ -6,7 +6,7 @@ export default class ComponentsBar extends Component {
         return (
             <div id="toolList" className="draggable-list">
                 <div className="draggable-item">
-                    <ItemToDrag key={undefined} id={null} allowDrag={true} title="Drag me "  height={80} width={80} outputPosition={()=>{}} />
+                    <ItemToDrag key={undefined} id={null} allowDrag={true} title="Drag me " height={80} width={80} outputPosition={() => { }} />
                 </div >
             </div >
         )

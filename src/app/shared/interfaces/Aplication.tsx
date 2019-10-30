@@ -52,17 +52,20 @@ interface Pasta {
 }
 
 export class ListComponent {
-    public itens: FlowItem[];
+    public itemConfig: ItemConfigs;
     public isEditando: boolean;
+    public itens: FlowItem[];
 
     constructor(
         private fields: {
-            itens: FlowItem[],
+            itemConfig: ItemConfigs,
             isEditando: boolean,
+            itens: FlowItem[],
         }
     ) {
-        this.itens = this.fields.itens;
+        this.itemConfig = this.fields.itemConfig;
         this.isEditando = this.fields.isEditando;
+        this.itens = this.fields.itens;
     }
 }
 

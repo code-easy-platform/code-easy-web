@@ -3,7 +3,7 @@ import { DropTargetMonitor, XYCoord, useDrop } from 'react-dnd';
 import { Line } from '../../../../../../shared/components/lines/Line';
 import { Utils } from '../../../../../../shared/services/Utils';
 import { ItemToDrag } from './components/item-drag/ItemDrag';
-import CodeEditorContext from '../../../../shared/services/code-editor-context/CodeEditorContext';
+import CodeEditorContext from '../../../../../../shared/services/contexts/code-editor-context/CodeEditorContext';
 import FluxoItemTypes from './enuns/FluxoList';
 import { FlowItem, ListComponent } from '../../../../../../shared/interfaces/Aplication';
 
@@ -11,11 +11,14 @@ export const CodeEditor = () => {
     const codeEditorContext = useContext(CodeEditorContext);
     const litComponent = codeEditorContext.application.routers.litComponent;
     const indexEditando: number = litComponent.findIndex((item: ListComponent) => { if (item.isEditando === true) return item; else return undefined; });
+    const isEditandoSomething = litComponent.length > 0;
 
-    let fluxoList: FlowItem[] = litComponent[indexEditando].itens;
+    let fluxoList: FlowItem[] = [];
+    if (litComponent.length > 0) fluxoList = litComponent[indexEditando].itens; // Garanti que haja erro na hora de carregar os itens nulos.
 
     const changeFluxoState = () => {
-        codeEditorContext.changeRouterFlowItem(indexEditando, fluxoList);
+        if (isEditandoSomething)
+            codeEditorContext.changeRouterFlowItem(indexEditando, fluxoList);
     }
 
     // Muda a posição do item de fluxo. Função passada por parâmetro para o itemDrag.
@@ -96,53 +99,55 @@ export const CodeEditor = () => {
     }
 
     return (
-        <div ref={ref} style={{ width: '100%' }}>
-            <svg style={{ width: '100%' }}>
-                {fluxoList.map((item: any) => {
-                    const { key, left, top, width, height, isHaveSucessor, sucessorKey } = item;
+        isEditandoSomething
+            ? <div ref={ref} style={{ width: '100%' }}>
+                <svg style={{ width: '100%' }}>
+                    {fluxoList.map((item: any) => {
+                        const { key, left, top, width, height, isHaveSucessor, sucessorKey } = item;
 
-                    let top2 = 0;
-                    let left2 = 0;
-                    let width2 = 0;
-                    try {
-                        let itemSucessor: FlowItem = fluxoList[fluxoList.findIndex((item: FlowItem) => { if (item.key === Number(sucessorKey)) return item; else return undefined; })];
+                        let top2 = 0;
+                        let left2 = 0;
+                        let width2 = 0;
+                        try {
+                            let itemSucessor: FlowItem = fluxoList[fluxoList.findIndex((item: FlowItem) => { if (item.key === Number(sucessorKey)) return item; else return undefined; })];
 
-                        top2 = itemSucessor.top;
-                        left2 = itemSucessor.left;
-                        width2 = itemSucessor.width;
+                            top2 = itemSucessor.top;
+                            left2 = itemSucessor.left;
+                            width2 = itemSucessor.width;
 
-                    } catch (e) { }
+                        } catch (e) { }
 
-                    return <Line
-                        id={key}
-                        key={key}
-                        color="gray"
-                        top2={top2 - 5}
-                        top1={top + height - 15}
-                        left1={left + (width / 2)}
-                        left2={left2 + (width2 / 2)}
-                        isHaveSucessor={isHaveSucessor}
-                        onSucessorChange={onSucessorChange}
-                        refItemPai={ref}
-                    />;
-                })}
+                        return <Line
+                            id={key}
+                            key={key}
+                            color="gray"
+                            top2={top2 - 5}
+                            top1={top + height - 15}
+                            left1={left + (width / 2)}
+                            left2={left2 + (width2 / 2)}
+                            isHaveSucessor={isHaveSucessor}
+                            onSucessorChange={onSucessorChange}
+                            refItemPai={ref}
+                        />;
+                    })}
 
-                {fluxoList.map((item: any) => {
-                    const { left, top, title, width, height, key } = item;
+                    {fluxoList.map((item: any) => {
+                        const { left, top, title, width, height, key } = item;
 
-                    return <ItemToDrag
-                        key={key}
-                        id={key}
-                        left={left}
-                        top={top}
-                        width={width}
-                        height={height}
-                        title={title}
-                        refItemPai={ref}
-                        outputPosition={positionChange}
-                    >{title}</ItemToDrag>;
-                })}
-            </svg>
-        </div>
+                        return <ItemToDrag
+                            key={key}
+                            id={key}
+                            left={left}
+                            top={top}
+                            width={width}
+                            height={height}
+                            title={title}
+                            refItemPai={ref}
+                            outputPosition={positionChange}
+                        >{title}</ItemToDrag>;
+                    })}
+                </svg>
+            </div>
+            : <div></div>
     )
 }

@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import './ToolBar.scss';
 import { CurrentTab } from '../../../../../shared/enuns/CurrentTab';
 import { TabButton } from '../../../../../shared/components/tab-button/TabButton';
+import { Storage } from '../../../../../shared/services/LocalStorage';
 
 export const ToolBar = (props: any) => {
 
@@ -32,6 +33,11 @@ export const ToolBar = (props: any) => {
                     className=" btn-open-plugins-tab"
                     isSelected={currentTab === CurrentTab.plugins}
                     title="Adicione e remova dependências do projeto"
+                />
+                <TabButton
+                    onClick={() => Storage.resetApplication()}
+                    style={{ justifyContent: "center", alignSelf: "center" }}                  
+                    content="Reset application"
                 />
             </div>
         </div>
