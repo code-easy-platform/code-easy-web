@@ -9,12 +9,12 @@ import { FlowItem, ListComponent } from '../../../../../../shared/interfaces/Apl
 
 export const CodeEditor = () => {
     const codeEditorContext = useContext(CodeEditorContext);
-    const litComponent = codeEditorContext.application.routers.litComponent;
-    const indexEditando: number = litComponent.findIndex((item: ListComponent) => { if (item.isEditando === true) return item; else return undefined; });
-    const isEditandoSomething = litComponent.length > 0;
+    const listComponent = codeEditorContext.application.routers.listComponent;
+    const indexEditando: number = listComponent.findIndex((item: ListComponent) => { if (item.isEditando === true) return item; else return undefined; });
+    const isEditandoSomething = listComponent.length > 0;
 
     let fluxoList: FlowItem[] = [];
-    if (litComponent.length > 0) fluxoList = litComponent[indexEditando].itens; // Garanti que haja erro na hora de carregar os itens nulos.
+    if (listComponent.length > 0) fluxoList = listComponent[indexEditando].itens; // Garanti que haja erro na hora de carregar os itens nulos.
 
     const changeFluxoState = () => {
         if (isEditandoSomething)

@@ -4,6 +4,9 @@ import { TabButton, TabGroup } from '../../../../../../shared/components/tab-but
 import { CurrentResTreeTab } from '../../../../../../shared/enuns/CurrentTab';
 import { Application, ListComponent } from '../../../../../../shared/interfaces/Aplication';
 import { CodeEditorContext } from '../../../../../../shared/services/contexts/code-editor-context/CodeEditorContext';
+import { Tree } from '../tree/Tree';
+
+import "./Resources.scss";
 
 export const ResourcesTree = () => {
     const codeEditorContext = useContext(CodeEditorContext);
@@ -39,22 +42,23 @@ export const ResourcesTree = () => {
                     style={{ flex: 1 }}
                 />
             </TabGroup>
-            <div style={{ display: currentResTreeTab === CurrentResTreeTab.router ? "block" : "none" }}>
-                {application.routers.litComponent.map((listComponent: ListComponent) => {
-                    return <div>
-                        {listComponent.itemConfig.name}
-                    </div>;
-                })}
+            <div className="tree-body" style={{ display: currentResTreeTab === CurrentResTreeTab.router ? "block" : "none" }}>
+                {application.routers.listComponent.map(
+                    (listComponent: ListComponent) => <Tree listComponent={listComponent} />
+                )}
             </div>
-            <div style={{ display: currentResTreeTab === CurrentResTreeTab.action ? "block" : "none" }}>
-                Action
+            <div className="tree-body" style={{ display: currentResTreeTab === CurrentResTreeTab.action ? "block" : "none" }}>
+                {application.actions.listComponent.map(
+                    (listComponent: ListComponent) => <Tree listComponent={listComponent} />
+                )}
             </div>
-            <div style={{ display: currentResTreeTab === CurrentResTreeTab.data ? "block" : "none" }}>
-                Data
+            <div className="tree-body" style={{ display: currentResTreeTab === CurrentResTreeTab.data ? "block" : "none" }}>
+                {application.data.listComponent.map(
+                    (listComponent: ListComponent) => <Tree listComponent={listComponent} />
+                )}
             </div>
         </div>
     );
 }
 
 export default ResourcesTree;
-

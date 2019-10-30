@@ -22,7 +22,7 @@ export default class Editor extends Component {
         },
         changeRouterFlowItem: (index: number, routerFlowItem: any) => {
             let updateItens = this.state.application;
-            updateItens.routers.litComponent[index].itens = routerFlowItem;
+            updateItens.routers.listComponent[index].itens = routerFlowItem;
             this.setState({ application: updateItens });
             this.state.changeAplicationState(updateItens);
         },

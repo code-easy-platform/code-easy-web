@@ -5,9 +5,9 @@ import ProjectType from '../../../enuns/ProjectType';
 
 const DEFAULT_PROJECT = new Application({
     projectConfigs: { autor: "", currentProcess: "", description: "", name: "", type: ProjectType.api, version: "0.0.1" },
-    routers: new ContentTabClass({ pastas: [], litComponent: [] }),
-    actions: new ContentTabClass({ pastas: [], litComponent: [] }),
-    data: new ContentTabClass({ pastas: [], litComponent: [] })
+    routers: new ContentTabClass({ pastas: [], listComponent: [] }),
+    actions: new ContentTabClass({ pastas: [], listComponent: [] }),
+    data: new ContentTabClass({ pastas: [], listComponent: [] })
 });
 
 export const CodeEditorContext = React.createContext({

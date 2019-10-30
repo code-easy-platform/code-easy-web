@@ -3,7 +3,7 @@
 import React, { Component } from 'react';
 import ComponentsBar from './components/components-bar/ComponentsBar';
 import {CodeEditor} from './components/code-editor/CodeEditor';
-import ResourcesTree from './components/resources-tree/ResourcesTree';
+import ResourcesTree from './components/resources/Resources';
 import PropertiesEditor from './components/properties-editor/PropertiesEditor';
 
 import EditorTabTemplate from './components/resize-tamplate/EditorTabTemplate';

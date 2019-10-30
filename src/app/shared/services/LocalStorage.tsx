@@ -5,7 +5,7 @@ import ItemType from "../enuns/ItemType";
 
 const DEFAULT_ROUTERS = new ContentTabClass({
     pastas: [],
-    litComponent: [
+    listComponent: [
         new ListComponent({
             itemConfig: new ItemConfigs({
                 name: "RotaGetProds",
@@ -13,7 +13,11 @@ const DEFAULT_ROUTERS = new ContentTabClass({
                 type: ItemType.rota,
             }),
             isEditando: true,
-            itens: []
+            isSelecionado: false,
+            isExpanded: false,
+            itens: [],
+            pastas: [],
+            listComponent: []
         })
     ]
 });
@@ -21,8 +25,8 @@ const DEFAULT_ROUTERS = new ContentTabClass({
 const DEFAULT_PROJECT = new Application({
     projectConfigs: { autor: "", currentProcess: "", description: "", name: "", type: ProjectType.api, version: "0.0.1" },
     routers: DEFAULT_ROUTERS,
-    actions: new ContentTabClass({ pastas: [], litComponent: [] }),
-    data: new ContentTabClass({ pastas: [], litComponent: [] })
+    actions: new ContentTabClass({ pastas: [], listComponent: [] }),
+    data: new ContentTabClass({ pastas: [], listComponent: [] })
 });
 
 export enum StorageEnum {
@@ -44,7 +48,6 @@ export class Storage {
     }
 
     public static setApplication(application: Application): Application {
-
         localStorage.setItem(StorageEnum.applicationStorage, JSON.stringify(application));
 
         return application;

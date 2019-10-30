@@ -29,16 +29,16 @@ export class Application {
  */
 export class ContentTabClass {
     public pastas: Pasta[];
-    public litComponent: ListComponent[];
+    public listComponent: ListComponent[];
 
     constructor(
         private fields: {
             pastas: Pasta[],
-            litComponent: ListComponent[]
+            listComponent: ListComponent[]
         }
     ) {
         this.pastas = this.fields.pastas;
-        this.litComponent = this.fields.litComponent;
+        this.listComponent = this.fields.listComponent;
     }
 }
 
@@ -48,24 +48,37 @@ export class ContentTabClass {
 interface Pasta {
     configs: ItemConfigs;
     pastas: Pasta[];
-    litComponent: ListComponent[];
+    listComponent: ListComponent[];
 }
 
 export class ListComponent {
     public itemConfig: ItemConfigs;
     public isEditando: boolean;
+    public isSelecionado: boolean;
+    public isExpanded: boolean;
     public itens: FlowItem[];
+
+    public pastas: Pasta[];
+    public listComponent: ListComponent[];
 
     constructor(
         private fields: {
             itemConfig: ItemConfigs,
             isEditando: boolean,
+            isSelecionado: boolean,
+            isExpanded: boolean,
             itens: FlowItem[],
+            pastas: Pasta[],
+            listComponent: ListComponent[],
         }
     ) {
         this.itemConfig = this.fields.itemConfig;
         this.isEditando = this.fields.isEditando;
+        this.isSelecionado = this.fields.isSelecionado;
+        this.isExpanded = this.fields.isExpanded;
         this.itens = this.fields.itens;
+        this.pastas = this.fields.pastas;
+        this.listComponent = this.fields.listComponent;
     }
 }
 
