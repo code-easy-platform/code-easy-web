@@ -9,26 +9,22 @@ import PropertiesTab from './tabs/properties-tab/PropertiesTab';
 import BottonStatusBar from './shared/components/botton-status-bar/BottonStatusBar';
 import CodeEditorContext from '../../shared/services/contexts/code-editor-context/CodeEditorContext';
 import Status, { StatusBar } from './tabs/editor-tab/enuns/TypeOfStatus';
-import { Application } from '../../shared/interfaces/Aplication';
+import { Application, Project } from '../../shared/interfaces/Aplication';
 import { Storage } from '../../shared/services/LocalStorage';
 
 export default class Editor extends Component {
 
     public state = {
-        toggleStatusbar: (statusBar: StatusBar) => this.setState({ statusBar }),
-        changeAplicationState: (application: Application) => {
-            this.setState(application)
-            Storage.setApplication(application);
-        },
-        changeRouterFlowItem: (index: number, routerFlowItem: any) => {
-            let updateItens = this.state.application;
-            updateItens.routers.listComponent[index].itens = routerFlowItem;
-            this.setState({ application: updateItens });
-            this.state.changeAplicationState(updateItens);
-        },
         statusBar: Status.OUTRO_STATUS,
-        application: Storage.getApplication(),
+        project: Storage.getProject(),
         currentTab: <EditorTab />,
+
+        toggleStatusbar: (statusBar: StatusBar) => this.setState({ statusBar }),
+        changeProjectState: (project: Project) => {
+            this.setState(project)
+            Storage.setProject(project);
+        },
+        changeComponentState: () => {},
     };
 
     private changeCurrentTab = (tab: String) => {

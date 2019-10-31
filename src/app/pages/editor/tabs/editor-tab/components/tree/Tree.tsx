@@ -1,10 +1,13 @@
 import React from 'react';
-import { ListComponent } from '../../../../../../shared/interfaces/Aplication';
+import { Component } from '../../../../../../shared/interfaces/Aplication';
 
 import "./Tree.scss";
 
 export const Tree = (props: any) => {
-    let listComponent: ListComponent = props.listComponent;
+    const allComponents: Component[] = props.allComponents;
+    let component: Component = props.component;
+
+    const thisComponenaveCild: boolean = ((allComponents.find((comp: Component) => { return comp.key === component.key })) !== undefined);
 
     const onClick = () => {
         alert();
@@ -13,13 +16,13 @@ export const Tree = (props: any) => {
     return (
         <div className="item-body">
             <div className="item-list-pai" onClick={onClick}>
-                {listComponent.itemConfig.name}
+                {component.configs.name}
             </div>
             {
-                listComponent.listComponent.length !== 0 && listComponent.isExpanded === true
+                thisComponenaveCild && component.configs.isExpanded === true
                     ? <div className="item-list-pai" onClick={onClick}>
                         <div className="item-list-filho">
-                            <Tree listComponent={listComponent} />
+                            <Tree allComponents={allComponents} component={component} />
                         </div>
                     </div>
                     : undefined

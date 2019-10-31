@@ -1,89 +1,45 @@
-import { Application, ContentTabClass, ListComponent, ComponentConfigs } from "../interfaces/Aplication";
 import ProjectType from "../enuns/ProjectType";
-import ItemType from "../enuns/ComponentType";
+import { Project, Tab, ComponentConfigs } from "../interfaces/Aplication";
+import { ComponentType } from "../enuns/ComponentType";
 
 
-const DEFAULT_ROUTERS = new ContentTabClass({
-    pastas: [],
-    listComponent: [
-        new ListComponent({
-            itemConfig: new ComponentConfigs({
-                name: "RotaGetProds",
-                description: "Usada para pegar uma lista de produtos.",
-                type: ItemType.rota,
-            }),
-            isEditando: true,
-            isSelecionado: false,
-            isExpanded: false,
-            itens: [],
-            pastas: [],
-            listComponent: [
-                new ListComponent({
-                    itemConfig: new ComponentConfigs({
-                        name: "RotaGetProds",
-                        description: "Usada para pegar uma lista de produtos.",
-                        type: ItemType.rota,
-                    }),
-                    isEditando: true,
-                    isSelecionado: false,
-                    isExpanded: false,
-                    itens: [],
-                    pastas: [],
-                    listComponent: []
-                }),
-                new ListComponent({
-                    itemConfig: new ComponentConfigs({
-                        name: "RotaGetProds",
-                        description: "Usada para pegar uma lista de produtos.",
-                        type: ItemType.rota,
-                    }),
-                    isEditando: true,
-                    isSelecionado: false,
-                    isExpanded: false,
-                    itens: [],
-                    pastas: [],
-                    listComponent: []
-                })
-            ]
-        })
-    ]
-});
-
-const DEFAULT_PROJECT = new Application({
+const DEFAULT_PROJECT = new Project({
     projectConfigs: { autor: "", currentProcess: "", description: "", name: "", type: ProjectType.api, version: "0.0.1" },
-    routers: DEFAULT_ROUTERS,
-    actions: new ContentTabClass({ pastas: [], listComponent: [] }),
-    data: new ContentTabClass({ pastas: [], listComponent: [] })
+    tabs: [
+        new Tab({ itens: [], configs: new ComponentConfigs({ name: "Routers",  type: ComponentType.tabRouters, isExpanded: false, description: "Routers" }) }),
+        new Tab({ itens: [], configs: new ComponentConfigs({ name: "Actions",  type: ComponentType.tabActions, isExpanded: false, description: "Actions" }) }),
+        new Tab({ itens: [], configs: new ComponentConfigs({ name: "Dates",    type: ComponentType.tabDates, isExpanded: false, description: "Dates" }) }),
+    ],
 });
 
 export enum StorageEnum {
-    applicationStorage = "APPLICATION_STORAGE"
+    projectStorage = "PROJECT_STORAGE"
 }
 
 export class Storage {
-    public static getApplication(): Application {
-        let application: Application;
+    public static getProject(): Project {
+        let project: Project;
 
-        let res = localStorage.getItem(StorageEnum.applicationStorage);
+        let res = localStorage.getItem(StorageEnum.projectStorage);
 
         if (res !== null && res !== "" && res !== undefined)
-            application = JSON.parse(res);
+            project = JSON.parse(res);
         else
-            application = Storage.setApplication(DEFAULT_PROJECT);
+            project = Storage.setProject(DEFAULT_PROJECT);
 
-        return application;
+        return project;
     }
 
-    public static setApplication(application: Application): Application {
-        localStorage.setItem(StorageEnum.applicationStorage, JSON.stringify(application));
+    public static setProject(project: Project): Project {
+        localStorage.setItem(StorageEnum.projectStorage, JSON.stringify(project));
 
-        return application;
+        return project;
     }
 
-    public static resetApplication(): Application {
-        localStorage.setItem(StorageEnum.applicationStorage, JSON.stringify(DEFAULT_PROJECT));
+    public static resetProject(): Project {
+        localStorage.setItem(StorageEnum.projectStorage, JSON.stringify(DEFAULT_PROJECT));
 
-        return Storage.getApplication();
+        return Storage.getProject();
     }
 
 }

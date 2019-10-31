@@ -35,7 +35,7 @@ export const ToolBar = (props: any) => {
                     title="Adicione e remova dependências do projeto"
                 />
                 <TabButton
-                    onClick={() => Storage.resetApplication()}
+                    onClick={() => Storage.resetProject()}
                     style={{ justifyContent: "center", alignSelf: "center" }}                  
                     content="Reset application"
                 />

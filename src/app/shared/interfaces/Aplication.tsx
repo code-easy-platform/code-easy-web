@@ -151,16 +151,16 @@ export class Project {
 }
 
 export class Tab {
-    public tabType: ComponentType;
+    public configs: ComponentConfigs;
     public itens: Component[];
 
     constructor(
         private fields: {
-            tabType: ComponentType;
+            configs: ComponentConfigs;
             itens: Component[];
         }
     ) {
-        this.tabType = this.fields.tabType;
+        this.configs = this.fields.configs;
         this.itens = this.fields.itens;
     }
 }
@@ -216,18 +216,21 @@ export class Component {
 export class ComponentConfigs {
     public name: string;
     public description: string;
-    public type?: ComponentType;
+    public type: ComponentType;
+    public isExpanded?: boolean;
 
     constructor(
         private fields: {
             name: string,
             description: string,
-            type?: ComponentType,
+            type: ComponentType,
+            isExpanded?: boolean,
         }
     ) {
         this.name = this.fields.name;
         this.description = this.fields.description;
         this.type = this.fields.type;
+        this.isExpanded = this.fields.isExpanded;
     }
 }
 

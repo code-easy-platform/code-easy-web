@@ -9,7 +9,7 @@ import { FlowItem, ListComponent } from '../../../../../../shared/interfaces/Apl
 
 export const CodeEditor = () => {
     const codeEditorContext = useContext(CodeEditorContext);
-    const listComponent = codeEditorContext.application.routers.listComponent;
+    const listComponent = codeEditorContext.project;
     const indexEditando: number = listComponent.findIndex((item: ListComponent) => { if (item.isEditando === true) return item; else return undefined; });
     const isEditandoSomething = listComponent.length > 0;
 

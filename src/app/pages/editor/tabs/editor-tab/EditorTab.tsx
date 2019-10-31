@@ -2,7 +2,7 @@
 
 import React, { Component } from 'react';
 import ComponentsBar from './components/components-bar/ComponentsBar';
-import {CodeEditor} from './components/code-editor/CodeEditor';
+import { CodeEditor } from './components/code-editor/CodeEditor';
 import ResourcesTree from './components/resources/Resources';
 import PropertiesEditor from './components/properties-editor/PropertiesEditor';
 
@@ -16,7 +16,7 @@ export default class EditorTab extends Component {
         return (
             <EditorTabTemplate
                 columnLeft={<ComponentsBar />}
-                columnCenter={<CodeEditor />}
+                columnCenter={<CodeEditor />} // Neste componente á bugs!
                 columnRight={
                     <ColRightTemplate
                         rowTop={<ResourcesTree />}

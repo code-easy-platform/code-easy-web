@@ -1,62 +1,44 @@
-import React, { useContext, useState } from 'react';
+import React, { useContext, useState, Component } from 'react';
 
 import { TabButton, TabGroup } from '../../../../../../shared/components/tab-button/TabButton';
-import { CurrentResTreeTab } from '../../../../../../shared/enuns/CurrentTab';
-import { Application, ListComponent } from '../../../../../../shared/interfaces/Aplication';
+import { Project, Tab } from '../../../../../../shared/interfaces/Aplication';
 import { CodeEditorContext } from '../../../../../../shared/services/contexts/code-editor-context/CodeEditorContext';
 import { Tree } from '../tree/Tree';
 
 import "./Resources.scss";
+import ComponentType from '../../../../../../shared/enuns/ComponentType';
 
 export const ResourcesTree = () => {
     const codeEditorContext = useContext(CodeEditorContext);
-    const application: Application = codeEditorContext.application;
+    const project: Project = codeEditorContext.project;
 
-    const [currentResTreeTab, setCurrentResTreeTab] = useState(CurrentResTreeTab.router);
+    const [currentResTreeTab, setCurrentResTreeTab] = useState(ComponentType.tabRouters);
 
     return (
         <div style={{ flex: 1, flexDirection: "column" }}>
             <TabGroup>
-                <TabButton
-                    onClick={() => setCurrentResTreeTab(CurrentResTreeTab.router)}
-                    isSelected={currentResTreeTab === CurrentResTreeTab.router}
-                    className="btn-open-routers-tab"
-                    title="Routers"
-                    content="Routers"
-                    style={{ flex: 1 }}
-                />
-                <TabButton
-                    onClick={() => setCurrentResTreeTab(CurrentResTreeTab.action)}
-                    isSelected={currentResTreeTab === CurrentResTreeTab.action}
-                    className="btn-open-actions-tab"
-                    title="Actions"
-                    content="Actions"
-                    style={{ flex: 1 }}
-                />
-                <TabButton
-                    onClick={() => setCurrentResTreeTab(CurrentResTreeTab.data)}
-                    isSelected={currentResTreeTab === CurrentResTreeTab.data}
-                    className="btn-open-data-tab"
-                    title="Data"
-                    content="Data"
-                    style={{ flex: 1 }}
-                />
+                {project.tabs.map((tab: Tab) => {
+                    return (
+                        <TabButton
+                            onClick={() => setCurrentResTreeTab(tab.configs.type)}
+                            isSelected={tab.configs.type === currentResTreeTab}
+                            className="btn-open-routers-tab"
+                            title={tab.configs.name}
+                            content={tab.configs.name}
+                            style={{ flex: 1 }}
+                        />
+                    );
+                })}
             </TabGroup>
-            <div className="tree-body" style={{ display: currentResTreeTab === CurrentResTreeTab.router ? "block" : "none" }}>
-                {application.routers.listComponent.map(
-                    (listComponent: ListComponent) => <Tree listComponent={listComponent} />
-                )}
-            </div>
-            <div className="tree-body" style={{ display: currentResTreeTab === CurrentResTreeTab.action ? "block" : "none" }}>
-                {application.actions.listComponent.map(
-                    (listComponent: ListComponent) => <Tree listComponent={listComponent} />
-                )}
-            </div>
-            <div className="tree-body" style={{ display: currentResTreeTab === CurrentResTreeTab.data ? "block" : "none" }}>
-                {application.data.listComponent.map(
-                    (listComponent: ListComponent) => <Tree listComponent={listComponent} />
-                )}
-            </div>
+            {project.tabs.map((tab: Tab) => {
+                return (
+                    <div className="tree-body" style={{ display: tab.configs.type === currentResTreeTab ? "block" : "none" }}>
+                        {tab.itens.map(
+                            (item: any) => <Tree allComponents={tab.itens} component={item} />
+                        )}
+                    </div>
+                );
+            })}
         </div>
     );
 }
