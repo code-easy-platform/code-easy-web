@@ -1,6 +1,6 @@
 import ProjectType from "../enuns/ProjectType";
-import ItemType from "../enuns/ItemType";
-import { FluxoItemTypes } from "../../pages/editor/tabs/editor-tab/components/code-editor/enuns/FluxoList";
+import ComponentType from "../enuns/ComponentType";
+import { FluxoComponentTypes } from "../../pages/editor/tabs/editor-tab/components/code-editor/enuns/FluxoList";
 
 
 export class Application {
@@ -46,13 +46,13 @@ export class ContentTabClass {
  * Uma estrutura de pasta que pode ser usada dentro das tabs;
  */
 interface Pasta {
-    configs: ItemConfigs;
+    configs: ComponentConfigs;
     pastas: Pasta[];
     listComponent: ListComponent[];
 }
 
 export class ListComponent {
-    public itemConfig: ItemConfigs;
+    public itemConfig: ComponentConfigs;
     public isEditando: boolean;
     public isSelecionado: boolean;
     public isExpanded: boolean;
@@ -63,7 +63,7 @@ export class ListComponent {
 
     constructor(
         private fields: {
-            itemConfig: ItemConfigs,
+            itemConfig: ComponentConfigs,
             isEditando: boolean,
             isSelecionado: boolean,
             isExpanded: boolean,
@@ -93,12 +93,12 @@ export class FlowItem {
     public width: number;
     public height: number;
     public title: string;
-    public fluxoItemTypes: FluxoItemTypes;
+    public fluxoItemTypes: FluxoComponentTypes;
     public isHaveSucessor: boolean;
     public isHaveAntecessor: boolean;
     public antecessorKey: string | number | undefined;
     public sucessorKey: string | number | undefined;
-    public configs: ItemConfigs | undefined;
+    public configs: ComponentConfigs | undefined;
 
     constructor(
         private fields: {
@@ -108,12 +108,12 @@ export class FlowItem {
             width: number,
             height: number,
             title?: string,
-            fluxoItemTypes: FluxoItemTypes,
+            fluxoItemTypes: FluxoComponentTypes,
             isHaveSucessor: boolean,
             isHaveAntecessor: boolean,
             antecessorKey?: string | number,
             sucessorKey?: string | number,
-            configs?: ItemConfigs,
+            configs?: ComponentConfigs,
         }
     ) {
         this.key = this.fields.key;
@@ -131,18 +131,98 @@ export class FlowItem {
     }
 }
 
+
+
+
+
+export class Project {
+    public projectConfigs: ProjectConfigs;
+    public tabs: Tab[];
+
+    constructor(
+        private fields: {
+            projectConfigs: ProjectConfigs;
+            tabs: Tab[];
+        }
+    ) {
+        this.projectConfigs = this.fields.projectConfigs;
+        this.tabs = this.fields.tabs;
+    }
+}
+
+export class Tab {
+    public tabType: ComponentType;
+    public itens: Component[];
+
+    constructor(
+        private fields: {
+            tabType: ComponentType;
+            itens: Component[];
+        }
+    ) {
+        this.tabType = this.fields.tabType;
+        this.itens = this.fields.itens;
+    }
+}
+
+export class Component {
+    public key: number;
+    public top: number;
+    public left: number;
+    public width: number;
+    public height: number;
+    public title: string;
+    public fluxoItemTypes: FluxoComponentTypes;
+    public isHaveSucessor: boolean;
+    public isHaveAntecessor: boolean;
+    public antecessorKey: number;
+    public sucessorKey: number;
+    public configs: ComponentConfigs;
+
+    constructor(
+        private fields: {
+            key: number;
+            top: number;
+            left: number;
+            width: number;
+            height: number;
+            title: string;
+            fluxoItemTypes: FluxoComponentTypes;
+            isHaveSucessor: boolean;
+            isHaveAntecessor: boolean;
+            antecessorKey: number;
+            sucessorKey: number;
+            configs: ComponentConfigs;
+        }
+    ) {
+        this.key = this.fields.key;
+        this.top = this.fields.top;
+        this.left = this.fields.left;
+        this.width = this.fields.width;
+        this.height = this.fields.height;
+        this.title = this.fields.title;
+        this.fluxoItemTypes = this.fields.fluxoItemTypes;
+        this.isHaveSucessor = this.fields.isHaveSucessor;
+        this.isHaveAntecessor = this.fields.isHaveAntecessor;
+        this.antecessorKey = this.fields.antecessorKey;
+        this.sucessorKey = this.fields.sucessorKey;
+        this.configs = this.fields.configs;
+    }
+}
+
 /**
  * Compõem as configurações de um item de fluxo ou uma pasta.
  */
-export class ItemConfigs {
+export class ComponentConfigs {
     public name: string;
     public description: string;
-    public type?: ItemType;
+    public type?: ComponentType;
+
     constructor(
         private fields: {
             name: string,
             description: string,
-            type?: ItemType,
+            type?: ComponentType,
         }
     ) {
         this.name = this.fields.name;
@@ -165,3 +245,7 @@ export interface ProjectConfigs {
     autor: string;
     currentProcess: string;
 }
+
+
+
+

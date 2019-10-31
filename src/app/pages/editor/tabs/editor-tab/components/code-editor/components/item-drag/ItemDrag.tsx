@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useDrag } from 'react-dnd';
-import { FluxoItemTypes } from '../../enuns/FluxoList';
+import { FluxoComponentTypes } from '../../enuns/FluxoList';
 
 const style: React.CSSProperties = {
     position: 'absolute',
@@ -26,7 +26,7 @@ export interface ItemDragProps {
 
 export const ItemToDrag: React.FC<ItemDragProps> = ({ id, left, top, width, height, border, title, allowDrag, refItemPai, outputPosition, children }) => {
     const [{ isDragging }, dragRef] = useDrag({
-        item: { type: FluxoItemTypes.flowItem, itemDetail: { id, left, top, title } },
+        item: { type: FluxoComponentTypes.flowItem, itemDetail: { id, left, top, title } },
         collect: monitor => ({ isDragging: monitor.isDragging() }),
     });
 

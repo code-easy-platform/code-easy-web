@@ -17,8 +17,10 @@ export const Tree = (props: any) => {
             </div>
             {
                 listComponent.listComponent.length !== 0 && listComponent.isExpanded === true
-                    ? <div className="item-list-filho">
-                        <Tree listComponent={listComponent} />
+                    ? <div className="item-list-pai" onClick={onClick}>
+                        <div className="item-list-filho">
+                            <Tree listComponent={listComponent} />
+                        </div>
                     </div>
                     : undefined
             }

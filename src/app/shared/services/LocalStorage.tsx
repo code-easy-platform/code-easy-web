@@ -1,13 +1,13 @@
-import { Application, ContentTabClass, ListComponent, ItemConfigs } from "../interfaces/Aplication";
+import { Application, ContentTabClass, ListComponent, ComponentConfigs } from "../interfaces/Aplication";
 import ProjectType from "../enuns/ProjectType";
-import ItemType from "../enuns/ItemType";
+import ItemType from "../enuns/ComponentType";
 
 
 const DEFAULT_ROUTERS = new ContentTabClass({
     pastas: [],
     listComponent: [
         new ListComponent({
-            itemConfig: new ItemConfigs({
+            itemConfig: new ComponentConfigs({
                 name: "RotaGetProds",
                 description: "Usada para pegar uma lista de produtos.",
                 type: ItemType.rota,
@@ -19,7 +19,7 @@ const DEFAULT_ROUTERS = new ContentTabClass({
             pastas: [],
             listComponent: [
                 new ListComponent({
-                    itemConfig: new ItemConfigs({
+                    itemConfig: new ComponentConfigs({
                         name: "RotaGetProds",
                         description: "Usada para pegar uma lista de produtos.",
                         type: ItemType.rota,
@@ -32,7 +32,7 @@ const DEFAULT_ROUTERS = new ContentTabClass({
                     listComponent: []
                 }),
                 new ListComponent({
-                    itemConfig: new ItemConfigs({
+                    itemConfig: new ComponentConfigs({
                         name: "RotaGetProds",
                         description: "Usada para pegar uma lista de produtos.",
                         type: ItemType.rota,

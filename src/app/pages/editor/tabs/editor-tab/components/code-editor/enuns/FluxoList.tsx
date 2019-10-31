@@ -1,6 +1,6 @@
-export enum FluxoItemTypes {
+export enum FluxoComponentTypes {
     flowItem="flowItem",
     poligon="poligon"
 }
 
-export default FluxoItemTypes;
+export default FluxoComponentTypes;
