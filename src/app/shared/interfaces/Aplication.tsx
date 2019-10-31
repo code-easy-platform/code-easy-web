@@ -167,6 +167,7 @@ export class Tab {
 
 export class Component {
     public key: number;
+    public paikey: number;
     public top: number;
     public left: number;
     public width: number;
@@ -182,6 +183,7 @@ export class Component {
     constructor(
         private fields: {
             key: number;
+            paikey: number;
             top: number;
             left: number;
             width: number;
@@ -196,6 +198,7 @@ export class Component {
         }
     ) {
         this.key = this.fields.key;
+        this.paikey = this.fields.paikey;
         this.top = this.fields.top;
         this.left = this.fields.left;
         this.width = this.fields.width;
@@ -218,6 +221,7 @@ export class ComponentConfigs {
     public description: string;
     public type: ComponentType;
     public isExpanded?: boolean;
+    public isEditando?: boolean;
 
     constructor(
         private fields: {

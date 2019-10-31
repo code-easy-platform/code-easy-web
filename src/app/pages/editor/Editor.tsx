@@ -8,9 +8,10 @@ import PluginsTab from './tabs/plugins-tab/PluginsTab';
 import PropertiesTab from './tabs/properties-tab/PropertiesTab';
 import BottonStatusBar from './shared/components/botton-status-bar/BottonStatusBar';
 import CodeEditorContext from '../../shared/services/contexts/code-editor-context/CodeEditorContext';
-import Status, { StatusBar } from './tabs/editor-tab/enuns/TypeOfStatus';
-import { Application, Project } from '../../shared/interfaces/Aplication';
+import { Status, StatusBar } from './tabs/editor-tab/enuns/TypeOfStatus';
+import { Project, Tab } from '../../shared/interfaces/Aplication';
 import { Storage } from '../../shared/services/LocalStorage';
+import { ComponentType } from '../../shared/enuns/ComponentType';
 
 export default class Editor extends Component {
 
@@ -18,7 +19,9 @@ export default class Editor extends Component {
         statusBar: Status.OUTRO_STATUS,
         project: Storage.getProject(),
         currentTab: <EditorTab />,
+        editingTab: ComponentType.tabRouters,
 
+        toggleResourcesTab: (tab: Tab) => this.setState({ editingTab: tab }),
         toggleStatusbar: (statusBar: StatusBar) => this.setState({ statusBar }),
         changeProjectState: (project: Project) => {
             this.setState(project)

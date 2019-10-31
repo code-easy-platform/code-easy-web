@@ -16,7 +16,9 @@ const DEFAULT_PROJECT = new Project({
 export const CodeEditorContext = React.createContext({
     statusBar: Status.OUTRO_STATUS,
     project: DEFAULT_PROJECT,
+    editingTab: ComponentType.tabRouters,
 
+    toggleResourcesTab: (tab: Tab) => { },
     toggleStatusbar: (statusBar: StatusBar) => { },
     changeProjectState: (project: Project) => { },
     changeComponentState: () => { },

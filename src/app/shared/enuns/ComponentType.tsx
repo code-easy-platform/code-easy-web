@@ -12,6 +12,7 @@ export enum ComponentType {
     localVariable = "LOCAL_VRIABLE",
     inputVariable = "INPUT_VARIABLE",
     outputVariable = "OUTPUT_VARIABLE",
+    flowItem = "FLOW_ITEM",
 }
 
 export default ComponentType;

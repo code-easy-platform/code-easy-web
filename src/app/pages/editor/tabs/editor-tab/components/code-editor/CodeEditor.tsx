@@ -5,20 +5,32 @@ import { Utils } from '../../../../../../shared/services/Utils';
 import { ItemToDrag } from './components/item-drag/ItemDrag';
 import CodeEditorContext from '../../../../../../shared/services/contexts/code-editor-context/CodeEditorContext';
 import FluxoItemTypes from './enuns/FluxoList';
-import { FlowItem, ListComponent } from '../../../../../../shared/interfaces/Aplication';
+import { FlowItem, Component, Tab } from '../../../../../../shared/interfaces/Aplication';
+import ComponentType from '../../../../../../shared/enuns/ComponentType';
 
 export const CodeEditor = () => {
     const codeEditorContext = useContext(CodeEditorContext);
-    const listComponent = codeEditorContext.project;
-    const indexEditando: number = listComponent.findIndex((item: ListComponent) => { if (item.isEditando === true) return item; else return undefined; });
-    const isEditandoSomething = listComponent.length > 0;
+    const tabIndex: number = codeEditorContext.project.tabs.findIndex((tab: Tab) => { if (tab.configs.isEditando === true) return tab; else return undefined; });
+    const listItens = codeEditorContext.project.tabs[tabIndex].itens;
+    const indexEditando: number = listItens.findIndex((item: Component) => {
+        if (
+            item.configs.type || ComponentType.globalAction &&
+            item.configs.type || ComponentType.localAction &&
+            item.configs.isEditando === true
+        ) return item; else return undefined;
+    });
 
-    let fluxoList: FlowItem[] = [];
-    if (listComponent.length > 0) fluxoList = listComponent[indexEditando].itens; // Garanti que haja erro na hora de carregar os itens nulos.
+    const isEditandoSomething = listItens.length > -1;
+
+    let fluxoList: Component[] = listItens.filter((item: Component) => { return item.configs.type === ComponentType.flowItem });
+
+
+
 
     const changeFluxoState = () => {
         if (isEditandoSomething)
-            codeEditorContext.changeRouterFlowItem(indexEditando, fluxoList);
+            codeEditorContext.changeComponentState();
+            // .changeRouterFlowItem(indexEditando, fluxoList);
     }
 
     // Muda a posição do item de fluxo. Função passada por parâmetro para o itemDrag.
