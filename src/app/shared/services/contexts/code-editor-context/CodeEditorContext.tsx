@@ -1,17 +1,8 @@
 import React from 'react';
 import Status, { StatusBar } from '../../../../pages/editor/tabs/editor-tab/enuns/TypeOfStatus';
-import {  Project, Tab, ComponentConfigs } from '../../../interfaces/Aplication';
-import ProjectType from '../../../enuns/ProjectType';
+import {  Project, Tab, Component } from '../../../interfaces/Aplication';
 import ComponentType from '../../../enuns/ComponentType';
-
-const DEFAULT_PROJECT = new Project({
-    projectConfigs: { autor: "", currentProcess: "", description: "", name: "", type: ProjectType.api, version: "0.0.1" },
-    tabs: [
-        new Tab({ itens: [], configs: new ComponentConfigs({ name: "Routers", type: ComponentType.tabRouters, isExpanded: false, description: "Routers" }) }),
-        new Tab({ itens: [], configs: new ComponentConfigs({ name: "Actions", type: ComponentType.tabActions, isExpanded: false, description: "Actions" }) }),
-        new Tab({ itens: [], configs: new ComponentConfigs({ name: "Dates",   type: ComponentType.tabDates, isExpanded: false, description: "Dates"   }) }),
-    ],
-});
+import { DEFAULT_PROJECT } from '../../LocalStorage';
 
 export const CodeEditorContext = React.createContext({
     statusBar: Status.OUTRO_STATUS,
@@ -19,9 +10,10 @@ export const CodeEditorContext = React.createContext({
     editingTab: ComponentType.tabRouters,
 
     toggleResourcesTab: (tab: Tab) => { },
-    toggleStatusbar: (statusBar: StatusBar) => { },
     changeProjectState: (project: Project) => { },
-    changeComponentState: () => { },
+    toggleStatusbar: (statusBar: StatusBar) => { },
+    addComponent: (tabIndex: number, component: Component) => {},
+    changeComponentState: (id:  number, tabIndex: number, component: Component) => { },
 });
 
 export default CodeEditorContext;

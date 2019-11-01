@@ -1,4 +1,4 @@
-import React, { useContext, useState, Component } from 'react';
+import React, { useContext } from 'react';
 
 import { TabButton, TabGroup } from '../../../../../../shared/components/tab-button/TabButton';
 import { Project, Tab } from '../../../../../../shared/interfaces/Aplication';
@@ -6,13 +6,10 @@ import { CodeEditorContext } from '../../../../../../shared/services/contexts/co
 import { Tree } from '../tree/Tree';
 
 import "./Resources.scss";
-import ComponentType from '../../../../../../shared/enuns/ComponentType';
 
 export const ResourcesTree = () => {
     const codeEditorContext = useContext(CodeEditorContext);
     const project: Project = codeEditorContext.project;
-
-    const [currentResTreeTab, setCurrentResTreeTab] = useState(ComponentType.tabRouters);
 
     return (
         <div style={{ flex: 1, flexDirection: "column" }}>
@@ -20,8 +17,8 @@ export const ResourcesTree = () => {
                 {project.tabs.map((tab: Tab) => {
                     return (
                         <TabButton
-                            onClick={() => setCurrentResTreeTab(tab.configs.type)}
-                            isSelected={tab.configs.type === currentResTreeTab}
+                            onClick={() => codeEditorContext.toggleResourcesTab(tab)}
+                            isSelected={tab.configs.type === codeEditorContext.editingTab}
                             className="btn-open-routers-tab"
                             title={tab.configs.name}
                             content={tab.configs.name}
@@ -32,7 +29,7 @@ export const ResourcesTree = () => {
             </TabGroup>
             {project.tabs.map((tab: Tab) => {
                 return (
-                    <div className="tree-body" style={{ display: tab.configs.type === currentResTreeTab ? "block" : "none" }}>
+                    <div className="tree-body" style={{ display: tab.configs.type === codeEditorContext.editingTab ? "block" : "none" }}>
                         {tab.itens.map(
                             (item: any) => <Tree allComponents={tab.itens} component={item} />
                         )}

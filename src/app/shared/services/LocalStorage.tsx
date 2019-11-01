@@ -3,12 +3,12 @@ import { Project, Tab, ComponentConfigs } from "../interfaces/Aplication";
 import { ComponentType } from "../enuns/ComponentType";
 
 
-const DEFAULT_PROJECT = new Project({
+export const DEFAULT_PROJECT = new Project({
     projectConfigs: { autor: "", currentProcess: "", description: "", name: "", type: ProjectType.api, version: "0.0.1" },
     tabs: [
-        new Tab({ itens: [], configs: new ComponentConfigs({ name: "Routers",  type: ComponentType.tabRouters, isExpanded: false, description: "Routers" }) }),
-        new Tab({ itens: [], configs: new ComponentConfigs({ name: "Actions",  type: ComponentType.tabActions, isExpanded: false, description: "Actions" }) }),
-        new Tab({ itens: [], configs: new ComponentConfigs({ name: "Dates",    type: ComponentType.tabDates, isExpanded: false, description: "Dates" }) }),
+        new Tab({ itens: [], configs: new ComponentConfigs({ name: "Routers",  type: ComponentType.tabRouters, isEditando: false, isExpanded: false, description: "Routers" }) }),
+        new Tab({ itens: [], configs: new ComponentConfigs({ name: "Actions",  type: ComponentType.tabActions, isEditando: false, isExpanded: false, description: "Actions" }) }),
+        new Tab({ itens: [], configs: new ComponentConfigs({ name: "Dates",    type: ComponentType.tabDates,   isEditando: false, isExpanded: false, description: "Dates" }) }),
     ],
 });
 

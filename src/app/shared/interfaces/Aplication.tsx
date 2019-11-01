@@ -220,20 +220,22 @@ export class ComponentConfigs {
     public name: string;
     public description: string;
     public type: ComponentType;
+    public isEditando: boolean;
     public isExpanded?: boolean;
-    public isEditando?: boolean;
 
     constructor(
         private fields: {
             name: string,
             description: string,
             type: ComponentType,
+            isEditando: boolean;
             isExpanded?: boolean,
         }
     ) {
         this.name = this.fields.name;
         this.description = this.fields.description;
         this.type = this.fields.type;
+        this.isEditando = this.fields.isEditando;
         this.isExpanded = this.fields.isExpanded;
     }
 }
@@ -253,6 +255,28 @@ export interface ProjectConfigs {
     currentProcess: string;
 }
 
-
+export const EMPTY_COMPONENT_CONFIGS = new ComponentConfigs({
+    name: "",
+    description: "",
+    type: ComponentType.flowItem,
+    isExpanded: false,
+    isEditando: false
+});
+// Constantes para agilizar.
+export const EMPTY_COMPONENT = new Component({
+    key: 0,
+    title: "",
+    top: 0,
+    left: 0,
+    width: 80,
+    height: 80,
+    fluxoItemTypes: FluxoComponentTypes.flowItem,
+    isHaveAntecessor: false,
+    isHaveSucessor: false,
+    antecessorKey: 0,
+    sucessorKey: 0,
+    paikey: 0,
+    configs: EMPTY_COMPONENT_CONFIGS,
+});
 
 

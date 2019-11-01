@@ -5,43 +5,48 @@ import { Utils } from '../../../../../../shared/services/Utils';
 import { ItemToDrag } from './components/item-drag/ItemDrag';
 import CodeEditorContext from '../../../../../../shared/services/contexts/code-editor-context/CodeEditorContext';
 import FluxoItemTypes from './enuns/FluxoList';
-import { FlowItem, Component, Tab } from '../../../../../../shared/interfaces/Aplication';
+import { Component, Tab, ComponentConfigs, EMPTY_COMPONENT } from '../../../../../../shared/interfaces/Aplication';
 import ComponentType from '../../../../../../shared/enuns/ComponentType';
 
 export const CodeEditor = () => {
     const codeEditorContext = useContext(CodeEditorContext);
-    const tabIndex: number = codeEditorContext.project.tabs.findIndex((tab: Tab) => { if (tab.configs.isEditando === true) return tab; else return undefined; });
-    const listItens = codeEditorContext.project.tabs[tabIndex].itens;
-    const indexEditando: number = listItens.findIndex((item: Component) => {
+    const tabIndex: number = codeEditorContext.project.tabs.findIndex((tab: Tab) => { return tab.configs.isEditando === true ? tab : undefined });
+    let listItens: Component[] = [];
+
+    if (tabIndex >= 0) // Caso não exista uma tab selecionada.
+        listItens = codeEditorContext.project.tabs[tabIndex].itens;
+
+    const itemEditando: Component = listItens.find((item: Component) => {
         if (
-            item.configs.type || ComponentType.globalAction &&
-            item.configs.type || ComponentType.localAction &&
+            item.configs.type === ComponentType.globalAction ||
+            item.configs.type === ComponentType.localAction ||
             item.configs.isEditando === true
         ) return item; else return undefined;
-    });
+    }) || EMPTY_COMPONENT;
 
-    const isEditandoSomething = listItens.length > -1;
+    // Verifica se estou esditando alguma coisa.
+    const isEditandoSomething = listItens.length > -1 && tabIndex >= 0;
 
-    let fluxoList: Component[] = listItens.filter((item: Component) => { return item.configs.type === ComponentType.flowItem });
+    let fluxoList: Component[] = listItens.filter((item: Component) => { return item.configs.type === ComponentType.flowItem && item.paikey === itemEditando.key });
 
 
 
-
-    const changeFluxoState = () => {
+    const changeComponentState = (id: number, component: Component) => {
         if (isEditandoSomething)
-            codeEditorContext.changeComponentState();
-            // .changeRouterFlowItem(indexEditando, fluxoList);
+            codeEditorContext.changeComponentState(id, tabIndex, component);
     }
 
     // Muda a posição do item de fluxo. Função passada por parâmetro para o itemDrag.
-    const positionChange = (position: any) => {
+    const positionChange = (position: any) => { // Position recebe: { itemId, top, left }
         const top = position.top;
         const left = position.left;
 
-        fluxoList[fluxoList.findIndex((item: any) => { if (item.key === position.itemId) return item; return undefined; })].top = top;
-        fluxoList[fluxoList.findIndex((item: any) => { if (item.key === position.itemId) return item; return undefined; })].left = left;
+        let component: Component = fluxoList[fluxoList.findIndex((item: any) => { if (item.key === position.itemId) return item; return undefined; })];
 
-        changeFluxoState();
+        component.top = top;
+        component.left = left;
+
+        changeComponentState(position.itemId, component);
     }
 
     // Permite ser possível soltar im item no fluxo.
@@ -61,25 +66,28 @@ export const CodeEditor = () => {
             do {
                 newKey = Utils.getRandomKey(10, 1000);
                 // eslint-disable-next-line
-                isExistentItem = fluxoList[fluxoList.findIndex((item: FlowItem) => { if (item.key === newKey) return item; else return undefined; })];
+                isExistentItem = fluxoList[fluxoList.findIndex((item: Component) => { if (item.key === newKey) return item; else return undefined; })];
             } while (isExistentItem);
 
             if (!isExistentItem) {
-                fluxoList.push(new FlowItem({
-                    key: newKey,
-                    title: item.itemDetail.title + newKey,
-                    top: top,
-                    left: left,
-                    width: 80,
-                    height: 80,
-                    fluxoItemTypes: FluxoItemTypes.flowItem,
-                    isHaveAntecessor: false,
-                    isHaveSucessor: false,
-                }));
+                codeEditorContext
+                    .addComponent(tabIndex, new Component({
+                        key: newKey,
+                        title: item.itemDetail.title + newKey,
+                        top: top,
+                        left: left,
+                        width: 80,
+                        height: 80,
+                        fluxoItemTypes: FluxoItemTypes.flowItem,
+                        isHaveAntecessor: false,
+                        isHaveSucessor: false,
+                        antecessorKey: 0,
+                        sucessorKey: 0,
+                        paikey: itemEditando.key,
+                        configs: new ComponentConfigs({ name: "", description: "", type: ComponentType.flowItem, isExpanded: false, isEditando: false }),
+                    }));
                 item.itemDetail.id = newKey;
                 item.itemDetail.title = item.title + newKey;
-
-                changeFluxoState();
             }
 
         },
@@ -94,11 +102,11 @@ export const CodeEditor = () => {
 
     // Muda o sucessor do item que está sendo recebido por parâmetro.
     const onSucessorChange = (itemId: number, sucessorKey: string) => {
-        let itemCurrent: FlowItem = fluxoList[fluxoList.findIndex((item: FlowItem) => { if (item.key === itemId) return item; else return undefined; })];
-        let itemSucessor: FlowItem = fluxoList[fluxoList.findIndex((item: FlowItem) => { if (item.key === Number(sucessorKey)) return item; else return undefined; })];
+        let itemCurrent: Component = fluxoList[fluxoList.findIndex((item: Component) => { if (item.key === itemId) return item; else return undefined; })];
+        let itemSucessor: Component = fluxoList[fluxoList.findIndex((item: Component) => { if (item.key === Number(sucessorKey)) return item; else return undefined; })];
 
         // Propriedades do sucessor
-        itemCurrent.sucessorKey = sucessorKey;
+        itemCurrent.sucessorKey = Number(sucessorKey);
         itemCurrent.isHaveSucessor = true;
 
         // Propriedades do antecessor
@@ -107,7 +115,8 @@ export const CodeEditor = () => {
 
         // OBS: O update no fluxo é feito pela referencia entre variáveis js.
 
-        changeFluxoState();
+        changeComponentState(itemCurrent.key, itemCurrent);
+        changeComponentState(itemSucessor.key, itemSucessor);
     }
 
     return (
@@ -121,7 +130,7 @@ export const CodeEditor = () => {
                         let left2 = 0;
                         let width2 = 0;
                         try {
-                            let itemSucessor: FlowItem = fluxoList[fluxoList.findIndex((item: FlowItem) => { if (item.key === Number(sucessorKey)) return item; else return undefined; })];
+                            let itemSucessor: Component = fluxoList[fluxoList.findIndex((item: Component) => { if (item.key === Number(sucessorKey)) return item; else return undefined; })];
 
                             top2 = itemSucessor.top;
                             left2 = itemSucessor.left;
