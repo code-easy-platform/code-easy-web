@@ -1,11 +1,12 @@
 import React, { useContext } from 'react';
 
 import { TabButton, TabGroup } from '../../../../../../shared/components/tab-button/TabButton';
-import { Project, Tab } from '../../../../../../shared/interfaces/Aplication';
+import { Project, Tab, Component } from '../../../../../../shared/interfaces/Aplication';
 import { CodeEditorContext } from '../../../../../../shared/services/contexts/code-editor-context/CodeEditorContext';
 import { Tree } from '../tree/Tree';
 
 import "./Resources.scss";
+import ComponentType from '../../../../../../shared/enuns/ComponentType';
 
 export const ResourcesTree = () => {
     const codeEditorContext = useContext(CodeEditorContext);
@@ -28,10 +29,14 @@ export const ResourcesTree = () => {
                 })}
             </TabGroup>
             {project.tabs.map((tab: Tab) => {
+                const listaComponent: Component[] = tab.itens.filter(
+                    (comp: Component) => { return(comp.configs.type === ComponentType.localAction) }
+                ) || [];
+
                 return (
                     <div className="tree-body" style={{ display: tab.configs.type === codeEditorContext.editingTab ? "block" : "none" }}>
-                        {tab.itens.map(
-                            (item: any) => <Tree allComponents={tab.itens} component={item} />
+                        {listaComponent.map(
+                            (item: any) => <Tree allComponents={listaComponent} component={item} />
                         )}
                     </div>
                 );

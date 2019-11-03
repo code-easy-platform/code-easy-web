@@ -16,11 +16,13 @@ export const CodeEditor = () => {
     if (tabIndex >= 0) // Caso não exista uma tab selecionada.
         listItens = codeEditorContext.project.tabs[tabIndex].itens;
 
+    // Encontra o item que está sendo selecionado para ser editado!
     const itemEditando: Component = listItens.find((item: Component) => {
         if (
-            item.configs.type === ComponentType.globalAction ||
-            item.configs.type === ComponentType.localAction ||
-            item.configs.isEditando === true
+            (
+                item.configs.type === ComponentType.globalAction ||
+                item.configs.type === ComponentType.localAction
+            ) && item.configs.isEditando === true
         ) return item; else return undefined;
     }) || EMPTY_COMPONENT;
 
