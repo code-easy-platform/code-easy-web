@@ -1,21 +1,20 @@
 import React, { useContext } from 'react';
 
 import { TabButton, TabGroup } from '../../../../../../shared/components/tab-button/TabButton';
-import { Project, Tab, Component } from '../../../../../../shared/interfaces/Aplication';
+import { Tab, Component } from '../../../../../../shared/interfaces/Aplication';
 import { CodeEditorContext } from '../../../../../../shared/services/contexts/code-editor-context/CodeEditorContext';
+import { ComponentType } from '../../../../../../shared/enuns/ComponentType';
 import { Tree } from '../tree/Tree';
-
 import "./Resources.scss";
-import ComponentType from '../../../../../../shared/enuns/ComponentType';
 
 export const ResourcesTree = () => {
     const codeEditorContext = useContext(CodeEditorContext);
-    const project: Project = codeEditorContext.project;
+    const tabs: Tab[] = codeEditorContext.project.tabs;
 
     return (
         <div style={{ flex: 1, flexDirection: "column" }}>
             <TabGroup>
-                {project.tabs.map((tab: Tab) => {
+                {tabs.map((tab: Tab) => {
                     return (
                         <TabButton
                             onClick={() => codeEditorContext.toggleResourcesTab(tab)}
@@ -28,10 +27,9 @@ export const ResourcesTree = () => {
                     );
                 })}
             </TabGroup>
-            {project.tabs.map((tab: Tab) => {
-                const listaComponent: Component[] = tab.itens.filter(
-                    (comp: Component) => { return(comp.configs.type === ComponentType.localAction) }
-                ) || [];
+            {tabs.map((tab: Tab) => {
+
+                const listaComponent: Component[] = tab.itens.filter((comp: Component) => { return(comp.configs.type === ComponentType.localAction) }) || [];
 
                 return (
                     <div className="tree-body" style={{ display: tab.configs.type === codeEditorContext.editingTab ? "block" : "none" }}>

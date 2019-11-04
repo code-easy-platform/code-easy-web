@@ -25,22 +25,28 @@ export default class Editor extends React.Component {
         toggleStatusbar: (statusBar: StatusBar) => this.setState({ statusBar }),
         changeProjectState: (project: Project) => this.changeProjectState(project),
         toggleResourcesTab: (tab: Tab) => this.setState({ editingTab: tab.configs.type }),
-        changeComponentState: (id:  number, tabIndex: number, component: Component) => this.changeComponentState(id, tabIndex, component),
+        changeComponentState: (id: number, tabIndex: number, component: Component) => this.changeComponentState(id, tabIndex, component),
+        getCurrentTabSelected: () => this.getCurrentTabSelected(),
     };
+
+    private getCurrentTabSelected(): Tab {
+        const tabIndex: number = this.state.project.tabs.findIndex((tab: Tab) => { return tab.configs.isEditando === true ? tab : undefined });
+        return tabIndex > 0 ? this.state.project.tabs[tabIndex] : this.state.project.tabs[0];
+    }
 
     private changeProjectState(project: Project) {
         this.setState(project)
         Storage.setProject(project);
     }
 
-    private changeComponentState(id:  number, tabIndex: number, component: Component) {
+    private changeComponentState(id: number, tabIndex: number, component: Component) {
         let projectUpdate = this.state.project;
 
-        const componentIndex = projectUpdate.tabs[tabIndex].itens.findIndex((item: Component) => item.key === id); // Descrobre o index do component na lista.
+        const componentIndex = projectUpdate.tabs[tabIndex].itens.findIndex((item: Component) => item.id === id); // Descrobre o index do component na lista.
 
         projectUpdate.tabs[tabIndex].itens[componentIndex] = component; // Atualiza o componente
 
-        this.setState({ project: projectUpdate });
+        this.changeProjectState(projectUpdate);
     }
 
     private addComponent(tabIndex: number, component: Component) {

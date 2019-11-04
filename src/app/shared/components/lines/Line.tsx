@@ -9,7 +9,7 @@ const style: React.CSSProperties = {
 }
 
 export const Line = (props: any) => {
-    const isHaveSucessor: boolean = props.isHaveSucessor && props.sucessorKey !== 0;
+    const isHaveSucessor: boolean = props.isHaveSucessor && props.sucessorId !== 0;
     const refItemPai: any = props.refItemPai;
     const id: any = props.id;
     const onSucessorChange: Function = props.onSucessorChange;

@@ -29,7 +29,7 @@ export const CodeEditor = () => {
     // Verifica se estou esditando alguma coisa.
     const isEditandoSomething = listItens.length > -1 && tabIndex >= 0;
 
-    let fluxoList: Component[] = listItens.filter((item: Component) => { return item.configs.type === ComponentType.flowItem && item.paikey === itemEditando.key });
+    let fluxoList: Component[] = listItens.filter((item: Component) => { return item.configs.type === ComponentType.flowItem && item.paiId === itemEditando.id });
 
 
 
@@ -43,7 +43,7 @@ export const CodeEditor = () => {
         const top = position.top;
         const left = position.left;
 
-        let component: Component = fluxoList[fluxoList.findIndex((item: any) => { if (item.key === position.itemId) return item; return undefined; })];
+        let component: Component = fluxoList[fluxoList.findIndex((item: any) => { if (item.id === position.itemId) return item; return undefined; })];
 
         component.top = top;
         component.left = left;
@@ -61,21 +61,21 @@ export const CodeEditor = () => {
             const left = Math.round((item.itemDetail.left || 0) + delta.x - 150);
             const top = Math.round((item.itemDetail.top || 0) + delta.y - 40);
 
-            let newKey: number;
+            let newId: number;
             let isExistentItem;
 
-            // Vai encontrar uma key que não estaja em uso.
+            // Vai encontrar uma id que não estaja em uso.
             do {
-                newKey = Utils.getRandomKey(10, 1000);
+                newId = Utils.getRandomId(10, 1000);
                 // eslint-disable-next-line
-                isExistentItem = fluxoList[fluxoList.findIndex((item: Component) => { if (item.key === newKey) return item; else return undefined; })];
+                isExistentItem = fluxoList[fluxoList.findIndex((item: Component) => { if (item.id === newId) return item; else return undefined; })];
             } while (isExistentItem);
 
             if (!isExistentItem) {
                 codeEditorContext
                     .addComponent(tabIndex, new Component({
-                        key: newKey,
-                        title: item.itemDetail.title + newKey,
+                        id: newId,
+                        title: item.itemDetail.title + newId,
                         top: top,
                         left: left,
                         width: 80,
@@ -83,13 +83,13 @@ export const CodeEditor = () => {
                         fluxoItemTypes: FluxoItemTypes.flowItem,
                         isHaveAntecessor: false,
                         isHaveSucessor: false,
-                        antecessorKey: 0,
-                        sucessorKey: 0,
-                        paikey: itemEditando.key,
+                        antecessorId: 0,
+                        sucessorId: 0,
+                        paiId: itemEditando.id,
                         configs: new ComponentConfigs({ name: "", description: "", type: ComponentType.flowItem, isExpanded: false, isEditando: false }),
                     }));
-                item.itemDetail.id = newKey;
-                item.itemDetail.title = item.title + newKey;
+                item.itemDetail.id = newId;
+                item.itemDetail.title = item.title + newId;
             }
 
         },
@@ -103,22 +103,22 @@ export const CodeEditor = () => {
     drop(ref);
 
     // Muda o sucessor do item que está sendo recebido por parâmetro.
-    const onSucessorChange = (itemId: number, sucessorKey: string) => {
-        let itemCurrent: Component = fluxoList[fluxoList.findIndex((item: Component) => { if (item.key === itemId) return item; else return undefined; })];
-        let itemSucessor: Component = fluxoList[fluxoList.findIndex((item: Component) => { if (item.key === Number(sucessorKey)) return item; else return undefined; })];
+    const onSucessorChange = (itemId: number, sucessorId: string) => {
+        let itemCurrent: Component = fluxoList[fluxoList.findIndex((item: Component) => { if (item.id === itemId) return item; else return undefined; })];
+        let itemSucessor: Component = fluxoList[fluxoList.findIndex((item: Component) => { if (item.id === Number(sucessorId)) return item; else return undefined; })];
 
         // Propriedades do sucessor
-        itemCurrent.sucessorKey = Number(sucessorKey);
+        itemCurrent.sucessorId = Number(sucessorId);
         itemCurrent.isHaveSucessor = true;
 
         // Propriedades do antecessor
-        itemSucessor.antecessorKey = itemId;
+        itemSucessor.sucessorId = itemId;
         itemSucessor.isHaveAntecessor = true;
 
         // OBS: O update no fluxo é feito pela referencia entre variáveis js.
 
-        changeComponentState(itemCurrent.key, itemCurrent);
-        changeComponentState(itemSucessor.key, itemSucessor);
+        changeComponentState(itemCurrent.id, itemCurrent);
+        changeComponentState(itemSucessor.id, itemSucessor);
     }
 
     return (
@@ -126,13 +126,13 @@ export const CodeEditor = () => {
             ? <div ref={ref} style={{ width: '100%' }}>
                 <svg style={{ width: '100%' }}>
                     {fluxoList.map((item: any) => {
-                        const { key, left, top, width, height, isHaveSucessor, sucessorKey } = item;
+                        const { id, left, top, width, height, isHaveSucessor, sucessorId } = item;
 
                         let top2 = 0;
                         let left2 = 0;
                         let width2 = 0;
                         try {
-                            let itemSucessor: Component = fluxoList[fluxoList.findIndex((item: Component) => { if (item.key === Number(sucessorKey)) return item; else return undefined; })];
+                            let itemSucessor: Component = fluxoList[fluxoList.findIndex((item: Component) => { if (item.id === Number(sucessorId)) return item; else return undefined; })];
 
                             top2 = itemSucessor.top;
                             left2 = itemSucessor.left;
@@ -141,8 +141,8 @@ export const CodeEditor = () => {
                         } catch (e) { }
 
                         return <Line
-                            id={key}
-                            key={key}
+                            id={id}
+                            key={id}
                             color="gray"
                             top2={top2 - 5}
                             top1={top + height - 15}
@@ -155,11 +155,11 @@ export const CodeEditor = () => {
                     })}
 
                     {fluxoList.map((item: any) => {
-                        const { left, top, title, width, height, key } = item;
+                        const { left, top, title, width, height, id } = item;
 
                         return <ItemToDrag
-                            key={key}
-                            id={key}
+                            id={id}
+                            key={id}
                             left={left}
                             top={top}
                             width={width}

@@ -13,7 +13,15 @@ export const CodeEditorContext = React.createContext({
     changeProjectState: (project: Project) => { },
     toggleStatusbar: (statusBar: StatusBar) => { },
     addComponent: (tabIndex: number, component: Component) => {},
+    /**
+     * @param id Identificador do componente que esta sendo alterado.
+     * @param tabIndex Aba que pode ser do tipo "Routers", "Actions" ou "Data".
+     * @param component Componente com suas devidas alterações, para que seja salvo no storage.
+     */
     changeComponentState: (id:  number, tabIndex: number, component: Component) => { },
+
+    // Funcões axuliares.
+    getCurrentTabSelected: () => {}
 });
 
 export default CodeEditorContext;
