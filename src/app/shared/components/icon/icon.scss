@@ -1,6 +1,13 @@
 @import './../../../style/variables.scss';
 
-.default { padding-right: $size-1-5; padding-left: $size-1-5; }
+.default {
+    padding-right: $size-1-5;
+    padding-left: $size-1-5;
+    justify-content: center;
+    align-self: center;
+    height: $size-3;
+    width: $size-3;
+}
 
 .btn-expand-folder {
     content: url('./../../../assets/icons/btn-expand-folder.svg');

@@ -12,6 +12,7 @@ import { Status, StatusBar } from './tabs/editor-tab/enuns/TypeOfStatus';
 import { Project, Tab, Component } from '../../shared/interfaces/Aplication';
 import { Storage } from '../../shared/services/LocalStorage';
 import { ComponentType } from '../../shared/enuns/ComponentType';
+import { TreeInterface } from '../../shared/components/tree/TreeInterface';
 
 export default class Editor extends React.Component {
 
@@ -30,7 +31,16 @@ export default class Editor extends React.Component {
         getCurrentTabSelected: () => this.getCurrentTabSelected(),
         getIndexCurrentTabSelected: () => this.getIndexCurrentTabSelected(),
         getComponents: (filters: { typeComponent: ComponentType[] }) => this.getComponents(filters),
+        getCurrentTabTree: () => this.getCurrentTabTree(),
     };
+
+    private getCurrentTabTree(): TreeInterface {
+        const currTab: Tab = this.getCurrentTabSelected();
+        let tree: TreeInterface = {itemChilds:[], itemId: 0, itemLabel: "TestandoArvore", itemType: ComponentType.localAction, nodeExpanded: false};
+
+
+        return tree;
+    }
 
     // Pega todos os itens para a arvore de uma Tab.
     private getComponents(filters: { typeComponent: ComponentType[] }): Component[] {

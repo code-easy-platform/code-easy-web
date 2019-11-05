@@ -2,17 +2,17 @@ import React, { useContext } from 'react';
 
 import { TabButton, TabGroup } from '../../../../../../shared/components/tab-button/TabButton';
 import { CodeEditorContext } from '../../../../../../shared/services/contexts/code-editor-context/CodeEditorContext';
-import { Tree } from '../tree/Tree';
-import { Tab, Component } from '../../../../../../shared/interfaces/Aplication';
+import { TreeInterface } from '../../../../../../shared/components/tree/TreeInterface';
+import { Tree } from '../../../../../../shared/components/tree/Tree';
+import { Tab } from '../../../../../../shared/interfaces/Aplication';
 import "./Resources.scss";
-import ComponentType from '../../../../../../shared/enuns/ComponentType';
 
 export const ResourcesTree = () => {
     const codeEditorContext = useContext(CodeEditorContext);
     const tabs: Tab[] = codeEditorContext.project.tabs;
 
     const currentTab: Tab = codeEditorContext.getCurrentTabSelected();
-    const currentTabActionsAndVariables: Component[] = codeEditorContext.getComponents({ typeComponent: [ComponentType.localAction] });
+    const currentTabTree: TreeInterface = codeEditorContext.getCurrentTabTree();
 
     return (
         <div style={{ flex: 1, flexDirection: "column" }}>
@@ -30,13 +30,9 @@ export const ResourcesTree = () => {
                     );
                 })}
             </TabGroup>
-            {
-                <div className="tree-body" style={{ display: currentTab.configs.type === codeEditorContext.editingTab ? "block" : "none" }}>
-                    {currentTabActionsAndVariables.map(
-                        (item: any) => <Tree allComponents={currentTab.itens} component={item} />
-                    )}
-                </div>
-            }
+            <div className="tree-body" style={{ display: currentTab.configs.type === codeEditorContext.editingTab ? "block" : "none" }}>
+                <Tree treeItem={currentTabTree} />
+            </div>
         </div>
     );
 }

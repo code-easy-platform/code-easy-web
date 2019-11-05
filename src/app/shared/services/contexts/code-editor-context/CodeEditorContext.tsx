@@ -24,6 +24,7 @@ export const CodeEditorContext = React.createContext({
     getCurrentTabSelected: (): any => {},
     getIndexCurrentTabSelected: (): any => {},
     getComponents: (filters: { typeComponent: ComponentType[] }): any => {},
+    getCurrentTabTree: (): any => {},
 });
 
 export default CodeEditorContext;
