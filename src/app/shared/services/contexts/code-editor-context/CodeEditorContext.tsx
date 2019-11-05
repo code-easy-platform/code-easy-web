@@ -21,7 +21,9 @@ export const CodeEditorContext = React.createContext({
     changeComponentState: (id:  number, tabIndex: number, component: Component) => { },
 
     // Funcões axuliares.
-    getCurrentTabSelected: () => {}
+    getCurrentTabSelected: (): any => {},
+    getIndexCurrentTabSelected: (): any => {},
+    getComponents: (filters: { typeComponent: ComponentType[] }): any => {},
 });
 
 export default CodeEditorContext;

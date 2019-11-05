@@ -1,0 +1,11 @@
+@import './../../../style/variables.scss';
+
+.default { padding-right: $size-1-5; padding-left: $size-1-5; }
+
+.btn-expand-folder {
+    content: url('./../../../assets/icons/btn-expand-folder.svg');
+}
+
+.btn-collapse-folder {
+    content: url('./../../../assets/icons/btn-collapse-folder.svg');
+}

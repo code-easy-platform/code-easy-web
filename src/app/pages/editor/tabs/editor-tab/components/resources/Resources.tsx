@@ -1,15 +1,18 @@
 import React, { useContext } from 'react';
 
 import { TabButton, TabGroup } from '../../../../../../shared/components/tab-button/TabButton';
-import { Tab, Component } from '../../../../../../shared/interfaces/Aplication';
 import { CodeEditorContext } from '../../../../../../shared/services/contexts/code-editor-context/CodeEditorContext';
-import { ComponentType } from '../../../../../../shared/enuns/ComponentType';
 import { Tree } from '../tree/Tree';
+import { Tab, Component } from '../../../../../../shared/interfaces/Aplication';
 import "./Resources.scss";
+import ComponentType from '../../../../../../shared/enuns/ComponentType';
 
 export const ResourcesTree = () => {
     const codeEditorContext = useContext(CodeEditorContext);
     const tabs: Tab[] = codeEditorContext.project.tabs;
+
+    const currentTab: Tab = codeEditorContext.getCurrentTabSelected();
+    const currentTabActionsAndVariables: Component[] = codeEditorContext.getComponents({ typeComponent: [ComponentType.localAction] });
 
     return (
         <div style={{ flex: 1, flexDirection: "column" }}>
@@ -27,18 +30,13 @@ export const ResourcesTree = () => {
                     );
                 })}
             </TabGroup>
-            {tabs.map((tab: Tab) => {
-
-                const listaComponent: Component[] = tab.itens.filter((comp: Component) => { return(comp.configs.type === ComponentType.localAction) }) || [];
-
-                return (
-                    <div className="tree-body" style={{ display: tab.configs.type === codeEditorContext.editingTab ? "block" : "none" }}>
-                        {listaComponent.map(
-                            (item: any) => <Tree allComponents={listaComponent} component={item} />
-                        )}
-                    </div>
-                );
-            })}
+            {
+                <div className="tree-body" style={{ display: currentTab.configs.type === codeEditorContext.editingTab ? "block" : "none" }}>
+                    {currentTabActionsAndVariables.map(
+                        (item: any) => <Tree allComponents={currentTab.itens} component={item} />
+                    )}
+                </div>
+            }
         </div>
     );
 }

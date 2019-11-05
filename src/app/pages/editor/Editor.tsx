@@ -26,8 +26,25 @@ export default class Editor extends React.Component {
         changeProjectState: (project: Project) => this.changeProjectState(project),
         toggleResourcesTab: (tab: Tab) => this.setState({ editingTab: tab.configs.type }),
         changeComponentState: (id: number, tabIndex: number, component: Component) => this.changeComponentState(id, tabIndex, component),
+        
         getCurrentTabSelected: () => this.getCurrentTabSelected(),
+        getIndexCurrentTabSelected: () => this.getIndexCurrentTabSelected(),
+        getComponents: (filters: { typeComponent: ComponentType[] }) => this.getComponents(filters),
     };
+
+    // Pega todos os itens para a arvore de uma Tab.
+    private getComponents(filters: { typeComponent: ComponentType[] }): Component[] {
+        return this.getCurrentTabSelected().itens.filter(
+            (c: Component) => filters.typeComponent.find(
+                (componentType: ComponentType) => componentType === c.configs.type
+            )
+        );
+    }
+
+    private getIndexCurrentTabSelected(): number {
+        const tabIndex: number = this.state.project.tabs.findIndex((tab: Tab) => { return tab.configs.isEditando === true ? tab : undefined });
+        return tabIndex > 0 ? tabIndex : 0;
+    }
 
     private getCurrentTabSelected(): Tab {
         const tabIndex: number = this.state.project.tabs.findIndex((tab: Tab) => { return tab.configs.isEditando === true ? tab : undefined });
