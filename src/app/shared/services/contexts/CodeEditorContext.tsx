@@ -12,7 +12,7 @@ export const CodeEditorContext = React.createContext({
     toggleResourcesTab: (tab: Tab) => { },
     changeProjectState: (project: Project) => { },
     toggleStatusbar: (statusBar: StatusBar) => { },
-    addComponent: (tabIndex: number, component: Component) => {},
+    addComponent: (itemPaiId: number, itemName: string, itemType: ComponentType, width?: number, height?: number, top?: number, left?: number): any => {},
     /**
      * @param id Identificador do componente que esta sendo alterado.
      * @param tabIndex Aba que pode ser do tipo "Routers", "Actions" ou "Data".

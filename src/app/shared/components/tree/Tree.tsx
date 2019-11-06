@@ -5,6 +5,7 @@ import { TreeInterface } from './TreeInterface';
 import { Folder } from './components/Folder';
 import { Action } from './components/Action';
 import "./Tree.scss";
+import { Variable } from './components/Variable';
 
 
 export const Tree = (props: any) => {
@@ -20,15 +21,19 @@ export const Tree = (props: any) => {
             <div className="item-list-pai">
                 {
                     (treeItem.itemType === ComponentType.pasta) &&
-                    <Folder onClick={() => onClick(treeItem.itemId)} expanded={treeItem.nodeExpanded} folderName={treeItem.itemLabel} />
+                    <Folder onClick={() => onClick(treeItem.itemId)} onDoubleClick={() => onDubleClick(treeItem.itemId)} expanded={treeItem.nodeExpanded} folderName={treeItem.itemLabel} />
                 }
                 {
                     (treeItem.itemType === ComponentType.localAction) &&
-                    <Action onClick={() => onClick(treeItem.itemId)} onDoubleClick={() => onDubleClick(treeItem.itemId)} expanded={treeItem.nodeExpanded} actionName={treeItem.itemLabel} />
+                    <Action
+                        onClick={() => onClick(treeItem.itemId)}
+                        onDoubleClick={() => onDubleClick(treeItem.itemId)}
+                        treeItem={treeItem}
+                    />
                 }
                 {
                     (treeItem.itemType === ComponentType.localVariable) &&
-                    <Folder onClick={() => onClick(treeItem.itemId)} expanded={treeItem.nodeExpanded} folderName={treeItem.itemLabel} />
+                    <Variable onClick={() => onClick(treeItem.itemId)} onDoubleClick={() => onDubleClick(treeItem.itemId)} expanded={treeItem.nodeExpanded} variableName={treeItem.itemLabel} />
                 }
             </div>
             {

@@ -9,10 +9,12 @@ import PropertiesTab from './tabs/properties-tab/PropertiesTab';
 import BottonStatusBar from './shared/components/botton-status-bar/BottonStatusBar';
 import CodeEditorContext from '../../shared/services/contexts/CodeEditorContext';
 import { Status, StatusBar } from './tabs/editor-tab/enuns/TypeOfStatus';
-import { Project, Tab, Component } from '../../shared/interfaces/Aplication';
+import { Project, Tab, Component, ComponentConfigs } from '../../shared/interfaces/Aplication';
 import { Storage } from '../../shared/services/LocalStorage';
 import { ComponentType } from '../../shared/enuns/ComponentType';
 import { TreeInterface } from '../../shared/components/tree/TreeInterface';
+import { Utils } from '../../shared/services/Utils';
+import FluxoComponentTypes from './tabs/editor-tab/components/code-editor/enuns/FluxoList';
 
 export default class Editor extends React.Component {
 
@@ -22,7 +24,9 @@ export default class Editor extends React.Component {
         currentTab: <EditorTab />,
         editingTab: ComponentType.tabRouters,
 
-        addComponent: (tabIndex: number, component: Component) => this.addComponent(tabIndex, component),
+        addComponent: (itemPaiId: number, itemName: string, itemType: ComponentType, width?: number, height?: number, top?: number, left?: number): Component =>
+            this.addComponent(itemPaiId, itemName, itemType, width, height, top, left),
+
         toggleStatusbar: (statusBar: StatusBar) => this.setState({ statusBar }),
         changeProjectState: (project: Project) => this.changeProjectState(project),
         toggleResourcesTab: (tab: Tab) => this.setState({ editingTab: tab.configs.type }),
@@ -107,12 +111,46 @@ export default class Editor extends React.Component {
         this.changeProjectState(projectUpdate);
     }
 
-    private addComponent(tabIndex: number, component: Component) {
+    private addComponent(itemPaiId: number, itemName: string, itemType: ComponentType, width?: number, height?: number, top?: number, left?: number): Component {
         let projectUpdate = this.state.project;
 
-        projectUpdate.tabs[tabIndex].itens.push(component); // Adiciona o componente
+        let newId: number;
+        let isExistentItem;
+
+        // Vai encontrar uma id que não estaja em uso.
+        do {
+            newId = Utils.getRandomId(10, 1000);
+            // eslint-disable-next-line
+            isExistentItem = this.getCurrentTabSelected().itens.findIndex((item: Component) => { if (item.id === newId) return item; else return undefined; });
+        } while (isExistentItem >= 0);
+
+        const newComponent: Component = new Component({
+            id: newId,
+            title: itemName,
+            paiId: itemPaiId,
+            configs: new ComponentConfigs({
+                name: itemName,
+                description: "",
+                type: itemType,
+                isEditando: false,
+                isExpanded: false,
+            }),
+            width: width || 0,
+            height: height || 0,
+            top: top || 0,
+            left: left || 0,
+            fluxoItemTypes: FluxoComponentTypes.flowItem,
+            isHaveAntecessor: false,
+            isHaveSucessor: false,
+            antecessorId: 0,
+            sucessorId: 0,
+        });
+
+        projectUpdate.tabs[this.getIndexCurrentTabSelected()].itens.push(newComponent); // Adiciona o componente
 
         this.setState({ project: projectUpdate });
+
+        return newComponent;
     }
 
     private changeCurrentTab = (tab: String) => {

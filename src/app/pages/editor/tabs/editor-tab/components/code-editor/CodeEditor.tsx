@@ -61,37 +61,10 @@ export const CodeEditor = () => {
             const left = Math.round((item.itemDetail.left || 0) + delta.x - 150);
             const top = Math.round((item.itemDetail.top || 0) + delta.y - 40);
 
-            let newId: number;
-            let isExistentItem;
+            const newComponent: Component = codeEditorContext.addComponent(itemEditando.id, item.itemDetail.title, ComponentType.flowItem, 80, 80, top, left);
 
-            // Vai encontrar uma id que não estaja em uso.
-            do {
-                newId = Utils.getRandomId(10, 1000);
-                // eslint-disable-next-line
-                isExistentItem = fluxoList[fluxoList.findIndex((item: Component) => { if (item.id === newId) return item; else return undefined; })];
-            } while (isExistentItem);
-
-            if (!isExistentItem) {
-                codeEditorContext
-                    .addComponent(tabIndex, new Component({
-                        id: newId,
-                        title: item.itemDetail.title + newId,
-                        top: top,
-                        left: left,
-                        width: 80,
-                        height: 80,
-                        fluxoItemTypes: FluxoItemTypes.flowItem,
-                        isHaveAntecessor: false,
-                        isHaveSucessor: false,
-                        antecessorId: 0,
-                        sucessorId: 0,
-                        paiId: itemEditando.id,
-                        configs: new ComponentConfigs({ name: "", description: "", type: ComponentType.flowItem, isExpanded: false, isEditando: false }),
-                    }));
-                item.itemDetail.id = newId;
-                item.itemDetail.title = item.title + newId;
-            }
-
+            item.itemDetail.id = newComponent.id;
+            item.itemDetail.title = item.title + newComponent.id;
         },
 
     });
