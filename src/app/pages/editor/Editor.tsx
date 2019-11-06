@@ -7,7 +7,7 @@ import EditorTab from './tabs/editor-tab/EditorTab';
 import PluginsTab from './tabs/plugins-tab/PluginsTab';
 import PropertiesTab from './tabs/properties-tab/PropertiesTab';
 import BottonStatusBar from './shared/components/botton-status-bar/BottonStatusBar';
-import CodeEditorContext from '../../shared/services/contexts/code-editor-context/CodeEditorContext';
+import CodeEditorContext from '../../shared/services/contexts/CodeEditorContext';
 import { Status, StatusBar } from './tabs/editor-tab/enuns/TypeOfStatus';
 import { Project, Tab, Component } from '../../shared/interfaces/Aplication';
 import { Storage } from '../../shared/services/LocalStorage';
@@ -27,23 +27,54 @@ export default class Editor extends React.Component {
         changeProjectState: (project: Project) => this.changeProjectState(project),
         toggleResourcesTab: (tab: Tab) => this.setState({ editingTab: tab.configs.type }),
         changeComponentState: (id: number, tabIndex: number, component: Component) => this.changeComponentState(id, tabIndex, component),
-        
+
         getCurrentTabSelected: () => this.getCurrentTabSelected(),
         getIndexCurrentTabSelected: () => this.getIndexCurrentTabSelected(),
-        getComponents: (filters: { typeComponent: ComponentType[] }) => this.getComponents(filters),
+        getCurrentTabComponents: (filters: { typeComponent: ComponentType[] }) => this.getCurrentTabComponents(filters),
         getCurrentTabTree: () => this.getCurrentTabTree(),
+        getComponentById: (componentId: number): any => this.getComponentById(componentId),
     };
 
-    private getCurrentTabTree(): TreeInterface {
-        const currTab: Tab = this.getCurrentTabSelected();
-        let tree: TreeInterface = {itemChilds:[], itemId: 0, itemLabel: "TestandoArvore", itemType: ComponentType.localAction, nodeExpanded: false};
+    private getComponentById(componentId: number): Component {
+        return this.getCurrentTabSelected().itens.filter((c: Component) => c.id === componentId)[0];
+    }
 
+    private carregaFilhos(tree: TreeInterface): TreeInterface[] {
+        const currTab: Tab = this.getCurrentTabSelected();
+
+        currTab.itens.filter((comp) => {
+            return comp.paiId === tree.itemId && comp.configs.type !== ComponentType.flowItem
+        }).forEach(comp => {
+            tree.itemChilds.push({ itemChilds: [], itemId: comp.id, itemLabel: comp.configs.name, itemType: comp.configs.type, nodeExpanded: comp.configs.isExpanded || false });
+        });
+
+
+        tree.itemChilds.forEach((itemTree: TreeInterface) => {
+            itemTree.itemChilds = this.carregaFilhos(itemTree);
+        });
+
+        return tree.itemChilds;
+    }
+
+    private getCurrentTabTree(): TreeInterface[] {
+        const currTab: Tab = this.getCurrentTabSelected();
+        let tree: TreeInterface[] = [];
+
+        currTab.itens.filter((comp) => {
+            return comp.paiId === 0
+        }).forEach(comp => {
+            tree.push({ itemChilds: [], itemId: comp.id, itemLabel: comp.configs.name, itemType: comp.configs.type, nodeExpanded: comp.configs.isExpanded || false });
+        });
+
+        tree.forEach((itemTree: TreeInterface) => {
+            itemTree.itemChilds = this.carregaFilhos(itemTree);
+        });
 
         return tree;
     }
 
     // Pega todos os itens para a arvore de uma Tab.
-    private getComponents(filters: { typeComponent: ComponentType[] }): Component[] {
+    private getCurrentTabComponents(filters: { typeComponent: ComponentType[] }): Component[] {
         return this.getCurrentTabSelected().itens.filter(
             (c: Component) => filters.typeComponent.find(
                 (componentType: ComponentType) => componentType === c.configs.type

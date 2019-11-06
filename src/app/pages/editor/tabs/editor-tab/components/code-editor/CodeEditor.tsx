@@ -3,7 +3,7 @@ import { DropTargetMonitor, XYCoord, useDrop } from 'react-dnd';
 import { Line } from '../../../../../../shared/components/lines/Line';
 import { Utils } from '../../../../../../shared/services/Utils';
 import { ItemToDrag } from './components/item-drag/ItemDrag';
-import CodeEditorContext from '../../../../../../shared/services/contexts/code-editor-context/CodeEditorContext';
+import CodeEditorContext from '../../../../../../shared/services/contexts/CodeEditorContext';
 import FluxoItemTypes from './enuns/FluxoList';
 import { Component, Tab, ComponentConfigs, EMPTY_COMPONENT } from '../../../../../../shared/interfaces/Aplication';
 import ComponentType from '../../../../../../shared/enuns/ComponentType';

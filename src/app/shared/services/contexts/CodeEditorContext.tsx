@@ -1,8 +1,8 @@
 import React from 'react';
-import Status, { StatusBar } from '../../../../pages/editor/tabs/editor-tab/enuns/TypeOfStatus';
-import {  Project, Tab, Component } from '../../../interfaces/Aplication';
-import ComponentType from '../../../enuns/ComponentType';
-import { DEFAULT_PROJECT } from '../../LocalStorage';
+import Status, { StatusBar } from '../../../pages/editor/tabs/editor-tab/enuns/TypeOfStatus';
+import {  Project, Tab, Component } from '../../interfaces/Aplication';
+import ComponentType from '../../enuns/ComponentType';
+import { DEFAULT_PROJECT } from '../LocalStorage';
 
 export const CodeEditorContext = React.createContext({
     statusBar: Status.OUTRO_STATUS,
@@ -23,8 +23,9 @@ export const CodeEditorContext = React.createContext({
     // Funcões axuliares.
     getCurrentTabSelected: (): any => {},
     getIndexCurrentTabSelected: (): any => {},
-    getComponents: (filters: { typeComponent: ComponentType[] }): any => {},
+    getCurrentTabComponents: (filters: { typeComponent: ComponentType[] }): any => {},
     getCurrentTabTree: (): any => {},
+    getComponentById: (componentId: number): any => {},
 });
 
 export default CodeEditorContext;
