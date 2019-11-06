@@ -13,7 +13,6 @@ export const Action = (props: any) => {
     const changeContextMenu = (e: any) => {
         e.preventDefault();
 
-
         window.onclick = () => setIsShowContextMenu(false);
         setIsShowContextMenu(true);
     }
