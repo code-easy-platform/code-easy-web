@@ -30,6 +30,7 @@ export default class Editor extends React.Component {
         toggleStatusbar: (statusBar: StatusBar) => this.setState({ statusBar }),
         changeProjectState: (project: Project) => this.changeProjectState(project),
         toggleResourcesTab: (tab: Tab) => this.setState({ editingTab: tab.configs.type }),
+        removeComponentById: (componentId: number) => this.removeComponentById(componentId),
         changeComponentState: (id: number, tabIndex: number, component: Component) => this.changeComponentState(id, tabIndex, component),
 
         getCurrentTabSelected: () => this.getCurrentTabSelected(),
@@ -38,6 +39,17 @@ export default class Editor extends React.Component {
         getCurrentTabTree: () => this.getCurrentTabTree(),
         getComponentById: (componentId: number): any => this.getComponentById(componentId),
     };
+
+    private removeComponentById(componentId: number) {
+        const tabIndex: number = this.getIndexCurrentTabSelected();
+        let projectUpdate = this.state.project;
+
+        const componentIndex = projectUpdate.tabs[tabIndex].itens.findIndex((item: Component) => item.id === componentId); // Descrobre o index do component na lista.
+
+        projectUpdate.tabs[tabIndex].itens.splice(componentIndex, 1); // Remove o componente.
+
+        this.changeProjectState(projectUpdate);
+    }
 
     private getComponentById(componentId: number): Component {
         return this.getCurrentTabSelected().itens.filter((c: Component) => c.id === componentId)[0];
@@ -126,7 +138,7 @@ export default class Editor extends React.Component {
 
         const newComponent: Component = new Component({
             id: newId,
-            title: itemName,
+            title: "",
             paiId: itemPaiId,
             configs: new ComponentConfigs({
                 name: itemName,
@@ -148,7 +160,7 @@ export default class Editor extends React.Component {
 
         projectUpdate.tabs[this.getIndexCurrentTabSelected()].itens.push(newComponent); // Adiciona o componente
 
-        this.setState({ project: projectUpdate });
+        this.changeProjectState(projectUpdate);
 
         return newComponent;
     }

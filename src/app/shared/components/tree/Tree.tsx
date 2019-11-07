@@ -2,10 +2,10 @@ import React from 'react';
 
 import ComponentType from '../../enuns/ComponentType';
 import { TreeInterface } from './TreeInterface';
+import { Variable } from './components/Variable';
 import { Folder } from './components/Folder';
 import { Action } from './components/Action';
 import "./Tree.scss";
-import { Variable } from './components/Variable';
 
 
 export const Tree = (props: any) => {
@@ -13,37 +13,50 @@ export const Tree = (props: any) => {
     let treeItem: TreeInterface = props.treeItem;
 
     const onClick = props.onItemClick;
-
     const onDubleClick = props.onItemDoubleClick;
+    const paddingPai = props.paddingPai || 0;
 
     return (
         <div className="item-body">
             <div className="item-list-pai">
-                {
-                    (treeItem.itemType === ComponentType.pasta) &&
-                    <Folder onClick={() => onClick(treeItem.itemId)} onDoubleClick={() => onDubleClick(treeItem.itemId)} expanded={treeItem.nodeExpanded} folderName={treeItem.itemLabel} />
-                }
-                {
-                    (treeItem.itemType === ComponentType.localAction) &&
-                    <Action
-                        onClick={() => onClick(treeItem.itemId)}
-                        onDoubleClick={() => onDubleClick(treeItem.itemId)}
-                        treeItem={treeItem}
-                    />
-                }
-                {
-                    (treeItem.itemType === ComponentType.localVariable) &&
-                    <Variable onClick={() => onClick(treeItem.itemId)} onDoubleClick={() => onDubleClick(treeItem.itemId)} expanded={treeItem.nodeExpanded} variableName={treeItem.itemLabel} />
-                }
+                <div>
+                    {
+                        (treeItem.itemType === ComponentType.pasta) &&
+                        <Folder
+                            paddingLeft={paddingPai}
+                            onClick={() => onClick(treeItem.itemId)}
+                            onDoubleClick={() => onDubleClick(treeItem.itemId)}
+                            treeItem={treeItem}
+                        />
+                    }
+                </div>
+                <div>
+                    {
+                        (treeItem.itemType === ComponentType.localAction) &&
+                        <Action
+                            paddingLeft={paddingPai}
+                            onClick={() => onClick(treeItem.itemId)}
+                            onDoubleClick={() => onDubleClick(treeItem.itemId)}
+                            treeItem={treeItem}
+                        />
+                    }
+                </div>
+                <div>
+                    {
+                        (treeItem.itemType === ComponentType.localVariable) &&
+                        <Variable
+                            paddingLeft={paddingPai}
+                            onClick={() => onClick(treeItem.itemId)}
+                            onDoubleClick={() => onDubleClick(treeItem.itemId)}
+                            treeItem={treeItem}
+                        />
+                    }
+                </div>
             </div>
             {
                 treeItem.nodeExpanded === true
                     ? treeItem.itemChilds.map((tree: TreeInterface) => {
-                        return (
-                            <div className="item-list-filho">
-                                <Tree treeItem={tree} />
-                            </div>
-                        );
+                        return <Tree treeItem={tree} onItemClick={onClick} onItemDoubleClick={onDubleClick} paddingPai={paddingPai + 15} />;
                     })
                     : undefined
             }

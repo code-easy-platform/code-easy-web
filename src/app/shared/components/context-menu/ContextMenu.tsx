@@ -1,11 +1,8 @@
 import React, { useContext } from 'react';
 
 import { CodeEditorContext } from '../../services/contexts/CodeEditorContext';
-import './ContextMenu.scss';
-import { Utils } from '../../services/Utils';
-import { ComponentConfigs, Component } from '../../interfaces/Aplication';
 import ComponentType from '../../enuns/ComponentType';
-import FluxoComponentTypes from '../../../pages/editor/tabs/editor-tab/components/code-editor/enuns/FluxoList';
+import './ContextMenu.scss';
 
 
 export const ContextMenu = (props: any) => {
@@ -19,13 +16,53 @@ export const ContextMenu = (props: any) => {
 
     }
 
-    const AddComponent = () => {
-        codeEditorContext.addComponent(itemId, "NovaVariavelLocal", ComponentType.localVariable);
+    const addComponent = (type: ComponentType, compName: string) => {
+        codeEditorContext.addComponent(itemId, compName, type);
     }
+
+    const removeComponent = () => {
+        codeEditorContext.removeComponentById(itemId);
+    }
+
+    const actions = [
+        {
+            name: "Nova variável local",
+            onClick: () => addComponent(ComponentType.localVariable, "Var1"),
+            filter: [ComponentType.localAction, ComponentType.globalAction, ComponentType.rota]
+        },
+        {
+            name: "Nova action local",
+            onClick: () => addComponent(ComponentType.localAction, "Action1"),
+            filter: [ComponentType.localAction, ComponentType.globalAction, ComponentType.rota, ComponentType.pasta]
+        },
+        {
+            name: "Nova pasta",
+            onClick: () => addComponent(ComponentType.pasta, "Pasta1"),
+            filter: [ComponentType.localAction, ComponentType.globalAction, ComponentType.rota, ComponentType.pasta]
+        },
+        {
+            name: "Excluir",
+            onClick: removeComponent,
+            filter: [
+                ComponentType.rota,
+                ComponentType.pasta,
+                ComponentType.flowItem,
+                ComponentType.localAction,
+                ComponentType.globalAction,
+                ComponentType.localVariable,
+                ComponentType.inputVariable,
+                ComponentType.outputVariable,
+            ]
+        },
+    ];
 
     return (
         <div style={style} className="menu-context">
-            <div className="item-list-pai" onClick={AddComponent}>Nova variavel local</div>
+            {actions.map((action) => {
+                if (action.filter.find((typeitem: ComponentType) => typeitem === itemType))
+                    return <div className="item-list-pai" onClick={action.onClick}>{action.name}</div>;
+                return;
+            })}
         </div>
     );
 }

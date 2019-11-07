@@ -25,7 +25,7 @@ export const DEFAULT_PROJECT = new Project({
                     configs: new ComponentConfigs({
                         name: "Teste01",
                         description: "Descrição",
-                        isEditando: true,
+                        isEditando: false,
                         isExpanded: false,
                         type: ComponentType.localAction
                     }),
@@ -46,13 +46,13 @@ export const DEFAULT_PROJECT = new Project({
                     configs: new ComponentConfigs({
                         name: "Drag me",
                         description: "Descrição",
-                        isEditando: true,
+                        isEditando: false,
                         isExpanded: false,
                         type: ComponentType.flowItem
                     }),
                 }),
                 new Component({
-                    id: 51,
+                    id: 52,
                     paiId: 50,
                     top: 0,
                     left: 0,
@@ -67,7 +67,7 @@ export const DEFAULT_PROJECT = new Project({
                     configs: new ComponentConfigs({
                         name: "Variável",
                         description: "Descrição",
-                        isEditando: true,
+                        isEditando: false,
                         isExpanded: false,
                         type: ComponentType.localVariable
                     }),

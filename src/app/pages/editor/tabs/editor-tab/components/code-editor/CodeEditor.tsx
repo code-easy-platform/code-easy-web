@@ -1,12 +1,12 @@
 import React, { useContext, useRef } from 'react';
 import { DropTargetMonitor, XYCoord, useDrop } from 'react-dnd';
+
+import { Component, Tab, EMPTY_COMPONENT } from '../../../../../../shared/interfaces/Aplication';
+import { CodeEditorContext } from '../../../../../../shared/services/contexts/CodeEditorContext';
+import { ComponentType } from '../../../../../../shared/enuns/ComponentType';
 import { Line } from '../../../../../../shared/components/lines/Line';
-import { Utils } from '../../../../../../shared/services/Utils';
 import { ItemToDrag } from './components/item-drag/ItemDrag';
-import CodeEditorContext from '../../../../../../shared/services/contexts/CodeEditorContext';
 import FluxoItemTypes from './enuns/FluxoList';
-import { Component, Tab, ComponentConfigs, EMPTY_COMPONENT } from '../../../../../../shared/interfaces/Aplication';
-import ComponentType from '../../../../../../shared/enuns/ComponentType';
 
 export const CodeEditor = () => {
     const codeEditorContext = useContext(CodeEditorContext);
