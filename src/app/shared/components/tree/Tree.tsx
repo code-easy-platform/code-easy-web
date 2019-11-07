@@ -19,39 +19,39 @@ export const Tree = (props: any) => {
     return (
         <div className="item-body">
             <div className="item-list-pai">
-                <div style={{ flex: 1}}>
-                    {
-                        (treeItem.itemType === ComponentType.pasta) &&
+                {
+                    (treeItem.itemType === ComponentType.pasta) &&
+                    <div style={{ flex: 1 }}>
                         <Folder
                             paddingLeft={paddingPai}
                             onClick={() => onClick(treeItem.itemId)}
                             onDoubleClick={() => onDubleClick(treeItem.itemId)}
                             treeItem={treeItem}
                         />
-                    }
-                </div>
-                <div style={{ flex: 1}}>
-                    {
-                        (treeItem.itemType === ComponentType.localAction) &&
+                    </div>
+                }
+                {
+                    (treeItem.itemType === ComponentType.localAction) &&
+                    <div style={{ flex: 1 }}>
                         <Action
                             paddingLeft={paddingPai}
                             onClick={() => onClick(treeItem.itemId)}
                             onDoubleClick={() => onDubleClick(treeItem.itemId)}
                             treeItem={treeItem}
                         />
-                    }
-                </div>
-                <div style={{ flex: 1}}>
-                    {
-                        (treeItem.itemType === ComponentType.localVariable) &&
+                    </div>
+                }
+                {
+                    (treeItem.itemType === ComponentType.localVariable) &&
+                    <div style={{ flex: 1 }}>
                         <Variable
                             paddingLeft={paddingPai}
                             onClick={() => onClick(treeItem.itemId)}
                             onDoubleClick={() => onDubleClick(treeItem.itemId)}
                             treeItem={treeItem}
                         />
-                    }
-                </div>
+                    </div>
+                }
             </div>
             {
                 treeItem.nodeExpanded === true
