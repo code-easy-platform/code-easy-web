@@ -36,7 +36,7 @@ export const ResourcesTree = () => {
     }
 
     return (
-        <div style={{ flex: 1, flexDirection: "column" }}>
+        <div style={{ width: "100%", flexDirection: "column" }}>
             <TabGroup>
                 {tabs.map((tab: Tab) => {
                     return (

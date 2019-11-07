@@ -12,7 +12,7 @@ export default class EditorTab extends Component {
         return (
             <EditorTabTemplate
                 columnLeft={<ComponentsBar />}
-                columnCenter={<CodeEditor />} // Neste componente á bugs!
+                columnCenter={<CodeEditor />}
                 columnRight={
                     <ColRightTemplate
                         rowTop={<ResourcesTree />}

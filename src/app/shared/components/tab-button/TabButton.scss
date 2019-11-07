@@ -5,7 +5,7 @@
   background: $color-tool-bar;
   width: $size-fill;
   justify-content: space-between;
-  height: $size-8;
+  min-height: $size-8;
   font-size: $font-size-4;
   .btn-tab {
     justify-content: center;
