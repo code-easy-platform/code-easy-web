@@ -19,7 +19,7 @@ export const Tree = (props: any) => {
     return (
         <div className="item-body">
             <div className="item-list-pai">
-                <div>
+                <div style={{ flex: 1}}>
                     {
                         (treeItem.itemType === ComponentType.pasta) &&
                         <Folder
@@ -30,7 +30,7 @@ export const Tree = (props: any) => {
                         />
                     }
                 </div>
-                <div>
+                <div style={{ flex: 1}}>
                     {
                         (treeItem.itemType === ComponentType.localAction) &&
                         <Action
@@ -41,7 +41,7 @@ export const Tree = (props: any) => {
                         />
                     }
                 </div>
-                <div>
+                <div style={{ flex: 1}}>
                     {
                         (treeItem.itemType === ComponentType.localVariable) &&
                         <Variable
