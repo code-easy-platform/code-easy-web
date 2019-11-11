@@ -23,10 +23,12 @@ export const Tree = (props: any) => {
                     (treeItem.itemType === ComponentType.pasta) &&
                     <div style={{ flex: 1 }}>
                         <Folder
+                            allowDrag={true}
+                            treeItem={treeItem}
                             paddingLeft={paddingPai}
+                            outputPosition={() => { }}
                             onClick={() => onClick(treeItem.itemId)}
                             onDoubleClick={() => onDubleClick(treeItem.itemId)}
-                            treeItem={treeItem}
                         />
                     </div>
                 }
@@ -34,6 +36,7 @@ export const Tree = (props: any) => {
                     (treeItem.itemType === ComponentType.localAction) &&
                     <div style={{ flex: 1 }}>
                         <Action
+                            allowDrag={true}
                             paddingLeft={paddingPai}
                             onClick={() => onClick(treeItem.itemId)}
                             onDoubleClick={() => onDubleClick(treeItem.itemId)}
@@ -45,6 +48,7 @@ export const Tree = (props: any) => {
                     (treeItem.itemType === ComponentType.localVariable) &&
                     <div style={{ flex: 1 }}>
                         <Variable
+                            allowDrag={true}
                             paddingLeft={paddingPai}
                             onClick={() => onClick(treeItem.itemId)}
                             onDoubleClick={() => onDubleClick(treeItem.itemId)}

@@ -19,7 +19,7 @@ export const CodeEditorContext = React.createContext({
      * @param tabIndex Aba que pode ser do tipo "Routers", "Actions" ou "Data".
      * @param component Componente com suas devidas alterações, para que seja salvo no storage.
      */
-    changeComponentState: (id:  number, tabIndex: number, component: Component) => { },
+    changeComponentState: (id:  number, component: Component) => { },
 
     // Funcões axuliares.
     getCurrentTabSelected: (): any => {},

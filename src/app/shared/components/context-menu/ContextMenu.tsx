@@ -60,7 +60,7 @@ export const ContextMenu = (props: any) => {
         <div style={style} className="menu-context">
             {actions.map((action) => {
                 if (action.filter.find((typeitem: ComponentType) => typeitem === itemType))
-                    return <div className="item-list-pai" onClick={action.onClick}>{action.name}</div>;
+                    return <div key={action.name} className="item-list-pai" onClick={action.onClick}>{action.name}</div>;
                 return;
             })}
         </div>

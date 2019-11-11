@@ -11,32 +11,36 @@ export const ToolBar = (props: any) => {
     function changeCurrentTab(tab: CurrentTab) {
         setCurrentTab(tab);
         props.changeCurrentTab(tab);
-    } 
+    }
 
     return (
         <div className="tool-bar">
             <div className="sistem-tabs">
                 <TabButton
+                    id="tabEditor"
                     onClick={() => changeCurrentTab(CurrentTab.editor)}
                     className=" btn-open-editor-tab"
                     isSelected={currentTab === CurrentTab.editor}
                     title="Editor"
                 />
                 <TabButton
+                    id="tabPropriedades"
                     onClick={() => changeCurrentTab(CurrentTab.properties)}
                     className=" btn-open-properties-tab"
                     isSelected={currentTab === CurrentTab.properties}
                     title="Propriedades do projeto"
                 />
                 <TabButton
+                    id="tabDependencias"
                     onClick={() => changeCurrentTab(CurrentTab.plugins)}
                     className=" btn-open-plugins-tab"
                     isSelected={currentTab === CurrentTab.plugins}
                     title="Adicione e remova dependências do projeto"
                 />
                 <TabButton
+                    id="tabResetApplication"
                     onClick={() => Storage.resetProject()}
-                    style={{ justifyContent: "center", alignSelf: "center" }}                  
+                    style={{ justifyContent: "center", alignSelf: "center" }}
                     content="Reset application"
                 />
             </div>

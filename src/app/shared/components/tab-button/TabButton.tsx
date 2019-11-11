@@ -3,6 +3,7 @@ import React, { CSSProperties } from 'react';
 import './TabButton.scss';
 
 interface props {
+    id: string;
     title?: string;
     onClick?: any;
     content?: any;
@@ -16,6 +17,7 @@ export const TabGroup = (props: any) => <div className="tab-group">{props.childr
 export const TabButton = (props: props) => {
     return (
         <div
+            key={props.id}
             onClick={props.onClick}
             className={"btn-tab " + (props.isSelected ? "btn-tab-selected " : "") + props.className}
             title={props.title}

@@ -6,7 +6,6 @@ import { CodeEditorContext } from '../../../../../../shared/services/contexts/Co
 import { ComponentType } from '../../../../../../shared/enuns/ComponentType';
 import { Line } from '../../../../../../shared/components/lines/Line';
 import { ItemToDrag } from './components/item-drag/ItemDrag';
-import FluxoItemTypes from './enuns/FluxoList';
 
 export const CodeEditor = () => {
     const codeEditorContext = useContext(CodeEditorContext);
@@ -35,7 +34,7 @@ export const CodeEditor = () => {
 
     const changeComponentState = (id: number, component: Component) => {
         if (isEditandoSomething)
-            codeEditorContext.changeComponentState(id, tabIndex, component);
+            codeEditorContext.changeComponentState(id, component);
     }
 
     // Muda a posição do item de fluxo. Função passada por parâmetro para o itemDrag.
@@ -53,7 +52,15 @@ export const CodeEditor = () => {
 
     // Permite ser possível soltar im item no fluxo.
     const [, drop] = useDrop({
-        accept: FluxoItemTypes.flowItem,
+        accept: [
+            ComponentType.outputVariable,
+            ComponentType.inputVariable,
+            ComponentType.localVariable,
+            ComponentType.globalAction,
+            ComponentType.localAction,
+            ComponentType.flowItem,
+            ComponentType.rota,
+        ],
         drop(item: any, monitor: DropTargetMonitor) {
             if (item.itemDetail.id) return;
 
@@ -66,7 +73,6 @@ export const CodeEditor = () => {
             item.itemDetail.id = newComponent.id;
             item.itemDetail.title = item.title + newComponent.id;
         },
-
     });
 
     // Permite referenciar um item deste componente a partir de outro.

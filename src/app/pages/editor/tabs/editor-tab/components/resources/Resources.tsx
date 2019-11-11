@@ -18,7 +18,7 @@ export const ResourcesTree = () => {
     const onItemClick = (itemId: number) => {
         let component: Component = codeEditorContext.getComponentById(itemId);
         component.configs.isExpanded = !component.configs.isExpanded;
-        codeEditorContext.changeComponentState(component.id, codeEditorContext.getIndexCurrentTabSelected(), component);
+        codeEditorContext.changeComponentState(component.id, component);
     }
 
     const onItemDoubleClick = (itemId: number) => {
@@ -26,13 +26,13 @@ export const ResourcesTree = () => {
         codeEditorContext.getCurrentTabSelected().itens.forEach((c: Component) => {
             if (c.configs.isEditando === true) {
                 c.configs.isEditando = false;
-                codeEditorContext.changeComponentState(c.id, codeEditorContext.getIndexCurrentTabSelected(), c);
+                codeEditorContext.changeComponentState(c.id, c);
             }
         });
 
         let component: Component = codeEditorContext.getComponentById(itemId);
         component.configs.isEditando = true;
-        codeEditorContext.changeComponentState(component.id, codeEditorContext.getIndexCurrentTabSelected(), component);
+        codeEditorContext.changeComponentState(component.id, component);
     }
 
     return (
@@ -41,6 +41,7 @@ export const ResourcesTree = () => {
                 {tabs.map((tab: Tab) => {
                     return (
                         <TabButton
+                            id={tab.configs.name}
                             onClick={() => codeEditorContext.toggleResourcesTab(tab)}
                             isSelected={tab.configs.type === codeEditorContext.editingTab}
                             className="btn-open-routers-tab"

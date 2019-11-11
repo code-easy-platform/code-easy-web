@@ -31,7 +31,7 @@ export default class Editor extends React.Component {
         changeProjectState: (project: Project) => this.changeProjectState(project),
         toggleResourcesTab: (tab: Tab) => this.setState({ editingTab: tab.configs.type }),
         removeComponentById: (componentId: number) => this.removeComponentById(componentId),
-        changeComponentState: (id: number, tabIndex: number, component: Component) => this.changeComponentState(id, tabIndex, component),
+        changeComponentState: (id: number, component: Component) => this.changeComponentState(id, component),
 
         getCurrentTabSelected: () => this.getCurrentTabSelected(),
         getIndexCurrentTabSelected: () => this.getIndexCurrentTabSelected(),
@@ -113,7 +113,8 @@ export default class Editor extends React.Component {
         Storage.setProject(project);
     }
 
-    private changeComponentState(id: number, tabIndex: number, component: Component) {
+    private changeComponentState(id: number, component: Component) {
+        const tabIndex: number = this.getIndexCurrentTabSelected();
         let projectUpdate = this.state.project;
 
         const componentIndex = projectUpdate.tabs[tabIndex].itens.findIndex((item: Component) => item.id === id); // Descrobre o index do component na lista.
@@ -147,8 +148,8 @@ export default class Editor extends React.Component {
                 isEditando: false,
                 isExpanded: false,
             }),
-            width: width || 0,
-            height: height || 0,
+            width: width || 80,
+            height: height || 80,
             top: top || 0,
             left: left || 0,
             fluxoItemTypes: FluxoComponentTypes.flowItem,

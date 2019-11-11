@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useDrag } from 'react-dnd';
 import { FluxoComponentTypes } from '../../enuns/FluxoList';
+import ComponentType from '../../../../../../../../shared/enuns/ComponentType';
 
 const style: React.CSSProperties = {
     position: 'absolute',
@@ -12,21 +13,23 @@ const style: React.CSSProperties = {
 
 export interface ItemDragProps {
     id?: any
-    left?: number
     top?: number
+    left?: number
+    title: string
     width?: number
     height?: number
     border?: number
-    title: string
-    hideSourceOnDrag?: boolean
-    allowDrag?: boolean
     refItemPai?: any
+    allowDrag?: boolean
+    componentType?: ComponentType
+    hideSourceOnDrag?: boolean
     outputPosition: Function
 }
 
-export const ItemToDrag: React.FC<ItemDragProps> = ({ id, left, top, width, height, border, title, allowDrag, refItemPai, outputPosition, children }) => {
+export const ItemToDrag: React.FC<ItemDragProps> = ({ id, left, top, width, height, border, title, allowDrag, refItemPai, componentType, outputPosition, children }) => {
+
     const [{ isDragging }, dragRef] = useDrag({
-        item: { type: FluxoComponentTypes.flowItem, itemDetail: { id, left, top, title } },
+        item: { type: componentType || FluxoComponentTypes.flowItem, itemDetail: { id, left, top, title } },
         collect: monitor => ({ isDragging: monitor.isDragging() }),
     });
 
