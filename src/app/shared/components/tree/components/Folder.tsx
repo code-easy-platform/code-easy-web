@@ -8,7 +8,7 @@ import ComponentType from '../../../enuns/ComponentType';
 export const Folder: React.FC<any> = (props: any) => {
     const treeItem: TreeInterface = props.treeItem;
     const onClick = props.onClick;
-    const onDoubleClick = props.onDoubleClick;
+    // const onDoubleClick = props.onDoubleClick;
     const paddingLeft = props.paddingLeft;
 
     const id = null;

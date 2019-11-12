@@ -28,7 +28,7 @@ export const Variable: React.FC<any> = (props: any) => {
     }
 
     return (
-        <div ref={dragRef} onContextMenu={changeContextMenu} style={{ flex: 1, paddingLeft: paddingLeft !== undefined ? paddingLeft : 0 }} >
+        <div ref={dragRef} onDoubleClick={onDoubleClick} onContextMenu={changeContextMenu} style={{ flex: 1, paddingLeft: paddingLeft !== undefined ? paddingLeft : 0 }} >
             <ContextMenu isVisible={isShowContextMenu} itemType={treeItem.itemType} itemId={treeItem.itemId} />
             {treeItem.nodeExpanded === false && <Icon iconName="" />}
             {treeItem.nodeExpanded === true && <Icon iconName="" />}

@@ -6,6 +6,7 @@ import { CodeEditorContext } from '../../../../../../shared/services/contexts/Co
 import { ComponentType } from '../../../../../../shared/enuns/ComponentType';
 import { Line } from '../../../../../../shared/components/lines/Line';
 import { ItemToDrag } from './components/item-drag/ItemDrag';
+import FluxoComponentTypes from './enuns/FluxoList';
 
 export const CodeEditor = () => {
     const codeEditorContext = useContext(CodeEditorContext);
@@ -60,6 +61,7 @@ export const CodeEditor = () => {
             ComponentType.localAction,
             ComponentType.flowItem,
             ComponentType.rota,
+            FluxoComponentTypes.flowItem,
         ],
         drop(item: any, monitor: DropTargetMonitor) {
             if (item.itemDetail.id) return;

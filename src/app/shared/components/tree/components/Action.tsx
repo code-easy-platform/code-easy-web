@@ -2,9 +2,6 @@ import React, { useState } from 'react';
 import { Icon } from '../../icon/icon';
 import { ContextMenu } from '../../context-menu/ContextMenu';
 import { TreeInterface } from '../TreeInterface';
-import { useDrag } from 'react-dnd';
-import { ComponentType } from '../../../enuns/ComponentType';
-import { ItemToDrag } from '../../../../pages/editor/tabs/editor-tab/components/code-editor/components/item-drag/ItemDrag';
 
 export const Action: React.FC<any> = (props: any) => {
     const treeItem: TreeInterface = props.treeItem;

@@ -72,6 +72,7 @@ export const ItemToDrag: React.FC<ItemDragProps> = ({ id, left, top, width, heig
     else
         return (
             <>
+                <text x={left} y={(top || 0) - 5}>{title}</text>
                 <rect
                     id={id}
                     y={top}
