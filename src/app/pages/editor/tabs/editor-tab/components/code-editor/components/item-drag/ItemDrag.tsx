@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useDrag } from 'react-dnd';
 import { FluxoComponentTypes } from '../../enuns/FluxoList';
 import ComponentType from '../../../../../../../../shared/enuns/ComponentType';
+import { Line } from '../../../../../../../../shared/components/lines/Line';
 
 const style: React.CSSProperties = {
     position: 'absolute',
@@ -35,6 +36,7 @@ export const ItemToDrag: React.FC<ItemDragProps> = ({ id, left, top, width, heig
 
     const [isSelecionado, setIsSelecionado] = useState(false);
     const [isMenuOpen, setIsMenuOpen] = useState(false);
+    const [internalPosition, setInternalPosition] = useState({ top: top, left: left });
 
     window.onmouseup = () => mouseUp;
     window.onmousedown = () => {
@@ -48,15 +50,19 @@ export const ItemToDrag: React.FC<ItemDragProps> = ({ id, left, top, width, heig
             refItemPai.current.onmousemove = mouseMove;
     }
 
-    const mouseUp = () => {
+    const mouseUp = (event: any) => {
+        outputPosition({
+            itemId: id,
+            top: event.clientY - (40 + ((height || 0) / 2)),
+            left: event.clientX - (150 + ((width || 0) / 2))
+        });
         setIsSelecionado(false);
         if (refItemPai.current)
             refItemPai.current.onmousemove = null;
     }
 
     const mouseMove = (event: any) => {
-        outputPosition({
-            itemId: id,
+        setInternalPosition({
             top: event.clientY - (40 + ((height || 0) / 2)),
             left: event.clientX - (150 + ((width || 0) / 2))
         });
@@ -71,12 +77,12 @@ export const ItemToDrag: React.FC<ItemDragProps> = ({ id, left, top, width, heig
         return <div id={id} ref={dragRef} style={{ ...style, left, top, backgroundColor: isDragging ? "blue" : "gray" }}>{children}</div>;
     else
         return (
-            <>
-                <text x={left} y={(top || 0) - 5}>{title}</text>
+            <g>
+                <text x={internalPosition.left} y={(internalPosition.top || 0) - 5}>{title}</text>
                 <rect
                     id={id}
-                    y={top}
-                    x={left}
+                    y={internalPosition.top}
+                    x={internalPosition.left}
                     ry={border}
                     rx={border}
                     width={width}
@@ -86,7 +92,19 @@ export const ItemToDrag: React.FC<ItemDragProps> = ({ id, left, top, width, heig
                     onMouseDown={mouseDown}
                     onMouseUp={mouseUp}
                 ></rect>
-            </>
+                <Line
+                    id={id}
+                    key={id}
+                    color="gray"
+                    top2={(internalPosition.top || 0) - 5}
+                    top1={(internalPosition.top || 0) + (height || 0) - 15}
+                    left1={(internalPosition.left || 0) + ((width || 0) / 2)}
+                    left2={(internalPosition.left || 0) + ((width || 0) / 2)}
+                    isHaveSucessor={false}
+                    onSucessorChange={()=>{}}
+                    refItemPai={refItemPai}
+                />
+            </g>
         );
 
 }

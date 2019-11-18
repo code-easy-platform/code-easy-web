@@ -106,7 +106,7 @@ export const CodeEditor = () => {
         isEditandoSomething
             ? <div ref={ref} style={{ width: '100%' }}>
                 <svg style={{ width: '100%' }}>
-                    {fluxoList.map((item: any) => {
+                    {/* {fluxoList.map((item: any) => {
                         const { id, left, top, width, height, isHaveSucessor, sucessorId } = item;
 
                         let top2 = 0;
@@ -133,7 +133,7 @@ export const CodeEditor = () => {
                             onSucessorChange={onSucessorChange}
                             refItemPai={ref}
                         />;
-                    })}
+                    })} */}
 
                     {fluxoList.map((item: any) => {
                         const { left, top, title, width, height, id } = item;
