@@ -8,18 +8,23 @@ const style: React.CSSProperties = {
     cursor: 'move',
 }
 
-export const Line = (props: any) => {
-    const isHaveSucessor: boolean = props.isHaveSucessor && props.sucessorId !== 0;
-    const refItemPai: any = props.refItemPai;
-    const id: any = props.id;
-    const onSucessorChange: Function = props.onSucessorChange;
+interface LineProps {
+    id: string
+    top1: number
+    top2?: number
+    left1: number
+    left2?: number
+    color?: string
+    refItemPai: any
+    lineWidth?: number
+    onSucessorChange?: Function
+}
 
-    const top1: number = props.top1;
-    const top2: number = isHaveSucessor ? props.top2 : props.top1 + 30;
-    const left1: number = props.left1;
-    const left2: number = isHaveSucessor ? props.left2 : props.left1;
-    const width: number = props.width;
-    const color: string = props.color;
+export const Line: React.FC<LineProps> = (props: LineProps) => {
+    const { id="0", top1=0, top2=0  }= props;
+    const { lineWidth=1, color="blue", left1, left2=0 }= props;
+    const refItemPai: any = props.refItemPai;
+    const onSucessorChange: Function = props.onSucessorChange || (() => {});
 
     const polygonTop: number = (top2 - 10);
     const polygonBotton: number = top2;
@@ -59,7 +64,7 @@ export const Line = (props: any) => {
                 x2={isSelecionado ? position.polygonLeft : left2}
                 y1={top1}
                 y2={isSelecionado ? position.polygonTop : top2 - 10}
-                strokeWidth={width || 1}
+                strokeWidth={lineWidth}
                 stroke={color || "blue"}
                 stroke-line-cap="round"
             />
@@ -75,23 +80,19 @@ export const Line = (props: any) => {
                             polygonBottonCenter + ", " +
                             polygonBotton
                         }
-                        style={{
-                            fill: color || "blue",
-                            stroke: color || "blue",
-                            strokeWidth: width || 1
-                        }}
+                        style={{ fill: color || "blue", stroke: color || "blue", strokeWidth: lineWidth }}
                         onMouseDown={() => onMouseEvent(true)}
                     />
                     : <rect
-                        y={position.polygonTop - 10}
-                        x={position.polygonLeft - 5}
-                        width="20"
-                        height="20"
                         ry="50"
                         rx="50"
-                        style={{ ...style, fill: "gray", stroke: isSelecionado ? "blue" : "gray", strokeWidth: 1 }}
-                        onMouseDown={() => onMouseEvent(true)}
+                        width="20"
+                        height="20"
+                        y={position.polygonTop - 10}
+                        x={position.polygonLeft - 5}
                         onMouseUp={() => onMouseEvent(false)}
+                        onMouseDown={() => onMouseEvent(true)}
+                        style={{ ...style, fill: "gray", stroke: isSelecionado ? "blue" : "gray", strokeWidth: 1 }}
                     />
             }
         </g>

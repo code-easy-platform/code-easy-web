@@ -4,7 +4,6 @@ import { DropTargetMonitor, XYCoord, useDrop } from 'react-dnd';
 import { Component, Tab, EMPTY_COMPONENT } from '../../../../../../shared/interfaces/Aplication';
 import { CodeEditorContext } from '../../../../../../shared/services/contexts/CodeEditorContext';
 import { ComponentType } from '../../../../../../shared/enuns/ComponentType';
-import { Line } from '../../../../../../shared/components/lines/Line';
 import { ItemToDrag } from './components/item-drag/ItemDrag';
 import FluxoComponentTypes from './enuns/FluxoList';
 
@@ -106,8 +105,9 @@ export const CodeEditor = () => {
         isEditandoSomething
             ? <div ref={ref} style={{ width: '100%' }}>
                 <svg style={{ width: '100%' }}>
-                    {/* {fluxoList.map((item: any) => {
-                        const { id, left, top, width, height, isHaveSucessor, sucessorId } = item;
+
+                    {fluxoList.map((item: Component) => {
+                        const { id, title, left, top, width, height, sucessorId  } = item;
 
                         let top2 = 0;
                         let left2 = 0;
@@ -121,35 +121,21 @@ export const CodeEditor = () => {
 
                         } catch (e) { }
 
-                        return <Line
-                            id={id}
-                            key={id}
-                            color="gray"
-                            top2={top2 - 5}
-                            top1={top + height - 15}
-                            left1={left + (width / 2)}
-                            left2={left2 + (width2 / 2)}
-                            isHaveSucessor={isHaveSucessor}
-                            onSucessorChange={onSucessorChange}
-                            refItemPai={ref}
-                        />;
-                    })} */}
-
-                    {fluxoList.map((item: any) => {
-                        const { left, top, title, width, height, id } = item;
-
                         return <ItemToDrag
                             id={id}
-                            key={id}
-                            left={left}
                             top={top}
+                            left={left}
+                            title={title}
                             width={width}
                             height={height}
-                            title={title}
                             refItemPai={ref}
+                            lineTargetLeft={left2 + (width2 / 2)}
+                            lineTargetTop={top2 - 5}
+                            onSucessorChange={onSucessorChange}
                             outputPosition={positionChange}
                         >{title}</ItemToDrag>;
                     })}
+
                 </svg>
             </div>
             : <div></div>

@@ -11,18 +11,9 @@ export const ContextMenu = (props: any) => {
     const itemType: ComponentType = props.itemType;
     const itemId: number = props.itemId;
 
-    const style: any = {
-        display: isVisible ? "block" : "none",
-
-    }
-
-    const addComponent = (type: ComponentType, compName: string) => {
-        codeEditorContext.addComponent(itemId, compName, type);
-    }
-
-    const removeComponent = () => {
-        codeEditorContext.removeComponentById(itemId);
-    }
+    const style: any = { display: isVisible ? "block" : "none" }
+    const addComponent = (type: ComponentType, compName: string) => codeEditorContext.addComponent(itemId, compName, type);
+    const removeComponent = () => codeEditorContext.removeComponentById(itemId);
 
     const actions = [
         {

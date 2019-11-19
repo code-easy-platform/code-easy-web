@@ -22,12 +22,23 @@ export interface ItemDragProps {
     border?: number
     refItemPai?: any
     allowDrag?: boolean
+    lineTargetTop?: number
+    lineTargetLeft?: number
     componentType?: ComponentType
     hideSourceOnDrag?: boolean
+
+    onSucessorChange?: Function
     outputPosition: Function
 }
 
-export const ItemToDrag: React.FC<ItemDragProps> = ({ id, left, top, width, height, border, title, allowDrag, refItemPai, componentType, outputPosition, children }) => {
+export const ItemToDrag: React.FC<ItemDragProps> = ({
+    id, top, left, title,
+    allowDrag, refItemPai,
+    width, height, border,
+    onSucessorChange, children,
+    componentType, outputPosition,
+    lineTargetLeft, lineTargetTop
+}) => {
 
     const [{ isDragging }, dragRef] = useDrag({
         item: { type: componentType || FluxoComponentTypes.flowItem, itemDetail: { id, left, top, title } },
@@ -77,7 +88,7 @@ export const ItemToDrag: React.FC<ItemDragProps> = ({ id, left, top, width, heig
         return <div id={id} ref={dragRef} style={{ ...style, left, top, backgroundColor: isDragging ? "blue" : "gray" }}>{children}</div>;
     else
         return (
-            <g>
+            <g key={id} id={id}>
                 <text x={internalPosition.left} y={(internalPosition.top || 0) - 5}>{title}</text>
                 <rect
                     id={id}
@@ -96,12 +107,11 @@ export const ItemToDrag: React.FC<ItemDragProps> = ({ id, left, top, width, heig
                     id={id}
                     key={id}
                     color="gray"
-                    top2={(internalPosition.top || 0) - 5}
                     top1={(internalPosition.top || 0) + (height || 0) - 15}
                     left1={(internalPosition.left || 0) + ((width || 0) / 2)}
-                    left2={(internalPosition.left || 0) + ((width || 0) / 2)}
-                    isHaveSucessor={false}
-                    onSucessorChange={()=>{}}
+                    top2={(lineTargetTop || 0)}
+                    left2={(lineTargetLeft || 0)}
+                    onSucessorChange={onSucessorChange}
                     refItemPai={refItemPai}
                 />
             </g>
