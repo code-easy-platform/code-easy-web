@@ -50,6 +50,7 @@ export const Line: React.FC<LineProps> = (props: LineProps) => {
     }
 
     const mouseMove = (event: any) => {
+        console.log(event);
         setPosition({
             polygonTop: event.clientY - (45),
             polygonLeft: event.clientX - (155)

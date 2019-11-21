@@ -20,6 +20,7 @@ export interface ItemDragProps {
     width?: number
     height?: number
     border?: number
+    children?: any
     refItemPai?: any
     allowDrag?: boolean
     lineTargetTop?: number
@@ -31,23 +32,21 @@ export interface ItemDragProps {
     outputPosition: Function
 }
 
-export const ItemToDrag: React.FC<ItemDragProps> = ({
-    id, top, left, title,
-    allowDrag, refItemPai,
-    width, height, border,
-    onSucessorChange, children,
-    componentType, outputPosition,
-    lineTargetLeft, lineTargetTop
-}) => {
+export const ItemToDrag: React.FC<ItemDragProps> = (props: ItemDragProps) => {
+    const { lineTargetLeft, lineTargetTop } = props;
+    const { componentType, outputPosition } = props;
+    const { allowDrag, refItemPai, children } = props;
+    const { width, height, border } = props;
+    const { id, top, left, title } = props;
+    const { onSucessorChange } = props;
 
+    const [internalPosition, setInternalPosition] = useState({ top: top, left: left });
+    const [isSelecionado, setIsSelecionado] = useState(false);
+    const [isMenuOpen, setIsMenuOpen] = useState(false);
     const [{ isDragging }, dragRef] = useDrag({
         item: { type: componentType || FluxoComponentTypes.flowItem, itemDetail: { id, left, top, title } },
         collect: monitor => ({ isDragging: monitor.isDragging() }),
     });
-
-    const [isSelecionado, setIsSelecionado] = useState(false);
-    const [isMenuOpen, setIsMenuOpen] = useState(false);
-    const [internalPosition, setInternalPosition] = useState({ top: top, left: left });
 
     window.onmouseup = () => mouseUp;
     window.onmousedown = () => {
