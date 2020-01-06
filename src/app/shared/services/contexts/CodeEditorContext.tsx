@@ -1,5 +1,5 @@
 import React from 'react';
-import Status, { StatusBar } from '../../../pages/editor/tabs/editor-tab/enuns/TypeOfStatus';
+import Status, { StatusBar } from '../../../pages/editor/editor-tab/enuns/TypeOfStatus';
 import {  Project, Tab, Component } from '../../interfaces/Aplication';
 import ComponentType from '../../enuns/ComponentType';
 import { DEFAULT_PROJECT } from '../LocalStorage';

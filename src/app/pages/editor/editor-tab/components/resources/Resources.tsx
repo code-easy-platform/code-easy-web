@@ -1,10 +1,10 @@
 import React, { useContext } from 'react';
 
-import { TabButton, TabGroup } from '../../../../../../shared/components/tab-button/TabButton';
-import { CodeEditorContext } from '../../../../../../shared/services/contexts/CodeEditorContext';
-import { Tab, Component } from '../../../../../../shared/interfaces/Aplication';
-import { TreeInterface } from '../../../../../../shared/components/tree/TreeInterface';
-import { Tree } from '../../../../../../shared/components/tree/Tree';
+import { TabButton, TabGroup } from '../../../../../shared/components/tab-button/TabButton';
+import { CodeEditorContext } from '../../../../../shared/services/contexts/CodeEditorContext';
+import { Tab, Component } from '../../../../../shared/interfaces/Aplication';
+import { TreeInterface } from '../../../../../shared/components/tree/TreeInterface';
+import { Tree } from '../../../../../shared/components/tree/Tree';
 import "./Resources.scss";
 
 export const ResourcesTree = () => {

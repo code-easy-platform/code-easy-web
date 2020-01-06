@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import { useDrag } from 'react-dnd';
 import { FluxoComponentTypes } from '../../enuns/FluxoList';
-import ComponentType from '../../../../../../../../shared/enuns/ComponentType';
-import { Line } from '../../../../../../../../shared/components/lines/Line';
+import ComponentType from '../../../../../../../shared/enuns/ComponentType';
+import { Line } from '../../../../../../../shared/components/lines/Line';
 
 const style: React.CSSProperties = {
     position: 'absolute',

@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { StatusBar } from '../../../pages/editor/tabs/editor-tab/enuns/TypeOfStatus';
+import { StatusBar } from '../../../pages/editor/editor-tab/enuns/TypeOfStatus';
 import CodeEditorContext from '../../services/contexts/CodeEditorContext';
 import './BottonStatusBar.scss';
 

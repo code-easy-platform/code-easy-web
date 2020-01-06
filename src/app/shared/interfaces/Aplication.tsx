@@ -1,6 +1,6 @@
 import ProjectType from "../enuns/ProjectType";
 import ComponentType from "../enuns/ComponentType";
-import { FluxoComponentTypes } from "../../pages/editor/tabs/editor-tab/components/code-editor/enuns/FluxoList";
+import { FluxoComponentTypes } from "../../pages/editor/editor-tab/components/code-editor/enuns/FluxoList";
 
 
 export class Project {

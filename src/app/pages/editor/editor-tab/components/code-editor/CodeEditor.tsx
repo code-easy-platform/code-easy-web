@@ -1,9 +1,9 @@
 import React, { useContext, useRef } from 'react';
 import { DropTargetMonitor, XYCoord, useDrop } from 'react-dnd';
 
-import { Component, Tab, EMPTY_COMPONENT } from '../../../../../../shared/interfaces/Aplication';
-import { CodeEditorContext } from '../../../../../../shared/services/contexts/CodeEditorContext';
-import { ComponentType } from '../../../../../../shared/enuns/ComponentType';
+import { Component, Tab, EMPTY_COMPONENT } from '../../../../../shared/interfaces/Aplication';
+import { CodeEditorContext } from '../../../../../shared/services/contexts/CodeEditorContext';
+import { ComponentType } from '../../../../../shared/enuns/ComponentType';
 import { ItemToDrag } from './components/item-drag/ItemDrag';
 import FluxoComponentTypes from './enuns/FluxoList';
 
