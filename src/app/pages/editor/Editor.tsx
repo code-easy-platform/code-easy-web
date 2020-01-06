@@ -1,20 +1,20 @@
 import React from 'react';
 import ToolBar from './shared/components/tool-bar/ToolBar';
 
-import './Editor.scss';
-import { CurrentTab } from '../../shared/enuns/CurrentTab';
-import EditorTab from './tabs/editor-tab/EditorTab';
-import PluginsTab from './tabs/plugins-tab/PluginsTab';
-import PropertiesTab from './tabs/properties-tab/PropertiesTab';
+import { Project, Tab, Component, ComponentConfigs } from '../../shared/interfaces/Aplication';
+import FluxoComponentTypes from './tabs/editor-tab/components/code-editor/enuns/FluxoList';
 import BottonStatusBar from './shared/components/botton-status-bar/BottonStatusBar';
 import CodeEditorContext from '../../shared/services/contexts/CodeEditorContext';
-import { Status, StatusBar } from './tabs/editor-tab/enuns/TypeOfStatus';
-import { Project, Tab, Component, ComponentConfigs } from '../../shared/interfaces/Aplication';
-import { Storage } from '../../shared/services/LocalStorage';
-import { ComponentType } from '../../shared/enuns/ComponentType';
 import { TreeInterface } from '../../shared/components/tree/TreeInterface';
+import { Status, StatusBar } from './tabs/editor-tab/enuns/TypeOfStatus';
+import { ComponentType } from '../../shared/enuns/ComponentType';
+import PropertiesTab from './tabs/properties-tab/PropertiesTab';
+import { Storage } from '../../shared/services/LocalStorage';
+import { CurrentTab } from '../../shared/enuns/CurrentTab';
+import PluginsTab from './tabs/plugins-tab/PluginsTab';
 import { Utils } from '../../shared/services/Utils';
-import FluxoComponentTypes from './tabs/editor-tab/components/code-editor/enuns/FluxoList';
+import EditorTab from './tabs/editor-tab/EditorTab';
+import './Editor.scss';
 
 export default class Editor extends React.Component {
 

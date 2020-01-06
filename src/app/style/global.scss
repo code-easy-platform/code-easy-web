@@ -1,143 +1,154 @@
-@import './variables.scss';
+@import "./variables.scss";
 
 * {
-    margin: 0;
-    padding: 0;
-  }
-  
-  *:focus {
-    outline: auto;
-  }
-  
-  html,
-  body,
-  #root,
-  .App {
-    height: 100vh;
-    width: 100vw;
-    font-family: Segoe UI, 'Courier New', monospace;
-    overflow: hidden;
-    color: white;
-    display: flex;
-    background-color: $color-background;
-  }
+  margin: 0;
+  padding: 0;
+  -webkit-user-select: none;
+  -moz-user-select: -moz-none;
+  -ms-user-select: none;
+  user-select: none;
+}
 
-  div {
-    display: flex;
-  }
-  
-  a {
-    cursor: pointer;
-    color: $font-color-link;
-  }
-  
-  a:hover {
-    color: $font-color-link-hover;
-  }
-  
-  a:active {
-    color: $color-white;
-    opacity: 0.5;
-  }
+*:focus {
+  outline: auto;
+}
 
-  .full-width-height {
-    width: $size-fill;
-    height: $size-fill;
-  }
-  
-  .item-com-erro {
-    border: thin dotted red;
-  }
-  
-  .mini-btn-add, .mini-btn-remove {
-    color: $font-color-icon-add-remove-propertie-editor;
-    outline: unset;
-    background: transparent;
-    border: none;
-    cursor: pointer;
-  }
-  
-  .mini-btn-add:active {
-    color: $font-color-input-propertie-editor-focus;
-  }
-  
-  .mini-btn-remove {
-    display: none;
-  }
-  
-  .mini-btn-remove:active {
-    color: $font-color-input-propertie-editor-focus;
-  }
-  
-  .align-right {
-    float: right;
-  }
-  
-  .btn {
-    background: $color-background-propertie-editor;
-    border: $size-none solid $color-white;
-    color: $font-color-input-propertie-editor;
-    padding: $size-0-5;
-    padding-left: $size-1-5;
-    padding-right: $size-1-5;
-    font-family: $font-family-normal;
-    cursor: pointer;
-  }
-  
-  .btn:focus {
-    outline: auto;
-  }
+html,
+body,
+#root,
+.App {
+  height: 100vh;
+  width: 100vw;
+  font-family: Segoe UI, "Courier New", monospace;
+  overflow: hidden;
+  color: white;
+  display: flex;
+  background-color: $color-background;
+}
 
-  .flex1 {
-    flex: 1;
-  }
-  
-  .primary {
-    background-color: #0F77BF9c;
-    color: #fffffff0;
-  }
-  
-  .danger {
-    background-color: #c700009c;
-    color: #fffffff0;
-  }
-  
-  .input-padrao {
-    background: $color-background-propertie-editor;
-    border: $size-none solid $color-white;
-    color: $font-color-input-propertie-editor;
-    padding: $size-0-5;
-    padding-left: $size-1-5;
-    padding-right: $size-1-5;
-    font-family: Arial, 'Courier New', monospace;
-    max-height: $size-4;
-  }
-  
-  .input-large {
-    padding: $size-2;
-    padding-left: $size-1-5;
-    padding-right: $size-1-5;
-  }
-  
-  .input-fill {
-    width: -webkit-fill-available;
-  }
-  
-  // Ajusta o scroll de todos os elementos.
-  ::-webkit-scrollbar {
-    width: 10px;
-    height: 100%;
-  }
-  ::-webkit-scrollbar-button {
-    display: none;
-  }
-  ::-webkit-scrollbar-track {
-    background-color: transparent;
-  }
-  ::-webkit-scrollbar-thumb {
-    background-color: $color-top-bar;
-  }
-  ::-webkit-scrollbar-thumb:hover {
-    background-color: $color-top-bar-light;
-  }
+div {
+  display: flex;
+}
 
+a {
+  cursor: pointer;
+  color: $font-color-link;
+}
+
+a:hover {
+  color: $font-color-link-hover;
+}
+
+a:active {
+  color: $color-white;
+  opacity: 0.5;
+}
+
+.full-width-height {
+  width: $size-fill;
+  height: $size-fill;
+}
+
+.item-com-erro {
+  border: thin dotted red;
+}
+
+.mini-btn-add,
+.mini-btn-remove {
+  color: $font-color-icon-add-remove-propertie-editor;
+  outline: unset;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+}
+
+.mini-btn-add:active {
+  color: $font-color-input-propertie-editor-focus;
+}
+
+.mini-btn-remove {
+  display: none;
+}
+
+.mini-btn-remove:active {
+  color: $font-color-input-propertie-editor-focus;
+}
+
+.align-right {
+  float: right;
+}
+
+.btn {
+  background: $color-background-propertie-editor;
+  border: $size-none solid $color-white;
+  color: $font-color-input-propertie-editor;
+  padding: $size-0-5;
+  padding-left: $size-1-5;
+  padding-right: $size-1-5;
+  font-family: $font-family-normal;
+  cursor: pointer;
+}
+
+.btn:focus {
+  outline: auto;
+}
+
+.flex1 {
+  flex: 1;
+}
+
+.primary {
+  background-color: #0f77bf9c;
+  color: #fffffff0;
+}
+
+.danger {
+  background-color: #c700009c;
+  color: #fffffff0;
+}
+
+.input-padrao {
+  background: $color-background-propertie-editor;
+  border: $size-none solid $color-white;
+  color: $font-color-input-propertie-editor;
+  padding: $size-0-5;
+  padding-left: $size-1-5;
+  padding-right: $size-1-5;
+  font-family: Arial, "Courier New", monospace;
+  max-height: $size-4;
+}
+
+.input-large {
+  padding: $size-2;
+  padding-left: $size-1-5;
+  padding-right: $size-1-5;
+}
+
+.input-fill {
+  width: -webkit-fill-available;
+}
+
+// Ajusta o scroll de todos os elementos.
+::-webkit-scrollbar {
+  width: $size-x-scroll-bar;
+  height: $size-fill;
+}
+::-webkit-scrollbar-button {
+  display: none;
+}
+::-webkit-scrollbar-track {
+  background-color: $color-transparent;
+}
+::-webkit-scrollbar-thumb {
+  background-color: $color-scroll-bar;
+}
+::-webkit-scrollbar-thumb:hover {
+  background-color: $color-scroll-bar-hover;
+}
+::-webkit-scrollbar-thumb:active {
+  background-color: $color-scroll-bar-active;
+}
+
+.mini-scroll-bar::-webkit-scrollbar {
+  width: $size-x-scroll-bar-small;
+}

@@ -67,9 +67,35 @@ $font-size-17: 64px;
 $border-size-0: 0px;
 $border-size-1: 1px;
 
+
+
+//# Scroll bar style ----------
+
+// Colors
+$color-scroll-bar: #3C3C3C;
+$color-scroll-bar-hover: #4d4d4d;
+$color-scroll-bar-active: #5c5c5c;
+
+// Sizes
+$size-x-scroll-bar: $size-2;
+$size-x-scroll-bar-small: $size-1;
+$size-x-scroll-bar-hover: $size-2; // Não funciona
+$size-x-scroll-bar-active: $size-2;// Não funciona
+
+//# Scroll bar style ----------
+
+
 // Colors -----------------
 $color-white: #ffffff;
 $color-transparent: transparent;
+
+// Toolbar
+$toolbar-background: #3c3c3c54;
+$toolbar-border-color: #94949444;
+
+// Toolbar itens
+$toolbar-item-border-hover: #525252;
+$toolbar-item-background-active: #52525252;
 
 $color-black: #000;
 $color-border-light-gray: #4F4F4F;
