@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import './ToolBar.scss';
-import { CurrentTab } from '../../../../../shared/enuns/CurrentTab';
-import { TabButton } from '../../../../../shared/components/tab-button/TabButton';
-import { Storage } from '../../../../../shared/services/LocalStorage';
+import { CurrentTab } from '../../enuns/CurrentTab';
+import { TabButton } from '../tab-button/TabButton';
+import { Storage } from '../../services/LocalStorage';
 
 export const ToolBar = (props: any) => {
 

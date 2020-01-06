@@ -1,5 +1,5 @@
 import React from 'react';
-import ToolBar from './shared/components/tool-bar/ToolBar';
+import ToolBar from '../../shared/components/tool-bar/ToolBar';
 
 import { Project, Tab, Component, ComponentConfigs } from '../../shared/interfaces/Aplication';
 import FluxoComponentTypes from './tabs/editor-tab/components/code-editor/enuns/FluxoList';
