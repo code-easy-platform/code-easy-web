@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
+import { StatusBar } from '../../../pages/editor/tabs/editor-tab/enuns/TypeOfStatus';
+import CodeEditorContext from '../../services/contexts/CodeEditorContext';
 import './BottonStatusBar.scss';
-import CodeEditorContext from '../../../../../shared/services/contexts/CodeEditorContext';
-import { StatusBar } from '../../../tabs/editor-tab/enuns/TypeOfStatus';
 
 export default class BottonStatusBar extends Component {
 

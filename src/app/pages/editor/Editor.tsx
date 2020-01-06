@@ -3,7 +3,7 @@ import ToolBar from './shared/components/tool-bar/ToolBar';
 
 import { Project, Tab, Component, ComponentConfigs } from '../../shared/interfaces/Aplication';
 import FluxoComponentTypes from './tabs/editor-tab/components/code-editor/enuns/FluxoList';
-import BottonStatusBar from './shared/components/botton-status-bar/BottonStatusBar';
+import BottonStatusBar from '../../shared/components/botton-status-bar/BottonStatusBar';
 import CodeEditorContext from '../../shared/services/contexts/CodeEditorContext';
 import { TreeInterface } from '../../shared/components/tree/TreeInterface';
 import { Status, StatusBar } from './tabs/editor-tab/enuns/TypeOfStatus';
