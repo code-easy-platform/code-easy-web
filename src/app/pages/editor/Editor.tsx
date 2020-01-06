@@ -6,7 +6,7 @@ import FluxoComponentTypes from '../../shared/enuns/FluxoList';
 import BottonStatusBar from '../../shared/components/botton-status-bar/BottonStatusBar';
 import CodeEditorContext from '../../shared/services/contexts/CodeEditorContext';
 import { TreeInterface } from '../../shared/components/tree/TreeInterface';
-import { Status, StatusBar } from './editor-tab/enuns/TypeOfStatus';
+import { Status, StatusBar } from '../../shared/enuns/TypeOfStatus';
 import { ComponentType } from '../../shared/enuns/ComponentType';
 import PropertiesTab from './properties-tab/PropertiesTab';
 import { Storage } from '../../shared/services/LocalStorage';

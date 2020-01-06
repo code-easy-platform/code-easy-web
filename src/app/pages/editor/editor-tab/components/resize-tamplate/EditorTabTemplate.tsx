@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 
 interface IRecipeProps {
-    columnLeft: any,
+    columnLeft?: any,
     columnCenter: any,
     columnRight: any,
 }

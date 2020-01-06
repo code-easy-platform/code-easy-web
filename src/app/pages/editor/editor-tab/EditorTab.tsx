@@ -10,7 +10,7 @@ export default class EditorTab extends Component {
     render() {
         return (
             <EditorTabTemplate
-                columnLeft={<></>}
+                // columnLeft={<></>}
                 columnCenter={<CodeEditor />}
                 columnRight={
                     <ColRightTemplate
