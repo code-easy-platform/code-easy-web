@@ -5,7 +5,7 @@ import { Component, Tab, EMPTY_COMPONENT } from '../../../../../shared/interface
 import { CodeEditorContext } from '../../../../../shared/services/contexts/CodeEditorContext';
 import { ComponentType } from '../../../../../shared/enuns/ComponentType';
 import { ItemToDrag } from './components/item-drag/ItemDrag';
-import FluxoComponentTypes from './enuns/FluxoList';
+import FluxoComponentTypes from '../../../../../shared/enuns/FluxoList';
 
 export const CodeEditor = () => {
     const codeEditorContext = useContext(CodeEditorContext);

@@ -1,7 +1,7 @@
 import ProjectType from "../enuns/ProjectType";
 import { Project, Tab, ComponentConfigs, Component } from "../interfaces/Aplication";
 import { ComponentType } from "../enuns/ComponentType";
-import { FluxoComponentTypes } from "../../pages/editor/editor-tab/components/code-editor/enuns/FluxoList";
+import { FluxoComponentTypes } from "../enuns/FluxoList";
 
 
 export const DEFAULT_PROJECT = new Project({

@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useDrag } from 'react-dnd';
-import { FluxoComponentTypes } from '../../enuns/FluxoList';
+import { FluxoComponentTypes } from '../../../../../../../shared/enuns/FluxoList';
 import ComponentType from '../../../../../../../shared/enuns/ComponentType';
 import { Line } from '../../../../../../../shared/components/lines/Line';
 

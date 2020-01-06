@@ -35,9 +35,9 @@ export class EditorTabTemplate extends Component<IRecipeProps, IRecipeState> {
     render() {
         return (
             <div className="flex1" onMouseMove={this.mouseMove.bind(this)} onMouseUp={this.mouseUp}>
-                <div className='col-left' style={{ width: this.state.colLeftX }}>
-                    <div className="flex1">
-                        {this.props.columnLeft/* Coluna da direita */}
+                <div className='col-left'>
+                    <div >
+                        {this.props.columnLeft/* Coluna da esquerda */}
                     </div>
                     <div className="grabber-col-left" onMouseDown={() => this.setState({ isResizeColLeft: true })}></div>
                 </div>
@@ -49,7 +49,7 @@ export class EditorTabTemplate extends Component<IRecipeProps, IRecipeState> {
                 <div className='col-right' style={{ width: this.state.colRightX }}>
                     <div className="grabber-col-right" onMouseDown={() => this.setState({ isResizeColRight: true })}></div>
                     <div className="flex1">
-                        {this.props.columnRight/* Coluna da esquerda */}
+                        {this.props.columnRight/* Coluna da direita */}
                     </div>
                 </div>
             </div>

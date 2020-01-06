@@ -2,7 +2,7 @@ import React from 'react';
 import ToolBar from '../../shared/components/tool-bar/ToolBar';
 
 import { Project, Tab, Component, ComponentConfigs } from '../../shared/interfaces/Aplication';
-import FluxoComponentTypes from './editor-tab/components/code-editor/enuns/FluxoList';
+import FluxoComponentTypes from '../../shared/enuns/FluxoList';
 import BottonStatusBar from '../../shared/components/botton-status-bar/BottonStatusBar';
 import CodeEditorContext from '../../shared/services/contexts/CodeEditorContext';
 import { TreeInterface } from '../../shared/components/tree/TreeInterface';
@@ -11,8 +11,8 @@ import { ComponentType } from '../../shared/enuns/ComponentType';
 import PropertiesTab from './properties-tab/PropertiesTab';
 import { Storage } from '../../shared/services/LocalStorage';
 import { CurrentTab } from '../../shared/enuns/CurrentTab';
-import PluginsTab from './plugins-tab/PluginsTab';
 import { Utils } from '../../shared/services/Utils';
+import PluginsTab from './plugins-tab/PluginsTab';
 import EditorTab from './editor-tab/EditorTab';
 import './Editor.scss';
 
