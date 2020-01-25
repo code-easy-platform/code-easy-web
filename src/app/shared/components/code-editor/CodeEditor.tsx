@@ -341,23 +341,23 @@ const CodeEditor: React.FC<CodeEditorProps> = ({ itens = [], toolItens = [], onC
                 }}>
 
                     {/* Reinderiza a área de seleção na tela. */}
-                    <SelectorArea
-                        onMouseUp={removeSelection}
-                        endTop={state.selectionProps.endTop}
-                        endLeft={state.selectionProps.endLeft}
-                        startTop={state.selectionProps.startTop}
-                        startLeft={state.selectionProps.startLeft}
-                        top={state.selectionProps.runtimeStartTop}
-                        left={state.selectionProps.runtimeStartLeft}
-                    />
+                    {state.selectionProps.isMouseDown &&
+                        <SelectorArea
+                            onMouseUp={removeSelection}
+                            endTop={state.selectionProps.endTop}
+                            endLeft={state.selectionProps.endLeft}
+                            startTop={state.selectionProps.startTop}
+                            startLeft={state.selectionProps.startLeft}
+                            top={state.selectionProps.runtimeStartTop}
+                            left={state.selectionProps.runtimeStartLeft}
+                        />
+                    }
 
                     {/* Reinderiza as linhas dos itens arrastáveis da tela. */}
                     {state.flowItens.map((item: FlowItem) => {
                         const itensSucessores: FlowItem[] = state.flowItens.filter((sucessorItem: FlowItem) => item.sucessor.includes(sucessorItem.id));
 
-                        const isHaveNoSucessores = itensSucessores.length === 0;
-
-                        let isUseNewBranch = false;
+                        let isUseNewBranch = false; // Define se será usado uma nova branch para este item de fluxo.
                         switch (item.itemType) {
                             case ItemType.IF:
                                 isUseNewBranch = itensSucessores.length < 2; // Só usa nova branch para um if se ele ainda tiver menos de 2 branchs.
@@ -372,15 +372,19 @@ const CodeEditor: React.FC<CodeEditorProps> = ({ itens = [], toolItens = [], onC
                                 break;
 
                             case ItemType.ASSIGN:
-                                isUseNewBranch = isHaveNoSucessores && item.sucessor.includes(0); // Apenas uma nova branch para um assing.
+                                isUseNewBranch = itensSucessores.length < 1; // Apenas uma nova branch para um assing.
                                 break;
 
                             case ItemType.FOREACH:
                                 isUseNewBranch = itensSucessores.length < 2; // Apenas duas branchs para um FOREACH.
                                 break;
 
+                            case ItemType.START:
+                                isUseNewBranch = itensSucessores.length < 1; // Apenas uma branchs para um START.
+                                break;
+
                             default:
-                                isUseNewBranch = isHaveNoSucessores && item.sucessor.includes(0);
+                                isUseNewBranch = itensSucessores.length < 1;
                                 break;
 
                         }

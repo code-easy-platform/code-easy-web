@@ -22,6 +22,12 @@ export const ToolBar = (props: any) => {
         <div className="tool-bar">
             <div className="sistem-tabs">
                 <TabButton
+                    id="tabMenu"
+                    onClick={() => { }}
+                    className=" btn btn-open-menu-tab"
+                    title="Menu"
+                />
+                <TabButton
                     id="tabEditor"
                     onClick={() => changeCurrentTab(CurrentTab.editor)}
                     className=" btn-open-editor-tab"
@@ -49,7 +55,7 @@ export const ToolBar = (props: any) => {
                     content="Reset application"
                 />
             </div>
-            <div style={{ width: 250 }}>
+            <div style={{ width: 300, justifyContent: "flex-end" }}>
                 {currentTab === CurrentTab.editor &&
                     <TabGroup>
                         {tabs.map((tab: Tab) => {
@@ -68,9 +74,13 @@ export const ToolBar = (props: any) => {
                         })}
                     </TabGroup>
                 }
+                <TabButton
+                    id="tabMenu"
+                    onClick={() => { }}
+                    className=" btn-open-menu-user-tab"
+                    title="Menu do usuário"
+                />
             </div>
         </div>
     );
 }
-
-export default ToolBar;
