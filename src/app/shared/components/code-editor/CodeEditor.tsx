@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, FC } from 'react';
 import { useDrop, DropTargetMonitor, DndProvider } from 'react-dnd';
 import HTML5Backend from 'react-dnd-html5-backend';
 
@@ -7,15 +7,16 @@ import { ItemType, FlowItem } from './models/ItemFluxo';
 import { Line } from './components/lines/Line';
 import { Utils } from './shared/Utils';
 import { Toolbar } from './components/tool-bar/ToolBar';
+import { SelectorArea } from './components/selector/SelectorArea';
 
 /**
  * Propriedades aceitas pelo editor.
  */
 export interface CodeEditorProps {
-    
+
     /** boolean - Usado para exibir ou não a toolbox cons itens de lógica. */
-    isShowToolbar?: boolean,
-    
+    isShowToolbar: boolean,
+
     /** FlowItem[] - Usado para exibir os itens na toolbox do editor. */
     toolItens?: FlowItem[],
 
@@ -34,7 +35,7 @@ export interface CodeEditorProps {
  * @param onChangeItens Function - Usada para emitir através do output o fluxo atualidado, acontece a cada mudança de estado dos itens de fluxo.
  * @param isShowToolbar boolean - Usado para exibir ou não a toolbox cons itens de lógica.
  */
-export const FlowEditor: React.FC<CodeEditorProps> = ({ itens = [], toolItens = [], onChangeItens = () => { }, isShowToolbar = false }) => {
+export const FlowEditor: FC<CodeEditorProps> = ({ itens = [], toolItens = [], onChangeItens = () => { }, isShowToolbar = false }) => {
     return (
         <DndProvider backend={HTML5Backend}>
             <CodeEditor itens={itens} toolItens={toolItens} onChangeItens={onChangeItens} isShowToolbar={isShowToolbar} />
@@ -46,7 +47,7 @@ export const FlowEditor: React.FC<CodeEditorProps> = ({ itens = [], toolItens = 
 const acceptedInDrop: ItemType[] = [ItemType.START, ItemType.ACTION, ItemType.IF, ItemType.FOREACH, ItemType.SWITCH, ItemType.ASSIGN, ItemType.END];
 
 /** Usada para validar houve mudanças no estados dos itens e impedir a realização outputs desnecessários. */
-let backupFlow: string = ""; 
+let backupFlow: string = "";
 
 /** Editor do fluxo. */
 const CodeEditor: React.FC<CodeEditorProps> = ({ itens = [], toolItens = [], onChangeItens = () => { }, isShowToolbar = false }) => {
@@ -148,19 +149,27 @@ const CodeEditor: React.FC<CodeEditorProps> = ({ itens = [], toolItens = [], onC
     /** 
      * Usado para mudar o "sucessorId" de um elemento.
      * Sucessor é usado para indicar onde o apontamento deve estar.
+     * 
+     * @param branchIndex indica qual a branch do item para liga no item sucessor
      */
-    const onSucessorChange = (itemId: number, sucessorId: string) => {
+    const onSucessorChange = (itemId: number, sucessorId: string, branchIndex: number = 0) => {
 
         const itemCurrentIndex = state.flowItens.findIndex((item: FlowItem) => { if (item.id === Number(itemId)) return item; else return undefined; });
         let itemCurrent: FlowItem = state.flowItens[itemCurrentIndex];
 
-        // Se tentar ligar um item nele mesmo deve ser perdida a ligação com qualquer elemento anterior.
+        // Se tentar ligar um item nele mesmo deve ser perdida a ligação com qualquer elemento anterior desta branch específica.
         if (Number(itemId) === Number(sucessorId)) {
             sucessorId = "";
         }
 
+        // No caso de vim 999999 significa que é um novo branch.
+        if (branchIndex === 999999) {
+            branchIndex = itemCurrent.sucessor.length + 1;
+            itemCurrent.sucessor.push(0);
+        }
+
         // OBS: O update no fluxo principal é feito pela referencia entre variáveis js.
-        itemCurrent.sucessor[0] = Number(sucessorId);
+        itemCurrent.sucessor[branchIndex] = Number(sucessorId);
 
         setState({
             ...state,
@@ -291,9 +300,11 @@ const CodeEditor: React.FC<CodeEditorProps> = ({ itens = [], toolItens = [], onC
     const onMouseDown = (event: any) => {
         exibiSelection(event);
 
-        state.flowItens.forEach((item: FlowItem) => {
-            item.isSelecionado = false;
-        });
+        if (!event.ctrlKey) {
+            state.flowItens.forEach((item: FlowItem) => {
+                item.isSelecionado = false;
+            });
+        }
 
         setState({ ...state, flowItens: state.flowItens });
     }
@@ -310,7 +321,7 @@ const CodeEditor: React.FC<CodeEditorProps> = ({ itens = [], toolItens = [], onC
     }
 
     return (
-        <div style={{ flex: 1, maxHeight: "100%" }}>
+        <div style={{ flex: 1, maxHeight: "100%", overflow: "auto" }}>
             {((toolItens.length > 0) && isShowToolbar) && <Toolbar itensLogica={toolItens} />}
 
             <div key={"CODE_EDITOR"} style={{ flex: 1, overflow: "auto", }}>
@@ -321,33 +332,68 @@ const CodeEditor: React.FC<CodeEditorProps> = ({ itens = [], toolItens = [], onC
                     minWidth: "100%",
                     outline: "none"
                 }}>
-                    <rect
-                        fill="#ffffff11"
-                        stroke="#999fff"
-                        strokeWidth={1}
+
+                    {/* Reinderiza a área de seleção na tela. */}
+                    <SelectorArea
                         onMouseUp={removeSelection}
-                        y={state.selectionProps.runtimeStartTop}
-                        x={state.selectionProps.runtimeStartLeft}
-                        width={((state.selectionProps.endLeft - state.selectionProps.startLeft) > 0) ? (state.selectionProps.endLeft - state.selectionProps.startLeft) : (state.selectionProps.startLeft - state.selectionProps.endLeft)}
-                        height={((state.selectionProps.endTop - state.selectionProps.startTop) > 0) ? (state.selectionProps.endTop - state.selectionProps.startTop) : (state.selectionProps.startTop - state.selectionProps.endTop)}
+                        endTop={state.selectionProps.endTop}
+                        endLeft={state.selectionProps.endLeft}
+                        startTop={state.selectionProps.startTop}
+                        startLeft={state.selectionProps.startLeft}
+                        top={state.selectionProps.runtimeStartTop}
+                        left={state.selectionProps.runtimeStartLeft}
                     />
 
+                    {/* Reinderiza as linhas dos itens arrastáveis da tela. */}
                     {state.flowItens.map((item: FlowItem) => {
                         const itensSucessores: FlowItem[] = state.flowItens.filter((sucessorItem: FlowItem) => item.sucessor.includes(sucessorItem.id));
 
+                        const isHaveNoSucessores = itensSucessores.length === 0;
+
+                        let isUseNewBranch = false;
+                        switch (item.itemType) {
+                            case ItemType.IF:
+                                isUseNewBranch = itensSucessores.length < 2; // Só usa nova branch para um if se ele ainda tiver menos de 2 branchs.
+                                break;
+
+                            case ItemType.SWITCH:
+                                isUseNewBranch = true; // Sempre usa uma nova branch para um swicth.
+                                break;
+
+                            case ItemType.END:
+                                isUseNewBranch = isHaveNoSucessores && item.sucessor.includes(0); // Sempre usa uma nova branch para um swicth.
+                                break;
+
+                            case ItemType.ASSIGN:
+                                isUseNewBranch = isHaveNoSucessores && item.sucessor.includes(0); // Sempre usa uma nova branch para um swicth.
+                                break;
+
+                            case ItemType.FOREACH:
+                                isUseNewBranch = itensSucessores.length < 2; // Sempre usa uma nova branch para um swicth.
+                                break;
+
+                            default:
+                                isUseNewBranch = isHaveNoSucessores && item.sucessor.includes(0);
+                                break;
+
+                        }
+
                         return <>
-                            {itensSucessores.map((sucessorItem: FlowItem) => {
+
+                            {/* Reinderiza todos os branchs de um item de fluxo. */}
+                            {itensSucessores.map((sucessorItem: FlowItem, index: number) => {
 
                                 const left2 = sucessorItem ? sucessorItem.left + sucessorItem.width / 2 : item.left + (item.width / 2);
                                 const top2 = sucessorItem ? sucessorItem.top - 25 : item.top + (item.height + 20);
 
-                                if (item.itemType === ItemType.END) return null;
+                                if (item.itemType === ItemType.END) return <></>;
 
                                 return <Line
                                     left1={(item.left || 0) + ((item.width || 0) / 2)}
                                     top1={(item.top || 0) + (item.height || 0) / 2}
                                     onSucessorChange={onSucessorChange}
                                     id={item.id.toString()}
+                                    sucessorIndex={index}
                                     refItemPai={svgRef}
                                     key={item.id}
                                     left2={left2}
@@ -356,9 +402,26 @@ const CodeEditor: React.FC<CodeEditorProps> = ({ itens = [], toolItens = [], onC
                                 />;
 
                             })}
+
+                            {/* Usado para adicionar uma branch caso o item não tenha sucessores ainda, ou tenha bugado */}
+                            {isUseNewBranch &&
+                                <Line
+                                    left1={(item.left || 0) + ((item.width || 0) / 2)}
+                                    top1={(item.top || 0) + (item.height || 0) / 2}
+                                    left2={item.left + (item.width / 2)}
+                                    top2={item.top + (item.height + 20)}
+                                    onSucessorChange={onSucessorChange}
+                                    id={item.id.toString()}
+                                    refItemPai={svgRef}
+                                    key={item.id}
+                                    color="gray"
+                                />
+                            }
+
                         </>;
                     })}
 
+                    {/* Reinderiza os itens arrastáveis na tela! */}
                     {state.flowItens.map((item: FlowItem) => {
                         return <ItemToDrag
                             onChangeSelecionado={onChangeSelecionado}

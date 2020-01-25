@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
 
-import { FlowItem, ItemFluxo, ItemType } from '../../../shared/components/code-editor/models/ItemFluxo';
-import PropertiesEditor from '../../../shared/components/properties-editor/PropertiesEditor';
-import EditorTabTemplate from './components/resize-tamplate/EditorTabTemplate';
-import { FlowEditor } from '../../../shared/components/code-editor/CodeEditor';
+import { FlowItem, ItemFluxo, ItemType } from './../../../shared/components/code-editor/models/ItemFluxo';
+import PropertiesEditor from './../../../shared/components/properties-editor/PropertiesEditor';
+import { EditorTabTemplate } from './components/resize-tamplate/EditorTabTemplate';
+import { FlowEditor } from './../../../shared/components/code-editor/CodeEditor';
 import ColRightTemplate from './components/resize-tamplate/ColRightTemplate';
 import ResourcesTree from './components/resources/Resources';
 
@@ -35,7 +35,6 @@ export default class EditorTab extends Component {
     render() {
         return (
             <EditorTabTemplate
-                // columnLeft={<></>}
                 columnCenter={
                     <FlowEditor
                         onChangeItens={this.outItens}

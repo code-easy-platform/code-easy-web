@@ -3,8 +3,9 @@
 .tool-bar {
   display: flex;
   background: $color-tool-bar;
-  width: $size-fill;
   justify-content: space-between;
+  width: $size-window-vw-fill;
+  height: $size-10;
 }
 
 .sistem-tabs {

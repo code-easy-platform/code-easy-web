@@ -2,8 +2,8 @@
 
 .main-page {
   background-color: $color-background;
-  height: $size-fill;
-  width: $size-fill;
+  height: $size-window-vh-fill;
+  width: $size-window-vw-fill;
   display: flex;
   flex-direction: column;
 }

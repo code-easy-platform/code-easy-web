@@ -1,15 +1,15 @@
 import React from 'react';
-import ToolBar from '../../shared/components/tool-bar/ToolBar';
 
 import { Project, Tab, Component, ComponentConfigs } from '../../shared/interfaces/Aplication';
-import FluxoComponentTypes from '../../shared/enuns/FluxoList';
 import BottonStatusBar from '../../shared/components/botton-status-bar/BottonStatusBar';
 import CodeEditorContext from '../../shared/services/contexts/CodeEditorContext';
 import { TreeInterface } from '../../shared/components/tree/TreeInterface';
 import { Status, StatusBar } from '../../shared/enuns/TypeOfStatus';
 import { ComponentType } from '../../shared/enuns/ComponentType';
-import PropertiesTab from './properties-tab/PropertiesTab';
+import FluxoComponentTypes from '../../shared/enuns/FluxoList';
+import ToolBar from '../../shared/components/tool-bar/ToolBar';
 import { Storage } from '../../shared/services/LocalStorage';
+import PropertiesTab from './properties-tab/PropertiesTab';
 import { CurrentTab } from '../../shared/enuns/CurrentTab';
 import { Utils } from '../../shared/services/Utils';
 import PluginsTab from './plugins-tab/PluginsTab';
@@ -182,7 +182,7 @@ export default class Editor extends React.Component {
                 <div className="main-page">
                     <ToolBar changeCurrentTab={this.changeCurrentTab} />
 
-                    <div style={{ flex: 1 }}>
+                    <div style={{ height: "calc(100vh - 60px)" }}>
                         {this.state.currentTab}
                     </div>
 

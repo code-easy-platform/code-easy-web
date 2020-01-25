@@ -1,5 +1,7 @@
 
 // Sizes ------------------
+$size-window-vh-fill: 100vh;
+$size-window-vw-fill: 100vw;
 $size-fill: 100%;
 $size-half-90: 90%;
 $size-half-80: 80%;
@@ -72,7 +74,7 @@ $border-size-1: 1px;
 //# Scroll bar style ----------
 
 // Colors
-$color-scroll-bar: #3C3C3C;
+$color-scroll-bar: #3C3C3C20;
 $color-scroll-bar-hover: #4d4d4d;
 $color-scroll-bar-active: #5c5c5c;
 

@@ -16,6 +16,7 @@ import icons_action from './../../shared/images/action.png';
 import icons_start from './../../shared/images/start.png';
 import icons_end from './../../shared/images/end.png';
 import icons_if from './../../shared/images/if.png';
+import { Foreach } from '../flow-componets/Foreach';
 
 /** Usado para definir o tipo de input de parâmetros no item drag. */
 export interface ItemDragProps {
@@ -122,8 +123,8 @@ export const ItemToDrag: React.FC<ItemDragProps> = (props: ItemDragProps) => {
         const style: React.CSSProperties = {
             justifyContent: "center",
             alignItems: "center",
+            cursor: "move",
             margin: "5px",
-            cursor: 'move',
             fontSize: 10,
             width: 30,
         };
@@ -149,7 +150,7 @@ export const ItemToDrag: React.FC<ItemDragProps> = (props: ItemDragProps) => {
                 id={id}
             >
                 <text id={id} x={left} y={(top || 0) - 5} fill="#fff" >{title}</text>
-                {itemType === ItemType.FOREACH && <Assign id={id} top={top} left={left} width={width} height={height} isSelecionado={isSelecionado} />}
+                {itemType === ItemType.FOREACH && <Foreach id={id} top={top} left={left} width={width} height={height} isSelecionado={isSelecionado} />}
                 {itemType === ItemType.ASSIGN && <Assign id={id} top={top} left={left} width={width} height={height} isSelecionado={isSelecionado} />}
                 {itemType === ItemType.SWITCH && <Switch id={id} top={top} left={left} width={width} height={height} isSelecionado={isSelecionado} />}
                 {itemType === ItemType.ACTION && <Action id={id} top={top} left={left} width={width} height={height} isSelecionado={isSelecionado} />}

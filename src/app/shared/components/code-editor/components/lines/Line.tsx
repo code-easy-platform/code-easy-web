@@ -10,13 +10,14 @@ interface LineProps {
     color?: string
     refItemPai: any
     lineWidth?: number
+    sucessorIndex?: number
     onSucessorChange?: Function
 }
 
 export const Line: React.FC<LineProps> = (props: LineProps) => {
     const onSucessorChange: Function = props.onSucessorChange || (() => { });
     const { lineWidth = 1, color = "blue", left1, left2 = 0 } = props;
-    const { id = "0", top1 = 0, top2 = 0 } = props;
+    const { id = "0", top1 = 0, top2 = 0, sucessorIndex = 999999 } = props;
     const refItemPai: any = props.refItemPai;
 
     const polygonBottonCenter: number = left2;
@@ -30,7 +31,7 @@ export const Line: React.FC<LineProps> = (props: LineProps) => {
 
     window.onmouseup = (event: any) => {
         if (event.target.id && isSelecionado)
-            onSucessorChange(id, event.target.id);
+            onSucessorChange(id, event.target.id, sucessorIndex);
         onMouseEvent(false);
     }
 
