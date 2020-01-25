@@ -91,15 +91,8 @@ $size-x-scroll-bar-active: $size-2;// Não funciona
 $color-white: #ffffff;
 $color-transparent: transparent;
 
-// Toolbar
-$toolbar-background: #3c3c3c54;
-$toolbar-border-color: #94949444;
-
-// Toolbar itens
-$toolbar-item-border-hover: #525252;
-$toolbar-item-background-active: #52525252;
-
 $color-black: #000;
+$color-black-50: #00000050;
 $color-border-light-gray: #4F4F4F;
 $item-logic-hover: #3C3C3C;
 $color-background-propertie-editor: #3C3C3C;
@@ -142,6 +135,14 @@ $borda-size-2: 8px;
 $borda-size-3: 12px;
 $borda-size-4: 16px;
 $borda-size-5: 20px;
+
+// Toolbar
+$toolbar-background: #3c3c3c54;
+$toolbar-border-color: $color-black-50;
+
+// Toolbar itens
+$toolbar-item-border-hover: #525252;
+$toolbar-item-background-active: #52525252;
 
 // Outlines
 $outline-padrao: 2px solid #f3f3f3;

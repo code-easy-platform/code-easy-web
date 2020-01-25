@@ -11,16 +11,16 @@
     justify-content: center;
     align-items: center;
   }
+  .btn-tab:hover {
+    background-color: $color-background-col;
+    cursor: pointer;
+  }
+  .btn-tab:active {
+    opacity: 0.5;
+    color: $color-white;
+  }
 }
 
-.btn-tab:hover {
-  background-color: $color-top-bar-button-maximizar;
-  cursor: pointer;
-}
-.btn-tab:active {
-  opacity: 0.5;
-  color: $color-white;
-}
 .btn-tab-selected {
-  background-color: $color-top-bar-button-maximizar;
+  background-color: $color-background-col;
 }

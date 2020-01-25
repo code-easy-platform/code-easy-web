@@ -14,16 +14,23 @@
 .grabber-col-right-resize-y {
   cursor: col-resize;
   overflow: hidden;
-  background-color: $color-background;
+  background-color: $color-background-col;
+  height: $size-fill;
+  width: $size-1;
+}
+
+.grabber-col-right {
+  border-left: $border-size-1 solid $color-black-50;
+  cursor: col-resize;
   height: $size-fill;
   width: $size-1;
 }
 
 .grabber-col-right-resize-y {
+  border-top: $border-size-1 solid $color-black-50;
   cursor: row-resize;
   width: $size-fill;
   height: $size-2;
-  border-top: $border-size-1 
 }
 
 // .grabber-col-left:active,

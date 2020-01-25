@@ -109,6 +109,7 @@ export const ItemToDrag: React.FC<ItemDragProps> = (props: ItemDragProps) => {
                 id,
                 event.offsetY - ((height || 0) / 2),
                 event.offsetX - ((width || 0) / 2),
+                event,
             );
     }
 

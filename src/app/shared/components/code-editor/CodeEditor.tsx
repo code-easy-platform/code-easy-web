@@ -99,12 +99,12 @@ const CodeEditor: React.FC<CodeEditorProps> = ({ itens = [], toolItens = [], onC
 
             state.flowItens.push(new FlowItem({
                 id: Utils.getRandomId(),
-                sucessor: item.itemProps.sucessor,
                 itemType: item.itemProps.itemType,
                 nome: item.itemProps.title,
                 isSelecionado: true,
                 left: targetOffsetX,
                 top: targetOffsetY,
+                sucessor: [],
                 height: 50,
                 width: 50,
             }));
@@ -121,17 +121,24 @@ const CodeEditor: React.FC<CodeEditorProps> = ({ itens = [], toolItens = [], onC
     dropRef(svgRef);
 
     /** Depois que um elemento já está na tela, esta função muda a posição dele! */
-    const positionChange = (itemId: number, positionTop: number, positionLeft: number) => {
+    const positionChange = (itemId: number, positionTop: number, positionLeft: number, event?: any) => {
         let component = state.flowItens[state.flowItens.findIndex((item: any) => { if (item.id === itemId) return item; return undefined; })];
 
+        // Impede que haje erros se o componente não for encontrado.
+        if (!component) return;
+
         if (component.top > 0 || component.top < positionTop) {
-            component.top = component.top + (positionTop - component.top);
-            // component.top = positionTop % 10 === 0 ? positionTop : component.top;
+            if (event ? !event.altKey : true)
+                component.top = component.top + (positionTop - component.top);
+            else
+                component.top = positionTop % 10 === 0 ? positionTop : component.top;
         }
 
         if (component.left > 0 || component.left < positionLeft) {
-            component.left = component.left + (positionLeft - component.left);
-            // component.left = positionLeft % 10 === 0 ? positionLeft : component.left;
+            if (event ? !event.altKey : true)
+                component.left = component.left + (positionLeft - component.left);
+            else
+                component.left = positionLeft % 10 === 0 ? positionLeft : component.left;
         }
 
         state.svgSize.svgHeight = state.flowItens.sort((a, b) => b.top - a.top)[0].top + 200;
@@ -361,15 +368,15 @@ const CodeEditor: React.FC<CodeEditorProps> = ({ itens = [], toolItens = [], onC
                                 break;
 
                             case ItemType.END:
-                                isUseNewBranch = isHaveNoSucessores && item.sucessor.includes(0); // Sempre usa uma nova branch para um swicth.
+                                isUseNewBranch = false; // Nunca usa uma nova branch para um END.
                                 break;
 
                             case ItemType.ASSIGN:
-                                isUseNewBranch = isHaveNoSucessores && item.sucessor.includes(0); // Sempre usa uma nova branch para um swicth.
+                                isUseNewBranch = isHaveNoSucessores && item.sucessor.includes(0); // Apenas uma nova branch para um assing.
                                 break;
 
                             case ItemType.FOREACH:
-                                isUseNewBranch = itensSucessores.length < 2; // Sempre usa uma nova branch para um swicth.
+                                isUseNewBranch = itensSucessores.length < 2; // Apenas duas branchs para um FOREACH.
                                 break;
 
                             default:
