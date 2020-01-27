@@ -131,7 +131,7 @@ a:active {
 // Ajusta o scroll de todos os elementos.
 ::-webkit-scrollbar {
   width: $size-x-scroll-bar;
-  height: $size-fill;
+  height: $size-x-scroll-bar;
 }
 ::-webkit-scrollbar-button {
   display: none;
@@ -152,3 +152,4 @@ a:active {
 .mini-scroll-bar::-webkit-scrollbar {
   width: $size-x-scroll-bar-small;
 }
+

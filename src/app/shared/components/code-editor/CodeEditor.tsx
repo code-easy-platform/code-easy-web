@@ -328,7 +328,7 @@ const CodeEditor: React.FC<CodeEditorProps> = ({ itens = [], toolItens = [], onC
     }
 
     return (
-        <div style={{ flex: 1, maxHeight: "100%", overflow: "auto" }}>
+        <div style={{ flex: 1, maxHeight: "100%", overflow: "initial" }}>
             {((toolItens.length > 0) && isShowToolbar) && <Toolbar itensLogica={toolItens} />}
 
             <div key={"CODE_EDITOR"} style={{ flex: 1, overflow: "auto", }}>
