@@ -4,6 +4,7 @@
   "private": true,
   "dependencies": {
     "@types/styled-components": "^4.4.2",
+    "code-easy-components": "^0.0.1",
     "immutability-helper": "^3.0.1",
     "node-sass": "^4.12.0",
     "office-ui-fabric-react": "^7.43.0",

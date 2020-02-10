@@ -355,7 +355,7 @@ const CodeEditor: React.FC<CodeEditorProps> = ({ itens = [], toolItens = [], onC
 
                     {/* Reinderiza as linhas dos itens arrastáveis da tela. */}
                     {state.flowItens.map((item: FlowItem) => {
-                        const itensSucessores: FlowItem[] = state.flowItens.filter((sucessorItem: FlowItem) => item.sucessor.includes(sucessorItem.id));
+                        const itensSucessores: FlowItem[] = state.flowItens.filter((sucessorItem: FlowItem) => item.sucessor.filter((sucessorId: number) => sucessorItem.id === sucessorId));
 
                         let isUseNewBranch = false; // Define se será usado uma nova branch para este item de fluxo.
                         switch (item.itemType) {
