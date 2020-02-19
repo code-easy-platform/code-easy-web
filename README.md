@@ -16,4 +16,4 @@ Apartir de fluxos e de uma interface amigável desenvolva suas APIs, ao final do
 
 
 ### Preview da tela principal:
-[Code easy](https://raw.githubusercontent.com/lucasdevargassouza/code-easy-web/master/projeto/Code-easy-web.PNG)
+![Code easy](https://raw.githubusercontent.com/lucasdevargassouza/code-easy-web/master/projeto/Code-easy-web.PNG)
