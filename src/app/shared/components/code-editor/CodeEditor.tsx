@@ -212,7 +212,9 @@ const CodeEditor: React.FC<ICodeEditorProps> = ({ itens = [], toolItens = [], on
 
         /** Cola os itens de fluxo na área de transferência */
         const pasteSelecteds = () => {
+
             const findNewPosition = (num: number, type: 'top' | 'left'): number => {
+
                 let index: number = 0;
                 if (type === 'left') {
                     index = state.flowItens.findIndex((item: FlowItem) => {
@@ -245,41 +247,47 @@ const CodeEditor: React.FC<ICodeEditorProps> = ({ itens = [], toolItens = [], on
                     });
                 }
 
-                const isUsed = (index !== -1);
-
-                return isUsed ? findNewPosition(num + 10, type) : num;
+                return (index !== -1) ? findNewPosition(num + 10, type) : num;
 
             }
 
             try {
 
                 const selection = document.getSelection() || new Selection();
-                const string: string | null | undefined = selection.toString();
+                const string: string = selection.toString();
                 const components: FlowItem[] = JSON.parse(string || '');
+                const components2: FlowItem[] = JSON.parse(string || '');
 
                 components.forEach(item => {
+
                     const newId: number = Utils.getRandomId();
 
-                    components.forEach(depende => {
+                    components.forEach((depende, dependeIndex) => {
                         if (depende.id !== item.id) {
-                            depende.sucessor.forEach(sucessorId => {
+                            depende.sucessor.forEach((sucessorId, index) => {
                                 if (sucessorId === item.id) {
-                                    sucessorId = newId;
+                                    components2[dependeIndex].sucessor[index] = newId;
+                                    // sucessorIndex = index;
                                 }
                             });
+                        } else {
+                            components2[dependeIndex].id = newId;
                         }
                     });
 
+                });
+
+                components2.forEach(item => {
+
+                    /* --- Atualiza o top e left de todos os elementos */
                     const newLeft = findNewPosition(item.left + 100, 'left');
-                    const newTop = findNewPosition(item.left + 100, 'top');
+                    const newTop = findNewPosition(item.top, 'top');
+                    if (newLeft <= newTop) item.left = newLeft;
+                    else item.top = newTop;
+                    /* --- */
 
-                    if (newLeft < newTop)
-                        item.left = newLeft;
-                    else
-                        item.top = newTop;
+                    state.flowItens.push(new FlowItem(item));
 
-                    item.id = newId;
-                    state.flowItens.push(new FlowItem(item))
                 });
 
                 setState({ ...state });
