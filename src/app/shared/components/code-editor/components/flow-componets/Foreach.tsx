@@ -6,7 +6,6 @@ export const Foreach = (props: any) => {
 
     const strokeColor: string = props.isSelecionado ? "#999fff" : "#219653";
 
-
     return (
         <>
             <rect
@@ -29,6 +28,7 @@ export const Foreach = (props: any) => {
                 width={props.width - 10}
                 x={props.left + 6.5}
                 y={props.top + 5}
+                id={props.id}
             />
         </>
     );

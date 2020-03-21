@@ -79,7 +79,8 @@ export const ItemToDrag: React.FC<ItemDragProps> = (props: ItemDragProps) => {
     };
 
     /** Declara a fun no ref da svg para que o item atual possa ser arrastado na tela. */
-    const mouseDown = () => {
+    const mouseDown = (e: React.MouseEvent<SVGGElement, MouseEvent>) => {
+        onChangeSelecionado(id, e);
         if (refItemPai.current)
             refItemPai.current.onmousemove = mouseMove;
 
@@ -92,12 +93,12 @@ export const ItemToDrag: React.FC<ItemDragProps> = (props: ItemDragProps) => {
      * 
      * Também serve para fechar o menu de contexto.
      */
-    const mouseUp = () => {
+    const mouseUp = (e: React.MouseEvent<SVGGElement, MouseEvent>) => {
         if (refItemPai.current)
             refItemPai.current.onmousemove = null;
 
         if (state.isMouseDown) {
-            onChangeSelecionado(id);
+            onChangeSelecionado(id, e);
             setState({ ...state, isMouseDown: false });
         }
     }
