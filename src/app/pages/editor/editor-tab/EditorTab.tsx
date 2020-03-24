@@ -2,10 +2,11 @@ import React, { Component } from 'react';
 import { TreeManager, TreeItensTypes } from 'code-easy-components';
 
 import { FlowItem, ItemType } from './../../../shared/components/code-editor/models/ItemFluxo';
-import PropertiesEditor from './../../../shared/components/properties-editor/PropertiesEditor';
+import { PropertiesEditor } from './../../../shared/components/properties-editor/PropertiesEditor';
 import { EditorTabTemplate } from './components/resize-tamplate/EditorTabTemplate';
 import { FlowEditor } from './../../../shared/components/code-editor/CodeEditor';
 import ColRightTemplate from './components/resize-tamplate/ColRightTemplate';
+import { IItem } from '../../../shared/components/properties-editor/shared/interfaces';
 
 const itensLogica: FlowItem[] = [
     new FlowItem({ id: 1, sucessor: [0], top: 0, left: 0, width: 0, height: 0, isSelecionado: false, nome: "START", itemType: ItemType.START }),
@@ -16,7 +17,6 @@ const itensLogica: FlowItem[] = [
     new FlowItem({ id: 7, sucessor: [0], top: 0, left: 0, width: 0, height: 0, isSelecionado: false, nome: "ASSIGN", itemType: ItemType.ASSIGN }),
     new FlowItem({ id: 8, sucessor: [], top: 0, left: 0, width: 0, height: 0, isSelecionado: false, nome: "END", itemType: ItemType.END }),
 ];
-
 const itensArvore = [
     {
         itemId: "1", itemLabel: "Item 02", isSelected: false, itemChilds: [
@@ -98,6 +98,25 @@ const itensArvore = [
     { itemId: "21", itemLabel: "Item 03", isSelected: false, itemChilds: [], itemType: TreeItensTypes.file, nodeExpanded: false },
     { itemId: "22", itemLabel: "Item 04", isSelected: false, itemChilds: [], itemType: TreeItensTypes.file, nodeExpanded: false },
 ];
+const itens: IItem[] = [
+    {
+        id: 1,
+        name: 'IF',
+        isHeader: true,
+        properties: [
+            {
+                id: 1,
+                label: 'Name',
+                value: 'IF'
+            },
+            {
+                id: 2,
+                label: 'Condiction',
+                value: 'true'
+            },
+        ]
+    }
+]
 
 export default class EditorTab extends Component {
 
@@ -138,7 +157,7 @@ export default class EditorTab extends Component {
                                 onDoubleClick={(itemId, item, e) => { console.log(itemId); console.log(item); console.log(e); }}
                             />
                         }
-                        rowBottom={<PropertiesEditor />}
+                        rowBottom={<PropertiesEditor itens={itens} />}
                     />
                 }
             />
