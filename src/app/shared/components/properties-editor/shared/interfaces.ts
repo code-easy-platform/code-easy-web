@@ -1,8 +1,16 @@
 
+export enum TypeValues {
+    string='string',
+    boolean='boolean',
+    number='number',
+    binary='binary',
 
-export interface IProperties<> {
+}
+
+export interface IProperties {
     id: number;
     label: string;
+    typeValue: TypeValues
     value: any;
 }
 

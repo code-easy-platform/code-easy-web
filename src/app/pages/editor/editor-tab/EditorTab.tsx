@@ -6,7 +6,7 @@ import { PropertiesEditor } from './../../../shared/components/properties-editor
 import { EditorTabTemplate } from './components/resize-tamplate/EditorTabTemplate';
 import { FlowEditor } from './../../../shared/components/code-editor/CodeEditor';
 import ColRightTemplate from './components/resize-tamplate/ColRightTemplate';
-import { IItem } from '../../../shared/components/properties-editor/shared/interfaces';
+import { IItem, TypeValues } from '../../../shared/components/properties-editor/shared/interfaces';
 
 const itensLogica: FlowItem[] = [
     new FlowItem({ id: 1, sucessor: [0], top: 0, left: 0, width: 0, height: 0, isSelecionado: false, nome: "START", itemType: ItemType.START }),
@@ -107,12 +107,14 @@ const itens: IItem[] = [
             {
                 id: 1,
                 label: 'Name',
-                value: 'IF'
+                value: 'IF',
+                typeValue: TypeValues.string
             },
             {
                 id: 2,
                 label: 'Condiction',
-                value: 'true'
+                value: 'true',
+                typeValue: TypeValues.boolean
             },
         ]
     }
