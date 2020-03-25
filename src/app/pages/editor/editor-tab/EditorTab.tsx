@@ -195,5 +195,4 @@ export default class EditorTab extends Component {
             />
         );
     }
-
 }
