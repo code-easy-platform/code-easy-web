@@ -55,6 +55,7 @@ const CodeEditor: React.FC<ICodeEditorProps> = ({ itens = [], toolItens = [], on
             endLeft: 0
         }
     });
+    state.flowItens = itens;
 
     /** Usada para emitir os itens para fora do componente. */
     const onChangeFlow = () => {

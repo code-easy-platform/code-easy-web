@@ -3,10 +3,10 @@ import { TreeManager, TreeItensTypes } from 'code-easy-components';
 
 import { FlowItem, ItemType } from './../../../shared/components/code-editor/models/ItemFluxo';
 import { PropertiesEditor } from './../../../shared/components/properties-editor/PropertiesEditor';
+import { IItem, TypeValues } from '../../../shared/components/properties-editor/shared/interfaces';
 import { EditorTabTemplate } from './components/resize-tamplate/EditorTabTemplate';
 import { FlowEditor } from './../../../shared/components/code-editor/CodeEditor';
 import ColRightTemplate from './components/resize-tamplate/ColRightTemplate';
-import { IItem, TypeValues } from '../../../shared/components/properties-editor/shared/interfaces';
 
 const itensLogica: FlowItem[] = [
     new FlowItem({ id: 1, sucessor: [0], top: 0, left: 0, width: 0, height: 0, isSelecionado: false, nome: "START", itemType: ItemType.START }),
@@ -98,43 +98,68 @@ const itensArvore = [
     { itemId: "21", itemLabel: "Item 03", isSelected: false, itemChilds: [], itemType: TreeItensTypes.file, nodeExpanded: false },
     { itemId: "22", itemLabel: "Item 04", isSelected: false, itemChilds: [], itemType: TreeItensTypes.file, nodeExpanded: false },
 ];
-const itens: IItem[] = [
-    {
-        id: 1,
-        name: 'IF',
-        isHeader: true,
-        properties: [
-            {
-                id: 1,
-                label: 'Name',
-                value: 'IF',
-                typeValue: TypeValues.string
-            },
-            {
-                id: 2,
-                label: 'Condiction',
-                value: 'true',
-                typeValue: TypeValues.boolean
-            },
-        ]
-    }
-]
+const itensFluxoLogica: FlowItem[] = [
+    new FlowItem({ id: 1, sucessor: [2], top: 100, left: 80, width: 50, height: 50, isSelecionado: false, nome: "START", itemType: ItemType.START }),
+    new FlowItem({ id: 2, sucessor: [3], top: 200, left: 80, width: 50, height: 50, isSelecionado: false, nome: "IF", itemType: ItemType.IF }),
+    new FlowItem({ id: 3, sucessor: [4], top: 300, left: 80, width: 50, height: 50, isSelecionado: false, nome: "FOREACH", itemType: ItemType.FOREACH }),
+    new FlowItem({ id: 4, sucessor: [5], top: 400, left: 80, width: 50, height: 50, isSelecionado: false, nome: "ACTION", itemType: ItemType.ACTION }),
+    new FlowItem({ id: 5, sucessor: [6], top: 500, left: 80, width: 50, height: 50, isSelecionado: false, nome: "SWITCH", itemType: ItemType.SWITCH }),
+    new FlowItem({ id: 6, sucessor: [7], top: 600, left: 80, width: 50, height: 50, isSelecionado: false, nome: "ASSIGN", itemType: ItemType.ASSIGN }),
+    new FlowItem({ id: 7, sucessor: [], top: 700, left: 80, width: 50, height: 50, isSelecionado: false, nome: "END", itemType: ItemType.END }),
+];
 
+interface IEditorTabState {
+    itensProperties: IItem[];
+    itensFluxoLogica: FlowItem[];
+}
 export default class EditorTab extends Component {
 
-    private itens: FlowItem[] = [
-        new FlowItem({ id: 1, sucessor: [2], top: 100, left: 80, width: 50, height: 50, isSelecionado: false, nome: "START", itemType: ItemType.START }),
-        new FlowItem({ id: 2, sucessor: [3], top: 200, left: 80, width: 50, height: 50, isSelecionado: false, nome: "IF", itemType: ItemType.IF }),
-        new FlowItem({ id: 3, sucessor: [4], top: 300, left: 80, width: 50, height: 50, isSelecionado: false, nome: "FOREACH", itemType: ItemType.FOREACH }),
-        new FlowItem({ id: 4, sucessor: [5], top: 400, left: 80, width: 50, height: 50, isSelecionado: false, nome: "ACTION", itemType: ItemType.ACTION }),
-        new FlowItem({ id: 5, sucessor: [6], top: 500, left: 80, width: 50, height: 50, isSelecionado: false, nome: "SWITCH", itemType: ItemType.SWITCH }),
-        new FlowItem({ id: 6, sucessor: [7], top: 600, left: 80, width: 50, height: 50, isSelecionado: false, nome: "ASSIGN", itemType: ItemType.ASSIGN }),
-        new FlowItem({ id: 7, sucessor: [], top: 700, left: 80, width: 50, height: 50, isSelecionado: false, nome: "END", itemType: ItemType.END }),
-    ];
+    state: IEditorTabState = {
+        itensProperties: [],
+        itensFluxoLogica: [],
+    }
 
-    private outItens = (updatedItens: FlowItem[]) => {
+    componentDidMount() {
+        this.setState({ itensFluxoLogica: itensFluxoLogica });
+    }
 
-        console.log(updatedItens);
+    private outputFlowItens = (updatedItens: FlowItem[]) => {
+
+        let itensPropertiesChanged: IItem[] = [];
+        updatedItens.forEach(item => {
+            if (item.isSelecionado) {
+                itensPropertiesChanged.push({
+                    id: item.id,
+                    isHeader: true,
+                    name: item.nome,
+                    properties: [
+                        {
+                            id: item.id,
+                            label: "Name",
+                            typeValue: TypeValues.string,
+                            value: item.nome
+                        }
+                    ]
+                });
+            }
+        });
+
+        this.setState({ itensProperties: itensPropertiesChanged });
+
+        console.log(this.state.itensProperties);
+
+    }
+
+    private outputPropertiesItens(itens: IItem[], itensFluxoLogica: FlowItem[]) {
+
+        itens.forEach(item => {
+            const index = itensFluxoLogica.findIndex(flowItem => flowItem.id === item.id);
+
+            itensFluxoLogica[index].nome = item.name;
+
+            this.setState({ itensFluxoLogica });
+
+        });
 
     }
 
@@ -143,10 +168,10 @@ export default class EditorTab extends Component {
             <EditorTabTemplate
                 columnCenter={
                     <FlowEditor
-                        onChangeItens={this.outItens}
+                        itens={this.state.itensFluxoLogica}
+                        onChangeItens={this.outputFlowItens}
                         toolItens={itensLogica}
                         isShowToolbar={true}
-                        itens={this.itens}
                     />
                 }
                 columnRight={
@@ -159,10 +184,16 @@ export default class EditorTab extends Component {
                                 onDoubleClick={(itemId, item, e) => { console.log(itemId); console.log(item); console.log(e); }}
                             />
                         }
-                        rowBottom={<PropertiesEditor itens={itens} />}
+                        rowBottom={
+                            <PropertiesEditor
+                                itens={this.state.itensProperties}
+                                onChange={itensProperties => this.outputPropertiesItens(itensProperties, this.state.itensFluxoLogica)}
+                            />
+                        }
                     />
                 }
             />
         );
     }
+
 }

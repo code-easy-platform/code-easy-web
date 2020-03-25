@@ -14,20 +14,23 @@
 .grabber-col-right-resize-y {
   cursor: col-resize;
   overflow: hidden;
-  background-color: $color-background-col;
+  background-color: $color-transparent;
   height: $size-fill;
   width: $size-1;
 }
 
 .grabber-col-right {
-  border-left: $border-size-1 solid $color-black-50;
+  border-left: none;
   cursor: col-resize;
   height: $size-fill;
   width: $size-1;
+  position: absolute;
+  z-index: 1;
 }
 
 .grabber-col-right-resize-y {
   border-top: $border-size-1 solid $color-black-50;
+  position: absolute;
   cursor: row-resize;
   width: $size-fill;
   height: $size-2;
@@ -36,5 +39,5 @@
 // .grabber-col-left:active,
 .grabber-col-right:active,
 .grabber-col-right-resize-y:active {
-  background-color: $color-top-bar;
+  background-color: $color-transparent;
 }

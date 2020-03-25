@@ -21,11 +21,9 @@ export const ListItem: React.FC<ListItemProps> = ({ id, name, properties, isHead
     const onChangeItemProp = (item: IProperties, propIndex: number) => {
 
         state.properties[propIndex] = item;
+        state.name = state.properties[0].value;
 
-        setState({
-            ...state,
-            name: state.properties[0].value,
-        });
+        setState({ ...state });
 
         onChange(state);
 

@@ -16,12 +16,13 @@ interface PropertiesEditorProps {
 export const PropertiesEditor: React.FC<PropertiesEditorProps> = ({ itens, onChange = (_: any) => { } }) => {
 
     const [state, setState] = useState<{ itens: IItem[] }>({ itens });
+    state.itens = itens;
 
     const onChangeListItem = (data: IItem, listItemIndex: number) => {
 
         state.itens[listItemIndex] = data;
 
-        setState({ ...state })
+        setState({ ...state });
 
         onChange(state.itens);
 
