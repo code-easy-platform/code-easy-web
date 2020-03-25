@@ -125,6 +125,8 @@ export default class EditorTab extends Component {
 
     private outputFlowItens = (updatedItens: FlowItem[]) => {
 
+        this.setState({ itensProperties: [] });
+
         let itensPropertiesChanged: IItem[] = [];
         updatedItens.forEach(item => {
             if (item.isSelecionado) {

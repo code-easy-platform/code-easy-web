@@ -35,9 +35,7 @@ export class ColRightTemplate extends Component<IRecipeProps, IRecipeState> {
                 </div>
                 <div style={{ flexDirection: 'column', height: this.state.rowBottomY }}>
                     <div className="grabber-col-right-resize-y" onMouseDown={this.mouseDown}></div>
-                    <div className="padding6">
-                        {this.props.rowBottom}
-                    </div>
+                    {this.props.rowBottom}
                 </div>
             </div>
         );
