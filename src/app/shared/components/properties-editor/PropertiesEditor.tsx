@@ -5,7 +5,6 @@ import { ListItem } from './shared/components/ListItem';
 
 const css_base: React.CSSProperties = {
     flexDirection: 'column',
-    marginBottom: '100px',
     overflow: 'auto',
     flex: '1',
 };

@@ -1,10 +1,11 @@
 
 export enum TypeValues {
-    string='string',
+    expression='expression',
+    bigstring='bigstring',
     boolean='boolean',
+    string='string',
     number='number',
     binary='binary',
-
 }
 
 export interface IProperties {

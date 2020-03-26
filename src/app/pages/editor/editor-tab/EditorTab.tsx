@@ -142,6 +142,12 @@ export default class EditorTab extends Component {
                             label: "Name",
                             typeValue: TypeValues.string,
                             value: item.nome
+                        },
+                        {
+                            id: item.id + 1,
+                            label: "Enabled",
+                            typeValue: TypeValues.boolean,
+                            value: false
                         }
                     ]
                 });
