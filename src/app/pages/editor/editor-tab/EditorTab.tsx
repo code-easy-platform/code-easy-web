@@ -145,8 +145,26 @@ export default class EditorTab extends Component {
                         },
                         {
                             id: item.id + 1,
+                            label: "Description",
+                            typeValue: TypeValues.bigstring,
+                            value: "My big string description"
+                        },
+                        {
+                            id: item.id + 2,
                             label: "Enabled",
                             typeValue: TypeValues.boolean,
+                            value: false
+                        },
+                        {
+                            id: item.id + 3,
+                            label: "Height",
+                            typeValue: TypeValues.number,
+                            value: 0
+                        },
+                        {
+                            id: item.id + 4,
+                            label: "Upload",
+                            typeValue: TypeValues.binary,
                             value: false
                         }
                     ]
