@@ -3,7 +3,6 @@ import React from 'react';
 import { Project, Tab, Component, ComponentConfigs } from '../../shared/interfaces/Aplication';
 import BottonStatusBar from '../../shared/components/botton-status-bar/BottonStatusBar';
 import CodeEditorContext from '../../shared/services/contexts/CodeEditorContext';
-import { TreeInterface } from '../../shared/components/tree/TreeInterface';
 import { Status, StatusBar } from '../../shared/enuns/TypeOfStatus';
 import { ToolBar } from '../../shared/components/tool-bar/ToolBar';
 import { ComponentType } from '../../shared/enuns/ComponentType';
@@ -55,7 +54,7 @@ export default class Editor extends React.Component {
         return this.getCurrentTabSelected().itens.filter((c: Component) => c.id === componentId)[0];
     }
 
-    private carregaFilhos(tree: TreeInterface): TreeInterface[] {
+    private carregaFilhos(tree: any): any[] {
         const currTab: Tab = this.getCurrentTabSelected();
 
         currTab.itens.filter((comp) => {
@@ -65,16 +64,16 @@ export default class Editor extends React.Component {
         });
 
 
-        tree.itemChilds.forEach((itemTree: TreeInterface) => {
+        tree.itemChilds.forEach((itemTree: any) => {
             itemTree.itemChilds = this.carregaFilhos(itemTree);
         });
 
         return tree.itemChilds;
     }
 
-    private getCurrentTabTree(): TreeInterface[] {
+    private getCurrentTabTree() {
         const currTab: Tab = this.getCurrentTabSelected();
-        let tree: TreeInterface[] = [];
+        let tree: any = [];
 
         currTab.itens.filter((comp) => {
             return comp.paiId === 0
@@ -82,7 +81,7 @@ export default class Editor extends React.Component {
             tree.push({ itemChilds: [], itemId: comp.id, itemLabel: comp.configs.name, itemType: comp.configs.type, nodeExpanded: comp.configs.isExpanded || false });
         });
 
-        tree.forEach((itemTree: TreeInterface) => {
+        tree.forEach((itemTree: any) => {
             itemTree.itemChilds = this.carregaFilhos(itemTree);
         });
 

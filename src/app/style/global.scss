@@ -12,6 +12,12 @@
 *:focus {
   outline: auto;
 }
+*[selected="true"] {
+  background-color: #1f724330;
+}
+*[selected="true"]:hover {
+  background-color: #1f724340;
+}
 
 html,
 body,

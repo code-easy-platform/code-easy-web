@@ -1,0 +1,18 @@
+@import "./../../../../../../style/variables.scss";
+
+.default {
+  padding-right: $size-1-5;
+  padding-left: $size-1-5;
+  justify-content: center;
+  align-self: center;
+  height: $size-3;
+  width: $size-3;
+}
+
+.btn-expand-folder {
+  content: url("./../../icons/btn-expand-folder.svg");
+}
+
+.btn-collapse-folder {
+  content: url("./../../icons/btn-collapse-folder.svg");
+}

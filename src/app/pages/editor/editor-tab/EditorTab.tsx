@@ -1,12 +1,14 @@
 import React, { Component } from 'react';
-import { TreeManager, TreeItensTypes } from 'code-easy-components';
 
-import { FlowItem, ItemType } from './../../../shared/components/code-editor/models/ItemFluxo';
+import { TreeItensTypes } from '../../../shared/components/tree-manager/shared/models/TreeItensTypes';
+import { TreeInterface } from '../../../shared/components/tree-manager/shared/models/TreeInterface';
 import { PropertiesEditor } from './../../../shared/components/properties-editor/PropertiesEditor';
 import { IItem, TypeValues } from '../../../shared/components/properties-editor/shared/interfaces';
-import { EditorTabTemplate } from './components/resize-tamplate/EditorTabTemplate';
+import { EditorTabTemplate } from '../../../shared/components/resize-tamplate/EditorTabTemplate';
+import { FlowItem, ItemType } from './../../../shared/components/code-editor/models/ItemFluxo';
+import ColRightTemplate from '../../../shared/components/resize-tamplate/ColRightTemplate';
+import { TreeManager } from '../../../shared/components/tree-manager/TreeManager';
 import { FlowEditor } from './../../../shared/components/code-editor/CodeEditor';
-import ColRightTemplate from './components/resize-tamplate/ColRightTemplate';
 
 const itensLogica: FlowItem[] = [
     new FlowItem({ id: 1, sucessor: [0], top: 0, left: 0, width: 0, height: 0, isSelecionado: false, nome: "START", itemType: ItemType.START }),
@@ -17,7 +19,7 @@ const itensLogica: FlowItem[] = [
     new FlowItem({ id: 7, sucessor: [0], top: 0, left: 0, width: 0, height: 0, isSelecionado: false, nome: "ASSIGN", itemType: ItemType.ASSIGN }),
     new FlowItem({ id: 8, sucessor: [], top: 0, left: 0, width: 0, height: 0, isSelecionado: false, nome: "END", itemType: ItemType.END }),
 ];
-const itensArvore = [
+const itensArvore: TreeInterface[] = [
     {
         itemId: "1", itemLabel: "Item 02", isSelected: false, itemChilds: [
             {
@@ -109,19 +111,19 @@ const itensFluxoLogica: FlowItem[] = [
 ];
 
 interface IEditorTabState {
-    itensProperties: IItem[];
     itensFluxoLogica: FlowItem[];
+    itensArvore: TreeInterface[];
+    itensProperties: IItem[];
 }
 export default class EditorTab extends Component {
 
     state: IEditorTabState = {
         itensProperties: [],
         itensFluxoLogica: [],
+        itensArvore: itensArvore
     }
 
-    componentDidMount() {
-        this.setState({ itensFluxoLogica: itensFluxoLogica });
-    }
+    componentDidMount = () => this.setState({ itensFluxoLogica: itensFluxoLogica });
 
     private outputFlowItens = (updatedItens: FlowItem[]) => {
 
