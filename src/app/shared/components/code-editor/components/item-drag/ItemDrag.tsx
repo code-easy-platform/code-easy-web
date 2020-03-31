@@ -2,12 +2,7 @@ import React, { useState } from 'react';
 import { useDrag } from 'react-dnd';
 
 import { ItemType } from '../../models/ItemFluxo';
-import { Action } from '../flow-componets/Action';
-import { Switch } from '../flow-componets/Switch';
-import { Assign } from '../flow-componets/Assign';
-import { Start } from '../flow-componets/Start';
-import { End } from '../flow-componets/End';
-import { If } from '../flow-componets/IF';
+import { FlowComponent } from './FlowComponent';
 
 import icons_foreach from './../../shared/images/foreach.png';
 import icons_switch from './../../shared/images/switch.png';
@@ -16,7 +11,6 @@ import icons_action from './../../shared/images/action.png';
 import icons_start from './../../shared/images/start.png';
 import icons_end from './../../shared/images/end.png';
 import icons_if from './../../shared/images/if.png';
-import { Foreach } from '../flow-componets/Foreach';
 
 /** Usado para definir o tipo de input de parâmetros no item drag. */
 export interface ItemDragProps {
@@ -49,8 +43,10 @@ export const ItemToDrag: React.FC<ItemDragProps> = (props: ItemDragProps) => {
     const {
         isSelecionado, onChangeSelecionado = () => { },
         allowDrag, refItemPai, itemType,
-        id, outputPosition, title,
+        id, outputPosition,
     } = props;
+
+    let { title } = props;
 
     const { width, height, top, left } = props.style;
 
@@ -141,6 +137,10 @@ export const ItemToDrag: React.FC<ItemDragProps> = (props: ItemDragProps) => {
             {itemType === ItemType.IF && <img id={id} title="IF" style={style} ref={dragRef} src={icons_if} alt="IF" />}
         </div>;
     } else {
+
+        // Ajusta o tamanho do titulo para não ficar muito grande
+        title = title.length < 10 ? title : title.slice(0, 15);
+
         /** Reinderiza um tipo de tag svg na tela, somente dentro do editor de fluxo. */
         return (
             <g
@@ -151,14 +151,14 @@ export const ItemToDrag: React.FC<ItemDragProps> = (props: ItemDragProps) => {
                 key={id}
                 id={id}
             >
-                <text id={id} x={left} y={(top || 0) - 5} fill="#fff" >{title}</text>
-                {itemType === ItemType.FOREACH && <Foreach id={id} top={top} left={left} width={width} height={height} isSelecionado={isSelecionado} />}
-                {itemType === ItemType.ASSIGN && <Assign id={id} top={top} left={left} width={width} height={height} isSelecionado={isSelecionado} />}
-                {itemType === ItemType.SWITCH && <Switch id={id} top={top} left={left} width={width} height={height} isSelecionado={isSelecionado} />}
-                {itemType === ItemType.ACTION && <Action id={id} top={top} left={left} width={width} height={height} isSelecionado={isSelecionado} />}
-                {itemType === ItemType.START && <Start id={id} top={top} left={left} width={width} height={height} isSelecionado={isSelecionado} />}
-                {itemType === ItemType.END && <End id={id} top={top} left={left} width={width} height={height} isSelecionado={isSelecionado} />}
-                {itemType === ItemType.IF && <If id={id} top={top} left={left} width={width} height={height} isSelecionado={isSelecionado} />}
+                <text x={(left || 0) + ((width || 0) / 2)} textAnchor="middle" fill="#fff" y={(top || 0) - 5} id={id}>{title}</text>
+                {itemType === ItemType.FOREACH && <FlowComponent name="Foreach" id={id} top={top} left={left} width={width} height={height} childImage={icons_foreach} isSelecionado={isSelecionado} />}
+                {itemType === ItemType.ASSIGN && <FlowComponent name="ASSIGN" id={id} top={top} left={left} width={width} height={height} childImage={icons_assign} isSelecionado={isSelecionado} />}
+                {itemType === ItemType.SWITCH && <FlowComponent name="SWITCH" id={id} top={top} left={left} width={width} height={height} childImage={icons_switch} isSelecionado={isSelecionado} />}
+                {itemType === ItemType.ACTION && <FlowComponent name="ACTION" id={id} top={top} left={left} width={width} height={height} childImage={icons_action} isSelecionado={isSelecionado} />}
+                {itemType === ItemType.START && <FlowComponent name="START" id={id} top={top} left={left} width={width} height={height} childImage={icons_start} isSelecionado={isSelecionado} />}
+                {itemType === ItemType.END && <FlowComponent name="END" id={id} top={top} left={left} width={width} height={height} childImage={icons_end} isSelecionado={isSelecionado} />}
+                {itemType === ItemType.IF && <FlowComponent name="IF" id={id} top={top} left={left} width={width} height={height} childImage={icons_if} isSelecionado={isSelecionado} />}
             </g>
         );
     }

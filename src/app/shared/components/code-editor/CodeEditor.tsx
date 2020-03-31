@@ -177,8 +177,6 @@ const CodeEditor: React.FC<ICodeEditorProps> = ({ itens = [], toolItens = [], on
         onChangeFlow();
     }
 
-    console.log(svgRef);
-
     /** CONFIG TECLAS: Valida se existe um elemento no current e define os eventos das teclas para aquele elemento */
     if (svgRef.current) {
 
@@ -451,13 +449,16 @@ const CodeEditor: React.FC<ICodeEditorProps> = ({ itens = [], toolItens = [], on
 
             <div key={"CODE_EDITOR"} style={{ flex: 1, overflow: "auto", }}>
 
-                <svg ref={svgRef} tabIndex={0} id={"CODE_EDITOR_SVG"} onMouseDown={e => onMouseDown(e, true)} style={{
-                    height: state.svgSize.svgHeight,
-                    width: state.svgSize.svgWidth,
-                    minHeight: "100%",
-                    minWidth: "100%",
-                    outline: "none"
-                }}>
+                <svg ref={svgRef} tabIndex={0}
+                    id={"CODE_EDITOR_SVG"}
+                    onMouseDown={e => onMouseDown(e, true)}
+                    style={{
+                        height: state.svgSize.svgHeight,
+                        width: state.svgSize.svgWidth,
+                        minHeight: "100%",
+                        minWidth: "100%",
+                        outline: "none"
+                    }}>
 
                     {/* Reinderiza a área de seleção na tela. */}
                     <SelectorArea
@@ -492,6 +493,7 @@ const CodeEditor: React.FC<ICodeEditorProps> = ({ itens = [], toolItens = [], on
                     {/* Reinderiza os itens arrastáveis na tela! */}
                     {state.flowItens.map((item: FlowItem) => {
                         return <ItemToDrag
+                            style={{ top: item.top, left: item.left, width: item.width, height: item.height }}
                             onChangeSelecionado={onChangeSelecionado}
                             isSelecionado={item.isSelecionado}
                             outputPosition={positionChange}
@@ -500,12 +502,6 @@ const CodeEditor: React.FC<ICodeEditorProps> = ({ itens = [], toolItens = [], on
                             title={item.nome}
                             key={item.id}
                             id={item.id}
-                            style={{
-                                top: item.top,
-                                left: item.left,
-                                width: item.width,
-                                height: item.height,
-                            }}
                         />;
                     })}
 

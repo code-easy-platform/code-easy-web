@@ -2985,11 +2985,6 @@ coa@^2.0.2:
     chalk "^2.4.1"
     q "^1.1.2"
 
-code-easy-components@^0.0.3:
-  version "0.0.3"
-  resolved "https://registry.yarnpkg.com/code-easy-components/-/code-easy-components-0.0.3.tgz#49dc361b3afa04737d661c4935e88ca419bc4b95"
-  integrity sha512-40McPCOW6M7zwQTPeY6Z6f2sbAZQ6uhXpOWuY0vfzVZWL0CROOWEKpMybl2JVnjup+O2JdylUlP/CfN2m1QcDA==
-
 code-point-at@^1.0.0:
   version "1.1.0"
   resolved "https://registry.yarnpkg.com/code-point-at/-/code-point-at-1.1.0.tgz#0d070b4d043a5bea33a2f1a40e2edb3d9a4ccf77"
