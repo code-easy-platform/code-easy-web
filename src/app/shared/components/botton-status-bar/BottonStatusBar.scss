@@ -1,11 +1,12 @@
-@import './../../../style/variables.scss';
+@import "./../../../style/variables.scss";
 
 .status-bar-main {
     background-color: $color-botton-bar;
     width: $size-window-vw-fill;
     align-content: flex-start;
     justify-content: center;
-    flex-direction: column;
+    align-items: center;
+    flex-direction: row;
     padding: $size-0-5;
     font-weight: 400;
     height: $size-5;

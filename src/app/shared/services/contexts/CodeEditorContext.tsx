@@ -1,17 +1,14 @@
 import React from 'react';
-import Status, { StatusBar } from '../../enuns/TypeOfStatus';
 import {  Project, Tab, Component } from '../../interfaces/Aplication';
 import ComponentType from '../../enuns/ComponentType';
 import { DEFAULT_PROJECT } from '../LocalStorage';
 
 export const CodeEditorContext = React.createContext({
-    statusBar: Status.OUTRO_STATUS,
     project: DEFAULT_PROJECT,
     editingTab: ComponentType.tabRouters,
 
     toggleResourcesTab: (tab: Tab) => { },
     changeProjectState: (project: Project) => { },
-    toggleStatusbar: (statusBar: StatusBar) => { },
     addComponent: (itemPaiId: number, itemName: string, itemType: ComponentType, width?: number, height?: number, top?: number, left?: number): any => {},
     removeComponentById: (componentId: number): any => {},
     /**

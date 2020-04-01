@@ -1,9 +1,8 @@
 import React from 'react';
 
 import { Project, Tab, Component, ComponentConfigs } from '../../shared/interfaces/Aplication';
-import BottonStatusBar from '../../shared/components/botton-status-bar/BottonStatusBar';
+import { BottonStatusBar } from '../../shared/components/botton-status-bar/BottonStatusBar';
 import CodeEditorContext from '../../shared/services/contexts/CodeEditorContext';
-import { Status, StatusBar } from '../../shared/enuns/TypeOfStatus';
 import { ToolBar } from '../../shared/components/tool-bar/ToolBar';
 import { ComponentType } from '../../shared/enuns/ComponentType';
 import FluxoComponentTypes from '../../shared/enuns/FluxoList';
@@ -18,7 +17,6 @@ import './Editor.scss';
 export default class Editor extends React.Component {
 
     public state = {
-        statusBar: Status.OUTRO_STATUS,
         project: Storage.getProject(),
         currentTab: <EditorTab />,
         editingTab: ComponentType.tabRouters,
@@ -26,7 +24,6 @@ export default class Editor extends React.Component {
         addComponent: (itemPaiId: number, itemName: string, itemType: ComponentType, width?: number, height?: number, top?: number, left?: number): Component =>
             this.addComponent(itemPaiId, itemName, itemType, width, height, top, left),
 
-        toggleStatusbar: (statusBar: StatusBar) => this.setState({ statusBar }),
         changeProjectState: (project: Project) => this.changeProjectState(project),
         toggleResourcesTab: (tab: Tab) => this.setState({ editingTab: tab.configs.type }),
         removeComponentById: (componentId: number) => this.removeComponentById(componentId),
@@ -165,7 +162,7 @@ export default class Editor extends React.Component {
         return newComponent;
     }
 
-    private changeCurrentTab = (tab: String) => {
+    private onChangeTab = (tab: String) => {
         if (tab === CurrentTab.editor) {
             this.setState({ currentTab: <EditorTab /> });
         } else if (tab === CurrentTab.plugins) {
@@ -179,7 +176,7 @@ export default class Editor extends React.Component {
         return (
             <CodeEditorContext.Provider value={this.state}>
                 <div className="main-page">
-                    <ToolBar changeCurrentTab={this.changeCurrentTab} />
+                    <ToolBar onChangeTab={this.onChangeTab} />
 
                     <div style={{ height: "calc(100vh - 60px)" }}>
                         {this.state.currentTab}

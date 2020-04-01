@@ -15,7 +15,7 @@ export const ToolBar = (props: any) => {
 
     function changeCurrentTab(tab: CurrentTab) {
         setCurrentTab(tab);
-        props.changeCurrentTab(tab);
+        props.onChangeTab(tab);
     }
 
     return (

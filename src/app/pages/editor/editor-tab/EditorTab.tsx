@@ -9,6 +9,7 @@ import { FlowItem, ItemType } from './../../../shared/components/code-editor/mod
 import ColRightTemplate from '../../../shared/components/resize-tamplate/ColRightTemplate';
 import { TreeManager } from '../../../shared/components/tree-manager/TreeManager';
 import { FlowEditor } from './../../../shared/components/code-editor/CodeEditor';
+import { AlertService, AlertTypes } from '../../../shared/components/tool-bar/AlertService';
 
 const itensLogica: FlowItem[] = [
     new FlowItem({ id: 1, sucessor: [0], top: 0, left: 0, width: 0, height: 0, isSelecionado: false, nome: "START", itemType: ItemType.START }),
@@ -112,21 +113,31 @@ const itensFluxoLogica: FlowItem[] = [
 
 interface IEditorTabState {
     itensFluxoLogica: FlowItem[];
+    toolsItensFluxo: FlowItem[];
     itensArvore: TreeInterface[];
     itensProperties: IItem[];
 }
 export default class EditorTab extends Component {
 
     state: IEditorTabState = {
-        itensProperties: [],
         itensFluxoLogica: [],
-        itensArvore: itensArvore
+        toolsItensFluxo: [],
+        itensProperties: [],
+        itensArvore: [],
     }
 
-    componentDidMount = () => this.setState({ itensFluxoLogica: itensFluxoLogica });
+    componentDidMount = () => {
+        this.setState({
+            itensFluxoLogica: itensFluxoLogica,
+            toolsItensFluxo: itensLogica,
+            itensArvore: itensArvore,
+        });
+
+    }
 
     private outputFlowItens = (updatedItens: FlowItem[]) => {
 
+        AlertService.sendMessage(AlertTypes.loading, "Carregando módulos do node...", "A aplicação foi iniciada com êxito!");
         this.setState({ itensProperties: [] });
 
         let itensPropertiesChanged: IItem[] = [];
@@ -174,8 +185,6 @@ export default class EditorTab extends Component {
 
         this.setState({ itensProperties: itensPropertiesChanged });
 
-        console.log(this.state.itensProperties);
-
     }
 
     private outputPropertiesItens(itens: IItem[], itensFluxoLogica: FlowItem[]) {
@@ -198,7 +207,7 @@ export default class EditorTab extends Component {
                     <FlowEditor
                         itens={this.state.itensFluxoLogica}
                         onChangeItens={this.outputFlowItens}
-                        toolItens={itensLogica}
+                        toolItens={this.state.toolsItensFluxo}
                         isShowToolbar={true}
                     />
                 }
