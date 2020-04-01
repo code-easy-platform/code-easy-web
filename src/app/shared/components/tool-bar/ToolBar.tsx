@@ -1,6 +1,6 @@
 import React, { useState, useContext } from 'react';
 
-import CodeEditorContext from '../../services/contexts/CodeEditorContext';
+import { CodeEditorContext } from '../../services/contexts/CodeEditorContext';
 import { TabButton, TabGroup } from '../tab-button/TabButton';
 import { Storage } from '../../services/LocalStorage';
 import { CurrentTab } from '../../enuns/CurrentTab';

@@ -1,5 +1,6 @@
 import React from 'react';
-import {  Project, Tab, Component } from '../../interfaces/Aplication';
+
+import { Project, Tab, Component } from '../../interfaces/Aplication';
 import ComponentType from '../../enuns/ComponentType';
 import { DEFAULT_PROJECT } from '../LocalStorage';
 
@@ -9,21 +10,19 @@ export const CodeEditorContext = React.createContext({
 
     toggleResourcesTab: (tab: Tab) => { },
     changeProjectState: (project: Project) => { },
-    addComponent: (itemPaiId: number, itemName: string, itemType: ComponentType, width?: number, height?: number, top?: number, left?: number): any => {},
-    removeComponentById: (componentId: number): any => {},
+    addComponent: (itemPaiId: number, itemName: string, itemType: ComponentType, width?: number, height?: number, top?: number, left?: number): any => { },
+    removeComponentById: (componentId: number): any => { },
     /**
      * @param id Identificador do componente que esta sendo alterado.
      * @param tabIndex Aba que pode ser do tipo "Routers", "Actions" ou "Data".
      * @param component Componente com suas devidas alterações, para que seja salvo no storage.
      */
-    changeComponentState: (id:  number, component: Component) => { },
+    changeComponentState: (id: number, component: Component) => { },
 
     // Funcões axuliares.
-    getCurrentTabSelected: (): any => {},
-    getIndexCurrentTabSelected: (): any => {},
-    getCurrentTabComponents: (filters: { typeComponent: ComponentType[] }): any => {},
-    getCurrentTabTree: (): any => {},
-    getComponentById: (componentId: number): any => {},
+    getCurrentTabSelected: (): any => { },
+    getIndexCurrentTabSelected: (): any => { },
+    getCurrentTabComponents: (filters: { typeComponent: ComponentType[] }): any => { },
+    getCurrentTabTree: (): any => { },
+    getComponentById: (componentId: number): any => { },
 });
-
-export default CodeEditorContext;

@@ -6,10 +6,11 @@ import { PropertiesEditor } from './../../../shared/components/properties-editor
 import { IItem, TypeValues } from '../../../shared/components/properties-editor/shared/interfaces';
 import { EditorTabTemplate } from '../../../shared/components/resize-tamplate/EditorTabTemplate';
 import { FlowItem, ItemType } from './../../../shared/components/code-editor/models/ItemFluxo';
+import { AlertService, AlertTypes } from '../../../shared/components/tool-bar/AlertService';
 import ColRightTemplate from '../../../shared/components/resize-tamplate/ColRightTemplate';
+import { CodeEditorContext } from '../../../shared/services/contexts/CodeEditorContext';
 import { TreeManager } from '../../../shared/components/tree-manager/TreeManager';
 import { FlowEditor } from './../../../shared/components/code-editor/CodeEditor';
-import { AlertService, AlertTypes } from '../../../shared/components/tool-bar/AlertService';
 
 const itensLogica: FlowItem[] = [
     new FlowItem({ id: 1, sucessor: [0], top: 0, left: 0, width: 0, height: 0, isSelecionado: false, nome: "START", itemType: ItemType.START }),
@@ -118,6 +119,7 @@ interface IEditorTabState {
     itensProperties: IItem[];
 }
 export default class EditorTab extends Component {
+    private codeEditorContext: any = this.context;
 
     state: IEditorTabState = {
         itensFluxoLogica: [],
@@ -127,6 +129,10 @@ export default class EditorTab extends Component {
     }
 
     componentDidMount = () => {
+        let itensTree = this.codeEditorContext.getCurrentTabTree();
+
+        console.log(itensTree);
+        
         this.setState({
             itensFluxoLogica: itensFluxoLogica,
             toolsItensFluxo: itensLogica,
@@ -233,3 +239,4 @@ export default class EditorTab extends Component {
         );
     }
 }
+EditorTab.contextType = CodeEditorContext;

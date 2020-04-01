@@ -2,7 +2,7 @@ import React from 'react';
 
 import { Project, Tab, Component, ComponentConfigs } from '../../shared/interfaces/Aplication';
 import { BottonStatusBar } from '../../shared/components/botton-status-bar/BottonStatusBar';
-import CodeEditorContext from '../../shared/services/contexts/CodeEditorContext';
+import { CodeEditorContext } from '../../shared/services/contexts/CodeEditorContext';
 import { ToolBar } from '../../shared/components/tool-bar/ToolBar';
 import { ComponentType } from '../../shared/enuns/ComponentType';
 import FluxoComponentTypes from '../../shared/enuns/FluxoList';
@@ -68,9 +68,9 @@ export default class Editor extends React.Component {
         return tree.itemChilds;
     }
 
-    private getCurrentTabTree() {
+    private getCurrentTabTree(): any[] {
         const currTab: Tab = this.getCurrentTabSelected();
-        let tree: any = [];
+        let tree: any[] = [];
 
         currTab.itens.filter((comp) => {
             return comp.paiId === 0
