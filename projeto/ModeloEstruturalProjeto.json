@@ -1,0 +1,45 @@
+{
+    "basic": {
+        "name": "api-teste",
+        "label": "Api teste",
+        "description": "Minha API de teste",
+        "type": "api-node",
+        "version": "0.0.1",
+        "autor": "string",
+        "currentProcess": ""
+    },
+    "tabs": [
+        {
+            "name": "actions",
+            "label": "Actions",
+            "description": "Ações de servidor",
+            "type": "actions",
+            "itens": [
+                {
+                    "id": "1",
+                    "type": "FILE",
+                    "label": "Minha",
+                    "isEditing": true,
+                    "isSelected": true,
+                    "nodeExpanded": false,
+                    "description": "Minha descrição desta ação de servidor",
+                    "itens": [
+                        {
+                            "id": 1,
+                            "top": 100,
+                            "left": 80,
+                            "width": 50,
+                            "height": 50,
+                            "nome": "START",
+                            "itemType": "START",
+                            "isSelecionado": false,
+                            "sucessor": [
+                                2
+                            ]
+                        }
+                    ]
+                }
+            ]
+        }
+    ]
+}

@@ -1,18 +1,21 @@
 import React, { FC, useRef } from 'react';
-import { useDrag } from 'react-dnd';
+import { useDrag, useDrop, DropTargetMonitor } from 'react-dnd';
 
 import { TreeItensTypes } from '../models/TreeItensTypes';
 import { TreeInterface } from '../models/TreeInterface';
 import { Icon } from './icon/icon';
 
 interface ItemTreeProps {
-    paddingLeft: number,
-    itemTree: TreeInterface,
-    onSelect(itemTreeId: string, event: React.MouseEvent<HTMLDivElement, MouseEvent>): void | undefined,
+    isUseDrop: boolean;
+    isUseDrag: boolean;
+    paddingLeft: number;
+    itemTree: TreeInterface;
+    onSelect(itemTreeId: string, event: React.MouseEvent<HTMLDivElement, MouseEvent>): void | undefined;
     onDoubleClick(itemTreeId: string, item: TreeInterface, e: React.MouseEvent<HTMLDivElement, MouseEvent>): void | undefined;
-    onContextMenu(itemTreeId: string, e: React.MouseEvent<HTMLDivElement, MouseEvent>): void | undefined,
+    onContextMenu(itemTreeId: string, e: React.MouseEvent<HTMLDivElement, MouseEvent>): void | undefined;
+    onDropItem(targetItemId: string, dropppedItemId: string, droppedItemProps: any): void;
 }
-export const TreeItem: FC<ItemTreeProps> = ({ itemTree, paddingLeft, onSelect, onContextMenu, onDoubleClick }) => {
+export const TreeItem: FC<ItemTreeProps> = ({ itemTree, paddingLeft, onSelect, onContextMenu, onDoubleClick, onDropItem, isUseDrag, isUseDrop }) => {
 
     // Vai mandar para fora da arvore qual o id do item que foi clicado.
     const onContext = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
@@ -27,11 +30,26 @@ export const TreeItem: FC<ItemTreeProps> = ({ itemTree, paddingLeft, onSelect, o
 
     /** Permite que um elemento seja arrastado e dropado em outro lugar.. */
     const [, dragRef] = useDrag({
-        item: { type: 'ACTION', itemProps: { left: 0, top: 0, title: itemTree.itemLabel, itemType: 'ACTION', sucessor: [0] } },
+        item: {
+            type: itemTree.itemType,
+            itemProps: {
+                itemType: itemTree.itemType,
+                title: itemTree.itemLabel,
+                id: itemTree.itemId,
+                itemTree: itemTree,
+                sucessor: [0],
+            }
+        },
         collect: monitor => ({ isDragging: monitor.isDragging() }),
     });
+    if (isUseDrag) dragRef(itemRef); /** Agrupa as referências do drop com as da ref. */
 
-    dragRef(itemRef)
+    /** Usado para que seja possível o drop de itens no editor. */
+    const [, dropRef] = useDrop({
+        accept: [TreeItensTypes.file, TreeItensTypes.folder],
+        drop(item: any, monitor: DropTargetMonitor) { onDropItem(itemTree.itemId, item.itemProps.id, item) },
+    });
+    if (isUseDrop) dropRef(itemRef); /** Agrupa as referências do drop com as da ref. */
 
     return (
         <div

@@ -8,12 +8,15 @@ import { Tree } from './shared/components/Tree';
 import './TreeManager.scss';
 
 interface TreeManagerProps {
-    itemBase: TreeInterface,
+    isUseDrop?: boolean;
+    isUseDrag?: boolean;
+    itemBase: TreeInterface;
     onClick(itemTreeId: string, item: TreeInterface, e: React.MouseEvent<HTMLDivElement, MouseEvent>): void | undefined;
     onDoubleClick(itemTreeId: string, item: TreeInterface, e: React.MouseEvent<HTMLDivElement, MouseEvent>): void | undefined;
     onContextMenu(itemTreeId: string, e: React.MouseEvent<HTMLDivElement, MouseEvent>): void | undefined;
+    onDropItem?(targetItemId: string, dropppedItemId: string, droppedItemProps: any): void;
 }
-export const TreeManager: FC<TreeManagerProps> = ({ itemBase, onClick, onContextMenu, onDoubleClick }) => {
+export const TreeManager: FC<TreeManagerProps> = ({ itemBase, onClick, onContextMenu, onDoubleClick, onDropItem = () => { }, isUseDrag = false, isUseDrop = false }) => {
 
     const [state, setState] = useState("");
 
@@ -26,6 +29,8 @@ export const TreeManager: FC<TreeManagerProps> = ({ itemBase, onClick, onContext
         <DndProvider backend={HTML5Backend}>
             <div className="tree-base">
                 <Tree
+                    isUseDrag={isUseDrag}
+                    isUseDrop={isUseDrop}
                     item={{
                         itemId: itemBase.itemId,
                         itemLabel: itemBase.itemLabel,
@@ -39,6 +44,7 @@ export const TreeManager: FC<TreeManagerProps> = ({ itemBase, onClick, onContext
                     itemIdSelected={state}
                     onContextMenu={onContextMenu}
                     onDoubleClick={onDoubleClick}
+                    onDropItem={onDropItem}
                 />
                 <div style={{ paddingBottom: 100 }} />
             </div>
