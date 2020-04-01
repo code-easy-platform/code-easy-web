@@ -1,7 +1,8 @@
 import React, { FC, useRef } from 'react';
-import { TreeInterface } from '../models/TreeInterface';
+import { useDrag } from 'react-dnd';
 
 import { TreeItensTypes } from '../models/TreeItensTypes';
+import { TreeInterface } from '../models/TreeInterface';
 import { Icon } from './icon/icon';
 
 interface ItemTreeProps {
@@ -23,6 +24,14 @@ export const TreeItem: FC<ItemTreeProps> = ({ itemTree, paddingLeft, onSelect, o
         let item: any = itemRef.current
         item.setAttribute('selected', itemTree.isSelected);
     }
+
+    /** Permite que um elemento seja arrastado e dropado em outro lugar.. */
+    const [, dragRef] = useDrag({
+        item: { type: 'ACTION', itemProps: { left: 0, top: 0, title: itemTree.itemLabel, itemType: 'ACTION', sucessor: [0] } },
+        collect: monitor => ({ isDragging: monitor.isDragging() }),
+    });
+
+    dragRef(itemRef)
 
     return (
         <div
