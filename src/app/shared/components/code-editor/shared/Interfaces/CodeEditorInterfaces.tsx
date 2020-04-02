@@ -20,8 +20,8 @@ export interface ICodeEditorProps {
     /** Function - Usada para emitir através do output o fluxo atualidado, acontece a cada mudança de estado dos itens de fluxo. */
     onChangeItens(itens: FlowItem[]): any;
 
-    /** Acionada quando um item for dropado no editor */
-    onDropItem?(oldItemId: string, newItemId: string, newItem: FlowItem): boolean | undefined;
+    /** Acionada quando um item for dropado no editor espera o mesmo item, porem o item pode sofrer alterações adicionais */
+    onDropItem?(oldItemId: string, newItemId: string, newItem: FlowItem): FlowItem | undefined;
 
 }
 

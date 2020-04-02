@@ -35,7 +35,7 @@ const acceptedInDrop: ItemType[] = [ItemType.START, ItemType.ACTION, ItemType.IF
 let backupFlow: string = "";
 
 /** Editor do fluxo. */
-const CodeEditor: React.FC<ICodeEditorProps> = ({ itens = [], toolItens = [], onChangeItens = () => { }, isShowToolbar = false, onDropItem = () => true, allowDropTo=[] }) => {
+const CodeEditor: React.FC<ICodeEditorProps> = ({ itens = [], toolItens = [], onChangeItens = () => { }, isShowToolbar = false, onDropItem = () => undefined, allowDropTo = [] }) => {
 
     /** Referencia o svg onde está todos os itens de fluxo. */
     const svgRef = useRef<any>(null);
@@ -97,10 +97,21 @@ const CodeEditor: React.FC<ICodeEditorProps> = ({ itens = [], toolItens = [], on
                 width: 50,
             });
 
+            /** Espera o retorno para inserir o item, se receber undefined só insere, se for diferente de undefined insere o resultado do event se existir algo */
             const onDropRes = onDropItem(item.id, newItem.id.toString(), newItem);
-            if (onDropRes === true) {
+            if (onDropRes === undefined) {
 
                 state.flowItens.push(newItem);
+
+                setState({ ...state, flowItens: state.flowItens });
+
+                svgRef.current.focus();
+
+                onChangeFlow();
+
+            } else if (onDropRes) {
+
+                state.flowItens.push(onDropRes);
 
                 setState({ ...state, flowItens: state.flowItens });
 
