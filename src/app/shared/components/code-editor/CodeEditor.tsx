@@ -20,10 +20,10 @@ import { Utils } from './shared/Utils';
  * @param onDropItem Function - Usada para emitir através do output o item que foi dropado no fluxo.
  * @param isShowToolbar boolean - Usado para exibir ou não a toolbox cons itens de lógica.
  */
-export const FlowEditor: FC<ICodeEditorProps> = ({ itens = [], toolItens = [], onChangeItens = () => { }, isShowToolbar = false, onDropItem }) => {
+export const FlowEditor: FC<ICodeEditorProps> = ({ itens = [], toolItens = [], onChangeItens = () => { }, isShowToolbar = false, onDropItem, allowDropTo }) => {
     return (
         <DndProvider backend={HTML5Backend}>
-            <CodeEditor itens={itens} toolItens={toolItens} onChangeItens={onChangeItens} isShowToolbar={isShowToolbar} onDropItem={onDropItem} />
+            <CodeEditor itens={itens} toolItens={toolItens} onChangeItens={onChangeItens} isShowToolbar={isShowToolbar} onDropItem={onDropItem} allowDropTo={allowDropTo} />
         </DndProvider>
     );
 }
@@ -35,7 +35,7 @@ const acceptedInDrop: ItemType[] = [ItemType.START, ItemType.ACTION, ItemType.IF
 let backupFlow: string = "";
 
 /** Editor do fluxo. */
-const CodeEditor: React.FC<ICodeEditorProps> = ({ itens = [], toolItens = [], onChangeItens = () => { }, isShowToolbar = false, onDropItem = () => true }) => {
+const CodeEditor: React.FC<ICodeEditorProps> = ({ itens = [], toolItens = [], onChangeItens = () => { }, isShowToolbar = false, onDropItem = () => true, allowDropTo=[] }) => {
 
     /** Referencia o svg onde está todos os itens de fluxo. */
     const svgRef = useRef<any>(null);
@@ -76,7 +76,7 @@ const CodeEditor: React.FC<ICodeEditorProps> = ({ itens = [], toolItens = [], on
 
     /** Usado para que seja possível o drop de itens no editor. */
     const [, dropRef] = useDrop({
-        accept: acceptedInDrop,
+        accept: [...acceptedInDrop, ...allowDropTo], // Especifica quem pode ser dropado na editor
         drop(item: any, monitor: DropTargetMonitor) {
 
             const target: any = svgRef.current;

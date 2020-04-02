@@ -198,6 +198,14 @@ export default class EditorTab extends Component {
 
     }
 
+    private onDropItemCodeEditor(oldItemId: string, newItemId: string, newItem: FlowItem): boolean {
+        console.log(oldItemId);
+        console.log(newItemId);
+        console.log(newItem);
+
+        return true;
+    }
+
     private getSelectedItem(tab: Tab): IItem {
 
         return {
@@ -256,10 +264,12 @@ export default class EditorTab extends Component {
             <EditorTabTemplate
                 columnCenter={
                     <FlowEditor
-                        itens={itensFluxoLogica}
-                        onChangeItens={this.outputFlowItens}
-                        toolItens={itensLogica}
                         isShowToolbar={true}
+                        toolItens={itensLogica}
+                        itens={itensFluxoLogica}
+                        allowDropTo={[TreeItensTypes.file]}
+                        onChangeItens={this.outputFlowItens}
+                        onDropItem={this.onDropItemCodeEditor.bind(this)}
                     />
                 }
                 columnRight={

@@ -14,6 +14,9 @@ export interface ICodeEditorProps {
     /** FlowItem[] - Usado para exibir os itens na tela do editor */
     itens: FlowItem[];
 
+    /** string[] - Usado para definir quais itens adicionais são permitidos no fluxo */
+    allowDropTo?: string[];
+
     /** Function - Usada para emitir através do output o fluxo atualidado, acontece a cada mudança de estado dos itens de fluxo. */
     onChangeItens(itens: FlowItem[]): any;
 
