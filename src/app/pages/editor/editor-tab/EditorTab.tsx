@@ -21,15 +21,6 @@ const itensLogica: FlowItem[] = [
     new FlowItem({ id: 7, sucessor: [0], top: 0, left: 0, width: 0, height: 0, isSelecionado: false, nome: "ASSIGN", itemType: ItemType.ASSIGN }),
     new FlowItem({ id: 8, sucessor: [], top: 0, left: 0, width: 0, height: 0, isSelecionado: false, nome: "END", itemType: ItemType.END }),
 ];
-const itensFluxoLogica: FlowItem[] = [
-    new FlowItem({ id: 1, sucessor: [2], top: 100, left: 80, width: 50, height: 50, isSelecionado: false, nome: "START", itemType: ItemType.START }),
-    new FlowItem({ id: 2, sucessor: [3], top: 200, left: 80, width: 50, height: 50, isSelecionado: false, nome: "IF", itemType: ItemType.IF }),
-    new FlowItem({ id: 3, sucessor: [4], top: 300, left: 80, width: 50, height: 50, isSelecionado: false, nome: "FOREACH", itemType: ItemType.FOREACH }),
-    new FlowItem({ id: 4, sucessor: [5], top: 400, left: 80, width: 50, height: 50, isSelecionado: false, nome: "ACTION", itemType: ItemType.ACTION }),
-    new FlowItem({ id: 5, sucessor: [6], top: 500, left: 80, width: 50, height: 50, isSelecionado: false, nome: "SWITCH", itemType: ItemType.SWITCH }),
-    new FlowItem({ id: 6, sucessor: [7], top: 600, left: 80, width: 50, height: 50, isSelecionado: false, nome: "ASSIGN", itemType: ItemType.ASSIGN }),
-    new FlowItem({ id: 7, sucessor: [], top: 700, left: 80, width: 50, height: 50, isSelecionado: false, nome: "END", itemType: ItemType.END }),
-];
 
 enum TabType {
     data = "DATA",
@@ -152,10 +143,11 @@ export default class EditorTab extends Component {
     // private codeEditorContext: any = this.context;
 
     state = {
-        tab: mockTab,
-        itensLogica: [],
-        propEditor: [],
         tree: [],
+        tab: mockTab,
+        propEditor: [],
+        itensLogica: [],
+        currentFocus: 'tree',
     }
 
     componentWillMount() {
@@ -177,7 +169,7 @@ export default class EditorTab extends Component {
         });
 
         this.setState({
-            tab: { ...this.state.tab, itensFluxoLogica },
+            tab: { ...this.state.tab },
             tree: this.treeManagerGetTree(this.state.tab.itens),
             itensLogica: this.codeEditorGetItensLogica(this.state.tab.itens),
             propEditor: this.propertiesEditorGetSelectedItem(this.state.tab.itens),
@@ -187,26 +179,62 @@ export default class EditorTab extends Component {
 
     private propertiesEditorGetSelectedItem(itens: TabChild[]): IItem[] {
 
-        let itemSelected = itens.find(item => item.isSelected);
+        let itemIndex = itens.findIndex(item => item.isSelected);
 
-        if (itemSelected) {
-            return [{
-                isHeader: true,
-                name: itemSelected.label,
-                id: parseInt(itemSelected.id),
-                properties: [
+        if (itemIndex < 0) {
+            if (this.state.currentFocus === 'tree') {
+                return [
                     {
-                        id: 1,
-                        label: 'Label',
-                        value: itemSelected.label,
-                        typeValue: TypeValues.string
+                        isHeader: true,
+                        name: itens[itemIndex].label,
+                        id: parseInt(itens[itemIndex].id),
+                        properties: [
+                            {
+                                id: 1,
+                                label: 'Label',
+                                value: itens[itemIndex].label,
+                                typeValue: TypeValues.string
+                            },
+                            {
+                                id: 2,
+                                label: 'Description',
+                                value: itens[itemIndex].description,
+                                typeValue: TypeValues.string
+                            }
+                        ]
                     }
                 ]
-            }]
+            } else if (this.state.currentFocus === 'flow') {
+
+                const itensFiltereds: FlowItem[] = this.state.itensLogica.filter((flowItem: FlowItem) => flowItem.isSelecionado);
+
+                const mappedItens: IItem[] = [];
+                itensFiltereds.forEach(filteredItem => {
+                    mappedItens.push({
+                        isHeader: true,
+                        id: filteredItem.id,
+                        name: filteredItem.nome,
+                        properties: [
+                            {
+                                id: 1,
+                                label: 'Label',
+                                value: filteredItem.nome,
+                                typeValue: TypeValues.string
+                            }
+                        ]
+                    });
+                });
+
+                return mappedItens;
+            } else {
+                return [];
+            }
         } else {
             return [];
         }
     }
+
+
 
     private codeEditorOutputFlowItens = (updatedItens: FlowItem[]) => {
 
@@ -255,6 +283,8 @@ export default class EditorTab extends Component {
             }
         });
 
+        this.setState({ currentFocus: 'flow' });
+
         this.setState({
             tree: this.treeManagerGetTree(this.state.tab.itens),
             itensLogica: this.codeEditorGetItensLogica(this.state.tab.itens),
@@ -274,6 +304,8 @@ export default class EditorTab extends Component {
             newItem.itemType = ItemType.ACTION;
         }
 
+        this.setState({ currentFocus: 'flow' });
+
         return newItem;
     }
 
@@ -288,6 +320,8 @@ export default class EditorTab extends Component {
         }
 
     }
+
+    
 
     private treeManagerOnDropItem(targetId: string, droppedId: string, droppedItem: any): TreeInterface {
 
@@ -312,6 +346,8 @@ export default class EditorTab extends Component {
             itemChilds: this.state.tree,
         };
         itens[index].itemPaiId = targetId;
+
+        this.setState({ currentFocus: 'tree' });
 
         this.setState({
             tab: { ...this.state.tab, itens },
@@ -344,6 +380,8 @@ export default class EditorTab extends Component {
 
         itens[index].isSelected = true;
 
+        this.setState({ urrentFocus: 'tree' });
+
         this.setState({
             tab: { ...this.state.tab, itens },
             tree: this.treeManagerGetTree(itens),
@@ -364,6 +402,8 @@ export default class EditorTab extends Component {
         });
 
         itens[index].isEditing = true;
+
+        this.setState({ urrentFocus: 'flow' });
 
         this.setState({
             tab: { ...this.state.tab, itens },
@@ -410,7 +450,6 @@ export default class EditorTab extends Component {
     }
 
     render() {
-
         return (
             <EditorTabTemplate
                 columnCenter={
@@ -419,8 +458,8 @@ export default class EditorTab extends Component {
                         toolItens={itensLogica}
                         itens={this.state.itensLogica}
                         allowDropTo={[TreeItensTypes.file]}
-                        onChangeItens={this.codeEditorOutputFlowItens.bind(this)}
                         onDropItem={this.codeEditorOnDropItem.bind(this)}
+                        onChangeItens={this.codeEditorOutputFlowItens.bind(this)}
                     />
                 }
                 columnRight={
