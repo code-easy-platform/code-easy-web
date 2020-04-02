@@ -17,12 +17,13 @@ import { Utils } from './shared/Utils';
  * @param itens FlowItem[] - Usado para exibir os itens na tela do editor.
  * @param toolItens FlowItem[] - Usado para exibir os itens na toolbox do editor.
  * @param onChangeItens Function - Usada para emitir através do output o fluxo atualidado, acontece a cada mudança de estado dos itens de fluxo.
+ * @param onDropItem Function - Usada para emitir através do output o item que foi dropado no fluxo.
  * @param isShowToolbar boolean - Usado para exibir ou não a toolbox cons itens de lógica.
  */
-export const FlowEditor: FC<ICodeEditorProps> = ({ itens = [], toolItens = [], onChangeItens = () => { }, isShowToolbar = false }) => {
+export const FlowEditor: FC<ICodeEditorProps> = ({ itens = [], toolItens = [], onChangeItens = () => { }, isShowToolbar = false, onDropItem }) => {
     return (
         <DndProvider backend={HTML5Backend}>
-            <CodeEditor itens={itens} toolItens={toolItens} onChangeItens={onChangeItens} isShowToolbar={isShowToolbar} />
+            <CodeEditor itens={itens} toolItens={toolItens} onChangeItens={onChangeItens} isShowToolbar={isShowToolbar} onDropItem={onDropItem} />
         </DndProvider>
     );
 }
@@ -34,7 +35,7 @@ const acceptedInDrop: ItemType[] = [ItemType.START, ItemType.ACTION, ItemType.IF
 let backupFlow: string = "";
 
 /** Editor do fluxo. */
-const CodeEditor: React.FC<ICodeEditorProps> = ({ itens = [], toolItens = [], onChangeItens = () => { }, isShowToolbar = false }) => {
+const CodeEditor: React.FC<ICodeEditorProps> = ({ itens = [], toolItens = [], onChangeItens = () => { }, isShowToolbar = false, onDropItem = () => true }) => {
 
     /** Referencia o svg onde está todos os itens de fluxo. */
     const svgRef = useRef<any>(null);
@@ -84,7 +85,7 @@ const CodeEditor: React.FC<ICodeEditorProps> = ({ itens = [], toolItens = [], on
             const targetOffsetY: number = ((draggedOffSet.y) + (targetSize.top - targetSize.top - targetSize.top) - 25);
             const targetOffsetX: number = ((draggedOffSet.x) + (targetSize.left - targetSize.left - targetSize.left) - 25);
 
-            state.flowItens.push(new FlowItem({
+            let newItem = new FlowItem({
                 id: Utils.getRandomId(),
                 itemType: item.itemProps.itemType,
                 nome: item.itemProps.title,
@@ -94,13 +95,20 @@ const CodeEditor: React.FC<ICodeEditorProps> = ({ itens = [], toolItens = [], on
                 sucessor: [],
                 height: 50,
                 width: 50,
-            }));
+            });
 
-            setState({ ...state, flowItens: state.flowItens });
+            const onDropRes = onDropItem(item.id, newItem.id.toString(), newItem);
+            if (onDropRes === true) {
 
-            svgRef.current.focus();
+                state.flowItens.push(newItem);
 
-            onChangeFlow();
+                setState({ ...state, flowItens: state.flowItens });
+
+                svgRef.current.focus();
+
+                onChangeFlow();
+
+            }
         },
     });
 

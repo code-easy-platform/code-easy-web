@@ -6,16 +6,20 @@ import { FlowItem } from "../../models/ItemFluxo";
 export interface ICodeEditorProps {
 
     /** boolean - Usado para exibir ou não a toolbox cons itens de lógica. */
-    isShowToolbar: boolean,
+    isShowToolbar: boolean;
 
     /** FlowItem[] - Usado para exibir os itens na toolbox do editor. */
-    toolItens?: FlowItem[],
+    toolItens?: FlowItem[];
 
     /** FlowItem[] - Usado para exibir os itens na tela do editor */
-    itens: FlowItem[],
+    itens: FlowItem[];
 
     /** Function - Usada para emitir através do output o fluxo atualidado, acontece a cada mudança de estado dos itens de fluxo. */
-    onChangeItens(itens: FlowItem[]): any
+    onChangeItens(itens: FlowItem[]): any;
+
+    /** Acionada quando um item for dropado no editor */
+    onDropItem?(oldItemId: string, newItemId: string, newItem: FlowItem): boolean | undefined;
+
 }
 
 /** É onde está o estado do editor inteira */
