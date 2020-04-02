@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 
 import { IItem, IProperties } from '../interfaces';
 import { PropItem } from './PropItem';
@@ -7,6 +7,9 @@ interface ListItemProps extends IItem { onChange(data: IItem): void; }
 export const ListItem: React.FC<ListItemProps> = ({ id, name, properties, isHeader, onChange }) => {
 
     const [state, setState] = useState<IItem>({ id, name, properties, isHeader });
+    useEffect(() => {
+        setState({ id, name, properties, isHeader });
+    }, [id, name, properties, isHeader]);
 
     const css_list_item: React.CSSProperties = {
         backgroundColor: isHeader ? '#ffffff10' : '',

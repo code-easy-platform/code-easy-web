@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 
 import { IItem } from './shared/interfaces';
 import { ListItem } from './shared/components/ListItem';
@@ -16,7 +16,9 @@ interface PropertiesEditorProps {
 export const PropertiesEditor: React.FC<PropertiesEditorProps> = ({ itens, onChange = (_: any) => { } }) => {
 
     const [state, setState] = useState<{ itens: IItem[] }>({ itens });
-    state.itens = itens;
+    useEffect(() => {
+        setState({ itens });
+    }, [itens]);
 
     const onChangeListItem = (data: IItem, listItemIndex: number) => {
 
@@ -24,7 +26,7 @@ export const PropertiesEditor: React.FC<PropertiesEditorProps> = ({ itens, onCha
 
         setState({ ...state });
 
-        onChange(state.itens);
+        onChange(state.itens || itens);
 
     }
 

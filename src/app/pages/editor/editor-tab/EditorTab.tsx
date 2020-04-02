@@ -71,7 +71,14 @@ const mockTab: Tab = {
             isSelected: true,
             nodeExpanded: true,
             itemPaiId: undefined,
-            itens: itensFluxoLogica,
+            itens: [
+                new FlowItem({ id: 1, sucessor: [2], top: 100, left: 80, width: 50, height: 50, isSelecionado: false, nome: "START", itemType: ItemType.START }),
+                new FlowItem({ id: 2, sucessor: [3], top: 200, left: 80, width: 50, height: 50, isSelecionado: false, nome: "IF", itemType: ItemType.IF }),
+                new FlowItem({ id: 3, sucessor: [4], top: 300, left: 80, width: 50, height: 50, isSelecionado: false, nome: "FOREACH", itemType: ItemType.FOREACH }),
+                new FlowItem({ id: 4, sucessor: [5], top: 400, left: 80, width: 50, height: 50, isSelecionado: false, nome: "ACTION", itemType: ItemType.ACTION }),
+                new FlowItem({ id: 5, sucessor: [6], top: 500, left: 80, width: 50, height: 50, isSelecionado: false, nome: "SWITCH", itemType: ItemType.SWITCH }),
+                new FlowItem({ id: 6, sucessor: [7], top: 600, left: 80, width: 50, height: 50, isSelecionado: false, nome: "ASSIGN", itemType: ItemType.ASSIGN }),
+            ],
             type: TreeItensTypes.folder,
         },
         {
@@ -82,19 +89,14 @@ const mockTab: Tab = {
             isSelected: false,
             nodeExpanded: true,
             itemPaiId: undefined,
-            itens: itensFluxoLogica,
+            itens: [
+                new FlowItem({ id: 3, sucessor: [4], top: 300, left: 80, width: 50, height: 50, isSelecionado: false, nome: "FOREACH", itemType: ItemType.FOREACH }),
+                new FlowItem({ id: 4, sucessor: [5], top: 400, left: 80, width: 50, height: 50, isSelecionado: false, nome: "ACTION", itemType: ItemType.ACTION }),
+                new FlowItem({ id: 5, sucessor: [6], top: 500, left: 80, width: 50, height: 50, isSelecionado: false, nome: "SWITCH", itemType: ItemType.SWITCH }),
+                new FlowItem({ id: 6, sucessor: [7], top: 600, left: 80, width: 50, height: 50, isSelecionado: false, nome: "ASSIGN", itemType: ItemType.ASSIGN }),
+                new FlowItem({ id: 7, sucessor: [], top: 700, left: 80, width: 50, height: 50, isSelecionado: false, nome: "END", itemType: ItemType.END }),
+            ],
             type: TreeItensTypes.folder,
-        },
-        {
-            id: '2',
-            label: "Minha action 2",
-            description: "Desc da minha action",
-            itemPaiId: '1',
-            isEditing: true,
-            isSelected: false,
-            nodeExpanded: true,
-            itens: itensFluxoLogica,
-            type: TreeItensTypes.file,
         },
         {
             id: '3',
@@ -104,7 +106,13 @@ const mockTab: Tab = {
             isEditing: true,
             isSelected: false,
             nodeExpanded: true,
-            itens: itensFluxoLogica,
+            itens: [
+                new FlowItem({ id: 1, sucessor: [2], top: 100, left: 80, width: 50, height: 50, isSelecionado: false, nome: "START", itemType: ItemType.START }),
+                new FlowItem({ id: 2, sucessor: [3], top: 200, left: 80, width: 50, height: 50, isSelecionado: false, nome: "IF", itemType: ItemType.IF }),
+                new FlowItem({ id: 5, sucessor: [6], top: 500, left: 80, width: 50, height: 50, isSelecionado: false, nome: "SWITCH", itemType: ItemType.SWITCH }),
+                new FlowItem({ id: 6, sucessor: [7], top: 600, left: 80, width: 50, height: 50, isSelecionado: false, nome: "ASSIGN", itemType: ItemType.ASSIGN }),
+                new FlowItem({ id: 7, sucessor: [], top: 700, left: 80, width: 50, height: 50, isSelecionado: false, nome: "END", itemType: ItemType.END }),
+            ],
             type: TreeItensTypes.file,
         },
         {
@@ -115,7 +123,26 @@ const mockTab: Tab = {
             isSelected: false,
             nodeExpanded: true,
             itemPaiId: undefined,
-            itens: itensFluxoLogica,
+            itens: [],
+            type: TreeItensTypes.file,
+        },
+        {
+            id: '5',
+            label: "Minha action 5",
+            description: "Desc da minha action",
+            itemPaiId: '1',
+            isEditing: true,
+            isSelected: false,
+            nodeExpanded: true,
+            itens: [
+                new FlowItem({ id: 1, sucessor: [2], top: 100, left: 80, width: 50, height: 50, isSelecionado: false, nome: "START", itemType: ItemType.START }),
+                new FlowItem({ id: 2, sucessor: [3], top: 200, left: 80, width: 50, height: 50, isSelecionado: false, nome: "IF", itemType: ItemType.IF }),
+                new FlowItem({ id: 3, sucessor: [4], top: 300, left: 80, width: 50, height: 50, isSelecionado: false, nome: "FOREACH", itemType: ItemType.FOREACH }),
+                new FlowItem({ id: 4, sucessor: [5], top: 400, left: 80, width: 50, height: 50, isSelecionado: false, nome: "ACTION", itemType: ItemType.ACTION }),
+                new FlowItem({ id: 5, sucessor: [6], top: 500, left: 80, width: 50, height: 50, isSelecionado: false, nome: "SWITCH", itemType: ItemType.SWITCH }),
+                new FlowItem({ id: 6, sucessor: [7], top: 600, left: 80, width: 50, height: 50, isSelecionado: false, nome: "ASSIGN", itemType: ItemType.ASSIGN }),
+                new FlowItem({ id: 7, sucessor: [], top: 700, left: 80, width: 50, height: 50, isSelecionado: false, nome: "END", itemType: ItemType.END }),
+            ],
             type: TreeItensTypes.file,
         }
     ]
@@ -148,7 +175,7 @@ export default class EditorTab extends Component {
                 id: parseInt(itemSelected.id),
                 properties: [
                     {
-                        id: 45,
+                        id: 1,
                         label: 'Label',
                         value: itemSelected.label,
                         typeValue: TypeValues.string
@@ -213,6 +240,7 @@ export default class EditorTab extends Component {
     }
 
     private codeEditorOnDropItem(oldItemId: string, newItemId: string, newItem: FlowItem): FlowItem {
+
         console.log(oldItemId);
         console.log(newItemId);
         console.log(newItem);
@@ -257,12 +285,13 @@ export default class EditorTab extends Component {
     private treeManagerOnClick(itemTreeId: string, item: TreeInterface) {
 
         let itens = this.state.itens;
-        const index = this.state.itens.findIndex(item => item.id === itemTreeId);
-        if (index < 0) return;
+        const index = itens.findIndex(item => item.id === itemTreeId);
 
         itens.forEach(item => {
             item.isSelected = false;
         });
+
+        if (index < 0) return;
 
         itens[index].isSelected = true;
 
@@ -348,7 +377,7 @@ export default class EditorTab extends Component {
                                 itemBase={{
                                     itemId: "0",
                                     isSelected: false,
-                                    nodeExpanded: false,
+                                    nodeExpanded: true,
                                     itemLabel: "Item 01",
                                     itemType: TreeItensTypes.folder,
                                     itemChilds: this.treeManagerGetTree(this.state.itens),
