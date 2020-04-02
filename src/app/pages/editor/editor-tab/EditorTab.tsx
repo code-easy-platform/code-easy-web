@@ -151,17 +151,38 @@ const mockTab: Tab = {
 export default class EditorTab extends Component {
     // private codeEditorContext: any = this.context;
 
-    state: Tab = mockTab;
+    state = {
+        tab: mockTab,
+        itensLogica: [],
+        propEditor: [],
+        tree: [],
+    }
+
+    componentWillMount() {
+        this.setState({
+            tree: this.treeManagerGetTree(this.state.tab.itens),
+            itensLogica: this.codeEditorGetItensLogica(this.state.tab.itens),
+            propEditor: this.propertiesEditorGetSelectedItem(this.state.tab.itens),
+        });
+    }
 
     private propertiesEditorOutputItens(itens: IItem[]) {
+
         itens.forEach(item => {
-            const index = itensFluxoLogica.findIndex(flowItem => flowItem.id === item.id);
 
-            itensFluxoLogica[index].nome = item.name;
+            let itemSelected = this.state.tab.itens.find(itemTree => (itemTree.isSelected && itemTree.id === item.id.toString()));
 
-            this.setState({ itensFluxoLogica });
+            if (itemSelected) itemSelected.label = item.name;
 
         });
+
+        this.setState({
+            tab: { ...this.state.tab, itensFluxoLogica },
+            tree: this.treeManagerGetTree(this.state.tab.itens),
+            itensLogica: this.codeEditorGetItensLogica(this.state.tab.itens),
+            propEditor: this.propertiesEditorGetSelectedItem(this.state.tab.itens),
+        });
+
     }
 
     private propertiesEditorGetSelectedItem(itens: TabChild[]): IItem[] {
@@ -190,7 +211,6 @@ export default class EditorTab extends Component {
     private codeEditorOutputFlowItens = (updatedItens: FlowItem[]) => {
 
         AlertService.sendMessage(AlertTypes.loading, "Carregando módulos do node...", "A aplicação foi iniciada com êxito!");
-        this.setState({ itensProperties: [] });
 
         let itensPropertiesChanged: IItem[] = [];
         updatedItens.forEach(item => {
@@ -235,7 +255,12 @@ export default class EditorTab extends Component {
             }
         });
 
-        this.setState({ itensProperties: itensPropertiesChanged });
+        this.setState({
+            tree: this.treeManagerGetTree(this.state.tab.itens),
+            itensLogica: this.codeEditorGetItensLogica(this.state.tab.itens),
+            tab: { ...this.state.tab, itensProperties: itensPropertiesChanged },
+            propEditor: this.propertiesEditorGetSelectedItem(this.state.tab.itens),
+        });
 
     }
 
@@ -264,27 +289,51 @@ export default class EditorTab extends Component {
 
     }
 
-    private treeManagerOnDropItem(targetId: string, droppedId: string, droppedItem: any) {
+    private treeManagerOnDropItem(targetId: string, droppedId: string, droppedItem: any): TreeInterface {
 
         // Evita loop infinito
-        if (targetId === droppedId) return;
+        if (targetId === droppedId) return {
+            itemId: "",
+            isSelected: false,
+            nodeExpanded: true,
+            itemLabel: "Routers",
+            itemType: TreeItensTypes.folder,
+            itemChilds: this.state.tree,
+        };
 
-        console.log(targetId);
-        console.log(droppedId);
-        console.log(droppedItem.itemProps.itemTree);
-
-        let itens = this.state.itens;
-        let index: number = this.state.itens.findIndex(item => item.id === droppedId);
-        if (index < 0) return;
+        let itens = this.state.tab.itens;
+        let index: number = itens.findIndex(item => item.id === droppedId);
+        if (index < 0) return {
+            itemId: "",
+            isSelected: false,
+            nodeExpanded: true,
+            itemLabel: "Routers",
+            itemType: TreeItensTypes.folder,
+            itemChilds: this.state.tree,
+        };
         itens[index].itemPaiId = targetId;
 
-        this.setState({ itens });
+        this.setState({
+            tab: { ...this.state.tab, itens },
+            tree: this.treeManagerGetTree(itens),
+            itensLogica: this.codeEditorGetItensLogica(itens),
+            propEditor: this.propertiesEditorGetSelectedItem(itens),
+        });
+
+        return {
+            itemId: "",
+            isSelected: false,
+            nodeExpanded: true,
+            itemLabel: "Routers",
+            itemType: TreeItensTypes.folder,
+            itemChilds: this.state.tree,
+        };
 
     }
 
     private treeManagerOnClick(itemTreeId: string, item: TreeInterface) {
 
-        let itens = this.state.itens;
+        let itens = this.state.tab.itens;
         const index = itens.findIndex(item => item.id === itemTreeId);
 
         itens.forEach(item => {
@@ -295,14 +344,19 @@ export default class EditorTab extends Component {
 
         itens[index].isSelected = true;
 
-        this.setState({ itens });
+        this.setState({
+            tab: { ...this.state.tab, itens },
+            tree: this.treeManagerGetTree(itens),
+            itensLogica: this.codeEditorGetItensLogica(itens),
+            propEditor: this.propertiesEditorGetSelectedItem(itens),
+        });
 
     }
 
     private treeManagerOnDoubleClick(itemTreeId: string, item: TreeInterface) {
 
-        let itens = this.state.itens;
-        const index = this.state.itens.findIndex(item => item.id === itemTreeId);
+        let itens = this.state.tab.itens;
+        const index = itens.findIndex(item => item.id === itemTreeId);
         if (index < 0) return;
 
         itens.forEach(item => {
@@ -311,7 +365,12 @@ export default class EditorTab extends Component {
 
         itens[index].isEditing = true;
 
-        this.setState({ itens });
+        this.setState({
+            tab: { ...this.state.tab, itens },
+            tree: this.treeManagerGetTree(itens),
+            itensLogica: this.codeEditorGetItensLogica(itens),
+            propEditor: this.propertiesEditorGetSelectedItem(itens),
+        });
 
     }
 
@@ -358,8 +417,8 @@ export default class EditorTab extends Component {
                     <FlowEditor
                         isShowToolbar={true}
                         toolItens={itensLogica}
+                        itens={this.state.itensLogica}
                         allowDropTo={[TreeItensTypes.file]}
-                        itens={this.codeEditorGetItensLogica(this.state.itens)}
                         onChangeItens={this.codeEditorOutputFlowItens.bind(this)}
                         onDropItem={this.codeEditorOnDropItem.bind(this)}
                     />
@@ -375,18 +434,18 @@ export default class EditorTab extends Component {
                                 onDoubleClick={this.treeManagerOnDoubleClick.bind(this)}
                                 onContextMenu={(itemId, e) => { e.preventDefault(); console.log(itemId); console.log(e); }}
                                 itemBase={{
-                                    itemId: "0",
+                                    itemId: "",
                                     isSelected: false,
                                     nodeExpanded: true,
-                                    itemLabel: "Item 01",
+                                    itemLabel: "Routers",
                                     itemType: TreeItensTypes.folder,
-                                    itemChilds: this.treeManagerGetTree(this.state.itens),
+                                    itemChilds: this.state.tree,
                                 }}
                             />
                         }
                         rowBottom={
                             <PropertiesEditor
-                                itens={this.propertiesEditorGetSelectedItem(this.state.itens)}
+                                itens={this.state.propEditor}
                                 onChange={this.propertiesEditorOutputItens.bind(this)}
                             />
                         }
