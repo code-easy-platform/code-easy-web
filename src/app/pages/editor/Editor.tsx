@@ -51,24 +51,26 @@ export default class Editor extends React.Component {
         return this.getCurrentTabSelected().itens.filter((c: Component) => c.id === componentId)[0];
     }
 
-    private carregaFilhos(tree: any): any[] {
-        const currTab: Tab = this.getCurrentTabSelected();
-
-        currTab.itens.filter((comp) => {
-            return comp.paiId === tree.itemId && comp.configs.type !== ComponentType.flowItem
-        }).forEach(comp => {
-            tree.itemChilds.push({ itemChilds: [], itemId: comp.id, itemLabel: comp.configs.name, itemType: comp.configs.type, nodeExpanded: comp.configs.isExpanded || false });
-        });
-
-
-        tree.itemChilds.forEach((itemTree: any) => {
-            itemTree.itemChilds = this.carregaFilhos(itemTree);
-        });
-
-        return tree.itemChilds;
-    }
 
     private getCurrentTabTree(): any[] {
+
+        const carregaFilhos = (tree: any): any[] => {
+            const currTab: Tab = this.getCurrentTabSelected();
+
+            currTab.itens.filter((comp) => {
+                return comp.paiId === tree.itemId && comp.configs.type !== ComponentType.flowItem
+            }).forEach(comp => {
+                tree.itemChilds.push({ itemChilds: [], itemId: comp.id, itemLabel: comp.configs.name, itemType: comp.configs.type, nodeExpanded: comp.configs.isExpanded || false });
+            });
+
+
+            tree.itemChilds.forEach((itemTree: any) => {
+                itemTree.itemChilds = carregaFilhos(itemTree);
+            });
+
+            return tree.itemChilds;
+        }
+
         const currTab: Tab = this.getCurrentTabSelected();
         let tree: any[] = [];
 
@@ -79,7 +81,7 @@ export default class Editor extends React.Component {
         });
 
         tree.forEach((itemTree: any) => {
-            itemTree.itemChilds = this.carregaFilhos(itemTree);
+            itemTree.itemChilds = carregaFilhos(itemTree);
         });
 
         return tree;

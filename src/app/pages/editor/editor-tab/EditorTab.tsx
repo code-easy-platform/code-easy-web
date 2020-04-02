@@ -21,87 +21,6 @@ const itensLogica: FlowItem[] = [
     new FlowItem({ id: 7, sucessor: [0], top: 0, left: 0, width: 0, height: 0, isSelecionado: false, nome: "ASSIGN", itemType: ItemType.ASSIGN }),
     new FlowItem({ id: 8, sucessor: [], top: 0, left: 0, width: 0, height: 0, isSelecionado: false, nome: "END", itemType: ItemType.END }),
 ];
-const itensArvore: TreeInterface[] = [
-    {
-        itemId: "1", itemLabel: "Item 02", isSelected: false, itemChilds: [
-            {
-                itemId: "2", itemLabel: "Item 01", isSelected: false, itemChilds: [
-                    {
-                        itemId: "3", itemLabel: "Item 01", isSelected: false, itemChilds: [
-                            {
-                                itemId: "4", itemLabel: "Item 01", isSelected: false, itemChilds: [
-                                    {
-                                        itemId: "5", itemLabel: "Item 01", isSelected: false, itemChilds: [
-                                            {
-                                                itemId: "6", itemLabel: "Item 03", isSelected: false, itemChilds: [
-                                                    {
-                                                        itemId: "7", itemLabel: "Item 01", isSelected: false, itemChilds: [
-                                                            {
-                                                                itemId: "8", itemLabel: "Item 01", isSelected: false, itemChilds: [
-                                                                    {
-                                                                        itemId: "9", itemLabel: "Item 01", isSelected: false, itemChilds: [
-                                                                            {
-                                                                                itemId: "10", itemLabel: "Item 01", isSelected: false, itemChilds: [
-                                                                                    {
-                                                                                        itemId: "11", itemLabel: "Item 04", isSelected: false, itemChilds: [
-                                                                                            {
-                                                                                                itemId: "12", itemLabel: "Item 01", isSelected: false, itemChilds: [
-                                                                                                    {
-                                                                                                        itemId: "13", itemLabel: "Item 01", isSelected: false, itemChilds: [
-                                                                                                            {
-                                                                                                                itemId: "14", itemLabel: "Item 01", isSelected: false, itemChilds: [
-                                                                                                                    {
-                                                                                                                        itemId: "15", itemLabel: "Item 01", isSelected: false, itemChilds: [
-                                                                                                                            {
-                                                                                                                                itemId: "16", itemLabel: "Item 05", isSelected: false, itemChilds: [
-                                                                                                                                    {
-                                                                                                                                        itemId: "17", itemLabel: "Item 01", isSelected: false, itemChilds: [
-                                                                                                                                            {
-                                                                                                                                                itemId: "18", itemLabel: "Item 01", isSelected: false, itemChilds: [
-                                                                                                                                                    {
-                                                                                                                                                        itemId: "19", itemLabel: "Item 01", isSelected: false, itemChilds: [
-                                                                                                                                                            { itemId: "20", itemLabel: "Item 01", isSelected: false, itemChilds: [], itemType: TreeItensTypes.folder, nodeExpanded: false }
-                                                                                                                                                        ], itemType: TreeItensTypes.folder, nodeExpanded: false
-                                                                                                                                                    }
-                                                                                                                                                ], itemType: TreeItensTypes.folder, nodeExpanded: false
-                                                                                                                                            }
-                                                                                                                                        ], itemType: TreeItensTypes.folder, nodeExpanded: false
-                                                                                                                                    }
-                                                                                                                                ], itemType: TreeItensTypes.folder, nodeExpanded: false
-                                                                                                                            },
-                                                                                                                        ], itemType: TreeItensTypes.folder, nodeExpanded: false
-                                                                                                                    }
-                                                                                                                ], itemType: TreeItensTypes.folder, nodeExpanded: false
-                                                                                                            }
-                                                                                                        ], itemType: TreeItensTypes.folder, nodeExpanded: false
-                                                                                                    }
-                                                                                                ], itemType: TreeItensTypes.folder, nodeExpanded: false
-                                                                                            }
-                                                                                        ], itemType: TreeItensTypes.folder, nodeExpanded: false
-                                                                                    },
-                                                                                ], itemType: TreeItensTypes.folder, nodeExpanded: false
-                                                                            }
-                                                                        ], itemType: TreeItensTypes.folder, nodeExpanded: false
-                                                                    }
-                                                                ], itemType: TreeItensTypes.folder, nodeExpanded: false
-                                                            }
-                                                        ], itemType: TreeItensTypes.folder, nodeExpanded: false
-                                                    }
-                                                ], itemType: TreeItensTypes.folder, nodeExpanded: false
-                                            },
-                                        ], itemType: TreeItensTypes.folder, nodeExpanded: false
-                                    }
-                                ], itemType: TreeItensTypes.folder, nodeExpanded: false
-                            }
-                        ], itemType: TreeItensTypes.folder, nodeExpanded: false
-                    }
-                ], itemType: TreeItensTypes.folder, nodeExpanded: false
-            }
-        ], itemType: TreeItensTypes.folder, nodeExpanded: false
-    },
-    { itemId: "21", itemLabel: "Item 03", isSelected: false, itemChilds: [], itemType: TreeItensTypes.file, nodeExpanded: false },
-    { itemId: "22", itemLabel: "Item 04", isSelected: false, itemChilds: [], itemType: TreeItensTypes.file, nodeExpanded: false },
-];
 const itensFluxoLogica: FlowItem[] = [
     new FlowItem({ id: 1, sucessor: [2], top: 100, left: 80, width: 50, height: 50, isSelecionado: false, nome: "START", itemType: ItemType.START }),
     new FlowItem({ id: 2, sucessor: [3], top: 200, left: 80, width: 50, height: 50, isSelecionado: false, nome: "IF", itemType: ItemType.IF }),
@@ -117,107 +36,84 @@ enum TabType {
     actions = "ACTIONS",
     routers = "ROUTERS",
 }
+interface TabChild {
+    id: string;
+    label: string;
+    itens: FlowItem[];
+    isEditing: boolean;
+    isSelected: boolean;
+    description: string;
+    type: TreeItensTypes;
+    nodeExpanded: boolean;
+    itemPaiId: string | undefined;
+}
 interface Tab {
-    name: string,
-    label: string,
-    description: string,
-    type: TabType,
-    itens: {
-        id: number,
-        type: TreeItensTypes,
-        label: string,
-        isEditing: boolean,
-        isSelected: boolean,
-        description: string,
-        nodeExpanded: boolean,
-        itens: FlowItem[]
-    }[]
+    id: string
+    name: string;
+    label: string;
+    type: TabType;
+    itens: TabChild[];
+    description: string;
 }
 
-const tab: Tab = {
+const mockTab: Tab = {
+    id: '1',
     name: "actions",
     label: "Actions",
     description: "Minha tab de actions",
     type: TabType.actions,
     itens: [
         {
-            id: 1,
+            id: '1',
             label: "Minha action",
             description: "Desc da minha action",
-            type: TreeItensTypes.file,
             isEditing: true,
             isSelected: true,
             nodeExpanded: true,
-            itens: [
-                new FlowItem({ id: 1, sucessor: [2], top: 100, left: 80, width: 50, height: 50, isSelecionado: false, nome: "START", itemType: ItemType.START }),
-                new FlowItem({ id: 2, sucessor: [3], top: 200, left: 80, width: 50, height: 50, isSelecionado: false, nome: "IF", itemType: ItemType.IF }),
-                new FlowItem({ id: 3, sucessor: [4], top: 300, left: 80, width: 50, height: 50, isSelecionado: false, nome: "FOREACH", itemType: ItemType.FOREACH }),
-                new FlowItem({ id: 4, sucessor: [5], top: 400, left: 80, width: 50, height: 50, isSelecionado: false, nome: "ACTION", itemType: ItemType.ACTION }),
-                new FlowItem({ id: 5, sucessor: [6], top: 500, left: 80, width: 50, height: 50, isSelecionado: false, nome: "SWITCH", itemType: ItemType.SWITCH }),
-                new FlowItem({ id: 6, sucessor: [7], top: 600, left: 80, width: 50, height: 50, isSelecionado: false, nome: "ASSIGN", itemType: ItemType.ASSIGN }),
-                new FlowItem({ id: 7, sucessor: [], top: 700, left: 80, width: 50, height: 50, isSelecionado: false, nome: "END", itemType: ItemType.END }),
-            ]
+            itemPaiId: undefined,
+            type: TreeItensTypes.folder,
+            itens: itensFluxoLogica
         },
         {
-            id: 2,
+            id: '2',
             label: "Minha action 2",
             description: "Desc da minha action",
-            type: TreeItensTypes.file,
             isEditing: true,
             isSelected: true,
             nodeExpanded: true,
-            itens: [
-                new FlowItem({ id: 1, sucessor: [2], top: 100, left: 80, width: 50, height: 50, isSelecionado: false, nome: "START", itemType: ItemType.START }),
-                new FlowItem({ id: 2, sucessor: [3], top: 200, left: 80, width: 50, height: 50, isSelecionado: false, nome: "IF", itemType: ItemType.IF }),
-                new FlowItem({ id: 3, sucessor: [4], top: 300, left: 80, width: 50, height: 50, isSelecionado: false, nome: "FOREACH", itemType: ItemType.FOREACH }),
-                new FlowItem({ id: 4, sucessor: [5], top: 400, left: 80, width: 50, height: 50, isSelecionado: false, nome: "ACTION", itemType: ItemType.ACTION }),
-                new FlowItem({ id: 5, sucessor: [6], top: 500, left: 80, width: 50, height: 50, isSelecionado: false, nome: "SWITCH", itemType: ItemType.SWITCH }),
-                new FlowItem({ id: 6, sucessor: [7], top: 600, left: 80, width: 50, height: 50, isSelecionado: false, nome: "ASSIGN", itemType: ItemType.ASSIGN }),
-                new FlowItem({ id: 7, sucessor: [], top: 700, left: 80, width: 50, height: 50, isSelecionado: false, nome: "END", itemType: ItemType.END }),
-            ]
+            itemPaiId: '1',
+            type: TreeItensTypes.file,
+            itens: itensFluxoLogica
+        },
+        {
+            id: '3',
+            label: "Minha action 3",
+            description: "Desc da minha action",
+            isEditing: true,
+            isSelected: true,
+            nodeExpanded: true,
+            itemPaiId: '1',
+            type: TreeItensTypes.file,
+            itens: itensFluxoLogica
+        },
+        {
+            id: '4',
+            label: "Minha action 4",
+            description: "Desc da minha action",
+            isEditing: true,
+            isSelected: true,
+            nodeExpanded: true,
+            itemPaiId: undefined,
+            type: TreeItensTypes.file,
+            itens: itensFluxoLogica
         }
     ]
 }
 
-interface IEditorTabState {
-    itensFluxoLogica: FlowItem[];
-    toolsItensFluxo: FlowItem[];
-    itensArvore: TreeInterface[];
-    itensProperties: IItem[];
-}
 export default class EditorTab extends Component {
-    private codeEditorContext: any = this.context;
+    // private codeEditorContext: any = this.context;
 
-    state: IEditorTabState = {
-        itensFluxoLogica: [],
-        toolsItensFluxo: [],
-        itensProperties: [],
-        itensArvore: [],
-    }
-
-    componentDidMount = () => {
-        let itensTree: TreeInterface[] = [];
-
-        tab.itens.forEach(item => {
-            itensTree.push({
-                itemChilds: [],
-                itemType: item.type,
-                itemLabel: item.label,
-                itemId: item.id.toString(),
-                isSelected: item.isSelected,
-                nodeExpanded: item.nodeExpanded
-            });
-        });
-
-        console.log(itensTree);
-
-        this.setState({
-            itensFluxoLogica: itensFluxoLogica,
-            toolsItensFluxo: itensLogica,
-            itensArvore: itensTree,
-        });
-
-    }
+    state: Tab = mockTab;
 
     private outputFlowItens = (updatedItens: FlowItem[]) => {
 
@@ -271,27 +167,98 @@ export default class EditorTab extends Component {
 
     }
 
-    private outputPropertiesItens(itens: IItem[], itensFluxoLogica: FlowItem[]) {
+    private outputPropertiesItens(itens: IItem[]) {
 
-        itens.forEach(item => {
+        /* itens.forEach(item => {
             const index = itensFluxoLogica.findIndex(flowItem => flowItem.id === item.id);
 
             itensFluxoLogica[index].nome = item.name;
 
             this.setState({ itensFluxoLogica });
 
-        });
+        }); */
 
     }
 
+    private onDropItemTreeManager(targetId: string, droppedId: string, droppedItem: any) {
+
+        // Evita loop infinito
+        if (targetId === droppedId) return;
+
+        console.log(targetId);
+        console.log(droppedId);
+        console.log(droppedItem.itemProps.itemTree);
+
+        let itens = this.state.itens;
+        let index: number = this.state.itens.findIndex(item => item.id === droppedId);
+        if (index < 0) return;
+        itens[index].itemPaiId = targetId;
+
+        this.setState({ itens });
+
+    }
+
+    private getSelectedItem(tab: Tab): IItem {
+
+        return {
+            id: 45,
+            isHeader: false,
+            name: 'Teste',
+            properties: [
+                {
+                    id: 45,
+                    label: 'teste',
+                    value: 'teste',
+                    typeValue: TypeValues.string
+                }
+            ]
+        }
+    }
+
+    private getTree(itens: TabChild[]): TreeInterface[] {
+
+        const loadChilds = (tree: TreeInterface): TreeInterface[] => {
+
+            // Busca todos os itens que tem como pai o elemento corrente
+            itens.filter((item) => {
+                return item.itemPaiId === tree.itemId;
+            }).forEach(item => {
+                tree.itemChilds.push({ itemChilds: [], itemId: item.id, itemLabel: item.label, itemType: item.type, nodeExpanded: item.nodeExpanded, isSelected: false });
+            });
+
+            // Carrega os filhos de cada item da árvore
+            tree.itemChilds.forEach((itemTree: any) => {
+                itemTree.itemChilds = loadChilds(itemTree);
+            });
+
+            return tree.itemChilds;
+        }
+
+        // Mapea todos os itens que não tem pai id, significa que eles estão na raiz
+        let tree: TreeInterface[] = [];
+        itens.filter(item => {
+            return item.itemPaiId === undefined
+        }).forEach(item => {
+            tree.push({ itemChilds: [], itemId: item.id, itemLabel: item.label, itemType: item.type, nodeExpanded: item.nodeExpanded, isSelected: false });
+        });
+
+        // Carrega os filhos de cada item da árvore
+        tree.forEach(itemTree => {
+            itemTree.itemChilds = loadChilds(itemTree);
+        });
+
+        return tree;
+    }
+
     render() {
+
         return (
             <EditorTabTemplate
                 columnCenter={
                     <FlowEditor
-                        itens={this.state.itensFluxoLogica}
+                        itens={itensFluxoLogica}
                         onChangeItens={this.outputFlowItens}
-                        toolItens={this.state.toolsItensFluxo}
+                        toolItens={itensLogica}
                         isShowToolbar={true}
                     />
                 }
@@ -299,18 +266,19 @@ export default class EditorTab extends Component {
                     <ColRightTemplate
                         rowTop={
                             <TreeManager
-                                isUseDrag
-                                isUseDrop
+                                isUseDrag={true}
+                                isUseDrop={true}
                                 onClick={itemId => { console.log(itemId) }}
-                                itemBase={{ itemId: "0", itemLabel: "Item 01", isSelected: false, itemChilds: this.state.itensArvore, itemType: TreeItensTypes.folder, nodeExpanded: false }}
+                                onDropItem={this.onDropItemTreeManager.bind(this)}
+                                itemBase={{ itemId: "0", itemLabel: "Item 01", isSelected: false, itemChilds: this.getTree(this.state.itens), itemType: TreeItensTypes.folder, nodeExpanded: false }}
                                 onContextMenu={(itemId, e) => { e.preventDefault(); console.log(itemId); console.log(e); }}
                                 onDoubleClick={(itemId, item, e) => { console.log(itemId); console.log(item); console.log(e); }}
                             />
                         }
                         rowBottom={
                             <PropertiesEditor
-                                itens={this.state.itensProperties}
-                                onChange={itensProperties => this.outputPropertiesItens(itensProperties, this.state.itensFluxoLogica)}
+                                itens={[this.getSelectedItem(this.state)]}
+                                onChange={this.outputPropertiesItens.bind(this)}
                             />
                         }
                     />
