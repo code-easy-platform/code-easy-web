@@ -163,6 +163,8 @@ export default class EditorTab extends Component {
         });
     }
 
+
+
     private propertiesEditorOutputItens(itens: IItem[]) {
 
         itens.forEach(item => {
@@ -370,6 +372,7 @@ export default class EditorTab extends Component {
         if (index < 0) return;
 
         itens[index].isSelected = true;
+        itens[index].nodeExpanded = true;
 
         this.setState({ urrentFocus: CurrentFocus.tree });
 
@@ -440,6 +443,8 @@ export default class EditorTab extends Component {
         return tree;
     }
 
+
+
     render() {
         return (
             <EditorTabTemplate
@@ -484,5 +489,6 @@ export default class EditorTab extends Component {
             />
         );
     }
+
 }
 EditorTab.contextType = CodeEditorContext;
