@@ -22,6 +22,10 @@ const itensLogica: FlowItem[] = [
     new FlowItem({ id: 8, sucessor: [], top: 0, left: 0, width: 0, height: 0, isSelecionado: false, nome: "END", itemType: ItemType.END }),
 ];
 
+enum CurrentFocus {
+    tree = "tree",
+    flow = "flow"
+}
 enum TabType {
     data = "DATA",
     actions = "ACTIONS",
@@ -147,11 +151,12 @@ export default class EditorTab extends Component {
         tab: mockTab,
         propEditor: [],
         itensLogica: [],
-        currentFocus: 'tree',
+        currentFocus: CurrentFocus.tree,
     }
 
     componentWillMount() {
         this.setState({
+            currentFocus: CurrentFocus.tree,
             tree: this.treeManagerGetTree(this.state.tab.itens),
             itensLogica: this.codeEditorGetItensLogica(this.state.tab.itens),
             propEditor: this.propertiesEditorGetSelectedItem(this.state.tab.itens),
@@ -168,8 +173,9 @@ export default class EditorTab extends Component {
 
         });
 
+        this.setState({ tab: { ...this.state.tab } });
+
         this.setState({
-            tab: { ...this.state.tab },
             tree: this.treeManagerGetTree(this.state.tab.itens),
             itensLogica: this.codeEditorGetItensLogica(this.state.tab.itens),
             propEditor: this.propertiesEditorGetSelectedItem(this.state.tab.itens),
@@ -181,8 +187,8 @@ export default class EditorTab extends Component {
 
         let itemIndex = itens.findIndex(item => item.isSelected);
 
-        if (itemIndex < 0) {
-            if (this.state.currentFocus === 'tree') {
+        if (!(itemIndex < 0)) {
+            if (this.state.currentFocus === CurrentFocus.tree) {
                 return [
                     {
                         isHeader: true,
@@ -204,7 +210,7 @@ export default class EditorTab extends Component {
                         ]
                     }
                 ]
-            } else if (this.state.currentFocus === 'flow') {
+            } else if (this.state.currentFocus === CurrentFocus.flow) {
 
                 const itensFiltereds: FlowItem[] = this.state.itensLogica.filter((flowItem: FlowItem) => flowItem.isSelecionado);
 
@@ -226,12 +232,10 @@ export default class EditorTab extends Component {
                 });
 
                 return mappedItens;
-            } else {
-                return [];
             }
-        } else {
-            return [];
         }
+
+        return [];
     }
 
 
@@ -283,8 +287,6 @@ export default class EditorTab extends Component {
             }
         });
 
-        this.setState({ currentFocus: 'flow' });
-
         this.setState({
             tree: this.treeManagerGetTree(this.state.tab.itens),
             itensLogica: this.codeEditorGetItensLogica(this.state.tab.itens),
@@ -296,17 +298,14 @@ export default class EditorTab extends Component {
 
     private codeEditorOnDropItem(oldItemId: string, newItemId: string, newItem: FlowItem): FlowItem {
 
-        console.log(oldItemId);
-        console.log(newItemId);
-        console.log(newItem);
-
         if (newItem.itemType.toString() === TreeItensTypes.file.toString()) {
             newItem.itemType = ItemType.ACTION;
         }
 
-        this.setState({ currentFocus: 'flow' });
+        this.setState({ currentFocus: CurrentFocus.flow });
 
         return newItem;
+
     }
 
     private codeEditorGetItensLogica(itens: TabChild[]): FlowItem[] {
@@ -321,12 +320,10 @@ export default class EditorTab extends Component {
 
     }
 
-    
+
 
     private treeManagerOnDropItem(targetId: string, droppedId: string, droppedItem: any): TreeInterface {
-
-        // Evita loop infinito
-        if (targetId === droppedId) return {
+        const itemDefault = {
             itemId: "",
             isSelected: false,
             nodeExpanded: true,
@@ -334,20 +331,16 @@ export default class EditorTab extends Component {
             itemType: TreeItensTypes.folder,
             itemChilds: this.state.tree,
         };
+
+        // Evita loop infinito
+        if (targetId === droppedId) return itemDefault;
 
         let itens = this.state.tab.itens;
         let index: number = itens.findIndex(item => item.id === droppedId);
-        if (index < 0) return {
-            itemId: "",
-            isSelected: false,
-            nodeExpanded: true,
-            itemLabel: "Routers",
-            itemType: TreeItensTypes.folder,
-            itemChilds: this.state.tree,
-        };
+        if (index < 0) return itemDefault;
         itens[index].itemPaiId = targetId;
 
-        this.setState({ currentFocus: 'tree' });
+        this.setState({ currentFocus: CurrentFocus.tree });
 
         this.setState({
             tab: { ...this.state.tab, itens },
@@ -372,15 +365,13 @@ export default class EditorTab extends Component {
         let itens = this.state.tab.itens;
         const index = itens.findIndex(item => item.id === itemTreeId);
 
-        itens.forEach(item => {
-            item.isSelected = false;
-        });
+        itens.forEach(item => { item.isSelected = false; });
 
         if (index < 0) return;
 
         itens[index].isSelected = true;
 
-        this.setState({ urrentFocus: 'tree' });
+        this.setState({ urrentFocus: CurrentFocus.tree });
 
         this.setState({
             tab: { ...this.state.tab, itens },
@@ -403,7 +394,7 @@ export default class EditorTab extends Component {
 
         itens[index].isEditing = true;
 
-        this.setState({ urrentFocus: 'flow' });
+        this.setState({ urrentFocus: CurrentFocus.tree });
 
         this.setState({
             tab: { ...this.state.tab, itens },
