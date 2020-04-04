@@ -1,16 +1,29 @@
-@import './../../../style/variables.scss';
+.context-menu {
+    background-color: var(--color-context-menu-background);
+    box-shadow: var(--box-shadow-context-menu);
+    flex-direction: column;
+    position: fixed;
+    display: flex;
+    left: 100px;
+    top: 100px;
+}
 
-.menu-context {
-  position: fixed;
-  width: 200px;
-  margin-left: -200px;
-  background-color: $color-background-col;
-  box-shadow: $size-none $size-none $size-3 $size-none $color-black;
-  padding-top: $size-3;
-  padding-bottom: $size-3;
-  cursor: default;
-  .item-list-pai {
-    padding: $size-2;
-    padding-left: $size-3;
-  }
+.context-menu-title {
+    font-weight: bold;
+    padding: var(--size-3);
+    padding-left: var(--size-2);
+    background-color: var(--color-context-menu-background-title);
+}
+
+.context-menu-list-item {
+    padding: var(--size-2);
+    cursor: pointer;
+}
+
+.context-menu-list-item:hover {
+    background-color: var(--color-context-menu-list-item-hover);
+}
+
+.context-menu-list-item:active {
+    background-color: var(--color-context-menu-list-item-active);
 }

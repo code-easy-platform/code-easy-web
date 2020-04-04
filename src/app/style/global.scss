@@ -13,17 +13,20 @@
   outline: auto;
 }
 *[selected="true"] {
-  background-color: #1f724330;
+  background-color: var(--color-list-item-selected);
 }
 *[selected="true"]:hover {
-  background-color: #1f724340;
+  background-color: var(--color-list-item-hover);
+}
+*[selected="false"]:hover {
+  background-color: var(--color-list-item-hover);
 }
 
 html,
 body,
 #root,
 .App {
-  font-family: Segoe UI, "Courier New", monospace;
+  font-family: var(--font-family-vs-code);
   background-color: $color-background;
   height: $size-window-vh-fill;
   width: $size-window-vw-fill;
@@ -86,12 +89,12 @@ a:active {
 
 .btn {
   background: $color-background-propertie-editor;
-  border: $size-none solid $color-white;
   color: $font-color-input-propertie-editor;
+  font-family: var(--font-family-vs-code);
+  border: $size-none solid $color-white;
   padding: $size-0-5;
   padding-left: $size-1-5;
   padding-right: $size-1-5;
-  font-family: $font-family-normal;
   cursor: pointer;
 }
 

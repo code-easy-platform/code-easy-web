@@ -1,5 +1,5 @@
-@import './app/style/global.scss';
+@import "./app/style/global.scss";
 
 code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New", monospace;
+  font-family: var(--font-family-vs-code);
 }

@@ -1,3 +1,95 @@
+:root {
+    /* Coisas básicas */
+    /* ------------------------------------------------- */
+
+    // Dimensões
+    --size-window-vh-fill: 100vh;
+    --size-window-vw-fill: 100vw;
+    --size-fill: 100%;
+    --size-half-90: 90%;
+    --size-half-80: 80%;
+    --size-half-70: 70%;
+    --size-half-60: 60%;
+    --size-half: 50%;
+    --size-half-40: 40%;
+    --size-half-30: 30%;
+    --size-half-20: 20%;
+    --size-half-10: 10%;
+
+    // Dimensões em px
+    --size-none: 0px;
+    --size-0-5: 2px;
+    --size-0-75: 3px;
+    --size-1: 4px;
+    --size-1-5: 6px;
+    --size-2: 8px;
+    --size-3: 12px;
+    --size-4: 16px;
+    --size-5: 20px;
+    --size-6: 24px;
+    --size-7: 28px;
+    --size-8: 32px;
+    --size-9: 36px;
+    --size-10: 40px;
+    --size-11: 44px;
+    --size-13: 48px;
+    --size-14: 52px;
+    --size-15: 56px;
+    --size-16: 60px;
+    --size-17: 64px;
+    --size-18: 68px;
+    --size-19: 72px;
+    --size-20: 76px;
+    --size-21: 80px;
+    --size-22: 84px;
+    //...
+    --size-35: 140px;
+    --size-38: 152px;
+    //...
+    --size-75: 300px;
+    //...
+    --size-92-5: 370px;
+    //...
+    --size-150: 600px;
+    //...
+    --size-250: 1000px;
+    
+    // Colors
+    --color-black: #000000;
+
+    /* ------------------------------------------------- */
+
+
+    // List item
+    --color-list-item-hover: #1f724340;
+    --color-list-item-active: #1f724310;
+    --color-list-item-selected: #1f724330;
+
+    // Menu de contexto
+    --color-context-menu-background: #1a1a1b;
+    --color-context-menu-background-title: #ffffff20;
+    --color-context-menu-list-item-hover: var(--color-list-item-hover);
+    --color-context-menu-list-item-active: var(--color-list-item-active);
+    --box-shadow-context-menu: var(--size-none) var(--size-none) var(--size-0-5) var(--size-none) var(--color-black);
+
+    // Fontes
+    --font-family-normal: Verdana, Geneva, Tahoma, sans-serif;
+    --font-family-editor: Consolas, "Courier New", monospace;
+    --font-family-vs-code: "Droid Sans Mono", "monospace", monospace, "Droid Sans Fallback";
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 // Sizes ------------------
 $size-window-vh-fill: 100vh;
@@ -69,12 +161,10 @@ $font-size-17: 64px;
 $border-size-0: 0px;
 $border-size-1: 1px;
 
-
-
 //# Scroll bar style ----------
 
 // Colors
-$color-scroll-bar: #3C3C3C20;
+$color-scroll-bar: #3c3c3c20;
 $color-scroll-bar-hover: #4d4d4d;
 $color-scroll-bar-active: #5c5c5c;
 
@@ -82,10 +172,9 @@ $color-scroll-bar-active: #5c5c5c;
 $size-x-scroll-bar: $size-2;
 $size-x-scroll-bar-small: $size-1;
 $size-x-scroll-bar-hover: $size-2; // Não funciona
-$size-x-scroll-bar-active: $size-2;// Não funciona
+$size-x-scroll-bar-active: $size-2; // Não funciona
 
 //# Scroll bar style ----------
-
 
 // Colors -----------------
 $color-white: #ffffff;
@@ -93,15 +182,15 @@ $color-transparent: transparent;
 
 $color-black: #000;
 $color-black-50: #00000050;
-$color-border-light-gray: #4F4F4F;
-$item-logic-hover: #3C3C3C;
-$color-background-propertie-editor: #3C3C3C;
+$color-border-light-gray: #4f4f4f;
+$item-logic-hover: #3c3c3c;
+$color-background-propertie-editor: #3c3c3c;
 $color-background-propertie-editor-exetended-hover: #525252;
-$color-top-bar: #3C3C3C;
+$color-top-bar: #3c3c3c;
 $color-tool-bar: #2d2d2d;
 $color-top-bar-light: #4d4d4d;
-$color-botton-bar: #0F77BF;
-$color-background: #1E1E1E;
+$color-botton-bar: #0f77bf;
+$color-background: #1e1e1e;
 $color-background-col: #252527;
 $color-background-col-click: #313135;
 
@@ -146,7 +235,3 @@ $toolbar-item-background-active: #52525252;
 
 // Outlines
 $outline-padrao: 2px solid #f3f3f3;
-
-// Fontes
-$font-family-normal: Verdana, Geneva, Tahoma, sans-serif;
-$font-family-editor: Consolas, 'Courier New', monospace;

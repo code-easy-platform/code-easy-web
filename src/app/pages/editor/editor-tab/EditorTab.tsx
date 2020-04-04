@@ -6,7 +6,7 @@ import { PropertiesEditor } from './../../../shared/components/properties-editor
 import { IItem, TypeValues } from '../../../shared/components/properties-editor/shared/interfaces';
 import { EditorTabTemplate } from '../../../shared/components/resize-tamplate/EditorTabTemplate';
 import { FlowItem, ItemType } from './../../../shared/components/code-editor/models/ItemFluxo';
-import { AlertService, AlertTypes } from '../../../shared/components/tool-bar/AlertService';
+import { AlertService, AlertTypes } from '../../../shared/components/botton-status-bar/AlertService';
 import ColRightTemplate from '../../../shared/components/resize-tamplate/ColRightTemplate';
 import { CodeEditorContext } from '../../../shared/services/contexts/CodeEditorContext';
 import { TreeManager } from '../../../shared/components/tree-manager/TreeManager';

@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 
 import { LoadingIndicator } from '../loading-indicator/LoadingIndicator';
-import { AlertService, AlertTypes } from '../tool-bar/AlertService';
+import { AlertService, AlertTypes } from './AlertService';
 import './BottonStatusBar.scss';
 
 export class BottonStatusBar extends Component {
