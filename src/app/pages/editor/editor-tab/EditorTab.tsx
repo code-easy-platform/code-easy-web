@@ -11,6 +11,7 @@ import ColRightTemplate from '../../../shared/components/resize-tamplate/ColRigh
 import { CodeEditorContext } from '../../../shared/services/contexts/CodeEditorContext';
 import { TreeManager } from '../../../shared/components/tree-manager/TreeManager';
 import { FlowEditor } from './../../../shared/components/code-editor/CodeEditor';
+import { ContextMenuService } from '../../../shared/components/context-menu/ContextMenuService';
 
 const itensLogica: FlowItem[] = [
     new FlowItem({ id: 1, sucessor: [0], top: 0, left: 0, width: 0, height: 0, isSelecionado: false, nome: "START", itemType: ItemType.START }),
@@ -443,6 +444,21 @@ export default class EditorTab extends Component {
         return tree;
     }
 
+    private treeManagerRemoveItem(itemId: string) {
+        const index = this.state.tab.itens.findIndex(item => item.id === itemId);
+
+        if (index < 0) return;
+        this.state.tab.itens.splice(index, 1);
+
+        this.setState({
+            tab: this.state.tab,
+            tree: this.treeManagerGetTree(this.state.tab.itens),
+            itensLogica: this.codeEditorGetItensLogica(this.state.tab.itens),
+            propEditor: this.propertiesEditorGetSelectedItem(this.state.tab.itens),
+        });
+
+    }
+
 
 
     render() {
@@ -467,7 +483,15 @@ export default class EditorTab extends Component {
                                 onClick={this.treeManagerOnClick.bind(this)}
                                 onDropItem={this.treeManagerOnDropItem.bind(this)}
                                 onDoubleClick={this.treeManagerOnDoubleClick.bind(this)}
-                                onContextMenu={(itemId, e) => { e.preventDefault(); console.log(itemId); console.log(e); }}
+                                onContextMenu={(itemId, e) => {
+                                    e.preventDefault();
+                                    ContextMenuService.sendMessage(true, e.clientX, e.clientY, [
+                                        {
+                                            action: () => this.treeManagerRemoveItem.bind(this)(itemId),
+                                            label: 'Excluir'
+                                        }
+                                    ]);
+                                }}
                                 itemBase={{
                                     itemId: "",
                                     isSelected: false,

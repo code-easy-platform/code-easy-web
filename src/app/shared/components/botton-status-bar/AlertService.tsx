@@ -18,6 +18,8 @@ export enum AlertTypes {
 
 const subject = new Subject<IAlert>();
 export const AlertService = {
+    clearMessages: () => subject.next(),
+    getMessage: () => subject.asObservable(),
     /**
      * Mostra mensagem em uma snackbar.
      * 
@@ -56,6 +58,4 @@ export const AlertService = {
         }
 
     },
-    clearMessages: () => subject.next(),
-    getMessage: () => subject.asObservable(),
 };

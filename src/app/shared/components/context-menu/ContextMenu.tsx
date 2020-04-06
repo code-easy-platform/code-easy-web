@@ -1,34 +1,69 @@
-import React, { useState } from 'react';
+import React from 'react';
 
+import { ContextMenuService } from './ContextMenuService';
 import './ContextMenu.scss';
 
-interface ItemListContext {
+export interface IItemListContext {
     label: string;
     action(): any;
 }
-interface ContextMenuProps {
-    title?: string;
+interface ContextMenuSate {
+    actions: IItemListContext[],
+    isShow: boolean,
+    left: number,
+    top: number,
 }
-export const ContextMenu: React.FC<ContextMenuProps> = ({ title }) => {
-    const [state, setState] = useState({
+export class ContextMenu extends React.Component<{ title?: string }> {
+    private menuSubscrition: any;
+
+    state: ContextMenuSate = {
         isShow: false,
-        action: []
-    });
+        actions: [],
+        left: 0,
+        top: 0,
+    }
 
-    const actions: ItemListContext[] = [
-        {
-            label: 'Deletar',
-            action: () => { },
-        }
-    ];
+    componentDidMount() {
+        this.menuSubscrition = ContextMenuService.getMessage().subscribe(data => {
+            this.setState({
+                actions: data.actions,
+                isShow: data.isShow,
+                left: data.left,
+                top: data.top,
+            })
+        });
 
-    return (<>
-        {state.isShow && <div className="context-menu">
-            {title && <div className="context-menu-title">{title}</div>}
-            {actions.map((action) => (
-                <div key={action.label} className="context-menu-list-item" onClick={action.action}>{action.label}</div>
-            ))}
-        </div>}
-    </>);
+        window.addEventListener('mousedown', () => {
+            this.setState({
+                actions: [],
+                isShow: false,
+                left: 0,
+                top: 0,
+            });
+        });
 
+    }
+
+    componentWillUnmount = () => this.menuSubscrition.unsubscribe();
+
+
+    render() {
+        return (<div>
+            {this.state.isShow && <div className="context-menu" style={{ left: this.state.left, top: this.state.top }}>
+                {this.props.title && <div className="context-menu-title">{this.props.title}</div>}
+                {this.state.actions.map((action) => (
+                    <div
+                        key={action.label}
+                        className="context-menu-list-item"
+                        onClick={() => {
+                            ContextMenuService.clearMessages();
+                            action.action();
+                        }}
+                    >
+                        {action.label}
+                    </div>
+                ))}
+            </div>}
+        </div >);
+    }
 }
