@@ -20,10 +20,18 @@ import { Utils } from './shared/Utils';
  * @param onDropItem Function - Usada para emitir através do output o item que foi dropado no fluxo.
  * @param isShowToolbar boolean - Usado para exibir ou não a toolbox cons itens de lógica.
  */
-export const FlowEditor: FC<ICodeEditorProps> = ({ itens = [], toolItens = [], onChangeItens = () => { }, isShowToolbar = false, onDropItem, allowDropTo }) => {
+export const FlowEditor: FC<ICodeEditorProps> = ({ itens = [], toolItens = [], onChangeItens = () => { }, isShowToolbar = false, onDropItem, allowDropTo, onContextMenu }) => {
     return (
         <DndProvider backend={HTML5Backend}>
-            <CodeEditor itens={itens} toolItens={toolItens} onChangeItens={onChangeItens} isShowToolbar={isShowToolbar} onDropItem={onDropItem} allowDropTo={allowDropTo} />
+            <CodeEditor
+                onContextMenu={onContextMenu}
+                onChangeItens={onChangeItens}
+                isShowToolbar={isShowToolbar}
+                allowDropTo={allowDropTo}
+                onDropItem={onDropItem}
+                toolItens={toolItens}
+                itens={itens}
+            />
         </DndProvider>
     );
 }
@@ -35,7 +43,7 @@ const acceptedInDrop: ItemType[] = [ItemType.START, ItemType.ACTION, ItemType.IF
 let backupFlow: string = "";
 
 /** Editor do fluxo. */
-const CodeEditor: React.FC<ICodeEditorProps> = ({ itens = [], toolItens = [], onChangeItens = () => { }, isShowToolbar = false, onDropItem = () => undefined, allowDropTo = [] }) => {
+const CodeEditor: React.FC<ICodeEditorProps> = ({ itens = [], toolItens = [], onChangeItens = () => { }, isShowToolbar = false, onDropItem = () => undefined, allowDropTo = [], onContextMenu }) => {
 
     /** Referencia o svg onde está todos os itens de fluxo. */
     const svgRef = useRef<any>(null);
@@ -470,6 +478,12 @@ const CodeEditor: React.FC<ICodeEditorProps> = ({ itens = [], toolItens = [], on
 
                 <svg ref={svgRef} tabIndex={0}
                     id={"CODE_EDITOR_SVG"}
+                    onContextMenu={e => {
+                        if (onContextMenu) {
+                            e.preventDefault();
+                            onContextMenu(undefined, e);
+                        }
+                    }}
                     onMouseDown={e => onMouseDown(e, true)}
                     style={{
                         height: state.svgSize.svgHeight,
@@ -516,6 +530,7 @@ const CodeEditor: React.FC<ICodeEditorProps> = ({ itens = [], toolItens = [], on
                             onChangeSelecionado={onChangeSelecionado}
                             isSelecionado={item.isSelecionado}
                             outputPosition={positionChange}
+                            onContextMenu={onContextMenu}
                             itemType={item.itemType}
                             refItemPai={svgRef}
                             title={item.nome}

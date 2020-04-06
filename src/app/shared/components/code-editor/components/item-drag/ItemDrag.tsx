@@ -14,19 +14,20 @@ import icons_if from './../../shared/images/if.png';
 
 /** Usado para definir o tipo de input de parâmetros no item drag. */
 export interface ItemDragProps {
-    id?: any
-    title: string
-    children?: any
-    refItemPai?: any
-    style: CustomStyle
-    allowDrag?: boolean
-    isSelecionado: boolean
-    hideSourceOnDrag?: boolean
-    itemType?: any/* ComponentType */
+    id?: any;
+    title: string;
+    children?: any;
+    refItemPai?: any;
+    style: CustomStyle;
+    allowDrag?: boolean;
+    isSelecionado: boolean;
+    hideSourceOnDrag?: boolean;
+    itemType?: any;/* ComponentType */
 
     /** Devolve 'itemId, top, left'. */
-    outputPosition?: Function
-    onChangeSelecionado?: Function
+    outputPosition?: Function;
+    onChangeSelecionado?: Function;
+    onContextMenu?(data?: any, e?: React.MouseEvent<SVGGElement, MouseEvent>): void;
 }
 
 /** Auxilia na hora de passar configurações para o editor de fluxo. */
@@ -42,8 +43,8 @@ interface CustomStyle {
 export const ItemToDrag: React.FC<ItemDragProps> = (props: ItemDragProps) => {
     const {
         isSelecionado, onChangeSelecionado = () => { },
+        id, outputPosition, onContextMenu,
         allowDrag, refItemPai, itemType,
-        id, outputPosition,
     } = props;
 
     let { title } = props;
@@ -111,9 +112,11 @@ export const ItemToDrag: React.FC<ItemDragProps> = (props: ItemDragProps) => {
     }
 
     // Assim que configurado exibirá o menu de contexto deste item corrente.
-    const contextMenu = (event: any) => {
-        setState({ ...state, isMenuOpen: true });
-        event.preventDefault();
+    const contextMenu = (event: React.MouseEvent<SVGGElement, MouseEvent>) => {
+        if (onContextMenu) {
+            event.preventDefault();
+            onContextMenu({ itemId: id, itemType: itemType }, event);
+        }
     }
 
     /** Com base se é permitido ou não usar o "drag and drop" ele reinderiza o item na tela. */
@@ -162,4 +165,5 @@ export const ItemToDrag: React.FC<ItemDragProps> = (props: ItemDragProps) => {
             </g>
         );
     }
+
 }

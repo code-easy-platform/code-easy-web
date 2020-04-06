@@ -27,13 +27,13 @@ export class ContextMenu extends React.Component<{ title?: string }> {
         this.menuSubscrition = ContextMenuService.getMessage().subscribe(data => {
             this.setState({
                 actions: data.actions,
-                isShow: data.isShow,
                 left: data.left,
                 top: data.top,
+                isShow: true,
             })
         });
 
-        window.addEventListener('mousedown', () => {
+        window.addEventListener('onclick', () => {
             this.setState({
                 actions: [],
                 isShow: false,
@@ -56,8 +56,8 @@ export class ContextMenu extends React.Component<{ title?: string }> {
                         key={action.label}
                         className="context-menu-list-item"
                         onClick={() => {
-                            ContextMenuService.clearMessages();
                             action.action();
+                            ContextMenuService.clearMessages();
                         }}
                     >
                         {action.label}

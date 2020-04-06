@@ -323,6 +323,31 @@ export default class EditorTab extends Component {
 
     }
 
+    private codeEditorRemoveItem(data: any) {
+        console.log(data);
+
+        let itemEditing = this.state.tab.itens.find(item => item.isEditing);
+
+        if (itemEditing) {
+
+            /* const index = itemEditing.itens.findIndex(item => item.id.toString() === itemId);
+            if (index < 0) return;
+
+            itemEditing.itens.splice(index, 1);
+
+            this.setState({
+                tab: this.state.tab,
+                tree: this.treeManagerGetTree(this.state.tab.itens),
+                itensLogica: this.codeEditorGetItensLogica(this.state.tab.itens),
+                propEditor: this.propertiesEditorGetSelectedItem(this.state.tab.itens),
+            }); */
+
+            return;
+        } else {
+            return;
+        }
+    }
+
 
 
     private treeManagerOnDropItem(targetId: string, droppedId: string, droppedItem: any): TreeInterface {
@@ -472,6 +497,14 @@ export default class EditorTab extends Component {
                         allowDropTo={[TreeItensTypes.file]}
                         onDropItem={this.codeEditorOnDropItem.bind(this)}
                         onChangeItens={this.codeEditorOutputFlowItens.bind(this)}
+                        onContextMenu={(data, e) => {
+                            ContextMenuService.sendMessage(e?.clientX || 0, e?.clientY || 0, [
+                                {
+                                    action: () => {this.codeEditorRemoveItem.bind(this)(data); console.log(data)},
+                                    label: 'Excluir'
+                                }
+                            ]);
+                        }}
                     />
                 }
                 columnRight={
@@ -485,7 +518,7 @@ export default class EditorTab extends Component {
                                 onDoubleClick={this.treeManagerOnDoubleClick.bind(this)}
                                 onContextMenu={(itemId, e) => {
                                     e.preventDefault();
-                                    ContextMenuService.sendMessage(true, e.clientX, e.clientY, [
+                                    ContextMenuService.sendMessage(e.clientX, e.clientY, [
                                         {
                                             action: () => this.treeManagerRemoveItem.bind(this)(itemId),
                                             label: 'Excluir'
