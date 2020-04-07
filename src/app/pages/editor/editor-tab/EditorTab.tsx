@@ -61,12 +61,13 @@ const mockTab: Tab = {
     itens: [
         {
             id: '1',
-            label: "Minha action",
-            description: "Desc da minha action",
+            label: "authenticate",
+            description: "Autentica os usuários!",
             isEditing: true,
             isSelected: true,
             nodeExpanded: true,
             itemPaiId: undefined,
+            type: TreeItensTypes.file,
             itens: [
                 new FlowItem({ id: 1, sucessor: [2], top: 100, left: 80, width: 50, height: 50, isSelecionado: false, nome: "START", itemType: ItemType.START }),
                 new FlowItem({ id: 2, sucessor: [3], top: 200, left: 80, width: 50, height: 50, isSelecionado: false, nome: "IF", itemType: ItemType.IF }),
@@ -75,16 +76,16 @@ const mockTab: Tab = {
                 new FlowItem({ id: 5, sucessor: [6], top: 500, left: 80, width: 50, height: 50, isSelecionado: false, nome: "SWITCH", itemType: ItemType.SWITCH }),
                 new FlowItem({ id: 6, sucessor: [7], top: 600, left: 80, width: 50, height: 50, isSelecionado: false, nome: "ASSIGN", itemType: ItemType.ASSIGN }),
             ],
-            type: TreeItensTypes.folder,
         },
         {
             id: '2',
-            label: "Minha action 2",
-            description: "Desc da minha action",
+            label: "signup",
+            description: "Permite cadastrar um usuário!",
             isEditing: true,
             isSelected: false,
             nodeExpanded: true,
             itemPaiId: undefined,
+            type: TreeItensTypes.file,
             itens: [
                 new FlowItem({ id: 3, sucessor: [4], top: 300, left: 80, width: 50, height: 50, isSelecionado: false, nome: "FOREACH", itemType: ItemType.FOREACH }),
                 new FlowItem({ id: 4, sucessor: [5], top: 400, left: 80, width: 50, height: 50, isSelecionado: false, nome: "ACTION", itemType: ItemType.ACTION }),
@@ -92,54 +93,6 @@ const mockTab: Tab = {
                 new FlowItem({ id: 6, sucessor: [7], top: 600, left: 80, width: 50, height: 50, isSelecionado: false, nome: "ASSIGN", itemType: ItemType.ASSIGN }),
                 new FlowItem({ id: 7, sucessor: [], top: 700, left: 80, width: 50, height: 50, isSelecionado: false, nome: "END", itemType: ItemType.END }),
             ],
-            type: TreeItensTypes.folder,
-        },
-        {
-            id: '3',
-            label: "Minha action 3",
-            description: "Desc da minha action",
-            itemPaiId: '1',
-            isEditing: true,
-            isSelected: false,
-            nodeExpanded: true,
-            itens: [
-                new FlowItem({ id: 1, sucessor: [2], top: 100, left: 80, width: 50, height: 50, isSelecionado: false, nome: "START", itemType: ItemType.START }),
-                new FlowItem({ id: 2, sucessor: [3], top: 200, left: 80, width: 50, height: 50, isSelecionado: false, nome: "IF", itemType: ItemType.IF }),
-                new FlowItem({ id: 5, sucessor: [6], top: 500, left: 80, width: 50, height: 50, isSelecionado: false, nome: "SWITCH", itemType: ItemType.SWITCH }),
-                new FlowItem({ id: 6, sucessor: [7], top: 600, left: 80, width: 50, height: 50, isSelecionado: false, nome: "ASSIGN", itemType: ItemType.ASSIGN }),
-                new FlowItem({ id: 7, sucessor: [], top: 700, left: 80, width: 50, height: 50, isSelecionado: false, nome: "END", itemType: ItemType.END }),
-            ],
-            type: TreeItensTypes.file,
-        },
-        {
-            id: '4',
-            label: "Minha action 4",
-            description: "Desc da minha action",
-            isEditing: true,
-            isSelected: false,
-            nodeExpanded: true,
-            itemPaiId: undefined,
-            itens: [],
-            type: TreeItensTypes.file,
-        },
-        {
-            id: '5',
-            label: "Minha action 5",
-            description: "Desc da minha action",
-            itemPaiId: '1',
-            isEditing: true,
-            isSelected: false,
-            nodeExpanded: true,
-            itens: [
-                new FlowItem({ id: 1, sucessor: [2], top: 100, left: 80, width: 50, height: 50, isSelecionado: false, nome: "START", itemType: ItemType.START }),
-                new FlowItem({ id: 2, sucessor: [3], top: 200, left: 80, width: 50, height: 50, isSelecionado: false, nome: "IF", itemType: ItemType.IF }),
-                new FlowItem({ id: 3, sucessor: [4], top: 300, left: 80, width: 50, height: 50, isSelecionado: false, nome: "FOREACH", itemType: ItemType.FOREACH }),
-                new FlowItem({ id: 4, sucessor: [5], top: 400, left: 80, width: 50, height: 50, isSelecionado: false, nome: "ACTION", itemType: ItemType.ACTION }),
-                new FlowItem({ id: 5, sucessor: [6], top: 500, left: 80, width: 50, height: 50, isSelecionado: false, nome: "SWITCH", itemType: ItemType.SWITCH }),
-                new FlowItem({ id: 6, sucessor: [7], top: 600, left: 80, width: 50, height: 50, isSelecionado: false, nome: "ASSIGN", itemType: ItemType.ASSIGN }),
-                new FlowItem({ id: 7, sucessor: [], top: 700, left: 80, width: 50, height: 50, isSelecionado: false, nome: "END", itemType: ItemType.END }),
-            ],
-            type: TreeItensTypes.file,
         }
     ]
 }
@@ -168,13 +121,32 @@ export default class EditorTab extends Component {
 
     private propertiesEditorOutputItens(itens: IItem[]) {
 
-        itens.forEach(item => {
+        if (this.state.currentFocus === CurrentFocus.tree) {
+            itens.forEach(item => {
 
-            let itemSelected = this.state.tab.itens.find(itemTree => (itemTree.isSelected && itemTree.id === item.id.toString()));
+                let itemSelected = this.state.tab.itens.find(itemTree => (itemTree.isSelected && itemTree.id === item.id.toString()));
 
-            if (itemSelected) itemSelected.label = item.name;
+                if (itemSelected) {
+                    itemSelected.label = item.properties[0].value;
+                    itemSelected.description = item.properties[1].value;
+                }
 
-        });
+            });
+        } else if (this.state.currentFocus === CurrentFocus.flow) {
+
+            let itensSelected = this.codeEditorGetItensLogica(this.state.tab.itens).filter(item => item.isSelecionado);
+
+            itensSelected.forEach((item, index) => {
+
+                item.id = itens[index].id;
+                item.nome = itens[index].properties[0].value;
+
+            });
+
+        }
+
+
+
 
         this.setState({ tab: { ...this.state.tab } });
 
@@ -291,6 +263,7 @@ export default class EditorTab extends Component {
         });
 
         this.setState({
+            currentFocus: CurrentFocus.flow,
             tree: this.treeManagerGetTree(this.state.tab.itens),
             itensLogica: this.codeEditorGetItensLogica(this.state.tab.itens),
             tab: { ...this.state.tab, itensProperties: itensPropertiesChanged },
@@ -316,6 +289,8 @@ export default class EditorTab extends Component {
         let itemEditing = itens.find(item => item.isEditing);
 
         if (itemEditing) {
+            itemEditing.itens.sort((a, b) => (a.top - b.top));
+
             return itemEditing.itens
         } else {
             return [];
@@ -498,12 +473,12 @@ export default class EditorTab extends Component {
                         onDropItem={this.codeEditorOnDropItem.bind(this)}
                         onChangeItens={this.codeEditorOutputFlowItens.bind(this)}
                         onContextMenu={(data, e) => {
-                            ContextMenuService.sendMessage(e?.clientX || 0, e?.clientY || 0, [
-                                {
-                                    action: () => {this.codeEditorRemoveItem.bind(this)(data); console.log(data)},
-                                    label: 'Excluir'
-                                }
-                            ]);
+                            /*  ContextMenuService.sendMessage(e?.clientX || 0, e?.clientY || 0, [
+                                 {
+                                     action: () => {this.codeEditorRemoveItem.bind(this)(data);},
+                                     label: 'Excluir'
+                                 }
+                             ]); */
                         }}
                     />
                 }
