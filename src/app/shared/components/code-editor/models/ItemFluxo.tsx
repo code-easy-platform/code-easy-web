@@ -1,13 +1,13 @@
 export interface ItemFluxo {
     isSelecionado: boolean
-    sucessor: number[],
+    sucessor: string[],
     itemType: ItemType,
     height: number,
     width: number,
     nome: string,
     left: number,
     top: number,
-    id: number,
+    id: string | undefined,
     select(startTop: number, startLeft: number, endTop: number, endLeft: number): any,
 }
 
@@ -25,15 +25,15 @@ export enum ItemType {
 /** Elemento que é reinderizado na para cada item de fluxo. */
 export class FlowItem implements ItemFluxo {
 
-    public isSelecionado: boolean = false;
-    public sucessor: number[] = [0];
     public itemType: ItemType = ItemType.START;
+    public isSelecionado: boolean = false;
+    public sucessor: string[] = [];
     public height: number = 0;
     public width: number = 0;
     public nome: string = "";
     public left: number = 0;
     public top: number = 0;
-    public id: number = 0;
+    public id: string | undefined = undefined;
 
     /** Valida se o elemento está ou não na área que está sendo selecionada pelo mouse. */
     public select = (startTop: number, startLeft: number, endTop: number, endLeft: number) => {
@@ -57,14 +57,14 @@ export class FlowItem implements ItemFluxo {
     constructor(
         private props: {
             isSelecionado: boolean,
-            sucessor: number[],
+            sucessor: string[],
             itemType: ItemType,
             height: number,
             width: number,
             nome: string,
             left: number,
             top: number,
-            id: number,
+            id: string | undefined,
         }
     ) {
         this.isSelecionado = this.props.isSelecionado;

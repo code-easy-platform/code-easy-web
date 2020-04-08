@@ -53,7 +53,6 @@ export const ItemToDrag: React.FC<ItemDragProps> = (props: ItemDragProps) => {
 
     /** Usado para manter e gerenciar o stado deste componente. */
     const [state, setState] = useState({
-        isMenuOpen: false,
         /** Usado para não bugar o onchangesucessor da linha que estou trocando.  */
         isMouseDown: false,
     });
@@ -67,13 +66,6 @@ export const ItemToDrag: React.FC<ItemDragProps> = (props: ItemDragProps) => {
     });
 
     window.onmouseup = () => mouseUp;
-
-    /** Serve para fechar o menu de contexto, caso ele esteja aberto. */
-    window.onmousedown = () => {
-        if (state.isMenuOpen) {
-            setState({ ...state, isMenuOpen: false });
-        }
-    };
 
     /** Declara a fun no ref da svg para que o item atual possa ser arrastado na tela. */
     const mouseDown = (e: React.MouseEvent<SVGGElement, MouseEvent>) => {

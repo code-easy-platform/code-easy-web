@@ -52,7 +52,7 @@ const CodeEditor: React.FC<ICodeEditorProps> = ({ itens = [], toolItens = [], on
     /** Controla o estado do editor inteiro. */
     const [state, setState] = useState<ICodeEditorState>({
         flowItens: itens,
-        selectedItem: { itemId: 0 },
+        selectedItem: { itemId: undefined },
         svgSize: { svgHeight: 0, svgWidth: 0 },
         selectionProps: {
             isMouseDown: false,
@@ -94,7 +94,7 @@ const CodeEditor: React.FC<ICodeEditorProps> = ({ itens = [], toolItens = [], on
             const targetOffsetX: number = ((draggedOffSet.x) + (targetSize.left - targetSize.left - targetSize.left) - 25);
 
             let newItem = new FlowItem({
-                id: Utils.getRandomId(),
+                id: Utils.getRandomId().toString(),
                 itemType: item.itemProps.itemType,
                 nome: item.itemProps.title,
                 isSelecionado: true,
@@ -106,7 +106,7 @@ const CodeEditor: React.FC<ICodeEditorProps> = ({ itens = [], toolItens = [], on
             });
 
             /** Espera o retorno para inserir o item, se receber undefined só insere, se for diferente de undefined insere o resultado do event se existir algo */
-            const onDropRes = onDropItem(item.id, newItem.id.toString(), newItem);
+            const onDropRes = onDropItem(item.id, (newItem.id || Utils.getRandomId()).toString(), newItem);
             if (onDropRes === undefined) {
 
                 state.flowItens.push(newItem);
@@ -135,7 +135,7 @@ const CodeEditor: React.FC<ICodeEditorProps> = ({ itens = [], toolItens = [], on
     dropRef(svgRef);
 
     /** Depois que um elemento já está na tela, esta função muda a posição dele! */
-    const positionChange = (itemId: number, positionTop: number, positionLeft: number, event?: any) => {
+    const positionChange = (itemId: string | undefined, positionTop: number, positionLeft: number, event?: any) => {
 
         // let component = state.flowItens[state.flowItens.findIndex((item: FlowItem) => item.isSelecionado)];
         let component = state.flowItens[state.flowItens.findIndex((item: any) => { if (item.id === itemId) return true; return false; })];
@@ -177,24 +177,24 @@ const CodeEditor: React.FC<ICodeEditorProps> = ({ itens = [], toolItens = [], on
      * 
      * @param branchIndex indica qual a branch do item para liga no item sucessor
      */
-    const onSucessorChange = (itemId: number, sucessorId: string, branchIndex: number = 0) => {
+    const onSucessorChange = (itemId: string | undefined, sucessorId: string, branchIndex: number = 0) => {
 
-        const itemCurrentIndex = state.flowItens.findIndex((item: FlowItem) => { if (item.id === Number(itemId)) return item; else return undefined; });
+        const itemCurrentIndex = state.flowItens.findIndex((item: FlowItem) => { if (item.id === itemId) return item; else return undefined; });
         let itemCurrent: FlowItem = state.flowItens[itemCurrentIndex];
 
         // Se tentar ligar um item nele mesmo deve ser perdida a ligação com qualquer elemento anterior desta branch específica.
-        if (Number(itemId) === Number(sucessorId)) {
+        if (itemId === sucessorId) {
             sucessorId = "";
         }
 
         // No caso de vim 999999 significa que é um novo branch.
         if (branchIndex === 999999) {
             branchIndex = itemCurrent.sucessor.length + 1;
-            itemCurrent.sucessor.push(0);
+            itemCurrent.sucessor.push('0');
         }
 
         // OBS: O update no fluxo principal é feito pela referencia entre variáveis js.
-        itemCurrent.sucessor[branchIndex] = Number(sucessorId);
+        itemCurrent.sucessor[branchIndex] = sucessorId;
 
         setState({
             ...state,
@@ -286,7 +286,7 @@ const CodeEditor: React.FC<ICodeEditorProps> = ({ itens = [], toolItens = [], on
 
                 components.forEach(item => {
 
-                    const newId: number = Utils.getRandomId();
+                    const newId: string | undefined = Utils.getRandomId().toString();
 
                     components.forEach((depende, dependeIndex) => {
                         if (depende.id !== item.id) {
@@ -347,7 +347,7 @@ const CodeEditor: React.FC<ICodeEditorProps> = ({ itens = [], toolItens = [], on
                 item.isSelecionado = true;
             });
 
-            setState({ ...state, flowItens: state.flowItens, selectedItem: { itemId: 0 } });
+            setState({ ...state, flowItens: state.flowItens, selectedItem: { itemId: undefined } });
         }
 
         /** Remove o item que estiver selecionado no fluxo. */
@@ -356,7 +356,7 @@ const CodeEditor: React.FC<ICodeEditorProps> = ({ itens = [], toolItens = [], on
             if (itemCurrentIndex === -1) return;
 
             const itemAntecessorIndex = state.flowItens.findIndex((item: FlowItem) => { if (item.sucessor[0] === state.flowItens[itemCurrentIndex].id) return item; else return undefined; });
-            if (itemAntecessorIndex !== -1) { state.flowItens[itemAntecessorIndex].sucessor[0] = 0; }
+            if (itemAntecessorIndex !== -1) { state.flowItens[itemAntecessorIndex].sucessor[0] = '0'; }
 
             state.flowItens.splice(itemCurrentIndex, 1);
 
@@ -439,7 +439,7 @@ const CodeEditor: React.FC<ICodeEditorProps> = ({ itens = [], toolItens = [], on
         setState({
             ...state,
             selectionProps: state.selectionProps,
-            selectedItem: { itemId: 0 }
+            selectedItem: { itemId: undefined }
         });
 
     }
@@ -458,9 +458,10 @@ const CodeEditor: React.FC<ICodeEditorProps> = ({ itens = [], toolItens = [], on
     }
 
     /** Muda item que está selecionado. */
-    const onChangeSelecionado = (itemId: number, e: React.MouseEvent<SVGSVGElement, MouseEvent>) => {
-
-        setState({ ...state, flowItens: state.flowItens, selectedItem: { itemId } });
+    const onChangeSelecionado = (itemId: string | undefined, e: React.MouseEvent<SVGSVGElement, MouseEvent>) => {
+        
+        state.selectedItem.itemId = itemId;
+        setState({ ...state, flowItens: state.flowItens, selectedItem: state.selectedItem });
 
         onMouseDown(e, false);
 
@@ -507,7 +508,13 @@ const CodeEditor: React.FC<ICodeEditorProps> = ({ itens = [], toolItens = [], on
 
                     {/* Reinderiza as linhas dos itens arrastáveis da tela. */}
                     {state.flowItens.map((item: FlowItem) => {
-                        const itensSucessores: FlowItem[] = state.flowItens.filter((sucessorItem: FlowItem) => item.sucessor.includes(sucessorItem.id));
+
+                        const itensSucessores: FlowItem[] = state.flowItens.filter((sucessorItem: FlowItem) => {
+
+                            if (sucessorItem.id === undefined) return false;
+                            return item.sucessor.includes(sucessorItem.id);
+
+                        });
 
                         // Define se será usado uma nova branch para este item de fluxo.
                         let isUseNewBranch = Utils.useNewBranch(itensSucessores.length, item.itemType);
