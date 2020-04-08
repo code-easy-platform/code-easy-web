@@ -1,45 +1,52 @@
 {
-    "basic": {
-        "name": "api-teste",
-        "label": "Api teste",
-        "description": "Minha API de teste",
-        "type": "api-node",
-        "version": "0.0.1",
-        "autor": "string",
-        "currentProcess": ""
-    },
-    "tabs": [
-        {
-            "name": "actions",
-            "label": "Actions",
-            "description": "Ações de servidor",
-            "type": "actions",
-            "itens": [
-                {
-                    "id": "1",
-                    "type": "FILE",
-                    "label": "Minha",
-                    "isEditing": true,
-                    "isSelected": true,
-                    "nodeExpanded": false,
-                    "description": "Minha descrição desta ação de servidor",
-                    "itens": [
-                        {
-                            "id": 1,
-                            "top": 100,
-                            "left": 80,
-                            "width": 50,
-                            "height": 50,
-                            "nome": "START",
-                            "itemType": "START",
-                            "isSelecionado": false,
-                            "sucessor": [
-                                2
-                            ]
-                        }
-                    ]
-                }
-            ]
-        }
-    ]
+    "project": {
+        "projectConfigs": {
+            "id": "1",
+            "name": "meu-projeto-teste",
+            "label": "Meu projeto de testes",
+            "description": "Projeto que serve para testes",
+            "type": "",
+            "version": "0.0.1",
+            "currentProcess": ""
+        },
+        "tabs": [
+            {
+                "configs": {
+                    "id": 1,
+                    "label": "string",
+                    "name": "string",
+                    "description": "string",
+                    "type": "TAB_ROUTERS",
+                    "isEditando": true,
+                    "isExpanded": true
+                },
+                "itens": [
+                    {
+                        "id": "1",
+                        "type": "FILE",
+                        "name": "authenticate",
+                        "itemPaiId": null,
+                        "label": "authenticate",
+                        "isEditing": false,
+                        "isSelected": false,
+                        "nodeExpanded": true,
+                        "description": "Autentica os usuários!",
+                        "itens": [
+                            {
+                                "id": 1,
+                                "top": 100,
+                                "left": 80,
+                                "width": 50,
+                                "height": 50,
+                                "nome": "END",
+                                "sucessor": [],
+                                "itemType": "END",
+                                "isSelecionado": false
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    }
 }

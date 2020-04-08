@@ -9,7 +9,7 @@ import './ToolBar.scss';
 
 export const ToolBar = (props: any) => {
     const codeEditorContext = useContext(CodeEditorContext);
-    const tabs: Tab[] = codeEditorContext.project.tabs;
+    const tabs: Tab[] = [];
 
     const [currentTab, setCurrentTab] = useState(CurrentTab.editor);
 

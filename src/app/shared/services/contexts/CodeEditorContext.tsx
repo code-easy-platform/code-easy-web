@@ -1,11 +1,9 @@
 import React from 'react';
 
-import { Project, Tab, Component } from '../../interfaces/Aplication';
-import ComponentType from '../../enuns/ComponentType';
-import { DEFAULT_PROJECT } from '../LocalStorage';
+import { Project, Tab, ItemComponent } from '../../interfaces/Aplication';
+import { ComponentType } from '../../enuns/ComponentType';
 
 export const CodeEditorContext = React.createContext({
-    project: DEFAULT_PROJECT,
     editingTab: ComponentType.tabRouters,
 
     toggleResourcesTab: (tab: Tab) => { },
@@ -17,7 +15,7 @@ export const CodeEditorContext = React.createContext({
      * @param tabIndex Aba que pode ser do tipo "Routers", "Actions" ou "Data".
      * @param component Componente com suas devidas alterações, para que seja salvo no storage.
      */
-    changeComponentState: (id: number, component: Component) => { },
+    changeComponentState: (id: number, component: ItemComponent) => { },
 
     // Funcões axuliares.
     getCurrentTabSelected: (): any => { },

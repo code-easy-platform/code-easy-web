@@ -1,17 +1,19 @@
-import React, { Component } from 'react';
+import React from 'react';
 
 import { TreeItensTypes } from '../../../shared/components/tree-manager/shared/models/TreeItensTypes';
+import { AlertService, AlertTypes } from '../../../shared/components/botton-status-bar/AlertService';
 import { TreeInterface } from '../../../shared/components/tree-manager/shared/models/TreeInterface';
 import { PropertiesEditor } from './../../../shared/components/properties-editor/PropertiesEditor';
 import { IItem, TypeValues } from '../../../shared/components/properties-editor/shared/interfaces';
 import { EditorTabTemplate } from '../../../shared/components/resize-tamplate/EditorTabTemplate';
+import { ContextMenuService } from '../../../shared/components/context-menu/ContextMenuService';
 import { FlowItem, ItemType } from './../../../shared/components/code-editor/models/ItemFluxo';
-import { AlertService, AlertTypes } from '../../../shared/components/botton-status-bar/AlertService';
+import { Tab, ComponentConfigs, ItemComponent } from '../../../shared/interfaces/Aplication';
 import ColRightTemplate from '../../../shared/components/resize-tamplate/ColRightTemplate';
 import { CodeEditorContext } from '../../../shared/services/contexts/CodeEditorContext';
 import { TreeManager } from '../../../shared/components/tree-manager/TreeManager';
-import { FlowEditor } from './../../../shared/components/code-editor/CodeEditor';
-import { ContextMenuService } from '../../../shared/components/context-menu/ContextMenuService';
+import { FlowEditor } from '../../../shared/components/code-editor/CodeEditor';
+import { ComponentType } from '../../../shared/enuns/ComponentType';
 
 const itensLogica: FlowItem[] = [
     new FlowItem({ id: 1, sucessor: [0], top: 0, left: 0, width: 0, height: 0, isSelecionado: false, nome: "START", itemType: ItemType.START }),
@@ -27,40 +29,21 @@ enum CurrentFocus {
     tree = "tree",
     flow = "flow"
 }
-enum TabType {
-    data = "DATA",
-    actions = "ACTIONS",
-    routers = "ROUTERS",
-}
-interface TabChild {
-    id: string;
-    label: string;
-    itens: FlowItem[];
-    isEditing: boolean;
-    isSelected: boolean;
-    description: string;
-    type: TreeItensTypes;
-    nodeExpanded: boolean;
-    itemPaiId: string | undefined;
-}
-interface Tab {
-    id: string
-    name: string;
-    label: string;
-    type: TabType;
-    itens: TabChild[];
-    description: string;
-}
 
-const mockTab: Tab = {
-    id: '1',
-    name: "actions",
-    label: "Actions",
-    description: "Minha tab de actions",
-    type: TabType.actions,
+const mockTab: Tab = new Tab({
+    configs: new ComponentConfigs({
+        id: '1',
+        name: "actions",
+        isExpanded: true,
+        label: "Actions",
+        isEditando: false,
+        description: "Minha tab de actions",
+        type: ComponentType.tabActions,
+    }),
     itens: [
-        {
-            id: '1',
+        new ItemComponent({
+            id: '2',
+            name: 'authenticate',
             label: "authenticate",
             description: "Autentica os usuários!",
             isEditing: true,
@@ -75,29 +58,31 @@ const mockTab: Tab = {
                 new FlowItem({ id: 4, sucessor: [5], top: 400, left: 80, width: 50, height: 50, isSelecionado: false, nome: "ACTION", itemType: ItemType.ACTION }),
                 new FlowItem({ id: 5, sucessor: [6], top: 500, left: 80, width: 50, height: 50, isSelecionado: false, nome: "SWITCH", itemType: ItemType.SWITCH }),
                 new FlowItem({ id: 6, sucessor: [7], top: 600, left: 80, width: 50, height: 50, isSelecionado: false, nome: "ASSIGN", itemType: ItemType.ASSIGN }),
-            ],
-        },
-        {
-            id: '2',
+            ]
+        }),
+        new ItemComponent({
+            id: '1',
+            name: 'signup',
             label: "signup",
-            description: "Permite cadastrar um usuário!",
+            description: "Cadastra novos usuários!",
             isEditing: true,
-            isSelected: false,
+            isSelected: true,
             nodeExpanded: true,
             itemPaiId: undefined,
             type: TreeItensTypes.file,
             itens: [
+                new FlowItem({ id: 1, sucessor: [2], top: 100, left: 80, width: 50, height: 50, isSelecionado: false, nome: "START", itemType: ItemType.START }),
+                new FlowItem({ id: 2, sucessor: [3], top: 200, left: 80, width: 50, height: 50, isSelecionado: false, nome: "IF", itemType: ItemType.IF }),
                 new FlowItem({ id: 3, sucessor: [4], top: 300, left: 80, width: 50, height: 50, isSelecionado: false, nome: "FOREACH", itemType: ItemType.FOREACH }),
                 new FlowItem({ id: 4, sucessor: [5], top: 400, left: 80, width: 50, height: 50, isSelecionado: false, nome: "ACTION", itemType: ItemType.ACTION }),
                 new FlowItem({ id: 5, sucessor: [6], top: 500, left: 80, width: 50, height: 50, isSelecionado: false, nome: "SWITCH", itemType: ItemType.SWITCH }),
                 new FlowItem({ id: 6, sucessor: [7], top: 600, left: 80, width: 50, height: 50, isSelecionado: false, nome: "ASSIGN", itemType: ItemType.ASSIGN }),
-                new FlowItem({ id: 7, sucessor: [], top: 700, left: 80, width: 50, height: 50, isSelecionado: false, nome: "END", itemType: ItemType.END }),
-            ],
-        }
+            ]
+        })
     ]
-}
+});
 
-export default class EditorTab extends Component {
+export default class EditorTab extends React.Component {
     // private codeEditorContext: any = this.context;
 
     state = {
@@ -158,7 +143,7 @@ export default class EditorTab extends Component {
 
     }
 
-    private propertiesEditorGetSelectedItem(itens: TabChild[]): IItem[] {
+    private propertiesEditorGetSelectedItem(itens: ItemComponent[]): IItem[] {
 
         let itemIndex = itens.findIndex(item => item.isSelected);
 
@@ -168,7 +153,8 @@ export default class EditorTab extends Component {
                     {
                         isHeader: true,
                         name: itens[itemIndex].label,
-                        id: parseInt(itens[itemIndex].id),
+                        // TODO: Ajustar o itemId para não ser any assim que as outras estruturas estiverem prontas.
+                        id: parseInt(itens[itemIndex].id as any),
                         properties: [
                             {
                                 id: 1,
@@ -284,7 +270,7 @@ export default class EditorTab extends Component {
 
     }
 
-    private codeEditorGetItensLogica(itens: TabChild[]): FlowItem[] {
+    private codeEditorGetItensLogica(itens: ItemComponent[]): FlowItem[] {
 
         let itemEditing = itens.find(item => item.isEditing);
 
@@ -409,7 +395,7 @@ export default class EditorTab extends Component {
 
     }
 
-    private treeManagerGetTree(itens: TabChild[]): TreeInterface[] {
+    private treeManagerGetTree(itens: ItemComponent[]): TreeInterface[] {
 
         const loadChilds = (tree: TreeInterface): TreeInterface[] => {
 
@@ -417,7 +403,8 @@ export default class EditorTab extends Component {
             itens.filter((item) => {
                 return item.itemPaiId === tree.itemId;
             }).forEach(item => {
-                tree.itemChilds.push({ itemChilds: [], itemId: item.id, itemLabel: item.label, itemType: item.type, nodeExpanded: item.nodeExpanded, isSelected: false });
+                // TODO: Ajustar o itemId para não ser any assim que as outras estruturas estiverem prontas.
+                tree.itemChilds.push({ itemChilds: [], itemId: item.id as any, itemLabel: item.label, itemType: item.type, nodeExpanded: item.nodeExpanded, isSelected: false });
             });
 
             // Carrega os filhos de cada item da árvore
@@ -433,7 +420,8 @@ export default class EditorTab extends Component {
         itens.filter(item => {
             return item.itemPaiId === undefined
         }).forEach(item => {
-            tree.push({ itemChilds: [], itemId: item.id, itemLabel: item.label, itemType: item.type, nodeExpanded: item.nodeExpanded, isSelected: false });
+            // TODO: Ajustar o itemId para não ser any assim que as outras estruturas estiverem prontas.
+            tree.push({ itemChilds: [], itemId: item.id as any, itemLabel: item.label, itemType: item.type, nodeExpanded: item.nodeExpanded, isSelected: false });
         });
 
         // Carrega os filhos de cada item da árvore

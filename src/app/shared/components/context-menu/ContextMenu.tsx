@@ -30,7 +30,7 @@ export class ContextMenu extends React.Component<{ title?: string }> {
                 left: data.left,
                 top: data.top,
                 isShow: true,
-            })
+            });
         });
 
         window.addEventListener('onclick', () => {
@@ -47,23 +47,21 @@ export class ContextMenu extends React.Component<{ title?: string }> {
     componentWillUnmount = () => this.menuSubscrition.unsubscribe();
 
 
-    render() {
-        return (<div>
-            {this.state.isShow && <div className="context-menu" style={{ left: this.state.left, top: this.state.top }}>
-                {this.props.title && <div className="context-menu-title">{this.props.title}</div>}
-                {this.state.actions.map((action) => (
-                    <div
-                        key={action.label}
-                        className="context-menu-list-item"
-                        onClick={() => {
-                            action.action();
-                            ContextMenuService.clearMessages();
-                        }}
-                    >
-                        {action.label}
-                    </div>
-                ))}
-            </div>}
-        </div >);
-    }
+    render = () => (<>
+        {this.state.isShow && <div className="context-menu" style={{ left: this.state.left, top: this.state.top }}>
+            {this.props.title && <div className="context-menu-title">{this.props.title}</div>}
+            {this.state.actions.map((action) => (
+                <div
+                    key={action.label}
+                    className="context-menu-list-item"
+                    onClick={() => {
+                        action.action();
+                        ContextMenuService.clearMessages();
+                    }}
+                >
+                    {action.label}
+                </div>
+            ))}
+        </div>}
+    </>);
 }

@@ -4,7 +4,7 @@
  * EX: "API", "WEB" ou "MOBILE".
  */
 export enum ProjectType {
-    api = "API"
+    api = "API",
+    web = "WEB",
+    mobile = "MOBILE",
 }
-
-export default ProjectType;

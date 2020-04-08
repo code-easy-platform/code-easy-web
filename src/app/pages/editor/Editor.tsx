@@ -1,18 +1,17 @@
 import React from 'react';
 
-import { Project, Tab, Component, ComponentConfigs } from '../../shared/interfaces/Aplication';
+import { Project, Tab, ItemComponent } from '../../shared/interfaces/Aplication';
 import { BottonStatusBar } from '../../shared/components/botton-status-bar/BottonStatusBar';
 import { CodeEditorContext } from '../../shared/services/contexts/CodeEditorContext';
 import { ToolBar } from '../../shared/components/tool-bar/ToolBar';
 import { ComponentType } from '../../shared/enuns/ComponentType';
-import FluxoComponentTypes from '../../shared/enuns/FluxoList';
 import { Storage } from '../../shared/services/LocalStorage';
 import PropertiesTab from './properties-tab/PropertiesTab';
 import { CurrentTab } from '../../shared/enuns/CurrentTab';
-import { Utils } from '../../shared/services/Utils';
 import PluginsTab from './plugins-tab/PluginsTab';
 import EditorTab from './editor-tab/EditorTab';
 import './Editor.scss';
+
 
 export default class Editor extends React.Component {
 
@@ -21,13 +20,13 @@ export default class Editor extends React.Component {
         currentTab: <EditorTab />,
         editingTab: ComponentType.tabRouters,
 
-        addComponent: (itemPaiId: number, itemName: string, itemType: ComponentType, width?: number, height?: number, top?: number, left?: number): Component =>
+        addComponent: (itemPaiId: number, itemName: string, itemType: ComponentType, width?: number, height?: number, top?: number, left?: number): ItemComponent =>
             this.addComponent(itemPaiId, itemName, itemType, width, height, top, left),
 
         changeProjectState: (project: Project) => this.changeProjectState(project),
         toggleResourcesTab: (tab: Tab) => this.setState({ editingTab: tab.configs.type }),
         removeComponentById: (componentId: number) => this.removeComponentById(componentId),
-        changeComponentState: (id: number, component: Component) => this.changeComponentState(id, component),
+        changeComponentState: (id: number, component: ItemComponent) => this.changeComponentState(id, component),
 
         getCurrentTabSelected: () => this.getCurrentTabSelected(),
         getIndexCurrentTabSelected: () => this.getIndexCurrentTabSelected(),
@@ -36,19 +35,21 @@ export default class Editor extends React.Component {
         getComponentById: (componentId: number): any => this.getComponentById(componentId),
     };
 
+    /** @DEPRECATED Não usar até terminar de ajustar a reestruturação. */
     private removeComponentById(componentId: number) {
-        const tabIndex: number = this.getIndexCurrentTabSelected();
+        /* const tabIndex: number = this.getIndexCurrentTabSelected();
         let projectUpdate = this.state.project;
 
         const componentIndex = projectUpdate.tabs[tabIndex].itens.findIndex((item: Component) => item.id === componentId); // Descrobre o index do component na lista.
 
         projectUpdate.tabs[tabIndex].itens.splice(componentIndex, 1); // Remove o componente.
 
-        this.changeProjectState(projectUpdate);
+        this.changeProjectState(projectUpdate); */
     }
 
-    private getComponentById(componentId: number): Component {
-        return this.getCurrentTabSelected().itens.filter((c: Component) => c.id === componentId)[0];
+    /** @DEPRECATED TODO: Não usar até terminar de ajustar a reestruturação. */
+    private getComponentById(componentId: number | string /*TODO: string não estava aqui*/): ItemComponent {
+        return this.getCurrentTabSelected().itens.filter((c: ItemComponent) => c.id === componentId)[0];
     }
 
 
@@ -58,9 +59,9 @@ export default class Editor extends React.Component {
             const currTab: Tab = this.getCurrentTabSelected();
 
             currTab.itens.filter((comp) => {
-                return comp.paiId === tree.itemId && comp.configs.type !== ComponentType.flowItem
+                return true; //comp.itemPaiId === tree.itemId && comp.type !== ComponentType.flowItem
             }).forEach(comp => {
-                tree.itemChilds.push({ itemChilds: [], itemId: comp.id, itemLabel: comp.configs.name, itemType: comp.configs.type, nodeExpanded: comp.configs.isExpanded || false });
+                tree.itemChilds.push({ itemChilds: [], itemId: comp.id, itemLabel: comp.label, itemType: comp.type, nodeExpanded: comp.nodeExpanded || false });
             });
 
 
@@ -75,9 +76,9 @@ export default class Editor extends React.Component {
         let tree: any[] = [];
 
         currTab.itens.filter((comp) => {
-            return comp.paiId === 0
+            return comp.itemPaiId === '0'
         }).forEach(comp => {
-            tree.push({ itemChilds: [], itemId: comp.id, itemLabel: comp.configs.name, itemType: comp.configs.type, nodeExpanded: comp.configs.isExpanded || false });
+            tree.push({ itemChilds: [], itemId: comp.id, itemLabel: comp.label, itemType: comp.type, nodeExpanded: comp.nodeExpanded || false });
         });
 
         tree.forEach((itemTree: any) => {
@@ -88,42 +89,46 @@ export default class Editor extends React.Component {
     }
 
     // Pega todos os itens para a arvore de uma Tab.
-    private getCurrentTabComponents(filters: { typeComponent: ComponentType[] }): Component[] {
+    private getCurrentTabComponents(filters: { typeComponent: ComponentType[] }): ItemComponent[] {
         return this.getCurrentTabSelected().itens.filter(
-            (c: Component) => filters.typeComponent.find(
-                (componentType: ComponentType) => componentType === c.configs.type
+            (c: ItemComponent) => filters.typeComponent.find(
+                (componentType: ComponentType) => true // componentType === c.type
             )
         );
     }
 
+    /** @DEPRECATED TODO: Não usar até terminar de ajustar a reestruturação. */
     private getIndexCurrentTabSelected(): number {
-        const tabIndex: number = this.state.project.tabs.findIndex((tab: Tab) => { return tab.configs.isEditando === true ? tab : undefined });
-        return tabIndex > 0 ? tabIndex : 0;
+        /* const tabIndex: number = this.state.project.tabs.findIndex((tab: Tab) => { return tab.configs.isEditando === true ? tab : undefined });
+        return tabIndex > 0 ? tabIndex : 0; */
+        return 0;
     }
 
-    private getCurrentTabSelected(): Tab {
-        const tabIndex: number = this.state.project.tabs.findIndex((tab: Tab) => { return tab.configs.isEditando === true ? tab : undefined });
+    private getCurrentTabSelected(): any {
+/*         const tabIndex: number = this.state.project.tabs.findIndex((tab: Tab) => { return tab.configs.isEditando === true ? tab : undefined });
         return tabIndex > 0 ? this.state.project.tabs[tabIndex] : this.state.project.tabs[0];
-    }
+ */    }
 
     private changeProjectState(project: Project) {
         this.setState(project)
         Storage.setProject(project);
     }
 
-    private changeComponentState(id: number, component: Component) {
-        const tabIndex: number = this.getIndexCurrentTabSelected();
-        let projectUpdate = this.state.project;
+    /** @DEPRECATED - TODO: Remover */
+    private changeComponentState(id: number, component: ItemComponent) {
+        // const tabIndex: number = this.getIndexCurrentTabSelected();
+        // let projectUpdate = this.state.project;
 
-        const componentIndex = projectUpdate.tabs[tabIndex].itens.findIndex((item: Component) => item.id === id); // Descrobre o index do component na lista.
+        // const componentIndex = projectUpdate.tabs[tabIndex].itens.findIndex((item: Component) => true); //item.id === id); // Descrobre o index do component na lista.
 
-        projectUpdate.tabs[tabIndex].itens[componentIndex] = component; // Atualiza o componente
+        // projectUpdate.tabs[tabIndex].itens[componentIndex] = component; // Atualiza o componente
 
-        this.changeProjectState(projectUpdate);
+        // this.changeProjectState(projectUpdate);
     }
 
-    private addComponent(itemPaiId: number, itemName: string, itemType: ComponentType, width?: number, height?: number, top?: number, left?: number): Component {
-        let projectUpdate = this.state.project;
+    /** @DEPRECATED TODO: Não usar até terminar de ajustar a reestruturação. */
+    private addComponent(itemPaiId: number, itemName: string, itemType: ComponentType, width?: number, height?: number, top?: number, left?: number): any {
+        /* let projectUpdate = this.state.project;
 
         let newId: number;
         let isExistentItem;
@@ -132,36 +137,26 @@ export default class Editor extends React.Component {
         do {
             newId = Utils.getRandomId(10, 1000);
             // eslint-disable-next-line
-            isExistentItem = this.getCurrentTabSelected().itens.findIndex((item: Component) => { if (item.id === newId) return item; else return undefined; });
+            isExistentItem = this.getCurrentTabSelected().itens.findIndex((item: Component) => true // { if (item.id === newId) return item; else return undefined; });
         } while (isExistentItem >= 0);
 
         const newComponent: Component = new Component({
-            id: newId,
-            title: "",
-            paiId: itemPaiId,
-            configs: new ComponentConfigs({
-                name: itemName,
-                description: "",
-                type: itemType,
-                isEditando: false,
-                isExpanded: false,
-            }),
-            width: width || 80,
-            height: height || 80,
-            top: top || 0,
-            left: left || 0,
-            fluxoItemTypes: FluxoComponentTypes.flowItem,
-            isHaveAntecessor: false,
-            isHaveSucessor: false,
-            antecessorId: 0,
-            sucessorId: 0,
+            id: newId.toString(),
+            label: "",
+            itemPaiId: itemPaiId.toString(),
+            description: '',
+            isEditing: false,
+            isSelected: false,
+            itens: [],
+            nodeExpanded: true,
+            type: TreeItensTypes.file
         });
 
         projectUpdate.tabs[this.getIndexCurrentTabSelected()].itens.push(newComponent); // Adiciona o componente
 
         this.changeProjectState(projectUpdate);
 
-        return newComponent;
+        return newComponent; */
     }
 
     private onChangeTab = (tab: String) => {
