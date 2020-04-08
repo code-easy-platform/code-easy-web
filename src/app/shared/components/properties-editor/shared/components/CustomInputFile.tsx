@@ -1,4 +1,5 @@
 import React, { useRef, useState } from 'react';
+import { Utils } from '../Utils';
 
 export const CustomInputFile = (props: React.DetailedHTMLProps<React.InputHTMLAttributes<HTMLInputElement>, HTMLInputElement>) => {
     const input: any = useRef(null);
@@ -20,7 +21,7 @@ export const CustomInputFile = (props: React.DetailedHTMLProps<React.InputHTMLAt
     }
 
     return (<>
-        <div {...props} id={undefined} style={css_input_file} onClick={e => { input.current.click() }} onChange={onChange} >{state.fileName || 'Selecione um arquivo...'}</div>
+        <div {...props} id={Utils.getRandomId() + "_" + props.id} style={css_input_file} onClick={e => { input.current.click() }} onChange={onChange} >{state.fileName || 'Selecione um arquivo...'}</div>
         <input id={props.id} type='file' ref={input} onChange={(e) => { setState({ fileName: e.target.value }); onChange(e) }} style={{ display: 'none' }} />
     </>);
 }

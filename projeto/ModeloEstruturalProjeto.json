@@ -2,35 +2,49 @@
     "project": {
         "projectConfigs": {
             "id": "1",
-            "name": "meu-projeto-teste",
-            "label": "Meu projeto de testes",
-            "description": "Projeto que serve para testes",
             "type": "",
             "version": "0.0.1",
-            "currentProcess": ""
+            "currentProcess": "",
+            "name": "meu-projeto-teste",
+            "label": "Meu projeto de testes",
+            "description": "Projeto que serve para testes"
         },
         "tabs": [
             {
                 "configs": {
                     "id": 1,
-                    "label": "string",
                     "name": "string",
-                    "description": "string",
-                    "type": "TAB_ROUTERS",
+                    "label": "string",
                     "isEditando": true,
-                    "isExpanded": true
+                    "isExpanded": true,
+                    "type": "TAB_ROUTERS",
+                    "description": "string"
                 },
                 "itens": [
                     {
                         "id": "1",
                         "type": "FILE",
-                        "name": "authenticate",
                         "itemPaiId": null,
-                        "label": "authenticate",
                         "isEditing": false,
                         "isSelected": false,
                         "nodeExpanded": true,
+                        "name": "authenticate",
+                        "label": "authenticate",
                         "description": "Autentica os usuários!",
+                        "properties": [
+                            {
+                                "id": "1",
+                                "label": "Label",
+                                "value": "authenticate",
+                                "typeValue": "STRING"
+                            },
+                            {
+                                "id": "2",
+                                "label": "Description",
+                                "value": "Descrição da minha na action",
+                                "typeValue": "BIGSTRING"
+                            }
+                        ],
                         "itens": [
                             {
                                 "id": 1,
@@ -41,7 +55,21 @@
                                 "nome": "END",
                                 "sucessor": [],
                                 "itemType": "END",
-                                "isSelecionado": false
+                                "isSelecionado": false,
+                                "properties": [
+                                    {
+                                        "id": "1",
+                                        "label": "Label",
+                                        "value": "END",
+                                        "typeValue": "STRING"
+                                    },
+                                    {
+                                        "id": "2",
+                                        "label": "Description",
+                                        "value": "Descrição da minha na action",
+                                        "typeValue": "BIGSTRING"
+                                    }
+                                ]
                             }
                         ]
                     }

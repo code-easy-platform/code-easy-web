@@ -27,6 +27,8 @@ interface BaseFields {
      * Usado para descrever algum detalhe do registro
      */
     description: string;
+
+    // Aqui vai o campo para a lista de proriedades.
 }
 
 /**

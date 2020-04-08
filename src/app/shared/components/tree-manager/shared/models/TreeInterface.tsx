@@ -1,7 +1,7 @@
 import { TreeItensTypes } from './TreeItensTypes';
 
 export interface TreeInterface {
-    itemId: string;
+    itemId: string | undefined;
     itemLabel: string;
     isSelected: boolean;
     nodeExpanded: boolean;

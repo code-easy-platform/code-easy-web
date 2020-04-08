@@ -10,10 +10,10 @@ interface ItemTreeProps {
     isUseDrag: boolean;
     paddingLeft: number;
     itemTree: TreeInterface;
-    onSelect(itemTreeId: string, event: React.MouseEvent<HTMLDivElement, MouseEvent>): void | undefined;
-    onDoubleClick(itemTreeId: string, item: TreeInterface, e: React.MouseEvent<HTMLDivElement, MouseEvent>): void | undefined;
-    onContextMenu(itemTreeId: string, e: React.MouseEvent<HTMLDivElement, MouseEvent>): void | undefined;
-    onDropItem(targetItemId: string, dropppedItemId: string, droppedItemProps: any): void;
+    onSelect(itemTreeId: string | undefined, event: React.MouseEvent<HTMLDivElement, MouseEvent>): void | undefined;
+    onDoubleClick(itemTreeId: string | undefined, item: TreeInterface, e: React.MouseEvent<HTMLDivElement, MouseEvent>): void | undefined;
+    onContextMenu(itemTreeId: string | undefined, e: React.MouseEvent<HTMLDivElement, MouseEvent>): void | undefined;
+    onDropItem(targetItemId: string | undefined, dropppedItemId: string | undefined, droppedItemProps: any): void;
 }
 export const TreeItem: FC<ItemTreeProps> = ({ itemTree, paddingLeft, onSelect, onContextMenu, onDoubleClick, onDropItem, isUseDrag, isUseDrop }) => {
 

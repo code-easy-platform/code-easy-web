@@ -9,14 +9,14 @@ export enum TypeValues {
 }
 
 export interface IProperties {
-    id: number;
+    id: string | undefined;
     label: string;
     typeValue: TypeValues
     value: any;
 }
 
 export interface IItem {
-    id: number;
+    id: string | undefined;
     name: string;
     isHeader: boolean;
     properties: IProperties[];

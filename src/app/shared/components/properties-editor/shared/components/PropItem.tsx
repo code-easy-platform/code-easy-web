@@ -33,8 +33,8 @@ export const PropItem: React.FC<PropItemProps> = ({ id, label, typeValue, value,
 
     const css_prop_item_input: React.CSSProperties = {
         padding: 10,
-        backgroundColor: '#ffffff10',
         border: '0.5px solid #ffffff15',
+        backgroundColor: '#ffffff10',
         borderRadius: 4,
         paddingRight: 4,
         maxWidth: '70%',
