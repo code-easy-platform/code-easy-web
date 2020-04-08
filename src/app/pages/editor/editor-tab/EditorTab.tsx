@@ -245,8 +245,9 @@ export default class EditorTab extends React.Component {
             }
         });
 
+        this.setState({ currentFocus: CurrentFocus.flow });
+
         this.setState({
-            currentFocus: CurrentFocus.flow,
             tree: this.treeManagerGetTree(this.state.tab.itens),
             itensLogica: this.codeEditorGetItensLogica(this.state.tab.itens),
             tab: { ...this.state.tab, itensProperties: itensPropertiesChanged },
@@ -281,34 +282,12 @@ export default class EditorTab extends React.Component {
 
     }
 
-    private codeEditorRemoveItem(data: any) {
-        console.log(data);
-
-        let itemEditing = this.state.tab.itens.find(item => item.isEditing);
-
-        if (itemEditing) {
-
-            /* const index = itemEditing.itens.findIndex(item => item.id.toString() === itemId);
-            if (index < 0) return;
-
-            itemEditing.itens.splice(index, 1);
-
-            this.setState({
-                tab: this.state.tab,
-                tree: this.treeManagerGetTree(this.state.tab.itens),
-                itensLogica: this.codeEditorGetItensLogica(this.state.tab.itens),
-                propEditor: this.propertiesEditorGetSelectedItem(this.state.tab.itens),
-            }); */
-
-            return;
-        } else {
-            return;
-        }
-    }
-
 
 
     private treeManagerOnDropItem(targetId: string, droppedId: string, droppedItem: any): TreeInterface {
+
+        this.setState({ currentFocus: CurrentFocus.tree });
+
         const itemDefault = {
             itemId: "",
             isSelected: false,
@@ -327,7 +306,6 @@ export default class EditorTab extends React.Component {
         itens[index].itemPaiId = targetId;
 
         this.setState({
-            currentFocus: CurrentFocus.tree,
             tab: { ...this.state.tab, itens },
             tree: this.treeManagerGetTree(itens),
             itensLogica: this.codeEditorGetItensLogica(itens),
@@ -347,6 +325,8 @@ export default class EditorTab extends React.Component {
 
     private treeManagerOnClick(itemTreeId: string, item: TreeInterface) {
 
+        this.setState({ currentFocus: CurrentFocus.tree });
+
         let itens = this.state.tab.itens;
         const index = itens.findIndex(item => item.id === itemTreeId);
 
@@ -358,7 +338,6 @@ export default class EditorTab extends React.Component {
         itens[index].nodeExpanded = true;
 
         this.setState({
-            currentFocus: CurrentFocus.tree,
             tab: { ...this.state.tab, itens },
             tree: this.treeManagerGetTree(itens),
             itensLogica: this.codeEditorGetItensLogica(itens),
@@ -368,6 +347,8 @@ export default class EditorTab extends React.Component {
     }
 
     private treeManagerOnDoubleClick(itemTreeId: string, item: TreeInterface) {
+
+        this.setState({ currentFocus: CurrentFocus.tree });
 
         let itens = this.state.tab.itens;
         const index = itens.findIndex(item => item.id === itemTreeId);
@@ -380,7 +361,6 @@ export default class EditorTab extends React.Component {
         itens[index].isEditing = true;
 
         this.setState({
-            currentFocus: CurrentFocus.tree,
             tab: { ...this.state.tab, itens },
             tree: this.treeManagerGetTree(itens),
             itensLogica: this.codeEditorGetItensLogica(itens),
@@ -426,19 +406,30 @@ export default class EditorTab extends React.Component {
         return tree;
     }
 
-    private treeManagerRemoveItem(itemId: string) {
-        const index = this.state.tab.itens.findIndex(item => item.id === itemId);
+    private treeManagerContextMenu(itemId: string): any[] {
 
-        if (index < 0) return;
-        this.state.tab.itens.splice(index, 1);
+        const removeItem = (itemId: string) => {
+            this.setState({ currentFocus: CurrentFocus.tree });
 
-        this.setState({
-            tab: this.state.tab,
-            currentFocus: CurrentFocus.tree,
-            tree: this.treeManagerGetTree(this.state.tab.itens),
-            itensLogica: this.codeEditorGetItensLogica(this.state.tab.itens),
-            propEditor: this.propertiesEditorGetSelectedItem(this.state.tab.itens),
-        });
+            const index = this.state.tab.itens.findIndex(item => item.id === itemId);
+
+            if (index < 0) return;
+            this.state.tab.itens.splice(index, 1);
+
+            this.setState({
+                tab: this.state.tab,
+                tree: this.treeManagerGetTree(this.state.tab.itens),
+                itensLogica: this.codeEditorGetItensLogica(this.state.tab.itens),
+                propEditor: this.propertiesEditorGetSelectedItem(this.state.tab.itens),
+            });
+        };
+
+        return [
+            {
+                action: () => removeItem(itemId),
+                label: 'Excluir'
+            }
+        ];
 
     }
 
@@ -476,12 +467,7 @@ export default class EditorTab extends React.Component {
                                 onDoubleClick={this.treeManagerOnDoubleClick.bind(this)}
                                 onContextMenu={(itemId, e) => {
                                     e.preventDefault();
-                                    ContextMenuService.sendMessage(e.clientX, e.clientY, [
-                                        {
-                                            action: () => this.treeManagerRemoveItem.bind(this)(itemId),
-                                            label: 'Excluir'
-                                        }
-                                    ]);
+                                    ContextMenuService.sendMessage(e.clientX, e.clientY, this.treeManagerContextMenu.bind(this)(itemId));
                                 }}
                                 itemBase={{
                                     itemId: "",

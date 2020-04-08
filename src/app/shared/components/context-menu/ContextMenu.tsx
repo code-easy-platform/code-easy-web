@@ -33,14 +33,14 @@ export class ContextMenu extends React.Component<{ title?: string }> {
             });
         });
 
-        window.addEventListener('onclick', () => {
+        window.onclick = () => {
             this.setState({
                 actions: [],
                 isShow: false,
                 left: 0,
                 top: 0,
             });
-        });
+        };
 
     }
 
