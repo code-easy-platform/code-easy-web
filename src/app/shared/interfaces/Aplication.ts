@@ -1,7 +1,8 @@
 import { TreeItensTypes } from "../components/tree-manager/shared/models/TreeItensTypes";
-import { FlowItem } from "../components/code-editor/models/ItemFluxo";
+import { FlowItem, ItemType } from "../components/code-editor/models/ItemFluxo";
 import { ComponentType } from "../enuns/ComponentType";
 import { ProjectType } from "../enuns/ProjectType";
+import { IProperties } from "../components/properties-editor/shared/interfaces";
 
 
 interface BaseFields {
@@ -111,6 +112,48 @@ export class ComponentConfigs implements BaseFields {
     }
 }
 
+export class ItemFlowComplete extends FlowItem {
+    public itemType: ItemType = ItemType.START;
+    public properties: IProperties[] = [];
+    public isSelecionado: boolean = false;
+    public sucessor: string[] = [];
+    public id: string | undefined;
+    public height: number = 0;
+    public width: number = 0;
+    public nome: string = "";
+    public left: number = 0;
+    public select = () => {};
+    public top: number = 0;
+
+    constructor(
+        props: {
+            properties: IProperties[],
+            isSelecionado: boolean,
+            id: string | undefined,
+            sucessor: string[],
+            itemType: ItemType,
+            height: number,
+            width: number,
+            nome: string,
+            left: number,
+            top: number,
+        },
+    ) {
+        super(props);
+        this.isSelecionado = props.isSelecionado;
+        this.properties = props.properties;
+        this.sucessor = props.sucessor;
+        this.itemType = props.itemType;
+        this.height = props.height;
+        this.width = props.width;
+        this.nome = props.nome;
+        this.left = props.left;
+        this.top = props.top;
+        this.id = props.id;
+    }
+
+}
+
 export class ItemComponent implements BaseFields {
     public id: string | undefined;
     public name: string;
@@ -118,7 +161,7 @@ export class ItemComponent implements BaseFields {
     public description: string;
 
     /** Usado para conter os itens de um fluxo */
-    public itens: FlowItem[];
+    public itens: ItemFlowComplete[];
     /** Usado para poder indicar ao fluxo de itens qual itens de uma árvore está sendo editado no momento */
     public isEditing: boolean;
     /** Indica onde o item está selecionado na árvore. */
@@ -135,7 +178,7 @@ export class ItemComponent implements BaseFields {
             id: string;
             name: string;
             label: string;
-            itens: FlowItem[];
+            itens: ItemFlowComplete[];
             isEditing: boolean;
             isSelected: boolean;
             description: string;

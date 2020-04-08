@@ -8,7 +8,7 @@ import { IItem, TypeValues } from '../../../shared/components/properties-editor/
 import { EditorTabTemplate } from '../../../shared/components/resize-tamplate/EditorTabTemplate';
 import { ContextMenuService } from '../../../shared/components/context-menu/ContextMenuService';
 import { FlowItem, ItemType } from './../../../shared/components/code-editor/models/ItemFluxo';
-import { Tab, ComponentConfigs, ItemComponent } from '../../../shared/interfaces/Aplication';
+import { Tab, ComponentConfigs, ItemComponent, ItemFlowComplete } from '../../../shared/interfaces/Aplication';
 import ColRightTemplate from '../../../shared/components/resize-tamplate/ColRightTemplate';
 import { CodeEditorContext } from '../../../shared/services/contexts/CodeEditorContext';
 import { TreeManager } from '../../../shared/components/tree-manager/TreeManager';
@@ -52,12 +52,12 @@ const mockTab: Tab = new Tab({
             itemPaiId: undefined,
             type: TreeItensTypes.file,
             itens: [
-                new FlowItem({ id: '1', sucessor: ['2'], top: 100, left: 80, width: 50, height: 50, isSelecionado: false, nome: "START", itemType: ItemType.START }),
-                new FlowItem({ id: '2', sucessor: ['3'], top: 200, left: 80, width: 50, height: 50, isSelecionado: false, nome: "IF", itemType: ItemType.IF }),
-                new FlowItem({ id: '3', sucessor: ['4'], top: 300, left: 80, width: 50, height: 50, isSelecionado: false, nome: "FOREACH", itemType: ItemType.FOREACH }),
-                new FlowItem({ id: '4', sucessor: ['5'], top: 400, left: 80, width: 50, height: 50, isSelecionado: false, nome: "ACTION", itemType: ItemType.ACTION }),
-                new FlowItem({ id: '5', sucessor: ['6'], top: 500, left: 80, width: 50, height: 50, isSelecionado: false, nome: "SWITCH", itemType: ItemType.SWITCH }),
-                new FlowItem({ id: '6', sucessor: ['7'], top: 600, left: 80, width: 50, height: 50, isSelecionado: false, nome: "ASSIGN", itemType: ItemType.ASSIGN }),
+                new ItemFlowComplete({ id: '1', sucessor: ['2'], top: 100, left: 80, width: 50, height: 50, isSelecionado: false, properties: [], nome: "START", itemType: ItemType.START }),
+                new ItemFlowComplete({ id: '2', sucessor: ['3'], top: 200, left: 80, width: 50, height: 50, isSelecionado: false, properties: [], nome: "IF", itemType: ItemType.IF }),
+                new ItemFlowComplete({ id: '3', sucessor: ['4'], top: 300, left: 80, width: 50, height: 50, isSelecionado: false, properties: [], nome: "FOREACH", itemType: ItemType.FOREACH }),
+                new ItemFlowComplete({ id: '4', sucessor: ['5'], top: 400, left: 80, width: 50, height: 50, isSelecionado: false, properties: [], nome: "ACTION", itemType: ItemType.ACTION }),
+                new ItemFlowComplete({ id: '5', sucessor: ['6'], top: 500, left: 80, width: 50, height: 50, isSelecionado: false, properties: [], nome: "SWITCH", itemType: ItemType.SWITCH }),
+                new ItemFlowComplete({ id: '6', sucessor: ['7'], top: 600, left: 80, width: 50, height: 50, isSelecionado: false, properties: [], nome: "ASSIGN", itemType: ItemType.ASSIGN }),
             ]
         }),
         new ItemComponent({
@@ -71,12 +71,12 @@ const mockTab: Tab = new Tab({
             itemPaiId: undefined,
             type: TreeItensTypes.file,
             itens: [
-                new FlowItem({ id: '1', sucessor: ['2'], top: 100, left: 80, width: 50, height: 50, isSelecionado: false, nome: "START", itemType: ItemType.START }),
-                new FlowItem({ id: '2', sucessor: ['3'], top: 200, left: 80, width: 50, height: 50, isSelecionado: false, nome: "IF", itemType: ItemType.IF }),
-                new FlowItem({ id: '3', sucessor: ['4'], top: 300, left: 80, width: 50, height: 50, isSelecionado: false, nome: "FOREACH", itemType: ItemType.FOREACH }),
-                new FlowItem({ id: '4', sucessor: ['5'], top: 400, left: 80, width: 50, height: 50, isSelecionado: false, nome: "ACTION", itemType: ItemType.ACTION }),
-                new FlowItem({ id: '5', sucessor: ['6'], top: 500, left: 80, width: 50, height: 50, isSelecionado: false, nome: "SWITCH", itemType: ItemType.SWITCH }),
-                new FlowItem({ id: '6', sucessor: ['7'], top: 600, left: 80, width: 50, height: 50, isSelecionado: false, nome: "ASSIGN", itemType: ItemType.ASSIGN }),
+                new ItemFlowComplete({ id: '1', sucessor: ['2'], top: 100, left: 80, width: 50, height: 50, isSelecionado: false, properties: [], nome: "START", itemType: ItemType.START }),
+                new ItemFlowComplete({ id: '2', sucessor: ['3'], top: 200, left: 80, width: 50, height: 50, isSelecionado: false, properties: [], nome: "IF", itemType: ItemType.IF }),
+                new ItemFlowComplete({ id: '3', sucessor: ['4'], top: 300, left: 80, width: 50, height: 50, isSelecionado: false, properties: [], nome: "FOREACH", itemType: ItemType.FOREACH }),
+                new ItemFlowComplete({ id: '4', sucessor: ['5'], top: 400, left: 80, width: 50, height: 50, isSelecionado: false, properties: [], nome: "ACTION", itemType: ItemType.ACTION }),
+                new ItemFlowComplete({ id: '5', sucessor: ['6'], top: 500, left: 80, width: 50, height: 50, isSelecionado: false, properties: [], nome: "SWITCH", itemType: ItemType.SWITCH }),
+                new ItemFlowComplete({ id: '6', sucessor: ['7'], top: 600, left: 80, width: 50, height: 50, isSelecionado: false, properties: [], nome: "ASSIGN", itemType: ItemType.ASSIGN }),
             ]
         })
     ]
@@ -86,21 +86,9 @@ export default class EditorTab extends React.Component {
     // private codeEditorContext: any = this.context;
 
     state = {
-        tree: [],
         tab: mockTab,
-        propEditor: [],
-        itensLogica: [],
         currentFocus: CurrentFocus.tree,
     }
-
-    componentWillMount() {
-        this.setState({
-            tree: this.treeManagerGetTree(this.state.tab.itens),
-            itensLogica: this.codeEditorGetItensLogica(this.state.tab.itens),
-            propEditor: this.propertiesEditorGetSelectedItem(this.state.tab.itens, this.state.currentFocus),
-        });
-    }
-
 
 
     private propertiesEditorOutputItens(itens: IItem[]) {
@@ -133,12 +121,6 @@ export default class EditorTab extends React.Component {
 
         this.setState({ tab: { ...this.state.tab } });
 
-        this.setState({
-            tree: this.treeManagerGetTree(this.state.tab.itens),
-            itensLogica: this.codeEditorGetItensLogica(this.state.tab.itens),
-            propEditor: this.propertiesEditorGetSelectedItem(this.state.tab.itens, this.state.currentFocus),
-        });
-
     }
 
     private propertiesEditorGetSelectedItem(itens: ItemComponent[], currentFocus: CurrentFocus): IItem[] {
@@ -164,13 +146,20 @@ export default class EditorTab extends React.Component {
                                 label: 'Description',
                                 value: itens[itemIndex].description,
                                 typeValue: TypeValues.bigstring
+                            },
+                            {
+                                id: '3',
+                                label: "Enabled",
+                                typeValue: TypeValues.boolean,
+                                value: false
                             }
                         ]
                     }
                 ]
             } else if (currentFocus === CurrentFocus.flow) {
 
-                const itensFiltereds: FlowItem[] = this.state.itensLogica.filter((flowItem: FlowItem) => flowItem.isSelecionado);
+                const itensLogica = this.codeEditorGetItensLogica(this.state.tab.itens);
+                const itensFiltereds = itensLogica.filter(flowItem => flowItem.isSelecionado);
 
                 const mappedItens: IItem[] = [];
                 itensFiltereds.forEach(filteredItem => {
@@ -184,7 +173,8 @@ export default class EditorTab extends React.Component {
                                 label: 'Label',
                                 value: filteredItem.nome,
                                 typeValue: TypeValues.string
-                            }
+                            }/* ,
+                            ...filteredItem.properties */
                         ]
                     });
                 });
@@ -199,61 +189,46 @@ export default class EditorTab extends React.Component {
 
 
     private codeEditorOutputFlowItens = (updatedItens: FlowItem[]) => {
+        this.setState({ currentFocus: CurrentFocus.flow });
 
         AlertService.sendMessage(AlertTypes.loading, "Carregando módulos do node...", "A aplicação foi iniciada com êxito!");
 
-        let itensPropertiesChanged: IItem[] = [];
-        updatedItens.forEach(item => {
-            if (item.isSelecionado) {
-                itensPropertiesChanged.push({
-                    id: item.id,
-                    isHeader: true,
-                    name: item.nome,
-                    properties: [
-                        {
-                            id: item.id,
-                            label: "Name",
-                            typeValue: TypeValues.string,
-                            value: item.nome
-                        },
-                        {
-                            id: item.id + '1',
-                            label: "Description",
-                            typeValue: TypeValues.bigstring,
-                            value: "My big string description"
-                        },
-                        {
-                            id: item.id + '2',
-                            label: "Enabled",
-                            typeValue: TypeValues.boolean,
-                            value: false
-                        },
-                        {
-                            id: item.id + '3',
-                            label: "Height",
-                            typeValue: TypeValues.number,
-                            value: 0
-                        },
-                        {
-                            id: item.id + '4',
-                            label: "Upload",
-                            typeValue: TypeValues.binary,
-                            value: false
-                        }
-                    ]
-                });
-            }
-        });
+        let tab = this.state.tab;
 
-        this.setState({ currentFocus: CurrentFocus.flow });
+        let itemTreeEditingIndex = tab.itens.findIndex(item => item.isEditing);
+        if (itemTreeEditingIndex >= 0) {
 
-        this.setState({
-            tree: this.treeManagerGetTree(this.state.tab.itens),
-            itensLogica: this.codeEditorGetItensLogica(this.state.tab.itens),
-            tab: { ...this.state.tab, itensProperties: itensPropertiesChanged },
-            propEditor: this.propertiesEditorGetSelectedItem(this.state.tab.itens, this.state.currentFocus),
-        });
+            // Pega os itens de fluxo do item da árvore atual para pode editar
+            let itens = tab.itens[itemTreeEditingIndex].itens;
 
+            // Atualiza os itens da arvore.
+            updatedItens.forEach(updatedItem => {
+                if (updatedItem.id !== undefined) {
+
+                    const index = itens.findIndex(item => updatedItem.id === item.id);
+                    if (index < 0) return;
+
+                    itens[index].isSelecionado = updatedItem.isSelecionado;
+                    itens[index].sucessor = updatedItem.sucessor;
+                    itens[index].itemType = updatedItem.itemType;
+                    itens[index].height = updatedItem.height;
+                    itens[index].width = updatedItem.width;
+                    itens[index].left = updatedItem.left;
+                    itens[index].nome = updatedItem.nome;
+                    itens[index].top = updatedItem.top;
+                }
+            });
+
+            // Atualiza a tab com os itens alterados
+            tab.itens[itemTreeEditingIndex].itens = itens;
+
+            // Atualiza a tab no state
+            this.setState({
+                currentFocus: CurrentFocus.flow,
+                tab: tab
+            });
+
+        }
     }
 
     private codeEditorOnDropItem(oldItemId: string, newItemId: string, newItem: FlowItem): FlowItem {
@@ -275,7 +250,22 @@ export default class EditorTab extends React.Component {
         if (itemEditing) {
             itemEditing.itens.sort((a, b) => (a.top - b.top));
 
-            return itemEditing.itens
+            let flowItens: FlowItem[] = [];
+            itemEditing.itens.forEach(item => {
+                flowItens.push(new FlowItem({
+                    id: item.id,
+                    top: item.top,
+                    left: item.left,
+                    nome: item.nome,
+                    width: item.width,
+                    height: item.height,
+                    itemType: item.itemType,
+                    sucessor: item.sucessor,
+                    isSelecionado: item.isSelecionado,
+                }));
+            });
+
+            return flowItens;
         } else {
             return [];
         }
@@ -324,8 +314,8 @@ export default class EditorTab extends React.Component {
             isSelected: false,
             nodeExpanded: true,
             itemLabel: "Routers",
-            itemChilds: this.state.tree,
             itemType: TreeItensTypes.folder,
+            itemChilds: this.treeManagerGetTree(this.state.tab.itens),
         };
 
         // Evita loop infinito
@@ -337,10 +327,8 @@ export default class EditorTab extends React.Component {
         itens[index].itemPaiId = targetId;
 
         this.setState({
-            tab: { ...this.state.tab, itens },
-            tree: this.treeManagerGetTree(itens),
-            itensLogica: this.codeEditorGetItensLogica(itens),
-            propEditor: this.propertiesEditorGetSelectedItem(itens, this.state.currentFocus),
+            currentFocus: CurrentFocus.tree,
+            tab: { ...this.state.tab, itens }
         });
 
         return {
@@ -349,7 +337,7 @@ export default class EditorTab extends React.Component {
             nodeExpanded: true,
             itemLabel: "Routers",
             itemType: TreeItensTypes.folder,
-            itemChilds: this.state.tree,
+            itemChilds: this.treeManagerGetTree(this.state.tab.itens),
         };
 
     }
@@ -368,20 +356,14 @@ export default class EditorTab extends React.Component {
         itens[index].nodeExpanded = !itens[index].nodeExpanded;
         itens[index].isSelected = true;
 
-        this.setState({ currentFocus: CurrentFocus.tree });
-
         this.setState({
             tab: { ...this.state.tab, itens },
-            tree: this.treeManagerGetTree(itens),
-            itensLogica: this.codeEditorGetItensLogica(itens),
-            propEditor: this.propertiesEditorGetSelectedItem(itens, CurrentFocus.tree),
+            currentFocus: CurrentFocus.tree,
         });
 
     }
 
     private treeManagerOnDoubleClick(itemTreeId: string, item: TreeInterface) {
-
-        this.setState({ currentFocus: CurrentFocus.tree });
 
         let itens = this.state.tab.itens;
         const index = itens.findIndex(item => item.id === itemTreeId);
@@ -394,10 +376,8 @@ export default class EditorTab extends React.Component {
         itens[index].isEditing = true;
 
         this.setState({
-            tab: { ...this.state.tab, itens },
-            tree: this.treeManagerGetTree(itens),
-            itensLogica: this.codeEditorGetItensLogica(itens),
-            propEditor: this.propertiesEditorGetSelectedItem(itens, this.state.currentFocus),
+            currentFocus: CurrentFocus.tree,
+            tab: { ...this.state.tab, itens }
         });
 
     }
@@ -447,12 +427,8 @@ export default class EditorTab extends React.Component {
             if (index < 0) return;
             this.state.tab.itens.splice(index, 1);
 
-            this.setState({
-                tab: this.state.tab,
-                tree: this.treeManagerGetTree(this.state.tab.itens),
-                itensLogica: this.codeEditorGetItensLogica(this.state.tab.itens),
-                propEditor: this.propertiesEditorGetSelectedItem(this.state.tab.itens, this.state.currentFocus),
-            });
+            this.setState({ tab: this.state.tab });
+
         };
 
         return [
@@ -473,8 +449,8 @@ export default class EditorTab extends React.Component {
                     <FlowEditor
                         isShowToolbar={true}
                         toolItens={itensLogica}
-                        itens={this.state.itensLogica}
                         allowDropTo={[TreeItensTypes.file]}
+                        itens={this.codeEditorGetItensLogica.bind(this)(this.state.tab.itens)}
                         onDropItem={this.codeEditorOnDropItem.bind(this)}
                         onChangeItens={this.codeEditorOutputFlowItens.bind(this)}
                         onContextMenu={(data, e) => {
@@ -504,13 +480,13 @@ export default class EditorTab extends React.Component {
                                     nodeExpanded: true,
                                     itemLabel: "Routers",
                                     itemType: TreeItensTypes.folder,
-                                    itemChilds: this.state.tree,
+                                    itemChilds: this.treeManagerGetTree.bind(this)(this.state.tab.itens),
                                 }}
                             />
                         }
                         rowBottom={
                             <PropertiesEditor
-                                itens={this.state.propEditor}
+                                itens={this.propertiesEditorGetSelectedItem.bind(this)(this.state.tab.itens, this.state.currentFocus)}
                                 onChange={this.propertiesEditorOutputItens.bind(this)}
                             />
                         }
