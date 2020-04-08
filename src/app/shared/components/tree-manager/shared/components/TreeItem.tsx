@@ -41,6 +41,7 @@ export const TreeItem: FC<ItemTreeProps> = ({ itemTree, paddingLeft, onSelect, o
             }
         },
         collect: monitor => ({ isDragging: monitor.isDragging() }),
+
     });
     if (isUseDrag) dragRef(itemRef); /** Agrupa as referências do drop com as da ref. */
 
@@ -62,10 +63,10 @@ export const TreeItem: FC<ItemTreeProps> = ({ itemTree, paddingLeft, onSelect, o
             onDoubleClick={e => { onDoubleClick(itemTree.itemId, itemTree, e) }}
         >
             <div className="item" style={{ paddingLeft: `${paddingLeft}px` }}>
-                {itemTree.itemType === TreeItensTypes.folder &&
+                {(itemTree.itemType === TreeItensTypes.folder || itemTree.itemChilds.length > 0) &&
                     <Icon iconName={itemTree.nodeExpanded ? "btn-collapse-folder" : "btn-expand-folder"} />
                 }
-                {itemTree.itemType === TreeItensTypes.file &&
+                {(itemTree.itemType === TreeItensTypes.file && itemTree.itemChilds.length === 0) &&
                     <Icon />
                 }
                 {itemTree.itemLabel}
