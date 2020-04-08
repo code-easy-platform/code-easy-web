@@ -95,7 +95,6 @@ export default class EditorTab extends React.Component {
 
     componentWillMount() {
         this.setState({
-            currentFocus: CurrentFocus.tree,
             tree: this.treeManagerGetTree(this.state.tab.itens),
             itensLogica: this.codeEditorGetItensLogica(this.state.tab.itens),
             propEditor: this.propertiesEditorGetSelectedItem(this.state.tab.itens),
@@ -129,8 +128,6 @@ export default class EditorTab extends React.Component {
             });
 
         }
-
-
 
 
         this.setState({ tab: { ...this.state.tab } });
@@ -329,9 +326,8 @@ export default class EditorTab extends React.Component {
         if (index < 0) return itemDefault;
         itens[index].itemPaiId = targetId;
 
-        this.setState({ currentFocus: CurrentFocus.tree });
-
         this.setState({
+            currentFocus: CurrentFocus.tree,
             tab: { ...this.state.tab, itens },
             tree: this.treeManagerGetTree(itens),
             itensLogica: this.codeEditorGetItensLogica(itens),
@@ -361,9 +357,8 @@ export default class EditorTab extends React.Component {
         itens[index].isSelected = true;
         itens[index].nodeExpanded = true;
 
-        this.setState({ urrentFocus: CurrentFocus.tree });
-
         this.setState({
+            currentFocus: CurrentFocus.tree,
             tab: { ...this.state.tab, itens },
             tree: this.treeManagerGetTree(itens),
             itensLogica: this.codeEditorGetItensLogica(itens),
@@ -384,9 +379,8 @@ export default class EditorTab extends React.Component {
 
         itens[index].isEditing = true;
 
-        this.setState({ urrentFocus: CurrentFocus.tree });
-
         this.setState({
+            currentFocus: CurrentFocus.tree,
             tab: { ...this.state.tab, itens },
             tree: this.treeManagerGetTree(itens),
             itensLogica: this.codeEditorGetItensLogica(itens),
@@ -440,6 +434,7 @@ export default class EditorTab extends React.Component {
 
         this.setState({
             tab: this.state.tab,
+            currentFocus: CurrentFocus.tree,
             tree: this.treeManagerGetTree(this.state.tab.itens),
             itensLogica: this.codeEditorGetItensLogica(this.state.tab.itens),
             propEditor: this.propertiesEditorGetSelectedItem(this.state.tab.itens),
