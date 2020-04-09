@@ -26,6 +26,7 @@ export const Line: React.FC<LineProps> = (props: LineProps) => {
     const polygonTop: number = (top2 - 10);
     const polygonBotton: number = top2;
 
+
     const [isSelecionado, setIsSelecionado] = useState(false);
     const [position, setPosition] = useState({ polygonTop: polygonTop, polygonLeft: polygonLeft });
 
@@ -52,9 +53,9 @@ export const Line: React.FC<LineProps> = (props: LineProps) => {
     }
 
     return (
-        <g fill="none">
+        <g key={"g_line_key_" + id} id={"g_line_key_" + id} fill="none">
             <line
-                id={id}
+                id={"line_" + id}
                 key={"line_" + id}
                 x1={left1}
                 x2={isSelecionado ? position.polygonLeft : left2}
@@ -77,7 +78,12 @@ export const Line: React.FC<LineProps> = (props: LineProps) => {
                             polygonBottonCenter + ", " +
                             polygonBotton
                         }
-                        style={{ cursor: 'move', fill: color || "blue", stroke: color || "blue", strokeWidth: lineWidth }}
+                        style={{
+                            cursor: 'move',
+                            fill: color || "blue",
+                            strokeWidth: lineWidth,
+                            stroke: color || "blue",
+                        }}
                         onMouseDown={() => onMouseEvent(true)}
                         onMouseUp={() => onMouseEvent(false)}
                     />

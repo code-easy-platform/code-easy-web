@@ -11,9 +11,9 @@ export const Toolbar = ({ itensLogica, isShow }: { itensLogica: FlowItem[], isSh
             ? <div className="mini-scroll-bar toolbar">
                 {itensLogica.map((item: ItemFluxo) => {
                     return <ItemToDrag
-                        isSelecionado={item.isSelecionado}
+                        isSelected={item.isSelected}
                         itemType={item.itemType}
-                        title={item.nome}
+                        title={item.name}
                         allowDrag={true}
                         key={item.id}
                         id={item.id}

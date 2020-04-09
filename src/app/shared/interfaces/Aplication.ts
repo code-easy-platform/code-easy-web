@@ -115,12 +115,12 @@ export class ComponentConfigs implements BaseFields {
 export class ItemFlowComplete extends FlowItem {
     public itemType: ItemType = ItemType.START;
     public properties: IProperties[] = [];
-    public isSelecionado: boolean = false;
+    public isSelected: boolean = false;
     public sucessor: string[] = [];
     public id: string | undefined;
     public height: number = 0;
     public width: number = 0;
-    public nome: string = "";
+    public name: string = "";
     public left: number = 0;
     public select = () => {};
     public top: number = 0;
@@ -128,25 +128,25 @@ export class ItemFlowComplete extends FlowItem {
     constructor(
         props: {
             properties: IProperties[],
-            isSelecionado: boolean,
+            isSelected: boolean,
             id: string | undefined,
             sucessor: string[],
             itemType: ItemType,
             height: number,
             width: number,
-            nome: string,
+            name: string,
             left: number,
             top: number,
         },
     ) {
         super(props);
-        this.isSelecionado = props.isSelecionado;
+        this.isSelected = props.isSelected;
         this.properties = props.properties;
         this.sucessor = props.sucessor;
         this.itemType = props.itemType;
         this.height = props.height;
         this.width = props.width;
-        this.nome = props.nome;
+        this.name = props.name;
         this.left = props.left;
         this.top = props.top;
         this.id = props.id;

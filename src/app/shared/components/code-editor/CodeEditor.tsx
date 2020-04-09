@@ -96,10 +96,10 @@ const CodeEditor: React.FC<ICodeEditorProps> = ({ itens = [], toolItens = [], on
             let newItem = new FlowItem({
                 id: Utils.getRandomId().toString(),
                 itemType: item.itemProps.itemType,
-                nome: item.itemProps.title,
-                isSelecionado: true,
+                name: item.itemProps.title,
                 left: targetOffsetX,
                 top: targetOffsetY,
+                isSelected: true,
                 sucessor: [],
                 height: 50,
                 width: 50,
@@ -226,7 +226,7 @@ const CodeEditor: React.FC<ICodeEditorProps> = ({ itens = [], toolItens = [], on
 
         /** Copia os itens de fluxo selecionados */
         const copySelecteds = () => {
-            const components = state.flowItens.filter((item: FlowItem) => item.isSelecionado);
+            const components = state.flowItens.filter((item: FlowItem) => item.isSelected);
 
             inputCopyRef.current.value = JSON.stringify(components);
             inputCopyRef.current.focus()
@@ -323,7 +323,7 @@ const CodeEditor: React.FC<ICodeEditorProps> = ({ itens = [], toolItens = [], on
 
         /** Move o componente pelas setas do teclado. */
         const positionChangeByKey = (direction: string) => {
-            let filteredList: FlowItem[] = state.flowItens.filter((item: FlowItem) => item.isSelecionado === true);
+            let filteredList: FlowItem[] = state.flowItens.filter((item: FlowItem) => item.isSelected === true);
             if (filteredList.length === 0) return;
 
             if (direction === 'ArrowUp') {
@@ -344,7 +344,7 @@ const CodeEditor: React.FC<ICodeEditorProps> = ({ itens = [], toolItens = [], on
         /** Seleciona todos os itens da tela */
         const selectAll = () => {
             state.flowItens.forEach((item: FlowItem) => {
-                item.isSelecionado = true;
+                item.isSelected = true;
             });
 
             setState({ ...state, flowItens: state.flowItens, selectedItem: { itemId: undefined } });
@@ -352,7 +352,7 @@ const CodeEditor: React.FC<ICodeEditorProps> = ({ itens = [], toolItens = [], on
 
         /** Remove o item que estiver selecionado no fluxo. */
         const onRemoveItem = () => {
-            const itemCurrentIndex = state.flowItens.findIndex((item: FlowItem) => { if (item.isSelecionado === true) return item; else return undefined; });
+            const itemCurrentIndex = state.flowItens.findIndex((item: FlowItem) => { if (item.isSelected === true) return item; else return undefined; });
             if (itemCurrentIndex === -1) return;
 
             const itemAntecessorIndex = state.flowItens.findIndex((item: FlowItem) => { if (item.sucessor[0] === state.flowItens[itemCurrentIndex].id) return item; else return undefined; });
@@ -450,7 +450,7 @@ const CodeEditor: React.FC<ICodeEditorProps> = ({ itens = [], toolItens = [], on
 
         if (!event.ctrlKey) {
             state.flowItens.forEach((item: FlowItem) => {
-                item.isSelecionado = (!reset && (item.id === state.selectedItem.itemId));
+                item.isSelected = (!reset && (item.id === state.selectedItem.itemId));
             });
         }
 
@@ -459,7 +459,7 @@ const CodeEditor: React.FC<ICodeEditorProps> = ({ itens = [], toolItens = [], on
 
     /** Muda item que está selecionado. */
     const onChangeSelecionado = (itemId: string | undefined, e: React.MouseEvent<SVGSVGElement, MouseEvent>) => {
-        
+
         state.selectedItem.itemId = itemId;
         setState({ ...state, flowItens: state.flowItens, selectedItem: state.selectedItem });
 
@@ -470,7 +470,7 @@ const CodeEditor: React.FC<ICodeEditorProps> = ({ itens = [], toolItens = [], on
     }
 
     return (
-        <div style={{ flex: 1, maxHeight: "100%", overflow: "auto" }}>
+        <div style={{ flex: 1, maxHeight: "100%" }}>
 
             <input ref={inputCopyRef} style={{ height: '1px', width: '1px', top: '-1000px', position: "fixed" }} />
             <Toolbar itensLogica={toolItens} isShow={((toolItens.length > 0) && isShowToolbar)} />
@@ -535,18 +535,19 @@ const CodeEditor: React.FC<ICodeEditorProps> = ({ itens = [], toolItens = [], on
                         return <ItemToDrag
                             style={{ top: item.top, left: item.left, width: item.width, height: item.height }}
                             onChangeSelecionado={onChangeSelecionado}
-                            isSelecionado={item.isSelecionado}
                             outputPosition={positionChange}
                             onContextMenu={onContextMenu}
+                            isSelected={item.isSelected}
                             itemType={item.itemType}
                             refItemPai={svgRef}
-                            title={item.nome}
+                            title={item.name}
                             key={item.id}
                             id={item.id}
                         />;
                     })}
 
                 </svg>
+
             </div>
 
         </div>
