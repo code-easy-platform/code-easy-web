@@ -53,12 +53,30 @@
     --size-150: 600px;
     //...
     --size-250: 1000px;
-    
+
+    // Font-sizes -------------
+    --font-size-1: 4px;
+    --font-size-1-5: 6px;
+    --font-size-2: 8px;
+    --font-size-3: 12px;
+    --font-size-3-5: 14px;
+    --font-size-4: 16px;
+    --font-size-5: 20px;
+    --font-size-6: 24px;
+    --font-size-7: 28px;
+    --font-size-8: 32px;
+    --font-size-9: 36px;
+    --font-size-10: 40px;
+    --font-size-17: 64px;
+
+    // Font-sizes -------------
+    --border-size-0: 0px;
+    --border-size-1: 1px;
+
     // Colors
     --color-black: #000000;
 
     /* ------------------------------------------------- */
-
 
     // List item
     --color-list-item-hover: #1f724340;
@@ -72,24 +90,17 @@
     --color-context-menu-list-item-active: var(--color-list-item-active);
     --box-shadow-context-menu: var(--size-none) var(--size-none) var(--size-0-5) var(--size-none) var(--color-black);
 
+    // Main background
+    --color-background: #1e1e1e;
+
+    // Bottom status bar
+    --color-botton-bar: #0f77bf;
+
     // Fontes
     --font-family-normal: Verdana, Geneva, Tahoma, sans-serif;
     --font-family-editor: Consolas, "Courier New", monospace;
     --font-family-vs-code: "Droid Sans Mono", "monospace", monospace, "Droid Sans Fallback";
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 // Sizes ------------------
 $size-window-vh-fill: 100vh;

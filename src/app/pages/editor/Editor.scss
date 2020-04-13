@@ -1,9 +1,8 @@
-@import './../../style/variables.scss';
-
 .main-page {
-  background-color: $color-background;
-  height: $size-window-vh-fill;
-  width: $size-window-vw-fill;
-  display: flex;
+  background-color: var(--color-background);
+  height: var(--size-window-vh-fill);
+  width: var(--size-window-vw-fill);
   flex-direction: column;
+  display: flex;
 }
+

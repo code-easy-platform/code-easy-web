@@ -52,7 +52,7 @@ export default class Editor extends React.Component {
         return this.getCurrentTabSelected().itens.filter((c: ItemComponent) => c.id === componentId)[0];
     }
 
-
+    /** @DEPRECATED TODO: Não usar até terminar de ajustar a reestruturação. */
     private getCurrentTabTree(): any[] {
 
         const carregaFilhos = (tree: any): any[] => {
@@ -88,7 +88,7 @@ export default class Editor extends React.Component {
         return tree;
     }
 
-    // Pega todos os itens para a arvore de uma Tab.
+    /** @DEPRECATED TODO: Pega todos os itens para a arvore de uma Tab. */
     private getCurrentTabComponents(filters: { typeComponent: ComponentType[] }): ItemComponent[] {
         return this.getCurrentTabSelected().itens.filter(
             (c: ItemComponent) => filters.typeComponent.find(
@@ -104,11 +104,13 @@ export default class Editor extends React.Component {
         return 0;
     }
 
+    /** @DEPRECATED TODO: Não usar até terminar de ajustar a reestruturação. */
     private getCurrentTabSelected(): any {
 /*         const tabIndex: number = this.state.project.tabs.findIndex((tab: Tab) => { return tab.configs.isEditando === true ? tab : undefined });
         return tabIndex > 0 ? this.state.project.tabs[tabIndex] : this.state.project.tabs[0];
  */    }
 
+    /** @DEPRECATED TODO: Não usar até terminar de ajustar a reestruturação. */
     private changeProjectState(project: Project) {
         this.setState(project)
         Storage.setProject(project);
@@ -174,11 +176,13 @@ export default class Editor extends React.Component {
             <CodeEditorContext.Provider value={this.state}>
                 <div className="main-page">
                     <ToolBar onChangeTab={this.onChangeTab} />
+                    <hr className="hr-default" />
 
                     <div style={{ height: "calc(100vh - 60px)" }}>
                         {this.state.currentTab}
                     </div>
 
+                    <hr className="hr-default" />
                     <BottonStatusBar />
                 </div>
             </CodeEditorContext.Provider>

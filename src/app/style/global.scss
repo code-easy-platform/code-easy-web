@@ -174,3 +174,9 @@ input[type=number] {
   width: $size-x-scroll-bar-small;
 }
 
+
+.hr-default {
+  background-color: var(--color-background);
+  height: var(--border-size-1);
+  border: none;
+}
