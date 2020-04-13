@@ -137,7 +137,7 @@ const CodeEditor: React.FC<ICodeEditorProps> = ({ itens = [], toolItens = [], on
     /** Depois que um elemento já está na tela, esta função muda a posição dele! */
     const positionChange = (itemId: string | undefined, positionTop: number, positionLeft: number, event?: any) => {
 
-        // let component = state.flowItens[state.flowItens.findIndex((item: FlowItem) => item.isSelecionado)];
+        // let component = state.flowItens[state.flowItens.findIndex((item: FlowItem) => item.isSelected)];
         let component = state.flowItens[state.flowItens.findIndex((item: any) => { if (item.id === itemId) return true; return false; })];
 
 

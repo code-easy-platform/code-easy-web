@@ -27,17 +27,17 @@ export const Line: React.FC<LineProps> = (props: LineProps) => {
     const polygonBotton: number = top2;
 
 
-    const [isSelecionado, setIsSelecionado] = useState(false);
+    const [isSelected, setIsSelected] = useState(false);
     const [position, setPosition] = useState({ polygonTop: polygonTop, polygonLeft: polygonLeft });
 
     window.onmouseup = (event: any) => {
-        if (event.target.id && isSelecionado)
+        if (event.target.id && isSelected)
             onSucessorChange(id, event.target.id, sucessorIndex);
         onMouseEvent(false);
     }
 
     const onMouseEvent = (value: boolean) => {
-        setIsSelecionado(value);
+        setIsSelected(value);
         if (value) {
             refItemPai.current.onmousemove = mouseMove;
         } else {
@@ -58,15 +58,15 @@ export const Line: React.FC<LineProps> = (props: LineProps) => {
                 id={"line_" + id}
                 key={"line_" + id}
                 x1={left1}
-                x2={isSelecionado ? position.polygonLeft : left2}
+                x2={isSelected ? position.polygonLeft : left2}
                 y1={top1}
-                y2={isSelecionado ? position.polygonTop : top2 - 10}
+                y2={isSelected ? position.polygonTop : top2 - 10}
                 strokeWidth={lineWidth}
                 stroke={color || "blue"}
                 stroke-line-cap="round"
             />
             {
-                !isSelecionado
+                !isSelected
                     ? <polygon
                         id={id}
                         key={"polygon_" + id}
@@ -98,7 +98,7 @@ export const Line: React.FC<LineProps> = (props: LineProps) => {
                         x={position.polygonLeft - 5}
                         onMouseUp={() => onMouseEvent(false)}
                         onMouseDown={() => onMouseEvent(true)}
-                        style={{ cursor: 'default', fill: "#1e1e1e", stroke: isSelecionado ? "#999fff" : "gray", strokeWidth: 1 }}
+                        style={{ cursor: 'default', fill: "#1e1e1e", stroke: isSelected ? "#999fff" : "gray", strokeWidth: 1 }}
                     />
             }
         </g>

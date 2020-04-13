@@ -147,13 +147,13 @@ export const ItemToDrag: React.FC<ItemDragProps> = (props: ItemDragProps) => {
                 id={id}
             >
                 <text x={(left || 0) + ((width || 0) / 2)} textAnchor="middle" fill="#fff" y={(top || 0) - 5} id={id}>{title}</text>
-                {itemType === ItemType.FOREACH && <FlowComponent name="Foreach" id={id} top={top} left={left} width={width} height={height} childImage={icons_foreach} isSelecionado={isSelected} />}
-                {itemType === ItemType.ASSIGN && <FlowComponent name="ASSIGN" id={id} top={top} left={left} width={width} height={height} childImage={icons_assign} isSelecionado={isSelected} />}
-                {itemType === ItemType.SWITCH && <FlowComponent name="SWITCH" id={id} top={top} left={left} width={width} height={height} childImage={icons_switch} isSelecionado={isSelected} />}
-                {itemType === ItemType.ACTION && <FlowComponent name="ACTION" id={id} top={top} left={left} width={width} height={height} childImage={icons_action} isSelecionado={isSelected} />}
-                {itemType === ItemType.START && <FlowComponent name="START" id={id} top={top} left={left} width={width} height={height} childImage={icons_start} isSelecionado={isSelected} />}
-                {itemType === ItemType.END && <FlowComponent name="END" id={id} top={top} left={left} width={width} height={height} childImage={icons_end} isSelecionado={isSelected} />}
-                {itemType === ItemType.IF && <FlowComponent name="IF" id={id} top={top} left={left} width={width} height={height} childImage={icons_if} isSelecionado={isSelected} />}
+                {itemType === ItemType.FOREACH && <FlowComponent name="Foreach" id={id} top={top} left={left} width={width} height={height} childImage={icons_foreach} isSelected={isSelected} />}
+                {itemType === ItemType.ASSIGN && <FlowComponent name="ASSIGN" id={id} top={top} left={left} width={width} height={height} childImage={icons_assign} isSelected={isSelected} />}
+                {itemType === ItemType.SWITCH && <FlowComponent name="SWITCH" id={id} top={top} left={left} width={width} height={height} childImage={icons_switch} isSelected={isSelected} />}
+                {itemType === ItemType.ACTION && <FlowComponent name="ACTION" id={id} top={top} left={left} width={width} height={height} childImage={icons_action} isSelected={isSelected} />}
+                {itemType === ItemType.START && <FlowComponent name="START" id={id} top={top} left={left} width={width} height={height} childImage={icons_start} isSelected={isSelected} />}
+                {itemType === ItemType.END && <FlowComponent name="END" id={id} top={top} left={left} width={width} height={height} childImage={icons_end} isSelected={isSelected} />}
+                {itemType === ItemType.IF && <FlowComponent name="IF" id={id} top={top} left={left} width={width} height={height} childImage={icons_if} isSelected={isSelected} />}
             </g>
         );
     }
