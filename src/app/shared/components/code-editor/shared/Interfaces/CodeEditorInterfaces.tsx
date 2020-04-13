@@ -17,6 +17,9 @@ export interface ICodeEditorProps {
     /** string[] - Usado para definir quais itens adicionais são permitidos no fluxo */
     allowDropTo?: string[];
 
+    /** string - Usado para identifica qual o caminho da action que está aberta */
+    breadcrumbsPath?: string;
+
     /** Function - Usada para emitir através do output o fluxo atualidado, acontece a cada mudança de estado dos itens de fluxo. */
     onChangeItens(itens: FlowItem[]): any;
 

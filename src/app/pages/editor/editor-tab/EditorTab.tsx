@@ -409,6 +409,15 @@ export default class EditorTab extends React.Component {
 
     }
 
+    private codeEditorGetBreadcamps(): string {
+
+        let tab = this.state.tab;
+
+        let itemTreeEditing = tab.itens.find(item => item.isEditing);
+
+        return `${tab.configs.label}/${itemTreeEditing?.label}`;
+    }
+
 
 
     private treeManagerOnDropItem(targetId: string, droppedId: string, droppedItem: any): TreeInterface {
@@ -556,6 +565,7 @@ export default class EditorTab extends React.Component {
                         isShowToolbar={true}
                         toolItens={itensLogica}
                         allowDropTo={[TreeItensTypes.file]}
+                        breadcrumbsPath={this.codeEditorGetBreadcamps.bind(this)()}
                         itens={this.codeEditorGetItensLogica.bind(this)(this.state.tab.itens)}
                         onDropItem={this.codeEditorOnDropItem.bind(this)}
                         onChangeItens={this.codeEditorOutputFlowItens.bind(this)}

@@ -9,6 +9,7 @@ import { ItemType, FlowItem } from './models/ItemFluxo';
 import { Toolbar } from './components/tool-bar/ToolBar';
 import { Lines } from './components/lines/Lines';
 import { Utils } from './shared/Utils';
+import { BreandCamps } from './components/breadcamps/BreandCamps';
 
 
 /**
@@ -20,18 +21,10 @@ import { Utils } from './shared/Utils';
  * @param onDropItem Function - Usada para emitir através do output o item que foi dropado no fluxo.
  * @param isShowToolbar boolean - Usado para exibir ou não a toolbox cons itens de lógica.
  */
-export const FlowEditor: FC<ICodeEditorProps> = ({ itens = [], toolItens = [], onChangeItens = () => { }, isShowToolbar = false, onDropItem, allowDropTo, onContextMenu }) => {
+export const FlowEditor: FC<ICodeEditorProps> = (props: ICodeEditorProps) => {
     return (
         <DndProvider backend={HTML5Backend}>
-            <CodeEditor
-                onContextMenu={onContextMenu}
-                onChangeItens={onChangeItens}
-                isShowToolbar={isShowToolbar}
-                allowDropTo={allowDropTo}
-                onDropItem={onDropItem}
-                toolItens={toolItens}
-                itens={itens}
-            />
+            <CodeEditor {...props} />
         </DndProvider>
     );
 }
@@ -43,7 +36,7 @@ const acceptedInDrop: ItemType[] = [ItemType.START, ItemType.ACTION, ItemType.IF
 let backupFlow: string = "";
 
 /** Editor do fluxo. */
-const CodeEditor: React.FC<ICodeEditorProps> = ({ itens = [], toolItens = [], onChangeItens = () => { }, isShowToolbar = false, onDropItem = () => undefined, allowDropTo = [], onContextMenu }) => {
+const CodeEditor: React.FC<ICodeEditorProps> = ({ itens = [], toolItens = [], onChangeItens = () => { }, isShowToolbar = false, onDropItem = () => undefined, allowDropTo = [], onContextMenu, breadcrumbsPath }) => {
 
     /** Referencia o svg onde está todos os itens de fluxo. */
     const svgRef = useRef<any>(null);
@@ -471,11 +464,11 @@ const CodeEditor: React.FC<ICodeEditorProps> = ({ itens = [], toolItens = [], on
 
     return (
         <div style={{ flex: 1, maxHeight: "100%" }}>
-
             <input ref={inputCopyRef} style={{ height: '1px', width: '1px', top: '-1000px', position: "fixed" }} />
             <Toolbar itensLogica={toolItens} isShow={((toolItens.length > 0) && isShowToolbar)} />
 
             <div key={"CODE_EDITOR"} style={{ flex: 1, overflow: "auto", }}>
+                <BreandCamps breadcrumbsPath={breadcrumbsPath} />
 
                 <svg ref={svgRef} tabIndex={0}
                     id={"CODE_EDITOR_SVG"}
