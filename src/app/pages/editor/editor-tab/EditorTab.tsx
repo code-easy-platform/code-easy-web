@@ -2,7 +2,6 @@ import React from 'react';
 
 import { Tab, ComponentConfigs, ItemComponent, ItemFlowComplete } from '../../../shared/interfaces/Aplication';
 import { TreeItensTypes } from '../../../shared/components/tree-manager/shared/models/TreeItensTypes';
-import { AlertService, AlertTypes } from '../../../shared/components/botton-status-bar/AlertService';
 import { TreeInterface } from '../../../shared/components/tree-manager/shared/models/TreeInterface';
 import { PropertiesEditor } from './../../../shared/components/properties-editor/PropertiesEditor';
 import { IItem, TypeValues } from '../../../shared/components/properties-editor/shared/interfaces';
@@ -254,7 +253,7 @@ export default class EditorTab extends React.Component {
                 ]
             } else if (currentFocus === CurrentFocus.flow) {
 
-                const itensLogica = this.codeEditorGetItensLogica(this.state.tab.itens);
+                const itensLogica = this.codeEditorGetItensLogica(this.state.tab.itens, 'ItemFlowComplete');
                 const itensFiltereds = itensLogica.filter(flowItem => flowItem.isSelected);
 
                 const mappedItens: IItem[] = [];
@@ -277,9 +276,6 @@ export default class EditorTab extends React.Component {
 
 
     private codeEditorOutputFlowItens = (updatedItens: FlowItem[]) => {
-        console.log(updatedItens);
-
-        AlertService.sendMessage(AlertTypes.loading, "Carregando módulos do node...", "A aplicação foi iniciada com êxito!");
 
         let tab = this.state.tab;
 
@@ -351,16 +347,18 @@ export default class EditorTab extends React.Component {
 
     }
 
-    private codeEditorGetItensLogica(itens: ItemComponent[]): ItemFlowComplete[] {
+    private codeEditorGetItensLogica(itens: ItemComponent[], res?: 'ItemFlowComplete' | 'FlowItem'): any[] {
 
         let itemEditing = itens.find(item => item.isEditing);
 
         if (itemEditing) {
             itemEditing.itens.sort((a, b) => (a.top - b.top));
+            if (res === 'ItemFlowComplete') return itemEditing.itens; // Se for o completo já retorna para evitar processamento.
 
-            let flowItens: ItemFlowComplete[] = [];
+            // Se for o simples para o editor de fluxos, faz um map dos itens.
+            let flowItens: FlowItem[] = [];
             itemEditing.itens.forEach(item => {
-                flowItens.push(new ItemFlowComplete({
+                flowItens.push(new FlowItem({
                     id: item.id,
                     top: item.top,
                     left: item.left,
@@ -369,8 +367,7 @@ export default class EditorTab extends React.Component {
                     height: item.height,
                     itemType: item.itemType,
                     sucessor: item.sucessor,
-                    isSelected: item.isSelected,
-                    properties: item.properties
+                    isSelected: item.isSelected
                 }));
             });
 
