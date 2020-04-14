@@ -32,12 +32,12 @@ enum CurrentFocus {
 const mockTab: Tab = new Tab({
     configs: new ComponentConfigs({
         id: '1',
-        name: "actions",
+        name: "routes",
         isExpanded: true,
-        label: "Actions",
+        label: "Routes",
         isEditando: false,
-        description: "Minha tab de actions",
-        type: ComponentType.tabActions,
+        description: "Minha tab de routes",
+        type: ComponentType.tabRouters,
     }),
     itens: [
         new ItemComponent({
@@ -71,6 +71,12 @@ const mockTab: Tab = new Tab({
                         value: "IF",
                         label: "Label",
                         typeValue: TypeValues.string,
+                    },
+                    {
+                        id: "2",
+                        value: "",
+                        label: "Condiction",
+                        typeValue: TypeValues.expression,
                     }]
                 }),
                 new ItemFlowComplete({
@@ -79,6 +85,18 @@ const mockTab: Tab = new Tab({
                         value: "FOREACH",
                         label: "Label",
                         typeValue: TypeValues.string,
+                    },
+                    {
+                        id: "2",
+                        value: "",
+                        label: "Source",
+                        typeValue: TypeValues.expression,
+                    },
+                    {
+                        id: "3",
+                        value: "",
+                        label: "Condiction",
+                        typeValue: TypeValues.expression,
                     }]
                 }),
                 new ItemFlowComplete({
@@ -87,6 +105,12 @@ const mockTab: Tab = new Tab({
                         value: "ACTION",
                         label: "Label",
                         typeValue: TypeValues.string,
+                    },
+                    {
+                        id: "2",
+                        value: "",
+                        label: "Action",
+                        typeValue: TypeValues.expression,
                     }]
                 }),
                 new ItemFlowComplete({
@@ -103,6 +127,12 @@ const mockTab: Tab = new Tab({
                         value: "ASSIGN",
                         label: "Label",
                         typeValue: TypeValues.string,
+                    },
+                    {
+                        id: "2",
+                        value: "",
+                        label: "Assigment",
+                        typeValue: TypeValues.expression,
                     }]
                 }),
             ]
@@ -124,6 +154,12 @@ const mockTab: Tab = new Tab({
                         value: "START",
                         label: "Label",
                         typeValue: TypeValues.string,
+                    },
+                    {
+                        id: "2",
+                        value: "Descrição",
+                        label: "Description",
+                        typeValue: TypeValues.bigstring,
                     }]
                 }),
                 new ItemFlowComplete({
@@ -132,6 +168,12 @@ const mockTab: Tab = new Tab({
                         value: "IF",
                         label: "Label",
                         typeValue: TypeValues.string,
+                    },
+                    {
+                        id: "2",
+                        value: "",
+                        label: "Condiction",
+                        typeValue: TypeValues.expression,
                     }]
                 }),
                 new ItemFlowComplete({
@@ -140,6 +182,18 @@ const mockTab: Tab = new Tab({
                         value: "FOREACH",
                         label: "Label",
                         typeValue: TypeValues.string,
+                    },
+                    {
+                        id: "2",
+                        value: "",
+                        label: "Source",
+                        typeValue: TypeValues.expression,
+                    },
+                    {
+                        id: "3",
+                        value: "",
+                        label: "Condiction",
+                        typeValue: TypeValues.expression,
                     }]
                 }),
                 new ItemFlowComplete({
@@ -148,6 +202,12 @@ const mockTab: Tab = new Tab({
                         value: "ACTION",
                         label: "Label",
                         typeValue: TypeValues.string,
+                    },
+                    {
+                        id: "2",
+                        value: "",
+                        label: "Action",
+                        typeValue: TypeValues.expression,
                     }]
                 }),
                 new ItemFlowComplete({
@@ -164,6 +224,12 @@ const mockTab: Tab = new Tab({
                         value: "ASSIGN",
                         label: "Label",
                         typeValue: TypeValues.string,
+                    },
+                    {
+                        id: "2",
+                        value: "",
+                        label: "Assigment",
+                        typeValue: TypeValues.expression,
                     }]
                 }),
             ]
