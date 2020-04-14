@@ -55,84 +55,84 @@ const mockTab: Tab = new Tab({
                     id: '1', sucessor: ['2'], top: 100, left: 80, width: 50, height: 50, name: "START", itemType: ItemType.START, isSelected: false, properties: [{
                         id: "1",
                         value: "START",
-                        label: "Label",
-                        typeValue: TypeValues.string,
+                        name: "Label",
+                        type: TypeValues.string,
                     },
                     {
                         id: "2",
                         value: "Descrição",
-                        label: "Description",
-                        typeValue: TypeValues.bigstring,
+                        name: "Description",
+                        type: TypeValues.bigstring,
                     }]
                 }),
                 new ItemFlowComplete({
                     id: '2', sucessor: ['3'], top: 200, left: 80, width: 50, height: 50, isSelected: false, name: "IF", itemType: ItemType.IF, properties: [{
                         id: "1",
                         value: "IF",
-                        label: "Label",
-                        typeValue: TypeValues.string,
+                        name: "Label",
+                        type: TypeValues.string,
                     },
                     {
                         id: "2",
                         value: "",
-                        label: "Condiction",
-                        typeValue: TypeValues.expression,
+                        name: "Condiction",
+                        type: TypeValues.expression,
                     }]
                 }),
                 new ItemFlowComplete({
                     id: '3', sucessor: ['4'], top: 300, left: 80, width: 50, height: 50, isSelected: false, name: "FOREACH", itemType: ItemType.FOREACH, properties: [{
                         id: "1",
                         value: "FOREACH",
-                        label: "Label",
-                        typeValue: TypeValues.string,
+                        name: "Label",
+                        type: TypeValues.string,
                     },
                     {
                         id: "2",
                         value: "",
-                        label: "Source",
-                        typeValue: TypeValues.expression,
+                        name: "Source",
+                        type: TypeValues.expression,
                     },
                     {
                         id: "3",
                         value: "",
-                        label: "Condiction",
-                        typeValue: TypeValues.expression,
+                        name: "Condiction",
+                        type: TypeValues.expression,
                     }]
                 }),
                 new ItemFlowComplete({
                     id: '4', sucessor: ['5'], top: 400, left: 80, width: 50, height: 50, isSelected: false, name: "ACTION", itemType: ItemType.ACTION, properties: [{
                         id: "1",
                         value: "ACTION",
-                        label: "Label",
-                        typeValue: TypeValues.string,
+                        name: "Label",
+                        type: TypeValues.string,
                     },
                     {
                         id: "2",
                         value: "",
-                        label: "Action",
-                        typeValue: TypeValues.expression,
+                        name: "Action",
+                        type: TypeValues.expression,
                     }]
                 }),
                 new ItemFlowComplete({
                     id: '5', sucessor: ['6'], top: 500, left: 80, width: 50, height: 50, isSelected: false, name: "SWITCH", itemType: ItemType.SWITCH, properties: [{
                         id: "1",
                         value: "SWITCH",
-                        label: "Label",
-                        typeValue: TypeValues.string,
+                        name: "Label",
+                        type: TypeValues.string,
                     }]
                 }),
                 new ItemFlowComplete({
                     id: '6', sucessor: ['7'], top: 600, left: 80, width: 50, height: 50, isSelected: false, name: "ASSIGN", itemType: ItemType.ASSIGN, properties: [{
                         id: "1",
                         value: "ASSIGN",
-                        label: "Label",
-                        typeValue: TypeValues.string,
+                        name: "Label",
+                        type: TypeValues.string,
                     },
                     {
                         id: "2",
                         value: "",
-                        label: "Assigment",
-                        typeValue: TypeValues.expression,
+                        name: "Assigment",
+                        type: TypeValues.assign,
                     }]
                 }),
             ]
@@ -152,84 +152,84 @@ const mockTab: Tab = new Tab({
                     id: '1', sucessor: ['2'], top: 100, left: 80, width: 50, height: 50, name: "START", itemType: ItemType.START, isSelected: false, properties: [{
                         id: "1",
                         value: "START",
-                        label: "Label",
-                        typeValue: TypeValues.string,
+                        name: "Label",
+                        type: TypeValues.string,
                     },
                     {
                         id: "2",
                         value: "Descrição",
-                        label: "Description",
-                        typeValue: TypeValues.bigstring,
+                        name: "Description",
+                        type: TypeValues.bigstring,
                     }]
                 }),
                 new ItemFlowComplete({
                     id: '2', sucessor: ['3'], top: 200, left: 80, width: 50, height: 50, isSelected: false, name: "IF", itemType: ItemType.IF, properties: [{
                         id: "1",
                         value: "IF",
-                        label: "Label",
-                        typeValue: TypeValues.string,
+                        name: "Label",
+                        type: TypeValues.string,
                     },
                     {
                         id: "2",
                         value: "",
-                        label: "Condiction",
-                        typeValue: TypeValues.expression,
+                        name: "Condiction",
+                        type: TypeValues.expression,
                     }]
                 }),
                 new ItemFlowComplete({
                     id: '3', sucessor: ['4'], top: 300, left: 80, width: 50, height: 50, isSelected: false, name: "FOREACH", itemType: ItemType.FOREACH, properties: [{
                         id: "1",
                         value: "FOREACH",
-                        label: "Label",
-                        typeValue: TypeValues.string,
+                        name: "Label",
+                        type: TypeValues.string,
                     },
                     {
                         id: "2",
                         value: "",
-                        label: "Source",
-                        typeValue: TypeValues.expression,
+                        name: "Source",
+                        type: TypeValues.expression,
                     },
                     {
                         id: "3",
                         value: "",
-                        label: "Condiction",
-                        typeValue: TypeValues.expression,
+                        name: "Condiction",
+                        type: TypeValues.expression,
                     }]
                 }),
                 new ItemFlowComplete({
                     id: '4', sucessor: ['5'], top: 400, left: 80, width: 50, height: 50, isSelected: false, name: "ACTION", itemType: ItemType.ACTION, properties: [{
                         id: "1",
                         value: "ACTION",
-                        label: "Label",
-                        typeValue: TypeValues.string,
+                        name: "Label",
+                        type: TypeValues.string,
                     },
                     {
                         id: "2",
                         value: "",
-                        label: "Action",
-                        typeValue: TypeValues.expression,
+                        name: "Action",
+                        type: TypeValues.expression,
                     }]
                 }),
                 new ItemFlowComplete({
                     id: '5', sucessor: ['6'], top: 500, left: 80, width: 50, height: 50, isSelected: false, name: "SWITCH", itemType: ItemType.SWITCH, properties: [{
                         id: "1",
                         value: "SWITCH",
-                        label: "Label",
-                        typeValue: TypeValues.string,
+                        name: "Label",
+                        type: TypeValues.string,
                     }]
                 }),
                 new ItemFlowComplete({
                     id: '6', sucessor: ['7'], top: 600, left: 80, width: 50, height: 50, isSelected: false, name: "ASSIGN", itemType: ItemType.ASSIGN, properties: [{
                         id: "1",
                         value: "ASSIGN",
-                        label: "Label",
-                        typeValue: TypeValues.string,
+                        name: "Label",
+                        type: TypeValues.string,
                     },
                     {
                         id: "2",
                         value: "",
-                        label: "Assigment",
-                        typeValue: TypeValues.expression,
+                        name: "Assigment",
+                        type: TypeValues.assign,
                     }]
                 }),
             ]
@@ -298,20 +298,20 @@ export default class EditorTab extends React.Component {
                         properties: [
                             {
                                 id: '1',
-                                label: 'Label',
+                                name: 'Label',
                                 value: itens[itemIndex].label,
-                                typeValue: TypeValues.string
+                                type: TypeValues.string
                             },
                             {
                                 id: '2',
-                                label: 'Description',
+                                name: 'Description',
                                 value: itens[itemIndex].description,
-                                typeValue: TypeValues.bigstring
+                                type: TypeValues.bigstring
                             },
                             {
                                 id: '3',
-                                label: "Enabled",
-                                typeValue: TypeValues.boolean,
+                                name: "Enabled",
+                                type: TypeValues.boolean,
                                 value: false
                             }
                         ]
@@ -373,7 +373,7 @@ export default class EditorTab extends React.Component {
                         }));
                     } else {
                         newItens.push(new ItemFlowComplete({
-                            properties: [{ id: '1', label: 'Label', typeValue: TypeValues.string, value: updatedItem.name }],
+                            properties: [{ id: '1', name: 'Label', type: TypeValues.string, value: updatedItem.name }],
                             isSelected: updatedItem.isSelected,
                             sucessor: updatedItem.sucessor,
                             itemType: updatedItem.itemType,

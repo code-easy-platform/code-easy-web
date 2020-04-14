@@ -2,22 +2,40 @@ import React, { useState } from 'react';
 import MonacoEditor from 'react-monaco-editor';
 
 export const ExpressionInput = (props: React.DetailedHTMLProps<React.InputHTMLAttributes<HTMLInputElement>, HTMLInputElement>) => {
-    // const onDoubleClick = props.onDoubleClick ? props.onDoubleClick : () => { };
 
     const [state, setState] = useState({ isOpenEditor: false, code: '' })
 
+    const css_picker_editor: React.CSSProperties = {
+        border: '0.5px solid #ffffff15',
+        backgroundColor: '#ffffff10',
+        cursor: 'pointer',
+        borderRadius: 50,
+        color: 'white',
+        height: '100%',
+        marginLeft: 4,
+        padding: 8,
+        paddingRight: 4,
+        paddingLeft: 4,
+    }
+
+    const openEditor = (e: any) => {
+
+        if (props.onDoubleClick) {
+            props.onDoubleClick(e);
+        }
+
+        setState({ ...state, isOpenEditor: true });
+    }
+
     return (
         <div style={{
-            justifyContent: 'flex-end',
-            width: props.style?.width,
-            maxWidth: props.style?.maxWidth,
             alignItems: 'center',
+            width: props.style?.width,
+            justifyContent: 'flex-end',
+            maxWidth: props.style?.maxWidth,
         }}>
-            <input {...props} onDoubleClick={e => setState({ ...state, isOpenEditor: true })} style={{ ...props.style, width: '100%', maxWidth: '100%', paddingRight: '24px' }} />
-            <div
-                style={{ ...props.style, minWidth: 0, width: 0, marginLeft: 4, cursor: 'pointer', height: '100%' }}
-                onClick={(e: any) => setState({ ...state, isOpenEditor: true })}
-            />
+            <input {...props} onDoubleClick={openEditor} style={{ ...props.style, width: '100%', maxWidth: '100%', paddingRight: '24px' }} />
+            <button style={css_picker_editor} onClick={openEditor} />
 
             {state.isOpenEditor && <div style={{ position: 'fixed', left: '0px', top: '0px', width: '100vw', height: '100vh', alignItems: 'center', justifyContent: 'center' }}>
 

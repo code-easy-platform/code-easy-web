@@ -6,12 +6,13 @@ export enum TypeValues {
     string='string',
     number='number',
     binary='binary',
+    assign='assign',
 }
 
 export interface IProperties {
     id: string | undefined;
-    label: string;
-    typeValue: TypeValues
+    type: TypeValues
+    name: string;
     value: any;
 }
 
