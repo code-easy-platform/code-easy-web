@@ -1,7 +1,8 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 
 import { IItem } from './shared/interfaces';
 import { ListItem } from './shared/components/ListItem';
+import { Resizer } from './shared/components/Resizer';
 
 const css_base: React.CSSProperties = {
     flexDirection: 'column',
@@ -15,10 +16,13 @@ interface PropertiesEditorProps {
 }
 export const PropertiesEditor: React.FC<PropertiesEditorProps> = ({ itens, onChange = (_: any) => { } }) => {
 
-    const [state, setState] = useState<{ itens: IItem[] }>({ itens });
+    const [state, setState] = useState<{ itens: IItem[], hrLeft: number }>({ itens, hrLeft: 100 });
+    const hrLeft = state.hrLeft;
     useEffect(() => {
-        setState({ itens });
-    }, [itens]);
+        setState({ hrLeft, itens });
+    }, [hrLeft, itens]);
+
+    const ref = useRef(null);
 
     const onChangeListItem = (data: IItem, listItemIndex: number) => {
 
@@ -31,10 +35,11 @@ export const PropertiesEditor: React.FC<PropertiesEditorProps> = ({ itens, onCha
     }
 
     return (
-        <div style={css_base}>
+        <div ref={ref} style={css_base}>
             {state.itens.map((item, index) => {
                 return (<>
-                    <ListItem {...item} onChange={data => onChangeListItem(data, index)} />
+                    <Resizer paiRef={ref} left={state.hrLeft} onChange={newLeft => setState({ ...state, hrLeft: newLeft })} />
+                    <ListItem inputWidth={state.hrLeft} {...item} onChange={data => onChangeListItem(data, index)} />
                     <div style={{ minHeight: '30px' }} />
                 </>);
             })}

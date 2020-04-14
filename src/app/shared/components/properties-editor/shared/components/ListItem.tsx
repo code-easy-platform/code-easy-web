@@ -3,8 +3,8 @@ import React, { useState, useEffect } from 'react';
 import { IItem, IProperties } from '../interfaces';
 import { PropItem } from './PropItem';
 
-interface ListItemProps extends IItem { onChange(data: IItem): void; }
-export const ListItem: React.FC<ListItemProps> = ({ id, name, properties, isHeader, onChange }) => {
+interface ListItemProps extends IItem { onChange(data: IItem): void; inputWidth: number }
+export const ListItem: React.FC<ListItemProps> = ({ id, name, properties, isHeader, onChange, inputWidth }) => {
 
     const [state, setState] = useState<IItem>({ id, name, properties, isHeader });
     useEffect(() => {
@@ -35,7 +35,7 @@ export const ListItem: React.FC<ListItemProps> = ({ id, name, properties, isHead
     return (
         <>
             <div style={css_list_item}>{state.name}</div>
-            {state.properties.map((prop, index) => <PropItem onChange={item => onChangeItemProp(item, index)} {...prop} />)}
+            {state.properties.map((prop, index) => <PropItem inputWidth={inputWidth} onChange={item => onChangeItemProp(item, index)} {...prop} />)}
         </>
     );
 }

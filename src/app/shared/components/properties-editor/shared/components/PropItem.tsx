@@ -9,18 +9,21 @@ const css_prop_item: React.CSSProperties = {
     justifyContent: 'space-between',
     height: 'min-content',
     alignItems: 'center',
-    padding: 8,
+    padding: 6,
     paddingBottom: 0,
 }
 interface PropItemProps extends IProperties {
     onChange(data: IProperties): void;
+    inputWidth: number;
 }
-export const PropItem: React.FC<PropItemProps> = ({ id, label, typeValue, value, onChange }) => {
+export const PropItem: React.FC<PropItemProps> = ({ id, label, typeValue, value, onChange, inputWidth }) => { // Extende outra interface
+
+    inputWidth = inputWidth - 4;
 
     const [state, setState] = useState<IProperties>({ id, label, typeValue, value });
     useEffect(() => {
         setState({ id, label, typeValue, value })
-    }, [id, label, typeValue, value ]);
+    }, [id, label, typeValue, value]);
 
     const css_prop_item_label: React.CSSProperties = {
         textOverflow: 'ellipsis',
@@ -32,16 +35,20 @@ export const PropItem: React.FC<PropItemProps> = ({ id, label, typeValue, value,
     }
 
     const css_prop_item_input: React.CSSProperties = {
-        padding: 10,
+        width: inputWidth ? `${inputWidth}px` : '70%',
         border: '0.5px solid #ffffff15',
         backgroundColor: '#ffffff10',
         borderRadius: 4,
-        paddingRight: 4,
-        maxWidth: '70%',
-        minWidth: '70%',
-        paddingLeft: 4,
         color: 'white',
-        width: '70%',
+        padding: 8,
+        paddingRight: 4,
+        paddingLeft: 4,
+    }
+
+    const onkeyPress = (e: any) => {
+        if (e.keyCode === 13) {
+            onChange(state);
+        }
     }
 
     switch (state.typeValue) {
@@ -51,6 +58,7 @@ export const PropItem: React.FC<PropItemProps> = ({ id, label, typeValue, value,
                     <label htmlFor={'prop_id_' + state.id} style={css_prop_item_label}>{state.label}</label>
                     <input
                         onChange={e => setState({ ...state, value: e.target.value })}
+                        onKeyDown={(e) => onkeyPress(e)}
                         onBlur={_ => onChange(state)}
                         key={'prop_key_' + state.id}
                         style={css_prop_item_input}
@@ -65,13 +73,14 @@ export const PropItem: React.FC<PropItemProps> = ({ id, label, typeValue, value,
                 <div style={css_prop_item}>
                     <label htmlFor={'prop_id_' + state.id} style={css_prop_item_label}>{state.label}</label>
                     <ExpressionInput
+                        style={{ ...css_prop_item_input, width: inputWidth ? `${inputWidth + 8}px` : '70%' }}
                         onChange={e => setState({ ...state, value: e.target.value })}
+                        onDoubleClick={e => alert('Abre o editor...')}
+                        onKeyDown={(e) => onkeyPress(e)}
                         onBlur={_ => onChange(state)}
                         key={'prop_key_' + state.id}
-                        style={css_prop_item_input}
                         id={'prop_id_' + state.id}
                         value={state.value}
-                        onDoubleClick={e => alert('Abre o editor...')}
                     />
                 </div>
             );
@@ -82,6 +91,7 @@ export const PropItem: React.FC<PropItemProps> = ({ id, label, typeValue, value,
                     <label htmlFor={'prop_id_' + state.id} style={css_prop_item_label}>{state.label}</label>
                     <textarea
                         onChange={e => setState({ ...state, value: e.target.value })}
+                        onKeyDown={(e) => onkeyPress(e)}
                         onBlur={_ => onChange(state)}
                         key={'prop_key_' + state.id}
                         style={{ ...css_prop_item_input, height: '50px' }}
@@ -97,6 +107,7 @@ export const PropItem: React.FC<PropItemProps> = ({ id, label, typeValue, value,
                     <label htmlFor={'prop_id_' + state.id} style={css_prop_item_label}>{state.label}</label>
                     <input
                         onChange={e => setState({ ...state, value: e.target.value })}
+                        onKeyDown={(e) => onkeyPress(e)}
                         onBlur={_ => onChange(state)}
                         key={'prop_key_' + state.id}
                         style={css_prop_item_input}
