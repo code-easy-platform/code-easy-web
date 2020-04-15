@@ -1,15 +1,52 @@
 import React, { useState, useContext } from 'react';
 
 import { CodeEditorContext } from '../../services/contexts/CodeEditorContext';
+import { Tab, ComponentConfigs } from '../../interfaces/Aplication';
 import { TabButton, TabGroup } from '../tab-button/TabButton';
-import { Storage } from '../../services/LocalStorage';
+import { ComponentType } from '../../enuns/ComponentType';
 import { CurrentTab } from '../../enuns/CurrentTab';
-import { Tab } from '../../interfaces/Aplication';
 import './ToolBar.scss';
 
 export const ToolBar = (props: any) => {
     const codeEditorContext = useContext(CodeEditorContext);
-    const tabs: Tab[] = [];
+    const tabs: Tab[] = [
+        new Tab({
+            itens: [],
+            configs: new ComponentConfigs({
+                id: '1',
+                name: 'routers',
+                isExpanded: true,
+                isEditando: true,
+                label: 'Routers',
+                type: ComponentType.tabRouters,
+                description: 'Permite a criação das rotas da aplicação de APIs',
+            }),
+        }),
+        new Tab({
+            itens: [],
+            configs: new ComponentConfigs({
+                id: '1',
+                name: 'actions',
+                isEditando: true,
+                isExpanded: true,
+                label: 'Actions',
+                type: ComponentType.tabActions,
+                description: 'Permite a criação da lógica da aplicação de APIs',
+            }),
+        }),
+        new Tab({
+            itens: [],
+            configs: new ComponentConfigs({
+                id: '1',
+                name: 'data',
+                label: 'Data',
+                isEditando: true,
+                isExpanded: true,
+                type: ComponentType.tabDates,
+                description: 'Permite a criação do banco de dados da aplicação de APIs',
+            }),
+        }),
+    ];
 
     const [currentTab, setCurrentTab] = useState(CurrentTab.editor);
 
@@ -50,9 +87,9 @@ export const ToolBar = (props: any) => {
                 />
                 <TabButton
                     id="tabResetApplication"
-                    onClick={() => Storage.resetProject()}
+                    // onClick={() => Storage.resetProject()}
                     style={{ justifyContent: "center", alignSelf: "center" }}
-                    content="Reset application"
+                    content={<a style={{ textDecoration: 'none', color: 'white' }} href='https://github.com/code-easy-platform' target='_blank' rel="noopener noreferrer" >Abrir no Git hub</a>}
                 />
             </div>
             <div style={{ width: 300, justifyContent: "flex-end" }}>

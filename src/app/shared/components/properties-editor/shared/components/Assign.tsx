@@ -8,10 +8,10 @@ interface IAssign extends IProperties {
     onKeyDown(e: any): void;
     onBlur(e: any): void;
 }
-export const Assign: React.FC<IAssign> = ({ id, name, value, onChangeName, onChangeValue, type, onKeyDown, onBlur }) => {
+export const Assign: React.FC<IAssign> = ({ id, name, value, type, nameHasError = false, valueHasError = false, onChangeName, onChangeValue, onKeyDown, onBlur }) => {
 
     const css_prop_item_input: React.CSSProperties = {
-        border: '0.5px solid #ffffff15',
+        border: `0.5px solid ${valueHasError ? 'red' : '#ffffff15'}`,
         backgroundColor: '#ffffff10',
         borderRadius: 4,
         color: 'white',
@@ -34,7 +34,7 @@ export const Assign: React.FC<IAssign> = ({ id, name, value, onChangeName, onCha
             placeholder='Propertie'
             id={'name_prop_id_' + id}
             key={'name_prop_key_' + id}
-            style={{ ...css_prop_item_input, borderBottomLeftRadius: 0, borderBottomRightRadius: 0 }}
+            style={{ ...css_prop_item_input, borderBottomLeftRadius: 0, borderBottomRightRadius: 0, borderColor: nameHasError ? 'red' : '#ffffff15' }}
             onChange={e => onChangeName(e.target.value)}
             onDoubleClick={e => alert('Abre o editor...')}
         />

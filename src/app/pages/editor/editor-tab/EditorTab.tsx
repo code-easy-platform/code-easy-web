@@ -91,12 +91,6 @@ const mockTab: Tab = new Tab({
                         value: "",
                         name: "Source",
                         type: TypeValues.expression,
-                    },
-                    {
-                        id: "3",
-                        value: "",
-                        name: "Condiction",
-                        type: TypeValues.expression,
                     }]
                 }),
                 new ItemFlowComplete({
@@ -187,12 +181,6 @@ const mockTab: Tab = new Tab({
                         id: "2",
                         value: "",
                         name: "Source",
-                        type: TypeValues.expression,
-                    },
-                    {
-                        id: "3",
-                        value: "",
-                        name: "Condiction",
                         type: TypeValues.expression,
                     }]
                 }),

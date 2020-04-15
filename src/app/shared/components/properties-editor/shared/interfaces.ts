@@ -9,9 +9,20 @@ export enum TypeValues {
     assign='assign',
 }
 
+export interface ISuggestion {
+    description: string;
+    disabled: boolean;
+    label: string;
+    name: string;
+    value: any;
+}
+
 export interface IProperties {
+    suggestions?: ISuggestion[];
+    valueHasError?: boolean;
     id: string | undefined;
-    type: TypeValues
+    nameHasError?: boolean;
+    type: TypeValues;
     name: string;
     value: any;
 }

@@ -22,6 +22,6 @@ export const CustomInputFile = (props: React.DetailedHTMLProps<React.InputHTMLAt
 
     return (<>
         <div {...props} id={Utils.getRandomId() + "_" + props.id} style={css_input_file} onClick={e => { input.current.click() }} onChange={onChange} >{state.fileName || 'Selecione um arquivo...'}</div>
-        <input id={props.id} type='file' ref={input} onChange={(e) => { setState({ fileName: e.target.value }); onChange(e) }} style={{ display: 'none' }} />
+        <input id={props.id} type='file' autoComplete='off' ref={input} onChange={(e) => { setState({ fileName: e.target.value }); onChange(e) }} style={{ display: 'none' }} />
     </>);
 }

@@ -34,7 +34,7 @@ export const ExpressionInput = (props: React.DetailedHTMLProps<React.InputHTMLAt
             justifyContent: 'flex-end',
             maxWidth: props.style?.maxWidth,
         }}>
-            <input {...props} onDoubleClick={openEditor} style={{ ...props.style, width: '100%', maxWidth: '100%', paddingRight: '24px' }} />
+            <input {...props} autoComplete='off' onDoubleClick={openEditor} style={{ ...props.style, width: '100%', maxWidth: '100%', paddingRight: '24px' }} />
             <button style={css_picker_editor} onClick={openEditor} />
 
             {state.isOpenEditor && <div style={{ position: 'fixed', left: '0px', top: '0px', width: '100vw', height: '100vh', alignItems: 'center', justifyContent: 'center' }}>
@@ -70,6 +70,6 @@ export const ExpressionInput = (props: React.DetailedHTMLProps<React.InputHTMLAt
 
             </div>}
 
-        </div >
+        </div>
     );
 }

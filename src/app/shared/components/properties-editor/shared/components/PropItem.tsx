@@ -17,16 +17,15 @@ interface PropItemProps extends IProperties {
     onChange(data: IProperties): void;
     inputWidth: number;
 }
-export const PropItem: React.FC<PropItemProps> = ({ id, name, type, value, onChange, inputWidth }) => { // Extende outra interface
+export const PropItem: React.FC<PropItemProps> = ({ id, name, type, value, onChange, inputWidth, nameHasError = false, valueHasError = false }) => { // Extende outra interface
 
-    inputWidth = inputWidth - 4;
-
-    const [state, setState] = useState<IProperties>({ id, name, type, value });
+    const [state, setState] = useState<IProperties>({ id, name, type, value, valueHasError, nameHasError });
     useEffect(() => {
-        setState({ id, name, type, value })
-    }, [id, name, type, value]);
+        setState({ id, name, type, value, valueHasError, nameHasError })
+    }, [id, name, type, value, valueHasError, nameHasError]);
 
     const css_prop_item_label: React.CSSProperties = {
+        textDecoration: nameHasError ? `underline wavy red` : undefined,
         textOverflow: 'ellipsis',
         display: 'inline-block',
         whiteSpace: 'nowrap',
@@ -36,8 +35,9 @@ export const PropItem: React.FC<PropItemProps> = ({ id, name, type, value, onCha
     }
 
     const css_prop_item_input: React.CSSProperties = {
+        textDecoration: nameHasError ? `underline wavy red` : undefined,
+        border: `0.5px solid ${valueHasError ? 'red' : '#ffffff15'}`,
         width: inputWidth ? `${inputWidth}px` : '70%',
-        border: '0.5px solid #ffffff15',
         backgroundColor: '#ffffff10',
         borderRadius: 4,
         color: 'white',
@@ -65,6 +65,7 @@ export const PropItem: React.FC<PropItemProps> = ({ id, name, type, value, onCha
                         style={css_prop_item_input}
                         id={'prop_id_' + state.id}
                         value={state.value}
+                        autoComplete='off'
                     />
                 </div>
             );
@@ -98,6 +99,7 @@ export const PropItem: React.FC<PropItemProps> = ({ id, name, type, value, onCha
                         style={{ ...css_prop_item_input, height: '50px' }}
                         id={'prop_id_' + state.id}
                         value={state.value}
+                        autoComplete='off'
                     />
                 </div>
             );
@@ -115,6 +117,7 @@ export const PropItem: React.FC<PropItemProps> = ({ id, name, type, value, onCha
                         id={'prop_id_' + state.id}
                         value={state.value}
                         type='number'
+                        autoComplete='off'
                     />
                 </div>
             );
@@ -138,9 +141,10 @@ export const PropItem: React.FC<PropItemProps> = ({ id, name, type, value, onCha
                 <div style={css_prop_item}>
                     <label htmlFor={'prop_id_' + state.id} style={css_prop_item_label}>{state.name}</label>
                     <DefaultSwitch
+                        checked={state.value}
+                        hasError={valueHasError}
                         id={'prop_id_' + state.id}
                         onChange={value => setState({ ...state, value })}
-                        checked={state.value}
                     />
                 </div>
             );
@@ -152,6 +156,8 @@ export const PropItem: React.FC<PropItemProps> = ({ id, name, type, value, onCha
                     name={state.name}
                     type={state.type}
                     value={state.value}
+                    nameHasError={nameHasError}
+                    valueHasError={valueHasError}
                     onBlur={_ => onChange(state)}
                     key={'assign_key_' + state.id}
                     onKeyDown={(e) => onkeyPress(e)}
@@ -163,4 +169,5 @@ export const PropItem: React.FC<PropItemProps> = ({ id, name, type, value, onCha
         default:
             return <></>;
     }
+
 }
