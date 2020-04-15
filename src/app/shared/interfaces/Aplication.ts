@@ -13,7 +13,7 @@ interface BaseFields {
      */
     id: string | undefined;
     /**
-     * Usado para identificar um registro de forma visual.
+     * Usado para identificar um registro dentro do sistema.
      * 
      *  * Não pode ter espaço
      *  * Não pode ter caracteres especiais

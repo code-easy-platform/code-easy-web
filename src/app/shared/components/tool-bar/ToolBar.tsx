@@ -1,52 +1,15 @@
 import React, { useState, useContext } from 'react';
 
 import { CodeEditorContext } from '../../services/contexts/CodeEditorContext';
-import { Tab, ComponentConfigs } from '../../interfaces/Aplication';
 import { TabButton, TabGroup } from '../tab-button/TabButton';
-import { ComponentType } from '../../enuns/ComponentType';
 import { CurrentTab } from '../../enuns/CurrentTab';
+import { Tab } from '../../interfaces/Aplication';
 import './ToolBar.scss';
+import { Storage } from '../../services/LocalStorage';
 
 export const ToolBar = (props: any) => {
     const codeEditorContext = useContext(CodeEditorContext);
-    const tabs: Tab[] = [
-        new Tab({
-            itens: [],
-            configs: new ComponentConfigs({
-                id: '1',
-                name: 'routers',
-                isExpanded: true,
-                isEditando: true,
-                label: 'Routers',
-                type: ComponentType.tabRouters,
-                description: 'Permite a criação das rotas da aplicação de APIs',
-            }),
-        }),
-        new Tab({
-            itens: [],
-            configs: new ComponentConfigs({
-                id: '1',
-                name: 'actions',
-                isEditando: true,
-                isExpanded: true,
-                label: 'Actions',
-                type: ComponentType.tabActions,
-                description: 'Permite a criação da lógica da aplicação de APIs',
-            }),
-        }),
-        new Tab({
-            itens: [],
-            configs: new ComponentConfigs({
-                id: '1',
-                name: 'data',
-                label: 'Data',
-                isEditando: true,
-                isExpanded: true,
-                type: ComponentType.tabDates,
-                description: 'Permite a criação do banco de dados da aplicação de APIs',
-            }),
-        }),
-    ];
+    const tabs: Tab[] = (codeEditorContext.project?.tabs || []);
 
     const [currentTab, setCurrentTab] = useState(CurrentTab.editor);
 
@@ -87,9 +50,21 @@ export const ToolBar = (props: any) => {
                 />
                 <TabButton
                     id="tabResetApplication"
-                    // onClick={() => Storage.resetProject()}
+                    onClick={() => {
+                        // eslint-disable-next-line no-restricted-globals
+                        if (confirm('Deseja realmente resetaro projeto?')) {
+                            codeEditorContext.updateProjectState(Storage.resetProject());
+                            window.location.reload();
+                        }
+                    }}
                     style={{ justifyContent: "center", alignSelf: "center" }}
-                    content={<a style={{ textDecoration: 'none', color: 'white' }} href='https://github.com/code-easy-platform' target='_blank' rel="noopener noreferrer" >Abrir no Git hub</a>}
+                    content='Reset project'
+                />
+                <hr style={{ margin: 10 }} />
+                <TabButton
+                    id="openGithubApplication"
+                    style={{ justifyContent: "center", alignSelf: "center" }}
+                    content={<a style={{ textDecoration: 'none', color: 'white' }} href='https://github.com/code-easy-platform' target='_blank' rel="noopener noreferrer" >Abrir no Github</a>}
                 />
             </div>
             <div style={{ width: 300, justifyContent: "flex-end" }}>
@@ -100,7 +75,7 @@ export const ToolBar = (props: any) => {
                                 <TabButton
                                     id={tab.configs.name}
                                     key={tab.configs.name}
-                                    onClick={() => codeEditorContext.toggleResourcesTab(tab)}
+                                    onClick={() => codeEditorContext.toggleResourcesTab(tab.configs.type)}
                                     isSelected={tab.configs.type === codeEditorContext.editingTab}
                                     className="btn-open-routers-tab"
                                     title={tab.configs.name}

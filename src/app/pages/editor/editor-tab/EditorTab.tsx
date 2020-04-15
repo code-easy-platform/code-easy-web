@@ -1,6 +1,5 @@
 import React from 'react';
 
-import { Tab, ComponentConfigs, ItemComponent, ItemFlowComplete } from '../../../shared/interfaces/Aplication';
 import { TreeItensTypes } from '../../../shared/components/tree-manager/shared/models/TreeItensTypes';
 import { TreeInterface } from '../../../shared/components/tree-manager/shared/models/TreeInterface';
 import { PropertiesEditor } from './../../../shared/components/properties-editor/PropertiesEditor';
@@ -8,11 +7,12 @@ import { IItem, TypeValues } from '../../../shared/components/properties-editor/
 import { EditorTabTemplate } from '../../../shared/components/resize-tamplate/EditorTabTemplate';
 import { ContextMenuService } from '../../../shared/components/context-menu/ContextMenuService';
 import { FlowItem, ItemType } from './../../../shared/components/code-editor/models/ItemFluxo';
+import { Tab, ItemComponent, ItemFlowComplete } from '../../../shared/interfaces/Aplication';
 import ColRightTemplate from '../../../shared/components/resize-tamplate/ColRightTemplate';
-import { CodeEditorContext } from '../../../shared/services/contexts/CodeEditorContext';
+import { CodeEditorContext, ICodeEditorContext } from '../../../shared/services/contexts/CodeEditorContext';
 import { TreeManager } from '../../../shared/components/tree-manager/TreeManager';
 import { FlowEditor } from '../../../shared/components/code-editor/CodeEditor';
-import { ComponentType } from '../../../shared/enuns/ComponentType';
+import { Storage } from '../../../shared/services/LocalStorage';
 
 const itensLogica: FlowItem[] = [
     new FlowItem({ id: '1', sucessor: ['0'], top: 0, left: 0, width: 0, height: 0, isSelected: false, name: "START", itemType: ItemType.START }),
@@ -29,208 +29,22 @@ enum CurrentFocus {
     flow = "flow"
 }
 
-const mockTab: Tab = new Tab({
-    configs: new ComponentConfigs({
-        id: '1',
-        name: "routes",
-        isExpanded: true,
-        label: "Routes",
-        isEditando: false,
-        description: "Minha tab de routes",
-        type: ComponentType.tabRouters,
-    }),
-    itens: [
-        new ItemComponent({
-            id: '2',
-            name: 'authenticate',
-            label: "authenticate",
-            description: "Autentica os usuários!",
-            isEditing: true,
-            isSelected: true,
-            nodeExpanded: true,
-            itemPaiId: undefined,
-            type: TreeItensTypes.file,
-            itens: [
-                new ItemFlowComplete({
-                    id: '1', sucessor: ['2'], top: 100, left: 80, width: 50, height: 50, name: "START", itemType: ItemType.START, isSelected: false, properties: [{
-                        id: "1",
-                        value: "START",
-                        name: "Label",
-                        type: TypeValues.string,
-                    },
-                    {
-                        id: "2",
-                        value: "Descrição",
-                        name: "Description",
-                        type: TypeValues.bigstring,
-                    }]
-                }),
-                new ItemFlowComplete({
-                    id: '2', sucessor: ['3'], top: 200, left: 80, width: 50, height: 50, isSelected: false, name: "IF", itemType: ItemType.IF, properties: [{
-                        id: "1",
-                        value: "IF",
-                        name: "Label",
-                        type: TypeValues.string,
-                    },
-                    {
-                        id: "2",
-                        value: "",
-                        name: "Condiction",
-                        type: TypeValues.expression,
-                    }]
-                }),
-                new ItemFlowComplete({
-                    id: '3', sucessor: ['4'], top: 300, left: 80, width: 50, height: 50, isSelected: false, name: "FOREACH", itemType: ItemType.FOREACH, properties: [{
-                        id: "1",
-                        value: "FOREACH",
-                        name: "Label",
-                        type: TypeValues.string,
-                    },
-                    {
-                        id: "2",
-                        value: "",
-                        name: "Source",
-                        type: TypeValues.expression,
-                    }]
-                }),
-                new ItemFlowComplete({
-                    id: '4', sucessor: ['5'], top: 400, left: 80, width: 50, height: 50, isSelected: false, name: "ACTION", itemType: ItemType.ACTION, properties: [{
-                        id: "1",
-                        value: "ACTION",
-                        name: "Label",
-                        type: TypeValues.string,
-                    },
-                    {
-                        id: "2",
-                        value: "",
-                        name: "Action",
-                        type: TypeValues.expression,
-                    }]
-                }),
-                new ItemFlowComplete({
-                    id: '5', sucessor: ['6'], top: 500, left: 80, width: 50, height: 50, isSelected: false, name: "SWITCH", itemType: ItemType.SWITCH, properties: [{
-                        id: "1",
-                        value: "SWITCH",
-                        name: "Label",
-                        type: TypeValues.string,
-                    }]
-                }),
-                new ItemFlowComplete({
-                    id: '6', sucessor: ['7'], top: 600, left: 80, width: 50, height: 50, isSelected: false, name: "ASSIGN", itemType: ItemType.ASSIGN, properties: [{
-                        id: "1",
-                        value: "ASSIGN",
-                        name: "Label",
-                        type: TypeValues.string,
-                    },
-                    {
-                        id: "2",
-                        value: "",
-                        name: "Assigment",
-                        type: TypeValues.assign,
-                    }]
-                }),
-            ]
-        }),
-        new ItemComponent({
-            id: '1',
-            name: 'signup',
-            label: "signup",
-            description: "Cadastra novos usuários!",
-            isEditing: true,
-            isSelected: true,
-            nodeExpanded: true,
-            itemPaiId: undefined,
-            type: TreeItensTypes.file,
-            itens: [
-                new ItemFlowComplete({
-                    id: '1', sucessor: ['2'], top: 100, left: 80, width: 50, height: 50, name: "START", itemType: ItemType.START, isSelected: false, properties: [{
-                        id: "1",
-                        value: "START",
-                        name: "Label",
-                        type: TypeValues.string,
-                    },
-                    {
-                        id: "2",
-                        value: "Descrição",
-                        name: "Description",
-                        type: TypeValues.bigstring,
-                    }]
-                }),
-                new ItemFlowComplete({
-                    id: '2', sucessor: ['3'], top: 200, left: 80, width: 50, height: 50, isSelected: false, name: "IF", itemType: ItemType.IF, properties: [{
-                        id: "1",
-                        value: "IF",
-                        name: "Label",
-                        type: TypeValues.string,
-                    },
-                    {
-                        id: "2",
-                        value: "",
-                        name: "Condiction",
-                        type: TypeValues.expression,
-                    }]
-                }),
-                new ItemFlowComplete({
-                    id: '3', sucessor: ['4'], top: 300, left: 80, width: 50, height: 50, isSelected: false, name: "FOREACH", itemType: ItemType.FOREACH, properties: [{
-                        id: "1",
-                        value: "FOREACH",
-                        name: "Label",
-                        type: TypeValues.string,
-                    },
-                    {
-                        id: "2",
-                        value: "",
-                        name: "Source",
-                        type: TypeValues.expression,
-                    }]
-                }),
-                new ItemFlowComplete({
-                    id: '4', sucessor: ['5'], top: 400, left: 80, width: 50, height: 50, isSelected: false, name: "ACTION", itemType: ItemType.ACTION, properties: [{
-                        id: "1",
-                        value: "ACTION",
-                        name: "Label",
-                        type: TypeValues.string,
-                    },
-                    {
-                        id: "2",
-                        value: "",
-                        name: "Action",
-                        type: TypeValues.expression,
-                    }]
-                }),
-                new ItemFlowComplete({
-                    id: '5', sucessor: ['6'], top: 500, left: 80, width: 50, height: 50, isSelected: false, name: "SWITCH", itemType: ItemType.SWITCH, properties: [{
-                        id: "1",
-                        value: "SWITCH",
-                        name: "Label",
-                        type: TypeValues.string,
-                    }]
-                }),
-                new ItemFlowComplete({
-                    id: '6', sucessor: ['7'], top: 600, left: 80, width: 50, height: 50, isSelected: false, name: "ASSIGN", itemType: ItemType.ASSIGN, properties: [{
-                        id: "1",
-                        value: "ASSIGN",
-                        name: "Label",
-                        type: TypeValues.string,
-                    },
-                    {
-                        id: "2",
-                        value: "",
-                        name: "Assigment",
-                        type: TypeValues.assign,
-                    }]
-                }),
-            ]
-        })
-    ]
-});
-
 export default class EditorTab extends React.Component {
-    // private codeEditorContext: any = this.context;
+    private editorContext: ICodeEditorContext = this.context;
 
-    state = {
-        tab: mockTab,
+    state: { tab: Tab, currentFocus: CurrentFocus } = {
+        tab: this.editorContext.project.tabs.find((tab: Tab) => tab.configs.isEditando) || Storage.getProject().tabs[0],
         currentFocus: CurrentFocus.tree,
+    }
+
+
+    private onChangeState() {
+
+        const tabIndex = this.editorContext.project.tabs.findIndex((tab: Tab) => tab.configs.isEditando);
+        let project = this.editorContext.project;
+        project.tabs[tabIndex] = this.state.tab;
+
+        this.editorContext.updateProjectState(project);
     }
 
 
@@ -269,6 +83,7 @@ export default class EditorTab extends React.Component {
         }
 
         this.setState({ tab: { ...this.state.tab } });
+        this.onChangeState()
 
     }
 
@@ -387,6 +202,7 @@ export default class EditorTab extends React.Component {
             currentFocus: CurrentFocus.flow,
             tab: tab
         });
+        this.onChangeState()
     }
 
     private codeEditorOnDropItem(oldItemId: string, newItemId: string, newItem: FlowItem): FlowItem {
@@ -529,6 +345,7 @@ export default class EditorTab extends React.Component {
             tab: { ...this.state.tab, itens },
             currentFocus: CurrentFocus.tree,
         });
+        this.onChangeState()
 
     }
 
@@ -548,6 +365,7 @@ export default class EditorTab extends React.Component {
             currentFocus: CurrentFocus.tree,
             tab: { ...this.state.tab, itens }
         });
+        this.onChangeState()
 
     }
 
