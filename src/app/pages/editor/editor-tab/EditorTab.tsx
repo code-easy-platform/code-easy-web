@@ -22,6 +22,7 @@ const itensLogica: FlowItem[] = [
     new FlowItem({ id: '6', sucessor: ['0'], top: 0, left: 0, width: 0, height: 0, isSelected: false, name: "SWITCH", itemType: ItemType.SWITCH }),
     new FlowItem({ id: '7', sucessor: ['0'], top: 0, left: 0, width: 0, height: 0, isSelected: false, name: "ASSIGN", itemType: ItemType.ASSIGN }),
     new FlowItem({ id: '8', sucessor: [], top: 0, left: 0, width: 0, height: 0, isSelected: false, name: "END", itemType: ItemType.END }),
+    new FlowItem({ id: '9', sucessor: [], top: 0, left: 0, width: 0, height: 0, isSelected: false, name: "COMMENT", itemType: ItemType.COMMENT }),
 ];
 
 enum CurrentFocus {
@@ -176,7 +177,7 @@ export default class EditorTab extends React.Component {
                         }));
                     } else {
                         newItens.push(new ItemFlowComplete({
-                            properties: [{ id: '1', name: 'Label', type: TypeValues.string, value: updatedItem.name }],
+                            properties: [{ id: '1', name: 'Label', type: TypeValues.string, value: updatedItem.name }], // Criar uma função para isso
                             isSelected: updatedItem.isSelected,
                             sucessor: updatedItem.sucessor,
                             itemType: updatedItem.itemType,
