@@ -13,6 +13,7 @@ export interface ItemFluxo {
 
 /** Tipos de itens existentes na toolbar. */
 export enum ItemType {
+    COMMENT = "COMMENT",
     FOREACH = "FOREACH",
     SWITCH = "SWITCH",
     ASSIGN = "ASSIGN",

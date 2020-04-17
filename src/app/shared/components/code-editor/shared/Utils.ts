@@ -31,6 +31,9 @@ export class Utils {
             case ItemType.START:
                 return currentBranchsLength < 1; // Apenas uma branchs para um START.
 
+            case ItemType.COMMENT:
+                return true; // Apenas uma branchs para um START.
+
             default:
                 return currentBranchsLength < 1;
 

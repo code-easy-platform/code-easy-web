@@ -4,6 +4,7 @@ import { useDrag } from 'react-dnd';
 import { ItemType } from '../../models/ItemFluxo';
 import { FlowComponent } from './FlowComponent';
 
+import icons_comment from './../../shared/images/comment.png';
 import icons_foreach from './../../shared/images/foreach.png';
 import icons_switch from './../../shared/images/switch.png';
 import icons_assign from './../../shared/images/assign.png';
@@ -11,6 +12,7 @@ import icons_action from './../../shared/images/action.png';
 import icons_start from './../../shared/images/start.png';
 import icons_end from './../../shared/images/end.png';
 import icons_if from './../../shared/images/if.png';
+import { FlowComment } from './FlowComment';
 
 /** Usado para definir o tipo de input de parâmetros no item drag. */
 export interface ItemDragProps {
@@ -123,6 +125,7 @@ export const ItemToDrag: React.FC<ItemDragProps> = (props: ItemDragProps) => {
         };
 
         return <div className="toolbar-item">
+            {itemType === ItemType.COMMENT && <img id={id} title="COMMENT" style={style} ref={dragRef} src={icons_comment} alt="COMMENT" />}
             {itemType === ItemType.FOREACH && <img id={id} title="FOREACH" style={style} ref={dragRef} src={icons_foreach} alt="FOREACH" />}
             {itemType === ItemType.SWITCH && <img id={id} title="SWITCH" style={style} ref={dragRef} src={icons_switch} alt="SWITCH" />}
             {itemType === ItemType.ASSIGN && <img id={id} title="ASSIGN" style={style} ref={dragRef} src={icons_assign} alt="ASSIGN" />}
@@ -147,7 +150,8 @@ export const ItemToDrag: React.FC<ItemDragProps> = (props: ItemDragProps) => {
                 id={id}
             >
                 <text x={(left || 0) + ((width || 0) / 2)} textAnchor="middle" fill="#fff" y={(top || 0) - 5} id={id}>{title}</text>
-                {itemType === ItemType.FOREACH && <FlowComponent name="Foreach" id={id} top={top} left={left} width={width} height={height} childImage={icons_foreach} isSelected={isSelected} />}
+                {itemType === ItemType.COMMENT && <FlowComment name="COMMENT" id={id} top={top} left={left} width={width} height={height} childImage={icons_comment} isSelected={isSelected} />}
+                {itemType === ItemType.FOREACH && <FlowComponent name="FOREACH" id={id} top={top} left={left} width={width} height={height} childImage={icons_foreach} isSelected={isSelected} />}
                 {itemType === ItemType.ASSIGN && <FlowComponent name="ASSIGN" id={id} top={top} left={left} width={width} height={height} childImage={icons_assign} isSelected={isSelected} />}
                 {itemType === ItemType.SWITCH && <FlowComponent name="SWITCH" id={id} top={top} left={left} width={width} height={height} childImage={icons_switch} isSelected={isSelected} />}
                 {itemType === ItemType.ACTION && <FlowComponent name="ACTION" id={id} top={top} left={left} width={width} height={height} childImage={icons_action} isSelected={isSelected} />}

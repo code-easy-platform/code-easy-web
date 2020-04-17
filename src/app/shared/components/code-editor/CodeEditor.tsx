@@ -30,7 +30,7 @@ export const FlowEditor: FC<ICodeEditorProps> = (props: ICodeEditorProps) => {
 }
 
 /** Define quais itens são aceitos no drop do start. */
-const acceptedInDrop: ItemType[] = [ItemType.START, ItemType.ACTION, ItemType.IF, ItemType.FOREACH, ItemType.SWITCH, ItemType.ASSIGN, ItemType.END];
+const acceptedInDrop: ItemType[] = [ItemType.START, ItemType.ACTION, ItemType.IF, ItemType.FOREACH, ItemType.SWITCH, ItemType.ASSIGN, ItemType.END, ItemType.COMMENT];
 
 /** Usada para validar houve mudanças no estados dos itens e impedir a realização outputs desnecessários. */
 let backupFlow: string = "";
@@ -75,80 +75,94 @@ const CodeEditor: React.FC<ICodeEditorProps> = ({ itens = [], toolItens = [], on
         svgWidth: (state.flowItens.length !== 0 ? (state.flowItens.sort((a, b) => b.left - a.left)[0].left + 200) : 0),
     };
 
+    const onDropFlowItem = (item: any, monitor: DropTargetMonitor) => {
+
+        const target: any = svgRef.current;
+        const targetSize: any = target.getBoundingClientRect();
+        const draggedOffSet: any = monitor.getClientOffset();
+        const targetOffsetY: number = ((draggedOffSet.y) + (targetSize.top - targetSize.top - targetSize.top) - 25);
+        const targetOffsetX: number = ((draggedOffSet.x) + (targetSize.left - targetSize.left - targetSize.left) - 25);
+
+        let newItem = new FlowItem({
+            height: item.itemProps.itemType === ItemType.COMMENT ? 100 : 50,
+            width: item.itemProps.itemType === ItemType.COMMENT ? 200 : 50,
+            id: Utils.getRandomId().toString(),
+            itemType: item.itemProps.itemType,
+            name: item.itemProps.title,
+            left: targetOffsetX,
+            top: targetOffsetY,
+            isSelected: true,
+            sucessor: [],
+        });
+
+        /** Espera o retorno para inserir o item, se receber undefined só insere, se for diferente de undefined insere o resultado do event se existir algo */
+        const onDropRes = onDropItem(item.id, (newItem.id || Utils.getRandomId()).toString(), newItem);
+        if (onDropRes === undefined) {
+
+            state.flowItens.push(newItem);
+
+            setState({ ...state, flowItens: state.flowItens });
+
+            svgRef.current.focus();
+
+            onChangeFlow();
+
+        } else if (onDropRes) {
+
+            state.flowItens.push(onDropRes);
+
+            setState({ ...state, flowItens: state.flowItens });
+
+            svgRef.current.focus();
+
+            onChangeFlow();
+
+        }
+    }
+
     /** Usado para que seja possível o drop de itens no editor. */
     const [, dropRef] = useDrop({
         accept: [...acceptedInDrop, ...allowDropTo], // Especifica quem pode ser dropado na editor
-        drop(item: any, monitor: DropTargetMonitor) {
-
-            const target: any = svgRef.current;
-            const targetSize: any = target.getBoundingClientRect();
-            const draggedOffSet: any = monitor.getClientOffset();
-            const targetOffsetY: number = ((draggedOffSet.y) + (targetSize.top - targetSize.top - targetSize.top) - 25);
-            const targetOffsetX: number = ((draggedOffSet.x) + (targetSize.left - targetSize.left - targetSize.left) - 25);
-
-            let newItem = new FlowItem({
-                id: Utils.getRandomId().toString(),
-                itemType: item.itemProps.itemType,
-                name: item.itemProps.title,
-                left: targetOffsetX,
-                top: targetOffsetY,
-                isSelected: true,
-                sucessor: [],
-                height: 50,
-                width: 50,
-            });
-
-            /** Espera o retorno para inserir o item, se receber undefined só insere, se for diferente de undefined insere o resultado do event se existir algo */
-            const onDropRes = onDropItem(item.id, (newItem.id || Utils.getRandomId()).toString(), newItem);
-            if (onDropRes === undefined) {
-
-                state.flowItens.push(newItem);
-
-                setState({ ...state, flowItens: state.flowItens });
-
-                svgRef.current.focus();
-
-                onChangeFlow();
-
-            } else if (onDropRes) {
-
-                state.flowItens.push(onDropRes);
-
-                setState({ ...state, flowItens: state.flowItens });
-
-                svgRef.current.focus();
-
-                onChangeFlow();
-
-            }
-        },
+        drop: onDropFlowItem,
     });
 
     /** Agrupa as referências do drop com as da ref. */
     dropRef(svgRef);
 
-    /** Depois que um elemento já está na tela, esta função muda a posição dele! */
-    const positionChange = (itemId: string | undefined, positionTop: number, positionLeft: number, event?: any) => {
+    /**
+     * Depois que um elemento já está na tela, esta função muda a posição dele!
+     * @param itemId Identificador do elemento que está sendo arrastado na tela
+     * @param mousePositionTop Posição do mouse com relação ao topo(top) do quadro do editor
+     * @param mousePositionLeft Posição do mouse com relação a esquerda(left) do quadro do editor
+     * @param event Evento de mouse move
+     */
+    const positionChange = (itemId: string | undefined, mousePositionTop: number, mousePositionLeft: number, event?: any) => {
 
-        // let component = state.flowItens[state.flowItens.findIndex((item: FlowItem) => item.isSelected)];
-        let component = state.flowItens[state.flowItens.findIndex((item: any) => { if (item.id === itemId) return true; return false; })];
+        let components = state.flowItens.filter((item: FlowItem) => item.isSelected || item.id === itemId);
 
+        if (event && event.ctrlKey)
+            components.forEach(comp => {
+                //        80
+                const oldLeft = comp.left;
+                const oldTop = comp.top;
 
-        // Impede que haja erros se o componente não for encontrado.
-        if (!component) return;
+                //         -11            80         91
+                const distanceLeft = oldLeft - mousePositionLeft;
+                const distanceTop = oldTop - mousePositionTop;
 
-        if (component.top > 0 || component.top < positionTop) {
-            if (event ? !event.altKey : true)
-                component.top = component.top + (positionTop - component.top);
-            else
-                component.top = positionTop % 10 === 0 ? positionTop : component.top;
-        }
+                //    77         80             50              91                 80           -11
+                comp.left = (oldLeft + (mousePositionLeft - oldLeft) - distanceLeft);
+                comp.top = (oldTop + (mousePositionTop - oldTop) - distanceTop);
 
-        if (component.left > 0 || component.left < positionLeft) {
-            if (event ? !event.altKey : true)
-                component.left = component.left + (positionLeft - component.left);
-            else
-                component.left = positionLeft % 10 === 0 ? positionLeft : component.left;
+            })
+        else {
+            components.forEach(comp => {
+                const oldLeft = comp.left;
+                const oldTop = comp.top;
+
+                comp.left = oldLeft + (mousePositionLeft - oldLeft);
+                comp.top = oldTop + (mousePositionTop - oldTop);
+            })
         }
 
         state.svgSize.svgHeight = state.flowItens.sort((a, b) => b.top - a.top)[0].top + 200;
@@ -161,7 +175,7 @@ const CodeEditor: React.FC<ICodeEditorProps> = ({ itens = [], toolItens = [], on
             svgSize: state.svgSize
         });
 
-        onChangeFlow();
+        // onChangeFlow();
     }
 
     /** 
