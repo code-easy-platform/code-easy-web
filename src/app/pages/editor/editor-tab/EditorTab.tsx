@@ -3,7 +3,7 @@ import React from 'react';
 import { TreeItensTypes } from '../../../shared/components/tree-manager/shared/models/TreeItensTypes';
 import { TreeInterface } from '../../../shared/components/tree-manager/shared/models/TreeInterface';
 import { PropertiesEditor } from './../../../shared/components/properties-editor/PropertiesEditor';
-import { IItem, TypeValues } from '../../../shared/components/properties-editor/shared/interfaces';
+import { IItem, TypeValues, IProperties } from '../../../shared/components/properties-editor/shared/interfaces';
 import { EditorTabTemplate } from '../../../shared/components/resize-tamplate/EditorTabTemplate';
 import { ContextMenuService } from '../../../shared/components/context-menu/ContextMenuService';
 import { FlowItem, ItemType } from './../../../shared/components/code-editor/models/ItemFluxo';
@@ -13,17 +13,8 @@ import { CodeEditorContext, ICodeEditorContext } from '../../../shared/services/
 import { TreeManager } from '../../../shared/components/tree-manager/TreeManager';
 import { FlowEditor } from '../../../shared/components/code-editor/CodeEditor';
 import { Storage } from '../../../shared/services/LocalStorage';
+import { Utils } from '../../../shared/services/Utils';
 
-const itensLogica: FlowItem[] = [
-    new FlowItem({ id: '1', sucessor: ['0'], top: 0, left: 0, width: 0, height: 0, isSelected: false, name: "START", itemType: ItemType.START }),
-    new FlowItem({ id: '2', sucessor: ['0'], top: 0, left: 0, width: 0, height: 0, isSelected: false, name: "ACTION", itemType: ItemType.ACTION }),
-    new FlowItem({ id: '3', sucessor: ['0'], top: 0, left: 0, width: 0, height: 0, isSelected: false, name: "IF", itemType: ItemType.IF }),
-    new FlowItem({ id: '4', sucessor: ['0'], top: 0, left: 0, width: 0, height: 0, isSelected: false, name: "FOREACH", itemType: ItemType.FOREACH }),
-    new FlowItem({ id: '6', sucessor: ['0'], top: 0, left: 0, width: 0, height: 0, isSelected: false, name: "SWITCH", itemType: ItemType.SWITCH }),
-    new FlowItem({ id: '7', sucessor: ['0'], top: 0, left: 0, width: 0, height: 0, isSelected: false, name: "ASSIGN", itemType: ItemType.ASSIGN }),
-    new FlowItem({ id: '8', sucessor: [], top: 0, left: 0, width: 0, height: 0, isSelected: false, name: "END", itemType: ItemType.END }),
-    new FlowItem({ id: '9', sucessor: [], top: 0, left: 0, width: 0, height: 0, isSelected: false, name: "COMMENT", itemType: ItemType.COMMENT }),
-];
 
 enum CurrentFocus {
     tree = "tree",
@@ -143,8 +134,66 @@ export default class EditorTab extends React.Component {
         return [];
     }
 
+    private propertiesEditorGetNewProperties(itemType: ItemType, name: string): IProperties[] {
+        switch (itemType) {
+            case ItemType.START:
+                return [
+                    // TODO: Alterar o tipo "string" para um tipo de apenas exibição(será adicionado no futuro o suporte para este tipo).
+                    { id: `${Utils.getRandomId(1, 10000)}`, name: 'Label', type: TypeValues.string, value: name },
+                ];
+
+            case ItemType.ACTION:
+                return [
+                    { id: `${Utils.getRandomId(1, 10000)}`, name: 'Label', type: TypeValues.string, value: name },
+                    { id: `${Utils.getRandomId(1, 10000)}`, name: 'Action', type: TypeValues.expression, value: '' },
+                ];
+
+            case ItemType.ASSIGN:
+                return [
+                    { id: `${Utils.getRandomId(1, 10000)}`, name: 'Label', type: TypeValues.string, value: name },
+                    { id: `${Utils.getRandomId(1, 10000)}`, name: '', type: TypeValues.assign, value: '' },
+                ];
+
+            case ItemType.COMMENT:
+                return [
+                    { id: `${Utils.getRandomId(1, 10000)}`, name: 'Label', type: TypeValues.string, value: name },
+                    { id: `${Utils.getRandomId(1, 10000)}`, name: 'Comment', type: TypeValues.string, value: name },
+                ];
+
+            case ItemType.FOREACH:
+                return [
+                    { id: `${Utils.getRandomId(1, 10000)}`, name: 'Label', type: TypeValues.string, value: name },
+                    { id: `${Utils.getRandomId(1, 10000)}`, name: 'SourceList', type: TypeValues.expression, value: name },
+                ];
+
+            case ItemType.IF:
+                return [
+                    { id: `${Utils.getRandomId(1, 10000)}`, name: 'Label', type: TypeValues.string, value: name },
+                    { id: `${Utils.getRandomId(1, 10000)}`, name: 'Condiction', type: TypeValues.expression, value: '' },
+                ];
+
+            case ItemType.SWITCH:
+                return [
+                    { id: `${Utils.getRandomId(1, 10000)}`, name: 'Label', type: TypeValues.string, value: name },
+                    { id: `${Utils.getRandomId(1, 10000)}`, name: 'Condiction1', type: TypeValues.expression, value: '' },
+                ];
+
+            case ItemType.END:
+                return [
+                    // TODO: Alterar o tipo "string" para um tipo de apenas exibição(será adicionado no futuro o suporte para este tipo).
+                    { id: `${Utils.getRandomId(1, 10000)}`, name: 'Label', type: TypeValues.string, value: name },
+                ];
+
+            default:
+                return [
+                    { id: `${Utils.getRandomId(1, 10000)}`, name: 'Label', type: TypeValues.string, value: '<tipo de item não encontrado>' },
+                ];
+        }
+    }
 
 
+
+    /** Toda vez que houver uma alteração nos itens de fluxo está função será executada. */
     private codeEditorOutputFlowItens = (updatedItens: FlowItem[]) => {
 
         let tab = this.state.tab;
@@ -177,7 +226,7 @@ export default class EditorTab extends React.Component {
                         }));
                     } else {
                         newItens.push(new ItemFlowComplete({
-                            properties: [{ id: '1', name: 'Label', type: TypeValues.string, value: updatedItem.name }], // Criar uma função para isso
+                            properties: this.propertiesEditorGetNewProperties(updatedItem.itemType, updatedItem.name), // Criar uma função para isso
                             isSelected: updatedItem.isSelected,
                             sucessor: updatedItem.sucessor,
                             itemType: updatedItem.itemType,
@@ -206,6 +255,10 @@ export default class EditorTab extends React.Component {
         this.onChangeState()
     }
 
+    /** Ao soltar um novo item permitido no editor está função será executada.
+     * 
+     * Por aqui pode ser feito alterações no item dropado no fluxo.
+     */
     private codeEditorOnDropItem(oldItemId: string, newItemId: string, newItem: FlowItem): FlowItem {
 
         if (newItem.itemType.toString() === TreeItensTypes.file.toString()) {
@@ -218,6 +271,7 @@ export default class EditorTab extends React.Component {
 
     }
 
+    /** Usando o state pode pegar os itens que devem ser editados pelo fluxo */
     private codeEditorGetItensLogica(itens: ItemComponent[], res?: 'ItemFlowComplete' | 'FlowItem'): any[] {
 
         let itemEditing = itens.find(item => item.isEditing);
@@ -249,6 +303,21 @@ export default class EditorTab extends React.Component {
 
     }
 
+    /** Alimenta a toolbox, de onde pode ser arrastados itens para o fluxo */
+    private codeEditorGetToolBoxItens(): FlowItem[] {
+        return [
+            new FlowItem({ id: '1', name: "START", itemType: ItemType.START }),
+            new FlowItem({ id: '2', name: "ACTION", itemType: ItemType.ACTION }),
+            new FlowItem({ id: '3', name: "IF", itemType: ItemType.IF }),
+            new FlowItem({ id: '4', name: "FOREACH", itemType: ItemType.FOREACH }),
+            new FlowItem({ id: '6', name: "SWITCH", itemType: ItemType.SWITCH }),
+            new FlowItem({ id: '7', name: "ASSIGN", itemType: ItemType.ASSIGN }),
+            new FlowItem({ id: '8', name: "END", itemType: ItemType.END }),
+            new FlowItem({ id: '9', name: "COMMENT", itemType: ItemType.COMMENT }),
+        ];
+    }
+
+    /** Quando clicado com o botão esquerdo do mouse no interior do editor esta função é acionada */
     private codeEditorContextMenu(data: any): any[] {
         console.log("--------");
         console.log(data);
@@ -280,6 +349,7 @@ export default class EditorTab extends React.Component {
 
     }
 
+    /** Monta o breadcamps que será exibido no top do editor de fluxos */
     private codeEditorGetBreadcamps(): string {
 
         let tab = this.state.tab;
@@ -436,8 +506,8 @@ export default class EditorTab extends React.Component {
                 columnCenter={
                     <FlowEditor
                         isShowToolbar={true}
-                        toolItens={itensLogica}
                         allowDropTo={[TreeItensTypes.file]}
+                        toolItens={this.codeEditorGetToolBoxItens()}
                         breadcrumbsPath={this.codeEditorGetBreadcamps.bind(this)()}
                         itens={this.codeEditorGetItensLogica.bind(this)(this.state.tab.itens)}
                         onDropItem={this.codeEditorOnDropItem.bind(this)}

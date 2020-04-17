@@ -57,25 +57,25 @@ export class FlowItem implements ItemFluxo {
 
     constructor(
         private props: {
-            isSelected: boolean,
-            sucessor: string[],
-            itemType: ItemType,
-            height: number,
-            width: number,
-            name: string,
-            left: number,
-            top: number,
             id: string | undefined,
+            isSelected?: boolean,
+            sucessor?: string[],
+            itemType: ItemType,
+            height?: number,
+            width?: number,
+            name: string,
+            left?: number,
+            top?: number,
         }
     ) {
-        this.isSelected = this.props.isSelected;
-        this.sucessor = this.props.sucessor;
+        this.isSelected = this.props.isSelected || false;
+        this.sucessor = this.props.sucessor || [];
+        this.height = this.props.height || 0;
         this.itemType = this.props.itemType;
-        this.height = this.props.height;
-        this.width = this.props.width;
+        this.width = this.props.width || 0;
+        this.left = this.props.left || 0;
+        this.top = this.props.top || 0;
         this.name = this.props.name;
-        this.left = this.props.left;
-        this.top = this.props.top;
         this.id = this.props.id;
     }
 
