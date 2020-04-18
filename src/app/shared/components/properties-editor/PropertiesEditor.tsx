@@ -2,7 +2,6 @@ import React, { useState, useEffect, useRef } from 'react';
 
 import { IItem } from './shared/interfaces';
 import { ListItem } from './shared/components/ListItem';
-import { Resizer } from './shared/components/Resizer';
 
 const css_base: React.CSSProperties = {
     flexDirection: 'column',
@@ -38,8 +37,14 @@ export const PropertiesEditor: React.FC<PropertiesEditorProps> = ({ itens, onCha
         <div ref={ref} style={css_base}>
             {state.itens.map((item, index) => {
                 return (<>
-                    <Resizer paiRef={ref} left={state.hrLeft} onChange={newLeft => setState({ ...state, hrLeft: newLeft })} />
-                    <ListItem inputWidth={state.hrLeft} {...item} onChange={data => onChangeListItem(data, index)} />
+                    {/*  <Resizer paiRef={ref} left={state.hrLeft} onChange={newLeft => setState({ ...state, hrLeft: newLeft })} /> */}
+                    <ListItem
+                        {...item}
+                        paiRef={ref}
+                        inputWidth={state.hrLeft}
+                        onChange={data => onChangeListItem(data, index)}
+                        onChangeInputWidth={newLeft => setState({ ...state, hrLeft: newLeft })}
+                    />
                     <div style={{ minHeight: '30px' }} />
                 </>);
             })}

@@ -6,20 +6,25 @@ export const Resizer: React.FC<ResizerProps> = ({ left, onChange, paiRef }) => {
     const [state, setState] = useState({ isResizer: false, left: ((window.innerWidth / 2) - left) + 130 });
 
     const onMouseDown = (e: React.MouseEvent<HTMLHRElement, MouseEvent>) => {
+
+        if (paiRef.current !== null) {
+            paiRef.current.onmousemove = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
+                if (state.isResizer === true) {
+                    setState({ ...state, left: e.pageX });
+                    onChange(((window.innerWidth / 2) - e.pageX) + 130);
+                }
+            }
+        }
+
         setState({ ...state, isResizer: true });
+
     }
 
     const onMouseUp = () => {
-        setState({ ...state, isResizer: false });
-    }
+        if (paiRef.current !== null)
+            paiRef.current.onmousemove = undefined;
 
-    if (paiRef.current !== null) {
-        paiRef.current.onmousemove = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
-            if (state.isResizer === true) {
-                setState({ ...state, left: e.pageX });
-                onChange(((window.innerWidth / 2) - e.pageX) + 130);
-            }
-        }
+        setState({ ...state, isResizer: false });
     }
 
     return (
@@ -28,9 +33,7 @@ export const Resizer: React.FC<ResizerProps> = ({ left, onChange, paiRef }) => {
             onMouseUp={onMouseUp}
             style={{
                 backgroundColor: 'transparent',
-                position: 'absolute',
                 cursor: 'col-resize',
-                left: state.left,
                 height: '100%',
                 border: 'none',
                 zIndex: 1,

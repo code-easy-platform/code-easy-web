@@ -1,7 +1,7 @@
 import React from 'react';
 import Switch from 'react-switch';
 
-export const DefaultSwitch = ({ id, checked = false, onChange, hasError = false }: { id?: any, checked: boolean, onChange(value: boolean): void, hasError: boolean }) => {
+export const DefaultSwitch = ({ id, checked = false, onChange, hasError = false, desabled = false }: { id?: any, checked: boolean, onChange(value: boolean): void, hasError: boolean, desabled: boolean | undefined }) => {
     return (
         <Switch
             activeBoxShadow={"0px 0px 1px 10px rgba(0, 0, 0, 0.2)"}
@@ -12,6 +12,7 @@ export const DefaultSwitch = ({ id, checked = false, onChange, hasError = false 
             onHandleColor={"#d6d6d6"}
             uncheckedIcon={true}
             onChange={onChange}
+            disabled={desabled}
             handleDiameter={20}
             checkedIcon={true}
             autoComplete='off'

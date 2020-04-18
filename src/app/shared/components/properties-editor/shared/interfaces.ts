@@ -2,6 +2,7 @@
 export enum TypeValues {
     expression='expression',
     bigstring='bigstring',
+    viewOnly='viewOnly',
     boolean='boolean',
     string='string',
     number='number',
@@ -19,6 +20,8 @@ export interface ISuggestion {
 
 export interface IProperties {
     suggestions?: ISuggestion[];
+    editValueDisabled?: boolean;
+    editNameDisabled?: boolean;
     valueHasError?: boolean;
     id: string | undefined;
     nameHasError?: boolean;
