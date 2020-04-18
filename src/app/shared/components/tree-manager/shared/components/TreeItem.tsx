@@ -1,8 +1,9 @@
 import React, { FC, useRef } from 'react';
-import { useDrag, useDrop, DropTargetMonitor } from 'react-dnd';
+import { useDrag, useDrop, DropTargetMonitor, DragPreviewImage } from 'react-dnd';
 
 import { TreeItensTypes } from '../models/TreeItensTypes';
 import { TreeInterface } from '../models/TreeInterface';
+import img_tree_item_preview from './TreeItemPreview.svg';
 import { Icon } from './icon/icon';
 
 interface ItemTreeProps {
@@ -40,7 +41,7 @@ export const TreeItem: FC<ItemTreeProps> = ({ itemTree, paddingLeft, onSelect, o
     }
 
     /** Permite que um elemento seja arrastado e dropado em outro lugar.. */
-    const [{ isDragging }, dragRef] = useDrag({
+    const [{ isDragging }, dragRef, preview] = useDrag({
         item: {
             type: itemTree.type,
             itemProps: {
@@ -51,7 +52,7 @@ export const TreeItem: FC<ItemTreeProps> = ({ itemTree, paddingLeft, onSelect, o
                 sucessor: [0],
             }
         },
-        canDrag: isUseDrop && !isDisabledDrag,
+        canDrag: isUseDrag && !isDisabledDrag,
         collect: monitor => ({ isDragging: monitor.isDragging() }),
     });
     dragRef(itemRef); /** Agrupa as referências do drop com as da ref. */
@@ -59,11 +60,9 @@ export const TreeItem: FC<ItemTreeProps> = ({ itemTree, paddingLeft, onSelect, o
     /** Usado para que seja possível o drop de itens no editor. */
     const [{ isDraggingOver }, dropRef] = useDrop({
         accept: [TreeItensTypes.file, TreeItensTypes.folder],
-        drop(item: any, monitor: DropTargetMonitor) { onDropItem(itemTree.id, item.itemProps.id, item) },
+        collect: (monitor) => ({ isDraggingOver: monitor.isOver() }),
         canDrop: () => isUseDrop && !isDisabledDrop && !isDisabledSelect,
-        collect: (monitor) => ({
-            isDraggingOver: monitor.isOver(),
-        }),
+        drop(item: any, monitor: DropTargetMonitor) { onDropItem(itemTree.id, item.itemProps.id, item) },
     });
     dropRef(itemRef); /** Agrupa as referências do drop com as da ref. */
 
@@ -78,6 +77,7 @@ export const TreeItem: FC<ItemTreeProps> = ({ itemTree, paddingLeft, onSelect, o
             onDoubleClick={isDisabledSelect ? undefined : (e => { onDoubleClick(itemTree.id, itemTree, e) })}
             className={`tree-item${(!isDisabledSelect) ? '' : ' disabled'}`}
         >
+            <DragPreviewImage connect={preview} src={img_tree_item_preview} />
             <div key={itemTree.id} className={`item${hasError ? ' text-underline-error' : ''}${isDragging ? ' dragging' : ''}${(isDraggingOver && !isDisabledSelect && isUseDrop && !isDisabledDrop) ? ' dragging-over' : ''}`} style={{ paddingLeft: `${paddingLeft}px` }}>
                 {(itemTree.type === TreeItensTypes.folder || itemTree.childs.length > 0) &&
                     <Icon onClick={isAllowedToggleNodeExpand ? ((e: any) => onSelect(itemTree.id, e)) : undefined} iconName={itemTree.nodeExpanded ? "btn-collapse-folder" : "btn-expand-folder"} />
