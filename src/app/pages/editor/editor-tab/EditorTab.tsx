@@ -366,12 +366,12 @@ export default class EditorTab extends React.Component {
         this.setState({ currentFocus: CurrentFocus.tree });
 
         const itemDefault = {
-            itemId: "",
+            id: "",
             isSelected: false,
             nodeExpanded: true,
-            itemLabel: "Routers",
-            itemType: TreeItensTypes.folder,
-            itemChilds: this.treeManagerGetTree(this.state.tab.itens),
+            label: "Routers",
+            type: TreeItensTypes.folder,
+            childs: this.treeManagerGetTree(this.state.tab.itens),
         };
 
         // Evita loop infinito
@@ -388,12 +388,12 @@ export default class EditorTab extends React.Component {
         });
 
         return {
-            itemId: "",
+            id: "",
             isSelected: false,
             nodeExpanded: true,
-            itemLabel: "Routers",
-            itemType: TreeItensTypes.folder,
-            itemChilds: this.treeManagerGetTree(this.state.tab.itens),
+            label: "Routers",
+            type: TreeItensTypes.folder,
+            childs: this.treeManagerGetTree(this.state.tab.itens),
         };
 
     }
@@ -446,17 +446,25 @@ export default class EditorTab extends React.Component {
 
             // Busca todos os itens que tem como pai o elemento corrente
             itens.filter((item) => {
-                return item.itemPaiId === tree.itemId;
+                return item.itemPaiId === tree.id;
             }).forEach(item => {
-                tree.itemChilds.push({ itemChilds: [], itemId: item.id, itemLabel: item.label, itemType: item.type, nodeExpanded: item.nodeExpanded, isSelected: false });
+                tree.childs.push({
+                    childs: [],
+                    id: item.id,
+                    type: item.type,
+                    isSelected: false,
+                    label: item.label,
+                    description: item.description,
+                    nodeExpanded: item.nodeExpanded,
+                });
             });
 
             // Carrega os filhos de cada item da árvore
-            tree.itemChilds.forEach((itemTree: any) => {
-                itemTree.itemChilds = loadChilds(itemTree);
+            tree.childs.forEach((itemTree: any) => {
+                itemTree.childs = loadChilds(itemTree);
             });
 
-            return tree.itemChilds;
+            return tree.childs;
         }
 
         // Mapea todos os itens que não tem pai id, significa que eles estão na raiz
@@ -464,12 +472,21 @@ export default class EditorTab extends React.Component {
         itens.filter(item => {
             return item.itemPaiId === undefined
         }).forEach(item => {
-            tree.push({ itemChilds: [], itemId: item.id, itemLabel: item.label, itemType: item.type, nodeExpanded: item.nodeExpanded, isSelected: false });
+            tree.push({
+                childs: [],
+                id: item.id,
+                type: item.type,
+                isSelected: false,
+                label: item.label,
+                description: item.description,
+                isAllowedToggleNodeExpand: false,
+                nodeExpanded: item.nodeExpanded,
+            });
         });
 
         // Carrega os filhos de cada item da árvore
         tree.forEach(itemTree => {
-            itemTree.itemChilds = loadChilds(itemTree);
+            itemTree.childs = loadChilds(itemTree);
         });
 
         return tree;
@@ -534,12 +551,12 @@ export default class EditorTab extends React.Component {
                                     ContextMenuService.showMenu(e.clientX, e.clientY, this.treeManagerContextMenu.bind(this)(itemId));
                                 }}
                                 itemBase={{
-                                    itemId: undefined,
+                                    id: undefined,
                                     isSelected: false,
                                     nodeExpanded: true,
-                                    itemLabel: "Routers",
-                                    itemType: TreeItensTypes.folder,
-                                    itemChilds: this.treeManagerGetTree.bind(this)(this.state.tab.itens),
+                                    label: "Routers",
+                                    type: TreeItensTypes.folder,
+                                    childs: this.treeManagerGetTree.bind(this)(this.state.tab.itens),
                                 }}
                             />
                         }

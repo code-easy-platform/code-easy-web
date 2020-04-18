@@ -10,9 +10,10 @@
   height: min-content;
   cursor: pointer;
   width: 100%;
-  .item {
-    padding: 5px;
-  }
+}
+.item {
+  padding: 5px;
+  padding-right: 10px;
 }
 
 .tree-item:hover {

@@ -24,7 +24,9 @@ export const TreeManager: FC<TreeManagerProps> = ({ itemBase, onClick, onContext
 
     const onSelect = (id: string, item: TreeInterface, e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
         setClickedId(id);
-        onClick(id, item, e);
+
+        if (!item.isDisabledSelect)
+            onClick(id, item, e);
     }
 
     return (

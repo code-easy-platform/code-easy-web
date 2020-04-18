@@ -13,13 +13,33 @@
   outline: auto;
 }
 *[selected="true"] {
-  background-color: var(--color-list-item-selected);
+  background-color: #1f724330;
 }
 *[selected="true"]:hover {
-  background-color: var(--color-list-item-hover);
+  background-color: #1f724340;
 }
-*[selected="false"]:hover {
-  background-color: var(--color-list-item-hover);
+
+.disabled {
+  background-color: unset;
+  opacity: 0.5;
+}
+
+.disabled:hover {
+  background-color: unset;
+  opacity: 0.5;
+}
+.dragging {
+  border-radius: 50px;
+  width: fit-content;
+}
+.dragging-over {
+  background-color: #2b78a530!important;
+  border-radius: 50px!important;
+  width: fit-content!important;
+}
+
+.text-underline-error {
+  text-decoration: underline wavy red;
 }
 
 html,

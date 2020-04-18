@@ -16,7 +16,7 @@ interface TreeProps {
 export const Tree: FC<TreeProps> = ({ item, paddingLeft = 0, onClick, onContextMenu, onDoubleClick, onDropItem, itemIdSelected, isUseDrag, isUseDrop }) => {
     
     const [state, setState] = useState<TreeInterface>(item);
-    state.isSelected = itemIdSelected === item.itemId;
+    state.isSelected = itemIdSelected === item.id;
     useEffect(() => {
         setState(item);
     }, [item]);
@@ -35,11 +35,11 @@ export const Tree: FC<TreeProps> = ({ item, paddingLeft = 0, onClick, onContextM
                     ...state,
                     nodeExpanded: !state.nodeExpanded,
                 });
-                onClick(item.itemId, item, e);
+                onClick(item.id, item, e);
             }}
         />
         {state.nodeExpanded &&
-            state.itemChilds.map((item: TreeInterface) => {
+            state.childs.map((item: TreeInterface) => {
                 return (<Tree
                     item={item}
                     onClick={onClick}

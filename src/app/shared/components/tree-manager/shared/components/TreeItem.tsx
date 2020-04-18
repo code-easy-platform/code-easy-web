@@ -10,66 +10,82 @@ interface ItemTreeProps {
     isUseDrag: boolean;
     paddingLeft: number;
     itemTree: TreeInterface;
-    onSelect(itemTreeId: string | undefined, event: React.MouseEvent<HTMLDivElement, MouseEvent>): void | undefined;
-    onDoubleClick(itemTreeId: string | undefined, item: TreeInterface, e: React.MouseEvent<HTMLDivElement, MouseEvent>): void | undefined;
-    onContextMenu(itemTreeId: string | undefined, e: React.MouseEvent<HTMLDivElement, MouseEvent>): void | undefined;
     onDropItem(targetItemId: string | undefined, dropppedItemId: string | undefined, droppedItemProps: any): void;
+    onSelect(itemTreeId: string | undefined, event: React.MouseEvent<HTMLDivElement, MouseEvent>): void | undefined;
+    onContextMenu(itemTreeId: string | undefined, e: React.MouseEvent<HTMLDivElement, MouseEvent>): void | undefined;
+    onDoubleClick(itemTreeId: string | undefined, item: TreeInterface, e: React.MouseEvent<HTMLDivElement, MouseEvent>): void | undefined;
 }
 export const TreeItem: FC<ItemTreeProps> = ({ itemTree, paddingLeft, onSelect, onContextMenu, onDoubleClick, onDropItem, isUseDrag, isUseDrop }) => {
 
+    let { hasError, isAllowedToggleNodeExpand, isDisabledDrag, isDisabledSelect, isDisabledDrop } = itemTree;
+
+    hasError = hasError !== undefined ? hasError : false;
+    isDisabledDrag = isDisabledDrag !== undefined ? isDisabledDrag : false;
+    isDisabledDrop = isDisabledDrop !== undefined ? isDisabledDrop : false;
+    isDisabledSelect = isDisabledSelect !== undefined ? isDisabledSelect : false;
+    isAllowedToggleNodeExpand = isAllowedToggleNodeExpand !== undefined ? isAllowedToggleNodeExpand : true;
+
     // Vai mandar para fora da arvore qual o id do item que foi clicado.
     const onContext = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
-        onContextMenu(itemTree.itemId, e);
+        onContextMenu(itemTree.id, e);
     }
 
     const itemRef = useRef(null);
     if (itemRef.current) {
         let item: any = itemRef.current
-        item.setAttribute('selected', itemTree.isSelected);
+
+        if (!isDisabledSelect)
+            item.setAttribute('selected', itemTree.isSelected);
+
     }
 
     /** Permite que um elemento seja arrastado e dropado em outro lugar.. */
-    const [, dragRef] = useDrag({
+    const [{ isDragging }, dragRef] = useDrag({
         item: {
-            type: itemTree.itemType,
+            type: itemTree.type,
             itemProps: {
-                itemType: itemTree.itemType,
-                title: itemTree.itemLabel,
-                id: itemTree.itemId,
+                itemType: itemTree.type,
+                title: itemTree.label,
                 itemTree: itemTree,
+                id: itemTree.id,
                 sucessor: [0],
             }
         },
+        canDrag: isUseDrop && !isDisabledDrag,
         collect: monitor => ({ isDragging: monitor.isDragging() }),
-
     });
-    if (isUseDrag) dragRef(itemRef); /** Agrupa as referências do drop com as da ref. */
+    dragRef(itemRef); /** Agrupa as referências do drop com as da ref. */
 
     /** Usado para que seja possível o drop de itens no editor. */
-    const [, dropRef] = useDrop({
+    const [{ isDraggingOver }, dropRef] = useDrop({
         accept: [TreeItensTypes.file, TreeItensTypes.folder],
-        drop(item: any, monitor: DropTargetMonitor) { onDropItem(itemTree.itemId, item.itemProps.id, item) },
+        drop(item: any, monitor: DropTargetMonitor) { onDropItem(itemTree.id, item.itemProps.id, item) },
+        canDrop: () => isUseDrop && !isDisabledDrop && !isDisabledSelect,
+        collect: (monitor) => ({
+            isDraggingOver: monitor.isOver(),
+        }),
     });
-    if (isUseDrop) dropRef(itemRef); /** Agrupa as referências do drop com as da ref. */
+    dropRef(itemRef); /** Agrupa as referências do drop com as da ref. */
 
     return (
         <div
             ref={itemRef}
-            className="tree-item"
-            key={itemTree.itemId}
-            onContextMenu={onContext}
-            id={"tree_" + itemTree.itemId}
-            onClick={(e: any) => onSelect(itemTree.itemId, e)}
-            onDoubleClick={e => { onDoubleClick(itemTree.itemId, itemTree, e) }}
+            key={itemTree.id}
+            id={"tree_" + itemTree.id}
+            title={itemTree.description}
+            onContextMenu={isDisabledSelect ? undefined : onContext}
+            onClick={isDisabledSelect ? undefined : ((e: any) => onSelect(itemTree.id, e))}
+            onDoubleClick={isDisabledSelect ? undefined : (e => { onDoubleClick(itemTree.id, itemTree, e) })}
+            className={`tree-item${(!isDisabledSelect) ? '' : ' disabled'}`}
         >
-            <div className="item" style={{ paddingLeft: `${paddingLeft}px` }}>
-                {(itemTree.itemType === TreeItensTypes.folder || itemTree.itemChilds.length > 0) &&
-                    <Icon iconName={itemTree.nodeExpanded ? "btn-collapse-folder" : "btn-expand-folder"} />
+            <div key={itemTree.id} className={`item${hasError ? ' text-underline-error' : ''}${isDragging ? ' dragging' : ''}${(isDraggingOver && !isDisabledSelect && isUseDrop && !isDisabledDrop) ? ' dragging-over' : ''}`} style={{ paddingLeft: `${paddingLeft}px` }}>
+                {(itemTree.type === TreeItensTypes.folder || itemTree.childs.length > 0) &&
+                    <Icon onClick={isAllowedToggleNodeExpand ? ((e: any) => onSelect(itemTree.id, e)) : undefined} iconName={itemTree.nodeExpanded ? "btn-collapse-folder" : "btn-expand-folder"} />
                 }
-                {(itemTree.itemType === TreeItensTypes.file && itemTree.itemChilds.length === 0) &&
+                {(itemTree.type === TreeItensTypes.file && itemTree.childs.length === 0) &&
                     <Icon />
                 }
-                {itemTree.itemLabel}
+                {itemTree.label}
             </div>
         </div>
     );
