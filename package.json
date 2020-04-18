@@ -1,12 +1,10 @@
 {
   "name": "code-easy-react",
   "version": "0.1.0",
-  "private": true,
+  "private": false,
   "dependencies": {
-    "@types/styled-components": "^4.4.2",
     "immutability-helper": "^3.0.1",
     "node-sass": "^4.12.0",
-    "office-ui-fabric-react": "^7.43.0",
     "react": "^16.10.2",
     "react-dnd": "^9.4.0",
     "react-dnd-html5-backend": "^9.4.0",
@@ -14,7 +12,7 @@
     "react-monaco-editor": "^0.35.0",
     "react-scripts": "^3.2.0",
     "react-switch": "^5.0.1",
-    "styled-components": "^5.0.0"
+    "uuid": "^7.0.3"
   },
   "scripts": {
     "start": "react-scripts start",
@@ -41,6 +39,7 @@
   "devDependencies": {
     "@types/react": "^16.9.9",
     "@types/react-dom": "^16.9.0",
+    "@types/uuid": "^7.0.2",
     "typescript": "^3.6.3"
   }
 }

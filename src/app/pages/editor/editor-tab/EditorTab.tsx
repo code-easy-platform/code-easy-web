@@ -139,54 +139,54 @@ export default class EditorTab extends React.Component {
             case ItemType.START:
                 return [
                     // TODO: Alterar o tipo "string" para um tipo de apenas exibição(será adicionado no futuro o suporte para este tipo).
-                    { id: `${Utils.getRandomId(1, 10000)}`, name: 'Label', type: TypeValues.string, value: name },
+                    { id: Utils.getUUID(), name: 'Label', type: TypeValues.viewOnly, value: name },
                 ];
 
             case ItemType.ACTION:
                 return [
-                    { id: `${Utils.getRandomId(1, 10000)}`, name: 'Label', type: TypeValues.string, value: name },
-                    { id: `${Utils.getRandomId(1, 10000)}`, name: 'Action', type: TypeValues.expression, value: '' },
+                    { id: Utils.getUUID(), name: 'Label', type: TypeValues.string, value: name },
+                    { id: Utils.getUUID(), name: 'Action', type: TypeValues.expression, value: '' },
                 ];
 
             case ItemType.ASSIGN:
                 return [
-                    { id: `${Utils.getRandomId(1, 10000)}`, name: 'Label', type: TypeValues.string, value: name },
-                    { id: `${Utils.getRandomId(1, 10000)}`, name: '', type: TypeValues.assign, value: '' },
+                    { id: Utils.getUUID(), name: 'Label', type: TypeValues.string, value: name },
+                    { id: Utils.getUUID(), name: '', type: TypeValues.assign, value: '' },
                 ];
 
             case ItemType.COMMENT:
                 return [
-                    { id: `${Utils.getRandomId(1, 10000)}`, name: 'Label', type: TypeValues.string, value: name },
-                    { id: `${Utils.getRandomId(1, 10000)}`, name: 'Comment', type: TypeValues.string, value: name },
+                    { id: Utils.getUUID(), name: 'Label', type: TypeValues.viewOnly, value: name },
+                    { id: Utils.getUUID(), name: 'Comment', type: TypeValues.string, value: name },
                 ];
 
             case ItemType.FOREACH:
                 return [
-                    { id: `${Utils.getRandomId(1, 10000)}`, name: 'Label', type: TypeValues.string, value: name },
-                    { id: `${Utils.getRandomId(1, 10000)}`, name: 'SourceList', type: TypeValues.expression, value: name },
+                    { id: Utils.getUUID(), name: 'Label', type: TypeValues.string, value: name },
+                    { id: Utils.getUUID(), name: 'SourceList', type: TypeValues.expression, value: name },
                 ];
 
             case ItemType.IF:
                 return [
-                    { id: `${Utils.getRandomId(1, 10000)}`, name: 'Label', type: TypeValues.string, value: name },
-                    { id: `${Utils.getRandomId(1, 10000)}`, name: 'Condiction', type: TypeValues.expression, value: '' },
+                    { id: Utils.getUUID(), name: 'Label', type: TypeValues.string, value: name },
+                    { id: Utils.getUUID(), name: 'Condiction', type: TypeValues.expression, value: '' },
                 ];
 
             case ItemType.SWITCH:
                 return [
-                    { id: `${Utils.getRandomId(1, 10000)}`, name: 'Label', type: TypeValues.string, value: name },
-                    { id: `${Utils.getRandomId(1, 10000)}`, name: 'Condiction1', type: TypeValues.expression, value: '' },
+                    { id: Utils.getUUID(), name: 'Label', type: TypeValues.string, value: name },
+                    { id: Utils.getUUID(), name: 'Condiction1', type: TypeValues.expression, value: '' },
                 ];
 
             case ItemType.END:
                 return [
                     // TODO: Alterar o tipo "string" para um tipo de apenas exibição(será adicionado no futuro o suporte para este tipo).
-                    { id: `${Utils.getRandomId(1, 10000)}`, name: 'Label', type: TypeValues.string, value: name },
+                    { id: Utils.getUUID(), name: 'Label', type: TypeValues.viewOnly, value: name },
                 ];
 
             default:
                 return [
-                    { id: `${Utils.getRandomId(1, 10000)}`, name: 'Label', type: TypeValues.string, value: '<tipo de item não encontrado>' },
+                    { id: Utils.getUUID(), name: 'Label', type: TypeValues.viewOnly, value: '<tipo de item não encontrado>' },
                 ];
         }
     }

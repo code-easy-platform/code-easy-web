@@ -24,7 +24,7 @@ const mockProjeto: Project = new Project({
     tabs: [
         new Tab({
             configs: new ComponentConfigs({
-                id: `${Utils.getRandomId(1, 10000)}`,
+                id: `${Utils.getUUID()}`,
                 name: "routes",
                 isExpanded: true,
                 label: "Routes",
@@ -34,7 +34,7 @@ const mockProjeto: Project = new Project({
             }),
             itens: [
                 new ItemComponent({
-                    id: `${Utils.getRandomId(1, 10000)}`,
+                    id: `${Utils.getUUID()}`,
                     name: 'authenticate',
                     label: "authenticate",
                     description: "Autentica os usuários!",
@@ -46,13 +46,13 @@ const mockProjeto: Project = new Project({
                     itens: [
                         new ItemFlowComplete({
                             id: '1', sucessor: ['2'], top: 100, left: 80, width: 50, height: 50, name: "START", itemType: ItemType.START, isSelected: false, properties: [{
-                                id: `${Utils.getRandomId(1, 10000)}`,
+                                id: `${Utils.getUUID()}`,
                                 value: "START",
                                 name: "Label",
                                 type: TypeValues.string,
                             },
                             {
-                                id: `${Utils.getRandomId(1, 10000)}`,
+                                id: `${Utils.getUUID()}`,
                                 value: "Descrição",
                                 name: "Description",
                                 type: TypeValues.bigstring,
@@ -60,13 +60,13 @@ const mockProjeto: Project = new Project({
                         }),
                         new ItemFlowComplete({
                             id: '2', sucessor: ['3'], top: 200, left: 80, width: 50, height: 50, isSelected: false, name: "IF", itemType: ItemType.IF, properties: [{
-                                id: `${Utils.getRandomId(1, 10000)}`,
+                                id: `${Utils.getUUID()}`,
                                 value: "IF",
                                 name: "Label",
                                 type: TypeValues.string,
                             },
                             {
-                                id: `${Utils.getRandomId(1, 10000)}`,
+                                id: `${Utils.getUUID()}`,
                                 value: "",
                                 name: "Condiction",
                                 type: TypeValues.expression,
@@ -74,13 +74,13 @@ const mockProjeto: Project = new Project({
                         }),
                         new ItemFlowComplete({
                             id: '3', sucessor: ['4'], top: 300, left: 80, width: 50, height: 50, isSelected: false, name: "FOREACH", itemType: ItemType.FOREACH, properties: [{
-                                id: `${Utils.getRandomId(1, 10000)}`,
+                                id: `${Utils.getUUID()}`,
                                 value: "FOREACH",
                                 name: "Label",
                                 type: TypeValues.string,
                             },
                             {
-                                id: `${Utils.getRandomId(1, 10000)}`,
+                                id: `${Utils.getUUID()}`,
                                 value: "",
                                 name: "Source",
                                 type: TypeValues.expression,
@@ -88,13 +88,13 @@ const mockProjeto: Project = new Project({
                         }),
                         new ItemFlowComplete({
                             id: '4', sucessor: ['5'], top: 400, left: 80, width: 50, height: 50, isSelected: false, name: "ACTION", itemType: ItemType.ACTION, properties: [{
-                                id: `${Utils.getRandomId(1, 10000)}`,
+                                id: `${Utils.getUUID()}`,
                                 value: "ACTION",
                                 name: "Label",
                                 type: TypeValues.string,
                             },
                             {
-                                id: `${Utils.getRandomId(1, 10000)}`,
+                                id: `${Utils.getUUID()}`,
                                 value: "",
                                 name: "Action",
                                 type: TypeValues.expression,
@@ -102,7 +102,7 @@ const mockProjeto: Project = new Project({
                         }),
                         new ItemFlowComplete({
                             id: '5', sucessor: ['6'], top: 500, left: 80, width: 50, height: 50, isSelected: false, name: "SWITCH", itemType: ItemType.SWITCH, properties: [{
-                                id: `${Utils.getRandomId(1, 10000)}`,
+                                id: `${Utils.getUUID()}`,
                                 value: "SWITCH",
                                 name: "Label",
                                 type: TypeValues.string,
@@ -110,13 +110,13 @@ const mockProjeto: Project = new Project({
                         }),
                         new ItemFlowComplete({
                             id: '6', sucessor: ['7'], top: 600, left: 80, width: 50, height: 50, isSelected: false, name: "ASSIGN", itemType: ItemType.ASSIGN, properties: [{
-                                id: `${Utils.getRandomId(1, 10000)}`,
+                                id: `${Utils.getUUID()}`,
                                 value: "ASSIGN",
                                 name: "Label",
                                 type: TypeValues.string,
                             },
                             {
-                                id: `${Utils.getRandomId(1, 10000)}`,
+                                id: `${Utils.getUUID()}`,
                                 value: "",
                                 name: "Assigment",
                                 type: TypeValues.assign,
@@ -125,7 +125,7 @@ const mockProjeto: Project = new Project({
                         }),
                         new ItemFlowComplete({
                             id: '7', sucessor: [], top: 700, left: 80, width: 50, height: 50, isSelected: false, name: "END", itemType: ItemType.END, properties: [{
-                                id: `${Utils.getRandomId(1, 10000)}`,
+                                id: `${Utils.getUUID()}`,
                                 value: "END",
                                 name: "Label",
                                 type: TypeValues.string,
@@ -134,7 +134,7 @@ const mockProjeto: Project = new Project({
                     ]
                 }),
                 new ItemComponent({
-                    id: `${Utils.getRandomId(1, 10000)}`,
+                    id: `${Utils.getUUID()}`,
                     name: 'signup',
                     label: "signup",
                     description: "Cadastra novos usuários!",
@@ -146,13 +146,13 @@ const mockProjeto: Project = new Project({
                     itens: [
                         new ItemFlowComplete({
                             id: '1', sucessor: ['2'], top: 100, left: 80, width: 50, height: 50, name: "START", itemType: ItemType.START, isSelected: false, properties: [{
-                                id: `${Utils.getRandomId(1, 10000)}`,
+                                id: `${Utils.getUUID()}`,
                                 value: "START",
                                 name: "Label",
                                 type: TypeValues.string,
                             },
                             {
-                                id: `${Utils.getRandomId(1, 10000)}`,
+                                id: `${Utils.getUUID()}`,
                                 value: "Descrição",
                                 name: "Description",
                                 type: TypeValues.bigstring,
@@ -160,13 +160,13 @@ const mockProjeto: Project = new Project({
                         }),
                         new ItemFlowComplete({
                             id: '2', sucessor: ['3'], top: 200, left: 80, width: 50, height: 50, isSelected: false, name: "IF", itemType: ItemType.IF, properties: [{
-                                id: `${Utils.getRandomId(1, 10000)}`,
+                                id: `${Utils.getUUID()}`,
                                 value: "IF",
                                 name: "Label",
                                 type: TypeValues.string,
                             },
                             {
-                                id: `${Utils.getRandomId(1, 10000)}`,
+                                id: `${Utils.getUUID()}`,
                                 value: "",
                                 name: "Condiction",
                                 type: TypeValues.expression,
@@ -174,13 +174,13 @@ const mockProjeto: Project = new Project({
                         }),
                         new ItemFlowComplete({
                             id: '3', sucessor: ['4'], top: 300, left: 80, width: 50, height: 50, isSelected: false, name: "FOREACH", itemType: ItemType.FOREACH, properties: [{
-                                id: `${Utils.getRandomId(1, 10000)}`,
+                                id: `${Utils.getUUID()}`,
                                 value: "FOREACH",
                                 name: "Label",
                                 type: TypeValues.string,
                             },
                             {
-                                id: `${Utils.getRandomId(1, 10000)}`,
+                                id: `${Utils.getUUID()}`,
                                 value: "",
                                 name: "Source",
                                 type: TypeValues.expression,
@@ -188,13 +188,13 @@ const mockProjeto: Project = new Project({
                         }),
                         new ItemFlowComplete({
                             id: '4', sucessor: ['5'], top: 400, left: 80, width: 50, height: 50, isSelected: false, name: "ACTION", itemType: ItemType.ACTION, properties: [{
-                                id: `${Utils.getRandomId(1, 10000)}`,
+                                id: `${Utils.getUUID()}`,
                                 value: "ACTION",
                                 name: "Label",
                                 type: TypeValues.string,
                             },
                             {
-                                id: `${Utils.getRandomId(1, 10000)}`,
+                                id: `${Utils.getUUID()}`,
                                 value: "",
                                 name: "Action",
                                 type: TypeValues.expression,
@@ -202,7 +202,7 @@ const mockProjeto: Project = new Project({
                         }),
                         new ItemFlowComplete({
                             id: '5', sucessor: ['6'], top: 500, left: 80, width: 50, height: 50, isSelected: false, name: "SWITCH", itemType: ItemType.SWITCH, properties: [{
-                                id: `${Utils.getRandomId(1, 10000)}`,
+                                id: `${Utils.getUUID()}`,
                                 value: "SWITCH",
                                 name: "Label",
                                 type: TypeValues.string,
@@ -210,13 +210,13 @@ const mockProjeto: Project = new Project({
                         }),
                         new ItemFlowComplete({
                             id: '6', sucessor: ['7'], top: 600, left: 80, width: 50, height: 50, isSelected: false, name: "ASSIGN", itemType: ItemType.ASSIGN, properties: [{
-                                id: `${Utils.getRandomId(1, 10000)}`,
+                                id: `${Utils.getUUID()}`,
                                 value: "ASSIGN",
                                 name: "Label",
                                 type: TypeValues.string,
                             },
                             {
-                                id: `${Utils.getRandomId(1, 10000)}`,
+                                id: `${Utils.getUUID()}`,
                                 value: "",
                                 name: "Assigment",
                                 type: TypeValues.assign,
@@ -225,7 +225,7 @@ const mockProjeto: Project = new Project({
                         }),
                         new ItemFlowComplete({
                             id: '7', sucessor: [], top: 700, left: 80, width: 50, height: 50, isSelected: false, name: "END", itemType: ItemType.END, properties: [{
-                                id: `${Utils.getRandomId(1, 10000)}`,
+                                id: `${Utils.getUUID()}`,
                                 value: "END",
                                 name: "Label",
                                 type: TypeValues.string,
@@ -238,7 +238,7 @@ const mockProjeto: Project = new Project({
         new Tab({
             itens: [],
             configs: new ComponentConfigs({
-                id: `${Utils.getRandomId(1, 10000)}`,
+                id: `${Utils.getUUID()}`,
                 name: 'Actions',
                 isEditando: false,
                 isExpanded: false,
@@ -250,7 +250,7 @@ const mockProjeto: Project = new Project({
         new Tab({
             itens: [],
             configs: new ComponentConfigs({
-                id: `${Utils.getRandomId(1, 10000)}`,
+                id: `${Utils.getUUID()}`,
                 name: 'Data',
                 label: 'data',
                 isEditando: false,
