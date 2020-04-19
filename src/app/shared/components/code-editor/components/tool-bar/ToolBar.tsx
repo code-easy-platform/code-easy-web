@@ -2,7 +2,7 @@ import React from 'react';
 
 import { ItemFluxo, FlowItem } from '../../models/ItemFluxo';
 import { ItemToDrag } from '../item-drag/ItemDrag';
-import './Toolbar.scss';
+import './Toolbar.css';
 
 export const Toolbar = ({ itensLogica, isShow }: { itensLogica: FlowItem[], isShow: boolean }) => {
 

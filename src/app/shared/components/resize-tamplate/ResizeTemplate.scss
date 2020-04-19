@@ -1,9 +1,7 @@
-@import "./../../../style/variables.scss";
-
 .col-right {
+  background-color: var(color-background-col);
   justify-content: space-between;
-  background-color: $color-background-col;
-  min-width: $size-38;
+  min-width: var(--size-38);
   .content {
     flex-direction: column;
   }
@@ -12,32 +10,32 @@
 // .grabber-col-left,
 .grabber-col-right,
 .grabber-col-right-resize-y {
+  background-color: var(--color-transparent);
+  height: var(--size-fill);
+  width: var(--size-1);
   cursor: col-resize;
   overflow: hidden;
-  background-color: $color-transparent;
-  height: $size-fill;
-  width: $size-1;
 }
 
 .grabber-col-right {
-  border-left: none;
-  cursor: col-resize;
-  height: $size-fill;
-  width: $size-2;
+  height: var(--size-fill);
+  width: var(--size-2);
   position: absolute;
+  cursor: col-resize;
+  border-left: none;
   z-index: 1;
 }
 
 .grabber-col-right-resize-y {
-  border-top: $border-size-1 solid $color-black-50;
+  border-top: var(--border-size-1) solid var(--color-black-50);
+  width: var(--size-fill);
+  height: var(--size-2);
   position: absolute;
   cursor: row-resize;
-  width: $size-fill;
-  height: $size-2;
 }
 
 // .grabber-col-left:active,
 .grabber-col-right:active,
 .grabber-col-right-resize-y:active {
-  background-color: $color-transparent;
+  background-color: var(--color-transparent);
 }

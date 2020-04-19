@@ -1,26 +1,24 @@
-@import './../../../style/variables.scss';
-
 .tab-group {
   display: flex;
-  background: $color-tool-bar;
-  width: $size-fill;
+  background: var(--color-tool-bar);
+  width: var(--size-fill);
   justify-content: space-between;
-  min-height: $size-8;
-  font-size: $font-size-4;
+  min-height: var(--size-8);
+  font-size: var(--font-size-4);
   .btn-tab {
     justify-content: center;
     align-items: center;
   }
   .btn-tab:hover {
-    background-color: $color-background-col;
+    background-color: var(--color-background-col);
     cursor: pointer;
   }
   .btn-tab:active {
+    color: var(--color-white);
     opacity: 0.5;
-    color: $color-white;
   }
 }
 
 .btn-tab-selected {
-  background-color: $color-background-col;
+  background-color: var(--color-background-col);
 }

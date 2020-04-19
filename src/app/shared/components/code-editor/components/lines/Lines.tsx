@@ -40,13 +40,13 @@ export const Lines: React.FC<LinesProps> = ({ itensSucessores, item, refItemPai,
             <Line
                 left1={(item.left || 0) + ((item.width || 0) / 2)}
                 top1={(item.top || 0) + (item.height || 0) / 2}
+                color="var(--toolbar-item-background-active)"
                 left2={item.left + (item.width / 2)}
                 top2={item.top + (item.height + 20)}
                 onSucessorChange={onSucessorChange}
                 refItemPai={refItemPai}
                 key={item.id}
                 id={item.id}
-                color="gray"
             />
         }
 

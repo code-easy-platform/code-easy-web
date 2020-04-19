@@ -1,5 +1,3 @@
-@import "./../../../style/variables.scss";
-
 .tree-base {
   flex-direction: column;
   overflow: auto;
@@ -20,20 +18,20 @@
   background-color: #3c3c3c3b;
 }
 .tree-item:active {
-  background-color: $color-background-col-click;
+  background-color: var(--color-background-col-click);
 }
 
 .menu-context {
   position: fixed;
   width: 200px;
   margin-left: -200px;
-  background-color: $color-background-col;
-  box-shadow: $size-none $size-none $size-3 $size-none $color-black;
-  padding-top: $size-3;
-  padding-bottom: $size-3;
+  background-color: var(--color-background-col);
+  box-shadow: var(--size-none) var(--size-none) var(--size-3) var(--size-none) var(--color-black);
+  padding-top: var(--size-3);
+  padding-bottom: var(--size-3);
   cursor: default;
   .item-list-pai {
-    padding: $size-2;
-    padding-left: $size-3;
+    padding: var(--size-2);
+    padding-left: var(--size-3);
   }
 }

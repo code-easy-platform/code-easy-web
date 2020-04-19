@@ -75,7 +75,40 @@
 
     // Colors
     --color-black: #000000;
+    --color-white: #ffffff;
+    --color-transparent: transparent;
 
+    --color-black: #000;
+    --color-black-50: #00000050;
+    --color-border-light-gray: #4f4f4f;
+    --item-logic-hover: #3c3c3c;
+    --color-background-propertie-editor: #3c3c3c;
+    --color-background-propertie-editor-exetended-hover: #525252;
+    --color-top-bar: #3c3c3c;
+    --color-tool-bar: #2d2d2d;
+    --color-top-bar-light: #4d4d4d;
+    --color-botton-bar: #0f77bf;
+    --color-background: #1e1e1e;
+    --color-background-col: #252527;
+    --color-background-col-click: #313135;
+
+    --color-background-tab-properties: #292929;
+
+    --color-top-bar-button-close: #c70000;
+    --color-top-bar-button-maximizar: #4d4848;
+    --color-top-bar-button-minimizar: #4d4848;
+
+    //# Scroll bar style ----------
+    // Colors
+    --color-scroll-bar: #3c3c3c20;
+    --color-scroll-bar-hover: #4d4d4d;
+    --color-scroll-bar-active: #5c5c5c;
+
+    // Sizes
+    --size-x-scroll-bar: var(--size-2);
+    --size-x-scroll-bar-small: var(--size-1);
+    --size-x-scroll-bar-hover: var(--size-2); // Não funciona
+    --size-x-scroll-bar-active: var(--size-2); // Não funciona
     /* ------------------------------------------------- */
 
     // List item
@@ -100,149 +133,44 @@
     --font-family-normal: Verdana, Geneva, Tahoma, sans-serif;
     --font-family-editor: Consolas, "Courier New", monospace;
     --font-family-vs-code: "Droid Sans Mono", "monospace", monospace, "Droid Sans Fallback";
+
+    // Fonte colors
+    --font-color-title: #333333;
+    --font-color-label-propertie-editor: #adadad;
+    --font-color-input-propertie-editor: #d8d8d8;
+    --font-color-input-propertie-editor-focus: #f3f3f3;
+    --font-color-icon-add-remove-propertie-editor: #adadad;
+
+    // Link colors
+    --font-color-link: #007bff;
+    --font-color-link-hover: #c4c4ff;
+
+    // Box shadows
+    --box-shadow-small: 4px -1px 5px 0.1px #191919;
+
+    // Toolbar
+    --toolbar-background: #3c3c3c54;
+    --toolbar-border-color: var(--color-black-50);
+
+    // Toolbar itens
+    --toolbar-item-border-hover: #525252;
+    --toolbar-item-background-active: #52525252;
+
+    // Outlines
+    --outline-padrao: auto;
+    // --outline-padrao: 1px solid #f3f3f3;
+
+    // Erros
+    --text-underline-error: underline wavy red;
+
+    // Bordas
+    --borda-size-0-25: 1px;
+    --borda-size-0-5: 2px;
+    --borda-size-0-75: 3px;
+    --borda-size-1: 4px;
+    --borda-size-1-5: 6px;
+    --borda-size-2: 8px;
+    --borda-size-3: 12px;
+    --borda-size-4: 16px;
+    --borda-size-5: 20px;
 }
-
-// Sizes ------------------
-$size-window-vh-fill: 100vh;
-$size-window-vw-fill: 100vw;
-$size-fill: 100%;
-$size-half-90: 90%;
-$size-half-80: 80%;
-$size-half-70: 70%;
-$size-half-60: 60%;
-$size-half: 50%;
-$size-half-40: 40%;
-$size-half-30: 30%;
-$size-half-20: 20%;
-$size-half-10: 10%;
-
-$size-none: 0px;
-$size-0-5: 2px;
-$size-0-75: 3px;
-$size-1: 4px;
-$size-1-5: 6px;
-$size-2: 8px;
-$size-3: 12px;
-$size-4: 16px;
-$size-5: 20px;
-$size-6: 24px;
-$size-7: 28px;
-$size-8: 32px;
-$size-9: 36px;
-$size-10: 40px;
-$size-11: 44px;
-$size-13: 48px;
-$size-14: 52px;
-$size-15: 56px;
-$size-16: 60px;
-$size-17: 64px;
-$size-18: 68px;
-$size-19: 72px;
-$size-20: 76px;
-$size-21: 80px;
-$size-22: 84px;
-//...
-$size-35: 140px;
-$size-38: 152px;
-//...
-$size-75: 300px;
-//...
-$size-92-5: 370px;
-//...
-$size-150: 600px;
-//...
-$size-250: 1000px;
-
-// Font-sizes -------------
-$font-size-1: 4px;
-$font-size-1-5: 6px;
-$font-size-2: 8px;
-$font-size-3: 12px;
-$font-size-3-5: 14px;
-$font-size-4: 16px;
-$font-size-5: 20px;
-$font-size-6: 24px;
-$font-size-7: 28px;
-$font-size-8: 32px;
-$font-size-9: 36px;
-$font-size-10: 40px;
-$font-size-17: 64px;
-
-// Font-sizes -------------
-$border-size-0: 0px;
-$border-size-1: 1px;
-
-//# Scroll bar style ----------
-
-// Colors
-$color-scroll-bar: #3c3c3c20;
-$color-scroll-bar-hover: #4d4d4d;
-$color-scroll-bar-active: #5c5c5c;
-
-// Sizes
-$size-x-scroll-bar: $size-2;
-$size-x-scroll-bar-small: $size-1;
-$size-x-scroll-bar-hover: $size-2; // Não funciona
-$size-x-scroll-bar-active: $size-2; // Não funciona
-
-//# Scroll bar style ----------
-
-// Colors -----------------
-$color-white: #ffffff;
-$color-transparent: transparent;
-
-$color-black: #000;
-$color-black-50: #00000050;
-$color-border-light-gray: #4f4f4f;
-$item-logic-hover: #3c3c3c;
-$color-background-propertie-editor: #3c3c3c;
-$color-background-propertie-editor-exetended-hover: #525252;
-$color-top-bar: #3c3c3c;
-$color-tool-bar: #2d2d2d;
-$color-top-bar-light: #4d4d4d;
-$color-botton-bar: #0f77bf;
-$color-background: #1e1e1e;
-$color-background-col: #252527;
-$color-background-col-click: #313135;
-
-$color-background-tab-properties: #292929;
-
-$color-top-bar-button-close: #c70000;
-$color-top-bar-button-maximizar: #4d4848;
-$color-top-bar-button-minimizar: #4d4848;
-
-// Fonte colors
-$font-color-title: #333333;
-$font-color-label-propertie-editor: #adadad;
-$font-color-input-propertie-editor: #d8d8d8;
-$font-color-input-propertie-editor-focus: #f3f3f3;
-$font-color-icon-add-remove-propertie-editor: #adadad;
-
-// Link colors
-$font-color-link: #007bff;
-$font-color-link-hover: #c4c4ff;
-
-// Box shadows
-$box-shadow-small: 4px -1px 5px 0.1px #191919;
-
-// Bordas
-$borda-size-0-25: 1px;
-$borda-size-0-5: 2px;
-$borda-size-0-75: 3px;
-$borda-size-1: 4px;
-$borda-size-1-5: 6px;
-$borda-size-2: 8px;
-$borda-size-3: 12px;
-$borda-size-4: 16px;
-$borda-size-5: 20px;
-
-// Toolbar
-$toolbar-background: #3c3c3c54;
-$toolbar-border-color: $color-black-50;
-
-// Toolbar itens
-$toolbar-item-border-hover: #525252;
-$toolbar-item-background-active: #52525252;
-
-// Outlines
-$outline-padrao: 2px solid #f3f3f3;

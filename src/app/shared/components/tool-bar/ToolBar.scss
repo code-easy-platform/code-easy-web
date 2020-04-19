@@ -1,11 +1,9 @@
-@import "./../../../style/variables.scss";
-
 .tool-bar {
   display: flex;
-  background: $color-tool-bar;
+  background: var(--color-tool-bar);
   justify-content: space-between;
-  width: $size-window-vw-fill;
-  height: $size-10;
+  width: var(--size-window-vw-fill);
+  height: var(--size-10);
 }
 
 .sistem-tabs {
@@ -17,27 +15,27 @@
 
 .btn-open-menu-user-tab {
   content: url(./../../../assets/icons/btn-menu-user.svg);
-  padding: $size-0-75;
+  padding: var(--size-0-75);
 }
 .btn-open-menu-tab {
   padding: 1px;
   content: url(./../../../assets/icons/btn-menu.svg);
 }
 .btn-open-editor-tab {
-  padding: $size-0-75;
+  padding: var(--size-0-75);
   content: url(./../../../assets/icons/btn-open-editor-tab.svg);
 }
 .btn-open-plugins-tab {
-  padding: $size-0-75;
+  padding: var(--size-0-75);
   content: url(./../../../assets/icons/btn-open-plugins-tab.svg);
 }
 .btn-open-properties-tab {
-  padding: $size-0-75;
+  padding: var(--size-0-75);
   content: url(./../../../assets/icons/btn-open-properties-tab.svg);
 }
 
 .btn-api-controls {
-  padding: $size-0-75;
+  padding: var(--size-0-75);
   display: flex;
 }
 
@@ -60,11 +58,11 @@
 .btn-open-plugins-tab:hover,
 .btn-open-menu-user-tab:hover,
 .btn-open-properties-tab:hover {
-  background-color: $color-top-bar-button-maximizar;
+  background-color: var(--color-top-bar-button-maximizar);
   cursor: pointer;
 }
 
 .frame-btn:active {
   opacity: 0.5;
-  color: $color-white;
+  color: var(--color-white);
 }
