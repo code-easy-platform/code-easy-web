@@ -73,8 +73,8 @@
     --border-size-0: 0px;
     --border-size-1: 1px;
 
-    // Colors
-
+    
+    /************* Colors *************/
     // Main base colors
     --main-background: #1e1e1e;
     --main-background-bars: #2d2d2d;
@@ -96,7 +96,6 @@
     --color-tool-bar: #2d2d2d;
     --color-top-bar-light: #4d4d4d;
     --color-botton-bar: #0f77bf;
-    --color-background: #1e1e1e;
     --color-background-col: #252527;
     --color-background-col-click: #313135;
 
@@ -130,9 +129,6 @@
     --color-context-menu-list-item-hover: var(--color-list-item-hover);
     --color-context-menu-list-item-active: var(--color-list-item-active);
     --box-shadow-context-menu: var(--size-none) var(--size-none) var(--size-0-5) var(--size-none) var(--color-black);
-
-    // Main background
-    --color-background: #1e1e1e;
 
     // Bottom status bar
     --color-botton-bar: #0f77bf;

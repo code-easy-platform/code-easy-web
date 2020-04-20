@@ -25,9 +25,9 @@ const mockProjeto: Project = new Project({
         new Tab({
             configs: new ComponentConfigs({
                 id: `${Utils.getUUID()}`,
-                name: "routes",
+                name: "Routes",
                 isExpanded: true,
-                label: "Routes",
+                label: "routes",
                 isEditando: true,
                 description: "Minha tab de routes",
                 type: ComponentType.tabRouters,

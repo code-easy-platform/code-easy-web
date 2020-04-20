@@ -15,10 +15,11 @@ export const FlowComment = ({ id, isSelected, width, height, left, top, childIma
                 id={id}
             >
                 <textarea style={{
+                    backgroundColor: 'var(--main-background-highlighted)',
                     border: `2px solid ${strokeColor}`,
                     height: '-webkit-fill-available',
                     width: '-webkit-fill-available',
-                    backgroundColor: '#333333',
+                    pointerEvents: 'none',
                     color: '#fff',
                     padding: 5,
                 }} />

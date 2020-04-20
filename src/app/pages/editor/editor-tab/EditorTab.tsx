@@ -552,9 +552,10 @@ export default class EditorTab extends React.Component {
                                 }}
                                 itemBase={{
                                     id: undefined,
+                                    label: "Routers",
                                     isSelected: false,
                                     nodeExpanded: true,
-                                    label: "Routers",
+                                    isDisabledDrag: true,
                                     type: TreeItensTypes.folder,
                                     childs: this.treeManagerGetTree.bind(this)(this.state.tab.itens),
                                 }}

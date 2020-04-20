@@ -7,18 +7,19 @@ export const FlowComponent = ({ id, isSelected, width, height, left, top, childI
     return (
         <>
             <rect
+                fill="var(--main-background)"
                 strokeLinejoin="round"
                 stroke={strokeColor}
                 key={name + id}
                 height={height}
                 strokeWidth="1"
-                fill="#1e1e1e"
                 width={width}
                 x={left}
                 y={top}
                 id={id}
             />
             <image
+                style={{ pointerEvents: 'none' }}
                 key={name + "Image_" + id}
                 xlinkHref={childImage}
                 height={height}

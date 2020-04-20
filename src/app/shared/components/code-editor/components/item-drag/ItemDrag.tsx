@@ -124,7 +124,7 @@ export const ItemToDrag: React.FC<ItemDragProps> = (props: ItemDragProps) => {
             width: 30,
         };
 
-        return <div className="toolbar-item">
+        return <div tabIndex={0} className="toolbar-item">
             {itemType === ItemType.COMMENT && <img id={id} title="COMMENT" style={style} ref={dragRef} src={icons_comment} alt="COMMENT" />}
             {itemType === ItemType.FOREACH && <img id={id} title="FOREACH" style={style} ref={dragRef} src={icons_foreach} alt="FOREACH" />}
             {itemType === ItemType.SWITCH && <img id={id} title="SWITCH" style={style} ref={dragRef} src={icons_switch} alt="SWITCH" />}

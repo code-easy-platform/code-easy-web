@@ -1,6 +1,6 @@
 .toolbar {
   border: var(--size-none) solid var(--toolbar-border-color);
-  background-color: var(--toolbar-background);
+  background-color: var(--main-background-panels);
   border-right-width: 1px;
   flex-direction: column;
   align-items: center;

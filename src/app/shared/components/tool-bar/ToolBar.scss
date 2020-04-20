@@ -1,8 +1,8 @@
 .tool-bar {
-  display: flex;
   justify-content: space-between;
   width: var(--size-window-vw-fill);
   height: var(--size-10);
+  display: flex;
 }
 
 .btn-open-menu-user-tab {
