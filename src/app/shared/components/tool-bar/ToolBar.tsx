@@ -2,10 +2,10 @@ import React, { useState, useContext } from 'react';
 
 import { CodeEditorContext } from '../../services/contexts/CodeEditorContext';
 import { TabButton, TabGroup } from '../tab-button/TabButton';
+import { Storage } from '../../services/LocalStorage';
 import { CurrentTab } from '../../enuns/CurrentTab';
 import { Tab } from '../../interfaces/Aplication';
 import './ToolBar.scss';
-import { Storage } from '../../services/LocalStorage';
 
 export const ToolBar = (props: any) => {
     const codeEditorContext = useContext(CodeEditorContext);
@@ -19,8 +19,8 @@ export const ToolBar = (props: any) => {
     }
 
     return (
-        <div className="tool-bar">
-            <div className="sistem-tabs">
+        <div className="tool-bar background-bars">
+            <div>
                 <TabButton
                     id="tabMenu"
                     onClick={() => { }}

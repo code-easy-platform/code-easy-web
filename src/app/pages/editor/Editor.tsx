@@ -45,13 +45,13 @@ export default class Editor extends React.Component {
             <CodeEditorContext.Provider value={this.state}>
                 <div className="main-page">
                     <ToolBar onChangeTab={this.onChangeTab} />
-                    <hr className="hr-default" />
+                    <hr className="hr" />
 
                     <div style={{ height: "calc(100vh - 60px)" }}>
                         {this.state.currentTab}
                     </div>
 
-                    <hr className="hr-default" />
+                    <hr className="hr" />
                     <BottonStatusBar />
                 </div>
             </CodeEditorContext.Provider>

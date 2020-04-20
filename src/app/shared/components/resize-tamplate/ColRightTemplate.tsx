@@ -29,11 +29,11 @@ export class ColRightTemplate extends Component<IRecipeProps, IRecipeState> {
         return (
             <div className="flex1 content" onMouseMove={this.mouseMove.bind(this)} onMouseUp={this.mouseUp}>
                 <div className="flex1">
-                    <div style={{ width: '100%', overflowY: 'auto', height: this.state.rowTopY }}>
+                    <div className="full-width" style={{ overflowY: 'auto', height: this.state.rowTopY }}>
                         {this.props.rowTop}
                     </div>
                 </div>
-                <hr className='hr-default' />
+                <hr className='hr' />
                 <div style={{ flexDirection: 'column', height: this.state.rowBottomY }}>
                     <div className="grabber-col-right-resize-y" onMouseDown={this.mouseDown}></div>
                     {this.props.rowBottom}

@@ -1,22 +1,21 @@
 .tab-group {
-  display: flex;
-  background: var(--color-tool-bar);
-  width: var(--size-fill);
   justify-content: space-between;
-  min-height: var(--size-8);
   font-size: var(--font-size-4);
-  .btn-tab {
-    justify-content: center;
-    align-items: center;
-  }
-  .btn-tab:hover {
-    background-color: var(--color-background-col);
-    cursor: pointer;
-  }
-  .btn-tab:active {
-    color: var(--color-white);
-    opacity: 0.5;
-  }
+  min-height: var(--size-8);
+}
+.btn-tab {
+  background-color: transparent;
+  justify-content: center;
+  align-items: center;
+  border: none;
+}
+.btn-tab:hover {
+  background-color: var(--main-background-panels);
+  cursor: pointer;
+}
+.btn-tab:active {
+  color: var(--color-white);
+  opacity: 0.5;
 }
 
 .btn-tab-selected {

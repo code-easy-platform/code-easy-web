@@ -12,16 +12,18 @@ interface props {
     isSelected?: boolean;
 }
 
-export const TabGroup = (props: any) => <div className="tab-group">{props.children}</div>;
+export const TabGroup = (props: any) => <div className="tab-group full-width">{props.children}</div>;
 
 export const TabButton = (props: props) => {
     return (
         <div
+            // tabIndex={0}
             key={props.id}
-            onClick={props.onClick}
-            className={"btn-tab " + (props.isSelected ? "btn-tab-selected " : "") + props.className}
             title={props.title}
             style={props.style}
-        >{props.content}</div>
+            onClick={props.onClick}
+            children={props.content}
+            className={"btn-tab " + (props.isSelected ? "btn-tab-selected " : "") + props.className}
+        />
     );
 }

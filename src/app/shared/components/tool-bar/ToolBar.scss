@@ -1,16 +1,8 @@
 .tool-bar {
   display: flex;
-  background: var(--color-tool-bar);
   justify-content: space-between;
   width: var(--size-window-vw-fill);
   height: var(--size-10);
-}
-
-.sistem-tabs {
-  display: flex;
-  * {
-    cursor: pointer;
-  }
 }
 
 .btn-open-menu-user-tab {
@@ -34,12 +26,11 @@
   content: url(./../../../assets/icons/btn-open-properties-tab.svg);
 }
 
-.btn-api-controls {
+/* .btn-api-controls {
   padding: var(--size-0-75);
-  display: flex;
 }
 
-/* .btn-api-controls-build {
+.btn-api-controls-build {
     content: url(assets/icons/btn-build.svg);
 }
 .btn-api-controls-play {
@@ -50,7 +41,7 @@
 }
 .btn-api-controls-restart {
   content: url(assets/icons/btn-restart.svg);
-} */
+}
 
 .frame-btn:hover,
 .btn-open-menu-tab:hover,
@@ -66,3 +57,4 @@
   opacity: 0.5;
   color: var(--color-white);
 }
+ */
