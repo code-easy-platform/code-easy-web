@@ -40,7 +40,7 @@ export class EditorTabTemplate extends Component<IRecipeProps, IRecipeState> {
 
         <div className='col-right' style={{ width: this.state.colRightX }}>
             <div className="grabber-col-right" onMouseDown={this.mouseDown} />
-            <hr className='hr' />
+            <hr className='hr hr-vertical' />
             {this.props.columnRight/* Coluna da direita */}
         </div>
 

@@ -109,7 +109,7 @@
 
     //# Scroll bar style ----------
     // Colors
-    --color-scroll-bar: #3c3c3c20;
+    --color-scroll-bar: var(--main-background-panels);
     --color-scroll-bar-hover: #4d4d4d;
     --color-scroll-bar-active: #5c5c5c;
 

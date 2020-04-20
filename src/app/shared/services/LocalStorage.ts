@@ -49,7 +49,7 @@ const mockProjeto: Project = new Project({
                                 id: `${Utils.getUUID()}`,
                                 value: "START",
                                 name: "Label",
-                                type: TypeValues.string,
+                                type: TypeValues.viewOnly,
                             },
                             {
                                 id: `${Utils.getUUID()}`,
@@ -128,7 +128,7 @@ const mockProjeto: Project = new Project({
                                 id: `${Utils.getUUID()}`,
                                 value: "END",
                                 name: "Label",
-                                type: TypeValues.string,
+                                type: TypeValues.viewOnly,
                             }]
                         }),
                     ]
@@ -149,7 +149,7 @@ const mockProjeto: Project = new Project({
                                 id: `${Utils.getUUID()}`,
                                 value: "START",
                                 name: "Label",
-                                type: TypeValues.string,
+                                type: TypeValues.viewOnly,
                             },
                             {
                                 id: `${Utils.getUUID()}`,
@@ -228,7 +228,7 @@ const mockProjeto: Project = new Project({
                                 id: `${Utils.getUUID()}`,
                                 value: "END",
                                 name: "Label",
-                                type: TypeValues.string,
+                                type: TypeValues.viewOnly,
                             }]
                         }),
                     ]

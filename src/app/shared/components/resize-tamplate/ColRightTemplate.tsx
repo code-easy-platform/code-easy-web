@@ -33,8 +33,8 @@ export class ColRightTemplate extends Component<IRecipeProps, IRecipeState> {
                         {this.props.rowTop}
                     </div>
                 </div>
-                <hr className='hr' />
                 <div style={{ flexDirection: 'column', height: this.state.rowBottomY }}>
+                    <hr className='hr' />
                     <div className="grabber-col-right-resize-y" onMouseDown={this.mouseDown}></div>
                     {this.props.rowBottom}
                 </div>

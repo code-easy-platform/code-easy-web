@@ -110,6 +110,10 @@ a:active {
   height: var(--border-size-1);
   border: none;
 }
+.hr.hr-vertical {
+  width: var(--border-size-1);
+  height: 100%;
+}
 
 .btn {
   background: var(--color-background-propertie-editor);
@@ -124,7 +128,6 @@ a:active {
 .btn:focus {
   outline: var(--outline-padrao);
 }
-
 
 /* Chrome, Safari, Edge, Opera */
 input::-webkit-outer-spin-button,
@@ -158,5 +161,9 @@ input[type="number"] {
   background-color: var(--color-scroll-bar-active);
 }
 .mini-scroll-bar::-webkit-scrollbar {
+  width: var(--size-x-scroll-bar-small);
+}
+.mini-scroll-bar::-webkit-scrollbar-thumb {
+  background-color: var(--main-background-bars);
   width: var(--size-x-scroll-bar-small);
 }
