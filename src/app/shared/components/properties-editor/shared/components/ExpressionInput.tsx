@@ -6,8 +6,8 @@ export const ExpressionInput = (props: React.DetailedHTMLProps<React.InputHTMLAt
     const [state, setState] = useState({ isOpenEditor: false, code: '' })
 
     const css_picker_editor: React.CSSProperties = {
-        border: '0.5px solid #ffffff15',
-        backgroundColor: '#ffffff10',
+        backgroundColor: 'var(--main-background-bars)',
+        border: 'var(--input-border)',
         cursor: 'pointer',
         borderRadius: 50,
         color: 'white',

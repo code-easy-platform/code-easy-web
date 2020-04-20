@@ -34,7 +34,7 @@ export const PropItem: React.FC<PropItemProps> = ({ id, name, type, value, input
     }
 
     const css_prop_item_label: React.CSSProperties = {
-        textDecoration: nameHasError ? `underline wavy red` : undefined,
+        textDecoration: nameHasError ? `var(--text-underline-error)` : undefined,
         textOverflow: 'ellipsis',
         display: 'inline-block',
         whiteSpace: 'nowrap',
@@ -45,10 +45,10 @@ export const PropItem: React.FC<PropItemProps> = ({ id, name, type, value, input
 
     const minWidth = 80;
     const css_prop_item_input: React.CSSProperties = {
-        textDecoration: nameHasError ? `underline wavy red` : undefined,
-        border: `0.5px solid ${valueHasError ? 'red' : '#ffffff15'}`,
+        textDecoration: valueHasError ? `var(--text-underline-error)` : undefined,
+        border: valueHasError ? 'var(--input-border-error)' : 'var(--input-border)',
         width: inputWidth ? `${inputWidth}px` : '70%',
-        backgroundColor: '#ffffff10',
+        backgroundColor: 'var(--main-background-bars)',
         minWidth: minWidth,
         borderRadius: 4,
         color: 'white',

@@ -12,7 +12,7 @@ export const ListItem: React.FC<ListItemProps> = ({ id, name, properties, isHead
     }, [id, name, properties, isHeader]);
 
     const css_list_item: React.CSSProperties = {
-        backgroundColor: isHeader ? '#ffffff10' : '',
+        backgroundColor: isHeader ? 'var(--main-background-bars)' : '',
         justifyContent: 'space-between',
         height: 'min-content',
         alignItems: 'center',
