@@ -55,6 +55,12 @@ const mockProjeto: Project = new Project({
                             name: 'Description',
                             type: TypeValues.bigstring,
                             value: "Autentica os usuários!"
+                        },
+                        {
+                            id: '3',
+                            name: 'Url',
+                            type: TypeValues.string,
+                            value: "/authenticate"
                         }
                     ],
                     itens: [
@@ -169,6 +175,12 @@ const mockProjeto: Project = new Project({
                             name: 'Description',
                             type: TypeValues.bigstring,
                             value: "Cadastra novos usuários!"
+                        },
+                        {
+                            id: '3',
+                            name: 'Url',
+                            type: TypeValues.string,
+                            value: "/signup"
                         }
                     ],
                     itens: [

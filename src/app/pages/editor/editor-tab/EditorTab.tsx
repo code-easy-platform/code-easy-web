@@ -440,6 +440,7 @@ export default class EditorTab extends React.Component {
                     label: item.label,
                     description: item.description,
                     nodeExpanded: item.nodeExpanded,
+                    hasError: item.itens.some(itemFlow => itemFlow.properties.some(prop => (prop.valueHasError || prop.nameHasError))),
                 });
             });
 
@@ -463,8 +464,8 @@ export default class EditorTab extends React.Component {
                 isSelected: false,
                 label: item.label,
                 description: item.description,
-                isAllowedToggleNodeExpand: false,
                 nodeExpanded: item.nodeExpanded,
+                hasError: item.itens.some(itemFlow => itemFlow.properties.some(prop => (prop.valueHasError || prop.nameHasError))),
             });
         });
 
@@ -479,7 +480,7 @@ export default class EditorTab extends React.Component {
     /** Quando clicado com o botão esquerdo do mouse no interior da árvore esta função é acionada. */
     private treeManagerContextMenu(itemId: string): any[] {
 
-        const removeItem = (itemId: string) => {
+        const removeItem = (inputItemId: string) => {
             this.setState({ currentFocus: CurrentFocus.tree });
 
             // Pega a lista de itens corrente na árvore
@@ -487,7 +488,7 @@ export default class EditorTab extends React.Component {
             let indexItemToRemove: number | any;
             this.editorContext.project.tabs.forEach((tab: Tab, indexTab) => {
                 tab.itens.forEach((item, index) => {
-                    if (item.id === itemId) {
+                    if (item.id === inputItemId) {
                         indexItemToRemove = index;
                         indexTabToRemove = indexTab;
                     }
@@ -502,11 +503,45 @@ export default class EditorTab extends React.Component {
 
         };
 
+        const addParam = (inputItemId: string) => {
+            let tabIndex: number | undefined;
+            this.editorContext.project.tabs.forEach((tab: Tab, indexTab) => {
+                tab.itens.forEach(item => {
+                    if (item.id === itemId) {
+                        tabIndex = indexTab
+                    }
+                });
+            });
+
+            if (tabIndex) {
+                this.editorContext.project.tabs[tabIndex].itens.push(new ItemComponent({
+                    id: Utils.getUUID(),
+                    itens: [],
+                    description: '',
+                    properties: this.propertiesEditorGetNewProperties(ItemType.ACTION, 'newinputparam'),
+                    isSelected: true,
+                    isEditing: false,
+                    nodeExpanded: false,
+                    name: 'newinputparam',
+                    itemPaiId: inputItemId,
+                    type: TreeItensTypes.file,
+                    label: '(New input param)',
+                }));
+            }
+
+            this.setState({ currentFocus: CurrentFocus.tree });
+            this.onChangeState();
+        }
+
         return [
             {
                 action: () => removeItem(itemId),
-                label: 'Excluir'
-            }
+                label: 'Delete'
+            },
+            /* {
+                action: () => addParam(itemId),
+                label: 'Add input param'
+            } */
         ];
 
     }
@@ -514,15 +549,17 @@ export default class EditorTab extends React.Component {
 
 
     render() {
+        const flowEditorItens = this.codeEditorGetItensLogica.bind(this)();
         return (
             <EditorTabTemplate
                 columnCenter={
                     <FlowEditor
                         isShowToolbar={true}
+                        itens={flowEditorItens}
                         allowDropTo={[TreeItensTypes.file]}
                         toolItens={this.codeEditorGetToolBoxItens()}
                         onDropItem={this.codeEditorOnDropItem.bind(this)}
-                        itens={this.codeEditorGetItensLogica.bind(this)()}
+                        isDisabledSelection={flowEditorItens.length === 0}
                         onChangeItens={this.codeEditorOutputFlowItens.bind(this)}
                         breadcrumbsPath={this.codeEditorGetBreadcamps.bind(this)()}
                         onContextMenu={(data, e) => {
