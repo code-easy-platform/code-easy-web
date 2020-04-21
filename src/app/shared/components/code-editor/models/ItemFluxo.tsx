@@ -1,6 +1,7 @@
 export interface ItemFluxo {
     id: string | undefined;
     isSelected: boolean;
+    hasError?: boolean;
     sucessor: string[];
     itemType: ItemType;
     height: number;
@@ -29,6 +30,7 @@ export class FlowItem implements ItemFluxo {
     public itemType: ItemType = ItemType.START;
     public id: string | undefined = undefined;
     public isSelected: boolean = false;
+    public hasError?: boolean = false;
     public sucessor: string[] = [];
     public height: number = 0;
     public width: number = 0;
@@ -60,6 +62,7 @@ export class FlowItem implements ItemFluxo {
             id: string | undefined,
             isSelected?: boolean,
             sucessor?: string[],
+            hasError?: boolean,
             itemType: ItemType,
             height?: number,
             width?: number,
@@ -72,6 +75,7 @@ export class FlowItem implements ItemFluxo {
         this.sucessor = this.props.sucessor || [];
         this.height = this.props.height || 0;
         this.itemType = this.props.itemType;
+        this.hasError = this.props.hasError;
         this.width = this.props.width || 0;
         this.left = this.props.left || 0;
         this.top = this.props.top || 0;

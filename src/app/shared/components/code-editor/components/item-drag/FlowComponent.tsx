@@ -1,8 +1,8 @@
 import React from 'react';
 
-export const FlowComponent = ({ id, isSelected, width, height, left, top, childImage, name }: any) => {
+export const FlowComponent = ({ id, isSelected, width, height, left, top, childImage, name, hasError = false }: any) => {
 
-    const strokeColor: string = isSelected ? "#999fff" : "#21965300";
+    const strokeColor: string = isSelected ? "#999fff" : hasError ? "var(--main-error-color)" :  "#21965300";
 
     return (
         <>
@@ -27,6 +27,7 @@ export const FlowComponent = ({ id, isSelected, width, height, left, top, childI
                 x={left}
                 y={top}
                 id={id}
+                stroke={strokeColor}
             />
         </>
     );

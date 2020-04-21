@@ -36,7 +36,7 @@ const acceptedInDrop: ItemType[] = [ItemType.START, ItemType.ACTION, ItemType.IF
 let backupFlow: string = "";
 
 /** Editor do fluxo. */
-const CodeEditor: React.FC<ICodeEditorProps> = ({ itens = [], toolItens = [], onChangeItens = () => { }, isShowToolbar = false, onDropItem = () => undefined, allowDropTo = [], onContextMenu, breadcrumbsPath }) => {
+const CodeEditor: React.FC<ICodeEditorProps> = ({ itens = [], toolItens = [], onChangeItens = () => { }, isShowToolbar = false, onDropItem = () => undefined, allowDropTo = [], onContextMenu, breadcrumbsPath, isDisabledSelection = false }) => {
 
     /** Referencia o svg onde está todos os itens de fluxo. */
     const svgRef = useRef<any>(null);
@@ -393,6 +393,9 @@ const CodeEditor: React.FC<ICodeEditorProps> = ({ itens = [], toolItens = [], on
 
         if (event.target.id !== svgRef.current.id) return;
 
+        // Impede a seleção de itens na tela
+        if (isDisabledSelection) return;
+
         document.onmousemove = (event: any) => {
             if (state.selectionProps.isMouseDown) {
 
@@ -459,6 +462,11 @@ const CodeEditor: React.FC<ICodeEditorProps> = ({ itens = [], toolItens = [], on
             state.flowItens.forEach((item: FlowItem) => {
                 item.isSelected = (!reset && (item.id === state.selectedItem.itemId));
             });
+        } else {
+            state.flowItens.forEach((item: FlowItem) => {
+                if (item.id === state.selectedItem.itemId)
+                    item.isSelected = !item.isSelected;
+            });
         }
 
         setState({ ...state, flowItens: state.flowItens });
@@ -507,10 +515,10 @@ const CodeEditor: React.FC<ICodeEditorProps> = ({ itens = [], toolItens = [], on
                         endTop={state.selectionProps.endTop}
                         endLeft={state.selectionProps.endLeft}
                         startTop={state.selectionProps.startTop}
-                        isShow={state.selectionProps.isMouseDown}
                         startLeft={state.selectionProps.startLeft}
                         top={state.selectionProps.runtimeStartTop}
                         left={state.selectionProps.runtimeStartLeft}
+                        isShow={state.selectionProps.isMouseDown && !isDisabledSelection}
                     />
 
                     {/* Reinderiza as linhas dos itens arrastáveis da tela. */}
@@ -546,6 +554,7 @@ const CodeEditor: React.FC<ICodeEditorProps> = ({ itens = [], toolItens = [], on
                             onContextMenu={onContextMenu}
                             isSelected={item.isSelected}
                             itemType={item.itemType}
+                            hasError={item.hasError}
                             refItemPai={svgRef}
                             title={item.name}
                             key={item.id}

@@ -298,6 +298,7 @@ export default class EditorTab extends React.Component {
                     itemType: item.itemType,
                     sucessor: item.sucessor,
                     isSelected: item.isSelected,
+                    hasError: item.properties.some(prop => (prop.valueHasError || prop.nameHasError)),
                 }));
             });
 

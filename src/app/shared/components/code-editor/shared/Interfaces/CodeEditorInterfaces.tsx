@@ -20,6 +20,9 @@ export interface ICodeEditorProps {
     /** string - Usado para identifica qual o caminho da action que está aberta */
     breadcrumbsPath?: string;
 
+    /** Se "true" desabilita a área de seleção na tela. */
+    isDisabledSelection?: boolean;
+
     /** Function - Usada para emitir através do output o fluxo atualidado, acontece a cada mudança de estado dos itens de fluxo. */
     onChangeItens(itens: FlowItem[]): any;
 
