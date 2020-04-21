@@ -75,12 +75,11 @@ export const ToolBar = (props: any) => {
                                 <TabButton
                                     id={tab.configs.name}
                                     key={tab.configs.name}
+                                    content={tab.configs.label}
+                                    title={tab.configs.description}
+                                    isSelected={tab.configs.isEditando}
+                                    className="btn-open-routers-tab flex1"
                                     onClick={() => codeEditorContext.toggleResourcesTab(tab.configs.type)}
-                                    isSelected={tab.configs.type === codeEditorContext.editingTab}
-                                    className="btn-open-routers-tab"
-                                    title={tab.configs.name}
-                                    content={tab.configs.name}
-                                    style={{ flex: 1 }}
                                 />
                             );
                         })}

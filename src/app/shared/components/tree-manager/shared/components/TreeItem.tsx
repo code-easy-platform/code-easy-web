@@ -59,9 +59,9 @@ export const TreeItem: FC<ItemTreeProps> = ({ itemTree, paddingLeft, onSelect, o
 
     /** Usado para que seja possível o drop de itens no editor. */
     const [{ isDraggingOver }, dropRef] = useDrop({
+        canDrop: () => isUseDrop && !isDisabledDrop,
         accept: [TreeItensTypes.file, TreeItensTypes.folder],
         collect: (monitor) => ({ isDraggingOver: monitor.isOver() }),
-        canDrop: () => isUseDrop && !isDisabledDrop && !isDisabledSelect,
         drop(item: any, monitor: DropTargetMonitor) { onDropItem(itemTree.id, item.itemProps.id, item) },
     });
     dropRef(itemRef); /** Agrupa as referências do drop com as da ref. */
@@ -78,7 +78,7 @@ export const TreeItem: FC<ItemTreeProps> = ({ itemTree, paddingLeft, onSelect, o
             className={`tree-item${(!isDisabledSelect) ? '' : ' disabled'}`}
         >
             <DragPreviewImage connect={preview} src={img_tree_item_preview} />
-            <div key={itemTree.id} className={`item${hasError ? ' text-underline-error' : ''}${isDragging ? ' dragging' : ''}${(isDraggingOver && !isDisabledSelect && isUseDrop && !isDisabledDrop) ? ' dragging-over' : ''}`} style={{ paddingLeft: `${paddingLeft}px` }}>
+            <div key={itemTree.id} className={`item${hasError ? ' text-underline-error' : ''}${isDragging ? ' dragging' : ''}${(isDraggingOver && isUseDrop && !isDisabledDrop) ? ' dragging-over' : ''}`} style={{ paddingLeft: `${paddingLeft}px` }}>
                 {(itemTree.type === TreeItensTypes.folder || itemTree.childs.length > 0) &&
                     <Icon onClick={isAllowedToggleNodeExpand ? ((e: any) => onSelect(itemTree.id, e)) : undefined} iconName={itemTree.nodeExpanded ? "btn-collapse-folder" : "btn-expand-folder"} />
                 }

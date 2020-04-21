@@ -13,7 +13,7 @@ import EditorTab from './editor-tab/EditorTab';
 import './Editor.scss';
 
 
-export default class Editor extends React.Component {
+export class Editor extends React.Component {
 
     public state = {
         project: Storage.getProject(),
@@ -21,7 +21,7 @@ export default class Editor extends React.Component {
         editingTab: ComponentType.tabRouters,
 
         updateProjectState: (project: Project) => this.updateProjectState(project),
-        toggleResourcesTab: (type: ComponentType) => this.setState({ editingTab: type }),
+        toggleResourcesTab: (type: ComponentType) => this.toggleResourcesTab(type),
     }
 
     private onChangeTab = (tab: CurrentTab) => {
@@ -32,6 +32,20 @@ export default class Editor extends React.Component {
         } else if (tab === CurrentTab.properties) {
             this.setState({ currentTab: <PropertiesTab /> });
         }
+    }
+
+    private toggleResourcesTab(type: ComponentType) {
+        let project = this.state.project;
+
+        project.tabs.forEach(tab => {
+            if (tab.configs.type === type) {
+                tab.configs.isEditando = true;
+            } else {
+                tab.configs.isEditando = false;
+            }
+        });
+
+        this.updateProjectState(project);
     }
 
     /** Usada para atualizar o state global do projeto e para atualizar o localstorage */

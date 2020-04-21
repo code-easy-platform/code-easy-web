@@ -94,22 +94,33 @@ export class ComponentConfigs implements BaseFields {
     constructor(
         private fields: {
             id: string | undefined,
-            name: string,
-            label: string,
+            /**
+            * Usado para identificar um registro dentro do sistema.
+            * 
+            *  * Não pode ter espaço
+            *  * Não pode ter caracteres especiais
+            *  * Não pode ser vazio
+            */
+            name: string;
+            /**
+             * Usado para nomear um registro apenas de forma visual
+             */
+            label: string;
             description: string,
             type: ComponentType,
             isEditando: boolean;
-            isExpanded?: boolean,
+            isExpanded?: boolean;
         }
     ) {
         this.id = this.fields.id;
+        this.type = this.fields.type;
         this.name = this.fields.name;
         this.label = this.fields.label;
-        this.description = this.fields.description;
-        this.type = this.fields.type;
         this.isEditando = this.fields.isEditando;
         this.isExpanded = this.fields.isExpanded;
+        this.description = this.fields.description;
     }
+
 }
 
 export class ItemFlowComplete extends FlowItem {
@@ -122,7 +133,7 @@ export class ItemFlowComplete extends FlowItem {
     public width: number = 0;
     public name: string = "";
     public left: number = 0;
-    public select = () => {};
+    public select = () => { };
     public top: number = 0;
 
     constructor(
@@ -172,11 +183,23 @@ export class ItemComponent implements BaseFields {
     public nodeExpanded: boolean;
     /** Usado para fazer auto referência usado para construir árvores */
     public itemPaiId: string | undefined;
+    /** Usado para lista todas as propriedades de um item */
+    public properties: IProperties[] = [];
 
     constructor(
         private _fields: {
             id: string;
+            /**
+            * Usado para identificar um registro dentro do sistema.
+            * 
+            *  * Não pode ter espaço
+            *  * Não pode ter caracteres especiais
+            *  * Não pode ser vazio
+            */
             name: string;
+            /**
+             * Usado para nomear um registro apenas de forma visual
+             */
             label: string;
             itens: ItemFlowComplete[];
             isEditing: boolean;
@@ -184,6 +207,8 @@ export class ItemComponent implements BaseFields {
             description: string;
             type: TreeItensTypes;
             nodeExpanded: boolean;
+            /** Usado para lista todas as propriedades de um item */
+            properties: IProperties[];
             itemPaiId: string | undefined;
         }
     ) {
@@ -194,6 +219,7 @@ export class ItemComponent implements BaseFields {
         this.itens = this._fields.itens;
         this.itemPaiId = this._fields.itemPaiId;
         this.isEditing = this._fields.isEditing;
+        this.properties = this._fields.properties;
         this.isSelected = this._fields.isSelected;
         this.description = this._fields.description;
         this.nodeExpanded = this._fields.nodeExpanded;

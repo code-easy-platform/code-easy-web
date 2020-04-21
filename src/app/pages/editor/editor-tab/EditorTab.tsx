@@ -1,18 +1,17 @@
 import React from 'react';
 
+import { IItem, TypeValues, IProperties } from '../../../shared/components/properties-editor/shared/interfaces';
+import { CodeEditorContext, ICodeEditorContext } from '../../../shared/services/contexts/CodeEditorContext';
 import { TreeItensTypes } from '../../../shared/components/tree-manager/shared/models/TreeItensTypes';
 import { TreeInterface } from '../../../shared/components/tree-manager/shared/models/TreeInterface';
 import { PropertiesEditor } from './../../../shared/components/properties-editor/PropertiesEditor';
-import { IItem, TypeValues, IProperties } from '../../../shared/components/properties-editor/shared/interfaces';
 import { EditorTabTemplate } from '../../../shared/components/resize-tamplate/EditorTabTemplate';
 import { ContextMenuService } from '../../../shared/components/context-menu/ContextMenuService';
 import { FlowItem, ItemType } from './../../../shared/components/code-editor/models/ItemFluxo';
 import { Tab, ItemComponent, ItemFlowComplete } from '../../../shared/interfaces/Aplication';
 import ColRightTemplate from '../../../shared/components/resize-tamplate/ColRightTemplate';
-import { CodeEditorContext, ICodeEditorContext } from '../../../shared/services/contexts/CodeEditorContext';
 import { TreeManager } from '../../../shared/components/tree-manager/TreeManager';
 import { FlowEditor } from '../../../shared/components/code-editor/CodeEditor';
-import { Storage } from '../../../shared/services/LocalStorage';
 import { Utils } from '../../../shared/services/Utils';
 
 
@@ -24,42 +23,52 @@ enum CurrentFocus {
 export default class EditorTab extends React.Component {
     private editorContext: ICodeEditorContext = this.context;
 
-    state: { tab: Tab, currentFocus: CurrentFocus } = {
-        tab: this.editorContext.project.tabs.find((tab: Tab) => tab.configs.isEditando) || Storage.getProject().tabs[0],
+    state: { currentFocus: CurrentFocus } = {
         currentFocus: CurrentFocus.tree,
     }
 
 
+
     private onChangeState() {
-
-        const tabIndex = this.editorContext.project.tabs.findIndex((tab: Tab) => tab.configs.isEditando);
-        let project = this.editorContext.project;
-        project.tabs[tabIndex] = this.state.tab;
-
-        this.editorContext.updateProjectState(project);
+        this.editorContext.updateProjectState(this.editorContext.project);
     }
 
 
+
+    /** O editor de propriedades emite a lista de propriedades alteradas */
     private propertiesEditorOutputItens(itens: IItem[]) {
 
         if (this.state.currentFocus === CurrentFocus.tree) {
+
             itens.forEach(item => {
-
                 if (item.id !== undefined) {
-                    let itemSelected = this.state.tab.itens.find(itemTree => (itemTree.isSelected && itemTree.id === item.id));
+                    this.editorContext.project.tabs.forEach((tab: Tab) => {
+                        tab.itens.forEach(itemTree => {
+                            if (itemTree.isSelected && itemTree.id === item.id) {
 
-                    if (itemSelected) {
-                        itemSelected.label = item.properties[0].value;
-                        itemSelected.description = item.properties[1].value;
-                    }
+                                if (itemTree) {
+                                    itemTree.label = item.properties[0].value;
+                                    itemTree.description = item.properties[1].value;
+                                }
+
+                            }
+                        });
+                    });
                 }
-
             });
+
         } else if (this.state.currentFocus === CurrentFocus.flow) {
 
-            let itemEditing: any = this.state.tab.itens.find(item => item.isEditing);
-            if (itemEditing !== null) {
+            let itemEditing: any;
+            this.editorContext.project.tabs.forEach((tab: Tab) => {
+                tab.itens.forEach(item => {
+                    if (item.isEditing) {
+                        itemEditing = item;
+                    }
+                })
+            });
 
+            if (itemEditing !== null) {
                 itens.forEach(item => {
 
                     let index = itemEditing.itens.findIndex((oldItem: ItemFlowComplete) => oldItem.id === item.id);
@@ -69,76 +78,61 @@ export default class EditorTab extends React.Component {
                     itemEditing.itens[index].properties = item.properties;
 
                 });
-
             }
 
         }
-
-        this.setState({ tab: { ...this.state.tab } });
-        this.onChangeState()
+        this.onChangeState();
 
     }
 
-    private propertiesEditorGetSelectedItem(itens: ItemComponent[], currentFocus: CurrentFocus): IItem[] {
+    /** Devolve para o editor de propriedades as propriedades do item selecionado no momento. */
+    private propertiesEditorGetSelectedItem(currentFocus: CurrentFocus): IItem[] {
 
-        let itemIndex = itens.findIndex(item => item.isSelected);
+        if (currentFocus === CurrentFocus.tree) { // Mapeia os itens da árvore.
+            let res: IItem[] = [];
 
-        if (!(itemIndex < 0)) {
-            if (currentFocus === CurrentFocus.tree) {
-                return [
-                    {
-                        isHeader: true,
-                        id: itens[itemIndex].id,
-                        name: itens[itemIndex].label,
-                        properties: [
+            this.editorContext.project.tabs.forEach((tab: Tab) => {
+                tab.itens.forEach(item => {
+                    if (item.isSelected) {
+                        res = [
                             {
-                                id: '1',
-                                name: 'Label',
-                                value: itens[itemIndex].label,
-                                type: TypeValues.string
-                            },
-                            {
-                                id: '2',
-                                name: 'Description',
-                                value: itens[itemIndex].description,
-                                type: TypeValues.bigstring
-                            },
-                            {
-                                id: '3',
-                                name: "Enabled",
-                                type: TypeValues.boolean,
-                                value: false
+                                id: item.id,
+                                isHeader: true,
+                                name: item.label,
+                                properties: item.properties,
                             }
                         ]
                     }
-                ]
-            } else if (currentFocus === CurrentFocus.flow) {
-
-                const itensLogica = this.codeEditorGetItensLogica(this.state.tab.itens, 'ItemFlowComplete');
-                const itensFiltereds = itensLogica.filter(flowItem => flowItem.isSelected);
-
-                const mappedItens: IItem[] = [];
-                itensFiltereds.forEach(filteredItem => {
-                    mappedItens.push({
-                        isHeader: true,
-                        id: filteredItem.id,
-                        name: filteredItem.name,
-                        properties: filteredItem.properties,
-                    });
                 });
+            });
 
-                return mappedItens;
-            }
+            return res;
+        } else if (currentFocus === CurrentFocus.flow) { // Mapeia os itens de fluxo
+            const itensLogica = this.codeEditorGetItensLogica('ItemFlowComplete');
+            const itensFiltereds = itensLogica.filter(flowItem => flowItem.isSelected);
+
+            const mappedItens: IItem[] = [];
+            itensFiltereds.forEach(filteredItem => {
+                mappedItens.push({
+                    isHeader: true,
+                    id: filteredItem.id,
+                    name: filteredItem.name,
+                    properties: filteredItem.properties,
+                });
+            });
+
+            return mappedItens;
         }
 
         return [];
+
     }
 
+    /** Devolve uma lista de propriedades para ser adicionado em novos itens de fluxo ou da árvore. */
     private propertiesEditorGetNewProperties(itemType: ItemType, name: string): IProperties[] {
         switch (itemType) {
             case ItemType.START:
                 return [
-                    // TODO: Alterar o tipo "string" para um tipo de apenas exibição(será adicionado no futuro o suporte para este tipo).
                     { id: Utils.getUUID(), name: 'Label', type: TypeValues.viewOnly, value: name },
                 ];
 
@@ -180,7 +174,6 @@ export default class EditorTab extends React.Component {
 
             case ItemType.END:
                 return [
-                    // TODO: Alterar o tipo "string" para um tipo de apenas exibição(será adicionado no futuro o suporte para este tipo).
                     { id: Utils.getUUID(), name: 'Label', type: TypeValues.viewOnly, value: name },
                 ];
 
@@ -196,63 +189,67 @@ export default class EditorTab extends React.Component {
     /** Toda vez que houver uma alteração nos itens de fluxo está função será executada. */
     private codeEditorOutputFlowItens = (updatedItens: FlowItem[]) => {
 
-        let tab = this.state.tab;
+        // Caso não haja itens de fluxo, evita o processamento desnecessário.
+        if (updatedItens.length === 0) return;
 
-        let itemTreeEditingIndex = tab.itens.findIndex(item => item.isEditing);
-        if (itemTreeEditingIndex >= 0) {
+        this.editorContext.project.tabs.forEach((tab: Tab) => {
+            tab.itens.forEach(item => {
+                if (item.isEditing) {
 
-            // Pega os itens de fluxo do item da árvore atual para pode editar
-            let itens = tab.itens[itemTreeEditingIndex].itens;
+                    let newItens: ItemFlowComplete[] = [];
 
-            let newItens: ItemFlowComplete[] = [];
+                    // Atualiza os itens da arvore.
+                    updatedItens.forEach(updatedItem => {
+                        if (updatedItem.id !== undefined) {
 
-            // Atualiza os itens da arvore.
-            updatedItens.forEach(updatedItem => {
-                if (updatedItem.id !== undefined) {
+                            const index = item.itens.findIndex(item => updatedItem.id === item.id);
+                            if (index >= 0) {
+                                newItens.push(new ItemFlowComplete({
+                                    properties: item.itens[index].properties,
+                                    isSelected: updatedItem.isSelected,
+                                    sucessor: updatedItem.sucessor,
+                                    itemType: updatedItem.itemType,
+                                    height: updatedItem.height,
+                                    width: updatedItem.width,
+                                    left: updatedItem.left,
+                                    name: updatedItem.name,
+                                    top: updatedItem.top,
+                                    id: updatedItem.id,
+                                }));
+                            } else {
+                                newItens.push(new ItemFlowComplete({
+                                    properties: this.propertiesEditorGetNewProperties(updatedItem.itemType, updatedItem.name), // Criar uma função para isso
+                                    isSelected: updatedItem.isSelected,
+                                    sucessor: updatedItem.sucessor,
+                                    itemType: updatedItem.itemType,
+                                    height: updatedItem.height,
+                                    width: updatedItem.width,
+                                    left: updatedItem.left,
+                                    name: updatedItem.name,
+                                    top: updatedItem.top,
+                                    id: updatedItem.id,
+                                }));
+                            }
 
-                    const index = itens.findIndex(item => updatedItem.id === item.id);
-                    if (index >= 0) {
-                        newItens.push(new ItemFlowComplete({
-                            properties: itens[index].properties,
-                            isSelected: updatedItem.isSelected,
-                            sucessor: updatedItem.sucessor,
-                            itemType: updatedItem.itemType,
-                            height: updatedItem.height,
-                            width: updatedItem.width,
-                            left: updatedItem.left,
-                            name: updatedItem.name,
-                            top: updatedItem.top,
-                            id: updatedItem.id,
-                        }));
-                    } else {
-                        newItens.push(new ItemFlowComplete({
-                            properties: this.propertiesEditorGetNewProperties(updatedItem.itemType, updatedItem.name), // Criar uma função para isso
-                            isSelected: updatedItem.isSelected,
-                            sucessor: updatedItem.sucessor,
-                            itemType: updatedItem.itemType,
-                            height: updatedItem.height,
-                            width: updatedItem.width,
-                            left: updatedItem.left,
-                            name: updatedItem.name,
-                            top: updatedItem.top,
-                            id: updatedItem.id,
-                        }));
-                    }
+                        }
+                    });
 
+                    // Atualiza a tab com os itens alterados
+                    item.itens = newItens;
+
+                    // Atualiza a tab no state
+                    this.setState({
+                        currentFocus: CurrentFocus.flow,
+                        tab: tab
+                    });
+
+                } else {
+                    item.itens.forEach(flowItem => flowItem.isSelected = false);
                 }
             });
-
-            // Atualiza a tab com os itens alterados
-            tab.itens[itemTreeEditingIndex].itens = newItens;
-
-        }
-
-        // Atualiza a tab no state
-        this.setState({
-            currentFocus: CurrentFocus.flow,
-            tab: tab
         });
-        this.onChangeState()
+        this.onChangeState();
+
     }
 
     /** Ao soltar um novo item permitido no editor está função será executada.
@@ -271,14 +268,22 @@ export default class EditorTab extends React.Component {
 
     }
 
-    /** Usando o state pode pegar os itens que devem ser editados pelo fluxo */
-    private codeEditorGetItensLogica(itens: ItemComponent[], res?: 'ItemFlowComplete' | 'FlowItem'): any[] {
+    /** Usando o state pode pegar os itens que devem ser editados pelo fluxo. */
+    private codeEditorGetItensLogica(resultType?: 'ItemFlowComplete' | 'FlowItem'): any[] {
 
-        let itemEditing = itens.find(item => item.isEditing);
+        let itemEditing: ItemComponent | undefined;
+
+        this.editorContext.project.tabs.forEach((tab: Tab) => {
+            tab.itens.forEach(item => {
+                if (item.isEditing) {
+                    itemEditing = item;
+                }
+            });
+        });
 
         if (itemEditing) {
             itemEditing.itens.sort((a, b) => (a.top - b.top));
-            if (res === 'ItemFlowComplete') return itemEditing.itens; // Se for o completo já retorna para evitar processamento.
+            if (resultType === 'ItemFlowComplete') return itemEditing.itens; // Se for o completo já retorna para evitar processamento.
 
             // Se for o simples para o editor de fluxos, faz um map dos itens.
             let flowItens: FlowItem[] = [];
@@ -292,7 +297,7 @@ export default class EditorTab extends React.Component {
                     height: item.height,
                     itemType: item.itemType,
                     sucessor: item.sucessor,
-                    isSelected: item.isSelected
+                    isSelected: item.isSelected,
                 }));
             });
 
@@ -303,7 +308,7 @@ export default class EditorTab extends React.Component {
 
     }
 
-    /** Alimenta a toolbox, de onde pode ser arrastados itens para o fluxo */
+    /** Alimenta a toolbox, de onde pode ser arrastados itens para o fluxo. */
     private codeEditorGetToolBoxItens(): FlowItem[] {
         return [
             new FlowItem({ id: '1', name: "START", itemType: ItemType.START }),
@@ -317,137 +322,115 @@ export default class EditorTab extends React.Component {
         ];
     }
 
-    /** Quando clicado com o botão esquerdo do mouse no interior do editor esta função é acionada */
+    /** Quando clicado com o botão esquerdo do mouse no interior do editor esta função é acionada. */
     private codeEditorContextMenu(data: any): any[] {
         console.log("--------");
         console.log(data);
         console.log("--------");
 
-        const removeItem = (itemId: string) => {
-            console.log("Removido!");
-            /* this.setState({ currentFocus: CurrentFocus.tree });
-    
-            const index = this.state.tab.itens.findIndex(item => item.id === itemId);
-    
-            if (index < 0) return;
-            this.state.tab.itens.splice(index, 1);
-    
-            this.setState({
-                tab: this.state.tab,
-                tree: this.treeManagerGetTree(this.state.tab.itens),
-                itensLogica: this.codeEditorGetItensLogica(this.state.tab.itens),
-                propEditor: this.propertiesEditorGetSelectedItem(this.state.tab.itens),
-            }); */
-        };
-
-        return [
-            {
-                action: () => removeItem(data.itemId),
-                label: 'Excluir'
-            }
-        ];
-
+        return [];
     }
 
-    /** Monta o breadcamps que será exibido no top do editor de fluxos */
+    /** Monta o breadcamps que será exibido no top do editor de fluxos. */
     private codeEditorGetBreadcamps(): string {
 
-        let tab = this.state.tab;
+        let breadcamps = '';
 
-        let itemTreeEditing = tab.itens.find(item => item.isEditing);
+        this.editorContext.project.tabs.forEach((tab: Tab) => {
+            tab.itens.forEach(item => {
+                if (item.isEditing) {
+                    breadcamps = `${tab.configs.label}/${item.label}`;
+                }
+            });
+        });
 
-        return `${tab.configs.label}/${itemTreeEditing?.label}`;
+        return breadcamps;
     }
 
 
 
-    private treeManagerOnDropItem(targetId: string, droppedId: string, droppedItem: any): TreeInterface {
+    /** Quando um item for dropado na árvore está função será chamada */
+    private treeManagerOnDropItem(targetId: string, droppedId: string, droppedItem: any) {
 
         this.setState({ currentFocus: CurrentFocus.tree });
 
-        const itemDefault = {
-            id: "",
-            isSelected: false,
-            nodeExpanded: true,
-            label: "Routers",
-            type: TreeItensTypes.folder,
-            childs: this.treeManagerGetTree(this.state.tab.itens),
-        };
-
         // Evita loop infinito
-        if (targetId === droppedId) return itemDefault;
+        if (targetId === droppedId) return;
 
-        let itens = this.state.tab.itens;
+        // Pega a lista de itens corrente na árvore
+        let itens: ItemComponent[] = [];
+        this.editorContext.project.tabs.forEach((tab: Tab) => {
+            if (tab.configs.isEditando) {
+                itens = tab.itens;
+            }
+        });
+
+        // Realiza a troca de item pai
         let index: number = itens.findIndex(item => item.id === droppedId);
-        if (index < 0) return itemDefault;
+        if (index < 0) return;
         itens[index].itemPaiId = targetId;
 
-        this.setState({
-            currentFocus: CurrentFocus.tree,
-            tab: { ...this.state.tab, itens }
-        });
+        // Expande o elemento onde o item foi dropado
+        index = itens.findIndex(item => item.id === targetId);
+        if (index < 0) return;
+        itens[index].nodeExpanded = true;
 
-        return {
-            id: "",
-            isSelected: false,
-            nodeExpanded: true,
-            label: "Routers",
-            type: TreeItensTypes.folder,
-            childs: this.treeManagerGetTree(this.state.tab.itens),
-        };
-
+        // Atualiza o estado para as alterações fazerem efeito
+        this.setState({ currentFocus: CurrentFocus.tree });
+        this.onChangeState()
     }
 
+    /** Quando um item da árvore for clicado, está função será chamada */
     private treeManagerOnClick(itemTreeId: string, item: TreeInterface) {
 
-        console.log(itemTreeId, item);
-
-        let itens = this.state.tab.itens;
-        const index = itens.findIndex(item => item.id === itemTreeId);
-
-        itens.forEach(item => { item.isSelected = false; });
-
-        if (index < 0) return;
-
-        itens[index].nodeExpanded = !itens[index].nodeExpanded;
-        itens[index].isSelected = true;
-
-        this.setState({
-            tab: { ...this.state.tab, itens },
-            currentFocus: CurrentFocus.tree,
+        this.editorContext.project.tabs.forEach((tab: Tab) => {
+            tab.itens.forEach(item => {
+                if (item.id === itemTreeId) {
+                    item.isSelected = true;
+                    item.nodeExpanded = !item.nodeExpanded;
+                } else {
+                    item.isSelected = false;
+                }
+            });
         });
+
+        this.setState({ currentFocus: CurrentFocus.tree });
         this.onChangeState()
 
     }
 
+    /** Quando houver um duplo clique em um item da árvore, está função será chamada */
     private treeManagerOnDoubleClick(itemTreeId: string, item: TreeInterface) {
 
-        let itens = this.state.tab.itens;
-        const index = itens.findIndex(item => item.id === itemTreeId);
-        if (index < 0) return;
-
-        itens.forEach(item => {
-            item.isEditing = false;
+        this.editorContext.project.tabs.forEach((tab: Tab) => {
+            tab.itens.forEach(item => {
+                if (item.id === itemTreeId) {
+                    item.isEditing = true;
+                } else {
+                    item.isEditing = false;
+                }
+            });
         });
 
-        itens[index].isEditing = true;
-
-        this.setState({
-            currentFocus: CurrentFocus.tree,
-            tab: { ...this.state.tab, itens }
-        });
-        this.onChangeState()
+        this.setState({ currentFocus: CurrentFocus.tree });
+        this.onChangeState();
 
     }
 
-    private treeManagerGetTree(itens: ItemComponent[]): TreeInterface[] {
+    /** Monta a estrutura da árvore e devolve no return */
+    private treeManagerGetTree(): TreeInterface[] {
+
+        let itens: ItemComponent[] = [];
+        this.editorContext.project.tabs.forEach((tab: Tab) => {
+            if (tab.configs.isEditando) {
+                itens = tab.itens;
+            }
+        });
 
         const loadChilds = (tree: TreeInterface): TreeInterface[] => {
 
             // Busca todos os itens que tem como pai o elemento corrente
-            itens.filter((item) => {
-                return item.itemPaiId === tree.id;
-            }).forEach(item => {
+            itens.filter((item) => item.itemPaiId === tree.id).forEach(item => {
                 tree.childs.push({
                     childs: [],
                     id: item.id,
@@ -492,17 +475,29 @@ export default class EditorTab extends React.Component {
         return tree;
     }
 
+    /** Quando clicado com o botão esquerdo do mouse no interior da árvore esta função é acionada. */
     private treeManagerContextMenu(itemId: string): any[] {
 
         const removeItem = (itemId: string) => {
             this.setState({ currentFocus: CurrentFocus.tree });
 
-            const index = this.state.tab.itens.findIndex(item => item.id === itemId);
+            // Pega a lista de itens corrente na árvore
+            let indexTabToRemove: number | any;
+            let indexItemToRemove: number | any;
+            this.editorContext.project.tabs.forEach((tab: Tab, indexTab) => {
+                tab.itens.forEach((item, index) => {
+                    if (item.id === itemId) {
+                        indexItemToRemove = index;
+                        indexTabToRemove = indexTab;
+                    }
+                });
+            });
 
-            if (index < 0) return;
-            this.state.tab.itens.splice(index, 1);
+            if (indexItemToRemove !== undefined && indexItemToRemove !== undefined) {
+                this.editorContext.project.tabs[indexTabToRemove].itens.splice(indexItemToRemove, 1);
+            }
 
-            this.setState({ tab: this.state.tab });
+            this.onChangeState();
 
         };
 
@@ -525,10 +520,10 @@ export default class EditorTab extends React.Component {
                         isShowToolbar={true}
                         allowDropTo={[TreeItensTypes.file]}
                         toolItens={this.codeEditorGetToolBoxItens()}
-                        breadcrumbsPath={this.codeEditorGetBreadcamps.bind(this)()}
-                        itens={this.codeEditorGetItensLogica.bind(this)(this.state.tab.itens)}
                         onDropItem={this.codeEditorOnDropItem.bind(this)}
+                        itens={this.codeEditorGetItensLogica.bind(this)()}
                         onChangeItens={this.codeEditorOutputFlowItens.bind(this)}
+                        breadcrumbsPath={this.codeEditorGetBreadcamps.bind(this)()}
                         onContextMenu={(data, e) => {
                             if (e) {
                                 e.preventDefault();
@@ -552,18 +547,18 @@ export default class EditorTab extends React.Component {
                                 }}
                                 itemBase={{
                                     id: undefined,
-                                    label: "Routers",
                                     isSelected: false,
                                     nodeExpanded: true,
                                     isDisabledDrag: true,
                                     type: TreeItensTypes.folder,
-                                    childs: this.treeManagerGetTree.bind(this)(this.state.tab.itens),
+                                    childs: this.treeManagerGetTree.bind(this)(),
+                                    label: this.editorContext.project.tabs.find(item => item.configs.isEditando)?.configs.label || '',
                                 }}
                             />
                         }
                         rowBottom={
                             <PropertiesEditor
-                                itens={this.propertiesEditorGetSelectedItem.bind(this)(this.state.tab.itens, this.state.currentFocus)}
+                                itens={this.propertiesEditorGetSelectedItem.bind(this)(this.state.currentFocus)}
                                 onChange={this.propertiesEditorOutputItens.bind(this)}
                             />
                         }
