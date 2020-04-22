@@ -29,11 +29,11 @@ export default class EditorTab extends React.Component {
 
 
 
-    private onChangeState() {
-        this.editorContext.updateProjectState(this.editorContext.project);
-    }
+    private onChangeState = () => this.editorContext.updateProjectState(this.editorContext.project);
 
 
+
+    //#region Editor de propriedades
 
     /** O editor de propriedades emite a lista de propriedades alteradas */
     private propertiesEditorOutputItens(itens: IItem[]) {
@@ -193,21 +193,29 @@ export default class EditorTab extends React.Component {
         }
     }
 
+    //#endregion
 
+
+    //#region Editor de fluxo
 
     /** Toda vez que houver uma alteração nos itens de fluxo está função será executada. */
     private codeEditorOutputFlowItens = (updatedItens: FlowItem[]) => {
 
+        console.table(updatedItens);
+
         // Caso não haja itens de fluxo, evita o processamento desnecessário.
         if (updatedItens.length === 0) return;
 
+        // Atualiza o currentFocus da tab
+        this.setState({ currentFocus: CurrentFocus.flow });
+
+        // Encontra a tab certa e atualiza os itens
         this.editorContext.project.tabs.forEach((tab: Tab) => {
             tab.itens.forEach(item => {
                 if (item.isEditing) {
-
                     let newItens: ItemFlowComplete[] = [];
 
-                    // Atualiza os itens da arvore.
+                    // Atualiza os itens do item da arvore.
                     updatedItens.forEach(updatedItem => {
                         if (updatedItem.id !== undefined) {
 
@@ -245,20 +253,14 @@ export default class EditorTab extends React.Component {
 
                     // Atualiza a tab com os itens alterados
                     item.itens = newItens;
-
-                    // Atualiza a tab no state
-                    this.setState({
-                        currentFocus: CurrentFocus.flow,
-                        tab: tab
-                    });
-
                 } else {
                     item.itens.forEach(flowItem => flowItem.isSelected = false);
                 }
             });
         });
-        this.onChangeState();
 
+        // Atualiza o context do projeto
+        this.onChangeState();
     }
 
     /** Ao soltar um novo item permitido no editor está função será executada.
@@ -357,7 +359,10 @@ export default class EditorTab extends React.Component {
         return breadcamps;
     }
 
+    //#endregion
 
+
+    //#region Tree manager
 
     /** Quando um item for dropado na árvore está função será chamada */
     private treeManagerOnDropItem(targetId: string, droppedId: string, droppedItem: any) {
@@ -555,7 +560,9 @@ export default class EditorTab extends React.Component {
 
     }
 
- 
+    //#endregion
+
+
 
     render() {
         const flowEditorItens = this.codeEditorGetItensLogica.bind(this)();
