@@ -1,0 +1,10 @@
+.tab-properties {
+    justify-content: start;
+    align-items: center;
+    padding: var(--size-2);
+}
+
+.tab-properties-container {
+    border: var(--input-border);
+    padding: var(--size-5);
+}

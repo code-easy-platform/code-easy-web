@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 
-import './ResizeTemplate.scss';
+import './ResizeTemplate.css';
 
 interface IRecipeProps {
     rowTop: any,

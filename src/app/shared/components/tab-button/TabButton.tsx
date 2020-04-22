@@ -1,6 +1,6 @@
 import React, { CSSProperties } from 'react';
 
-import './TabButton.scss';
+import './TabButton.css';
 
 interface props {
     id: string;

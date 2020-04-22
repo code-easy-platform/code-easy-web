@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 
 import { LoadingIndicator } from '../loading-indicator/LoadingIndicator';
 import { AlertService, AlertTypes } from './AlertService';
-import './BottonStatusBar.scss';
+import './BottonStatusBar.css';
 
 export class BottonStatusBar extends Component {
     private alertSubscrition: any;

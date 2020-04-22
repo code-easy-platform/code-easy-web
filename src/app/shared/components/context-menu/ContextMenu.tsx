@@ -1,7 +1,7 @@
 import React from 'react';
 
 import { ContextMenuService } from './ContextMenuService';
-import './ContextMenu.scss';
+import './ContextMenu.css';
 
 export interface IItemListContext {
     label: string;

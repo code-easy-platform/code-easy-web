@@ -4,13 +4,13 @@ import { BottonStatusBar } from '../../shared/components/botton-status-bar/Botto
 import { CodeEditorContext } from '../../shared/services/contexts/CodeEditorContext';
 import { ToolBar } from '../../shared/components/tool-bar/ToolBar';
 import { ComponentType } from '../../shared/enuns/ComponentType';
+import { PropertiesTab } from './properties-tab/PropertiesTab';
 import { Project } from '../../shared/interfaces/Aplication';
 import { Storage } from '../../shared/services/LocalStorage';
-import PropertiesTab from './properties-tab/PropertiesTab';
 import { CurrentTab } from '../../shared/enuns/CurrentTab';
 import PluginsTab from './plugins-tab/PluginsTab';
 import EditorTab from './editor-tab/EditorTab';
-import './Editor.scss';
+import './Editor.css';
 
 
 export class Editor extends React.Component {
@@ -22,6 +22,10 @@ export class Editor extends React.Component {
 
         updateProjectState: (project: Project) => this.updateProjectState(project),
         toggleResourcesTab: (type: ComponentType) => this.toggleResourcesTab(type),
+    }
+
+    componentWillReceiveProps() {
+        document.title = this.state.project.projectConfigs.label + ' - Code Easy'
     }
 
     private onChangeTab = (tab: CurrentTab) => {
@@ -71,4 +75,5 @@ export class Editor extends React.Component {
             </CodeEditorContext.Provider>
         );
     }
+
 }

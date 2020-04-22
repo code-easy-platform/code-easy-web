@@ -2,15 +2,13 @@
   background-color: var(--main-background-panels);
   justify-content: space-between;
   min-width: var(--size-38);
-  .content {
-    flex-direction: column;
-  }
+}
+.col-right .content {
+  flex-direction: column;
 }
 
-// .grabber-col-left,
 .grabber-col-right,
 .grabber-col-right-resize-y {
-  background-color: var(--color-transparent);
   height: var(--size-fill);
   width: var(--size-1);
   cursor: col-resize;
@@ -31,10 +29,4 @@
   height: var(--size-2);
   position: absolute;
   cursor: row-resize;
-}
-
-// .grabber-col-left:active,
-.grabber-col-right:active,
-.grabber-col-right-resize-y:active {
-  background-color: var(--color-transparent);
 }

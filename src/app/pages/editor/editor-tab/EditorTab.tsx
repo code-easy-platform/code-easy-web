@@ -129,7 +129,7 @@ export default class EditorTab extends React.Component {
     }
 
     /** Devolve uma lista de propriedades para ser adicionado em novos itens de fluxo ou da árvore. */
-    private propertiesEditorGetNewProperties(itemType: ItemType, name: string): IProperties[] {
+    private propertiesEditorGetNewProperties(itemType: ItemType | TreeItensTypes, name: string): IProperties[] {
         switch (itemType) {
             case ItemType.START:
                 return [
@@ -175,6 +175,15 @@ export default class EditorTab extends React.Component {
             case ItemType.END:
                 return [
                     { id: Utils.getUUID(), name: 'Label', type: TypeValues.viewOnly, value: name },
+                ];
+
+            case TreeItensTypes.file:
+                return [
+                    { id: Utils.getUUID(), name: 'Label', type: TypeValues.string, value: name },
+                ];
+            case TreeItensTypes.folder:
+                return [
+                    { id: Utils.getUUID(), name: 'Label', type: TypeValues.string, value: name },
                 ];
 
             default:
@@ -507,21 +516,21 @@ export default class EditorTab extends React.Component {
             let tabIndex: number | undefined;
             this.editorContext.project.tabs.forEach((tab: Tab, indexTab) => {
                 tab.itens.forEach(item => {
-                    if (item.id === itemId) {
+                    if (item.id === inputItemId) {
                         tabIndex = indexTab
                     }
                 });
             });
 
-            if (tabIndex) {
+            if (tabIndex !== undefined) {
                 this.editorContext.project.tabs[tabIndex].itens.push(new ItemComponent({
                     id: Utils.getUUID(),
                     itens: [],
                     description: '',
-                    properties: this.propertiesEditorGetNewProperties(ItemType.ACTION, 'newinputparam'),
+                    properties: this.propertiesEditorGetNewProperties(TreeItensTypes.file, 'newinputparam'),
                     isSelected: true,
                     isEditing: false,
-                    nodeExpanded: false,
+                    nodeExpanded: true,
                     name: 'newinputparam',
                     itemPaiId: inputItemId,
                     type: TreeItensTypes.file,
@@ -538,15 +547,15 @@ export default class EditorTab extends React.Component {
                 action: () => removeItem(itemId),
                 label: 'Delete'
             },
-            /* {
+            {
                 action: () => addParam(itemId),
                 label: 'Add input param'
-            } */
+            }
         ];
 
     }
 
-
+ 
 
     render() {
         const flowEditorItens = this.codeEditorGetItensLogica.bind(this)();

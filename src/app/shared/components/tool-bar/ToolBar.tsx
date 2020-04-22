@@ -5,7 +5,7 @@ import { TabButton, TabGroup } from '../tab-button/TabButton';
 import { Storage } from '../../services/LocalStorage';
 import { CurrentTab } from '../../enuns/CurrentTab';
 import { Tab } from '../../interfaces/Aplication';
-import './ToolBar.scss';
+import './ToolBar.css';
 
 export const ToolBar = (props: any) => {
     const codeEditorContext = useContext(CodeEditorContext);

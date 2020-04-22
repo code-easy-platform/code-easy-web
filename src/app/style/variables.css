@@ -1,8 +1,5 @@
 :root {
-    /* Coisas básicas */
-    /* ------------------------------------------------- */
-
-    // Dimensões
+    /* Dimensões */
     --size-window-vh-fill: 100vh;
     --size-window-vw-fill: 100vw;
     --size-fill: 100%;
@@ -16,7 +13,7 @@
     --size-half-20: 20%;
     --size-half-10: 10%;
 
-    // Dimensões em px
+    /* Dimensões em px */
     --size-none: 0px;
     --size-0-5: 2px;
     --size-0-75: 3px;
@@ -42,19 +39,19 @@
     --size-20: 76px;
     --size-21: 80px;
     --size-22: 84px;
-    //...
+    /* ... */
     --size-35: 140px;
     --size-38: 152px;
-    //...
+    /* ... */
     --size-75: 300px;
-    //...
+    /* ... */
     --size-92-5: 370px;
-    //...
+    /* ... */
     --size-150: 600px;
-    //...
+    /* ... */
     --size-250: 1000px;
 
-    // Font-sizes -------------
+    /* Font-sizes ------------- */
     --font-size-1: 4px;
     --font-size-1-5: 6px;
     --font-size-2: 8px;
@@ -69,107 +66,93 @@
     --font-size-10: 40px;
     --font-size-17: 64px;
 
-    // Font-sizes -------------
+    /* Border-sizes ------------- */
     --border-size-0: 0px;
     --border-size-1: 1px;
 
-    
     /************* Colors *************/
-    // Main base colors
+    /* Main base colors */
     --main-background: #1e1e1e;
     --main-background-bars: #2d2d2d;
     --main-background-panels: #252527;
     --main-background-highlighted: #3c3c3c;
 
-    --main-error-color: rgb(255, 0, 0);
-    // ----------------
+    --main-select-color: #1f724340;
+    --main-error-color: #ff0000;
 
-    --color-black: #000000;
-    --color-white: #ffffff;
     --color-transparent: transparent;
+    --color-white: white;
+    --color-gray-5: #e0e0e0;
+    --color-black: black;
+    /* ---------------- */
 
-    --color-black: #000;
-    --color-black-50: #00000050;
-    --color-border-light-gray: #4f4f4f;
-    --item-logic-hover: #3c3c3c;
-    --color-background-propertie-editor: #3c3c3c;
-    --color-background-propertie-editor-exetended-hover: #525252;
-    --color-top-bar: #3c3c3c;
-    --color-tool-bar: #2d2d2d;
-    --color-top-bar-light: #4d4d4d;
+    /* Bottom status bar */
     --color-botton-bar: #0f77bf;
+
+    --color-black-50: #00000050;
     --color-background-col: #252527;
     --color-background-col-click: #313135;
-
-    --color-background-tab-properties: #292929;
-
     --color-top-bar-button-close: #c70000;
     --color-top-bar-button-maximizar: #4d4848;
     --color-top-bar-button-minimizar: #4d4848;
 
-    //# Scroll bar style ----------
-    // Colors
+    /* Scroll bar style ---------- */
+    /* Colors */
     --color-scroll-bar: var(--main-background-panels);
     --color-scroll-bar-hover: #4d4d4d;
     --color-scroll-bar-active: #5c5c5c;
 
-    // Sizes
+    /* Sizes */
     --size-x-scroll-bar: var(--size-2);
     --size-x-scroll-bar-small: var(--size-1);
-    --size-x-scroll-bar-hover: var(--size-2); // Não funciona
-    --size-x-scroll-bar-active: var(--size-2); // Não funciona
+    --size-x-scroll-bar-hover: var(--size-2); /* Não funciona */
+    --size-x-scroll-bar-active: var(--size-2); /* Não funciona */
     /* ------------------------------------------------- */
 
-    // List item
+    /* List item */
     --color-list-item-hover: #1f724340;
     --color-list-item-active: #1f724310;
     --color-list-item-selected: #1f724330;
 
-    // Menu de contexto
+    /* Menu de contexto */
     --color-context-menu-background: #1a1a1b;
     --color-context-menu-background-title: #ffffff20;
     --color-context-menu-list-item-hover: var(--color-list-item-hover);
     --color-context-menu-list-item-active: var(--color-list-item-active);
     --box-shadow-context-menu: var(--size-none) var(--size-none) var(--size-0-5) var(--size-none) var(--color-black);
 
-    // Bottom status bar
-    --color-botton-bar: #0f77bf;
-
-    // Fontes
+    /* Fontes */
     --font-family-normal: Verdana, Geneva, Tahoma, sans-serif;
     --font-family-editor: Consolas, "Courier New", monospace;
     --font-family-vs-code: "Droid Sans Mono", "monospace", monospace, "Droid Sans Fallback";
 
-    // Fonte colors
+    /* Fonte colors */
     --font-color-title: #333333;
     --font-color-label-propertie-editor: #adadad;
     --font-color-input-propertie-editor: #d8d8d8;
     --font-color-input-propertie-editor-focus: #f3f3f3;
     --font-color-icon-add-remove-propertie-editor: #adadad;
 
-    // Link colors
+    /* Link colors */
     --font-color-link: #007bff;
     --font-color-link-hover: #c4c4ff;
 
-    // Box shadows
+    /* Box shadows */
     --box-shadow-small: 4px -1px 5px 0.1px #191919;
 
-    // Toolbar
-    --toolbar-background: #3c3c3c54;
+    /* Toolbar */
     --toolbar-border-color: var(--color-black-50);
-
-    // Toolbar itens
     --toolbar-item-border-hover: #525252;
     --toolbar-item-background-active: #52525252;
 
-    // Outlines
+    /* Outlines */
     --outline-padrao: auto;
-    // --outline-padrao: 1px solid #f3f3f3;
+    --outline-padrao: 1px solid #f3f3f3;
 
-    // Erros
+    /* Erros */
     --text-underline-error: underline wavy var(--main-error-color);
 
-    // Bordas
+    /* Bordas */
     --borda-size-0-25: 1px;
     --borda-size-0-5: 2px;
     --borda-size-0-75: 3px;
@@ -179,6 +162,14 @@
     --borda-size-3: 12px;
     --borda-size-4: 16px;
     --borda-size-5: 20px;
+
+    /** Margins **/
+    --margin-xs: var(--size-1);
+    --margin-s: var(--size-2);
+    --margin-m: var(--size-4);
+    --margin-g: var(--size-6);
+    --margin-xg: var(--size-8);
+    /*-----------*/
 
     /*** Input borders ***/
     --input-border: thin solid var(--main-background-highlighted);
