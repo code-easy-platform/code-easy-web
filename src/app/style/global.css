@@ -236,6 +236,9 @@ input[type="number"] {
   width: var(--size-x-scroll-bar);
   height: var(--size-x-scroll-bar);
 }
+::-webkit-scrollbar-corner {
+  background-color: var(--color-transparent);
+}
 ::-webkit-scrollbar:horizontal {
   height: var(--size-x-scroll-bar-horizontal);
 }
