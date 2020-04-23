@@ -30,7 +30,10 @@ export interface ICodeEditorProps {
     onDropItem?(oldItemId: string, newItemId: string, newItem: FlowItem): FlowItem | undefined;
 
     /** Function - usada para emitir um evento de output para que seja exibido um menu de contexto  */
-    onContextMenu?(data?: any, e?: React.MouseEvent<SVGGElement, MouseEvent>): void
+    onContextMenu?(data?: any, e?: React.MouseEvent<SVGGElement, MouseEvent>): void;
+
+    /** Function - usada para emitir um evento de output para que seja exibido um menu de contexto  */
+    onKeyDown?(e?: React.KeyboardEvent<SVGSVGElement>): void;
 
 }
 

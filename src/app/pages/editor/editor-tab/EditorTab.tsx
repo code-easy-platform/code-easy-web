@@ -28,9 +28,7 @@ export default class EditorTab extends React.Component {
     }
 
 
-
     private onChangeState = () => this.editorContext.updateProjectState(this.editorContext.project);
-
 
 
     //#region Editor de propriedades

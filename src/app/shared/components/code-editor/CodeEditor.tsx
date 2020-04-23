@@ -38,7 +38,7 @@ const acceptedInDrop: ItemType[] = [ItemType.START, ItemType.ACTION, ItemType.IF
 let backupFlow: string = "";
 
 /** Editor do fluxo. */
-const CodeEditor: React.FC<ICodeEditorProps> = ({ itens = [], toolItens = [], onChangeItens = () => { }, isShowToolbar = false, onDropItem = () => undefined, allowDropTo = [], onContextMenu, breadcrumbsPath, isDisabledSelection = false }) => {
+const CodeEditor: React.FC<ICodeEditorProps> = ({ itens = [], toolItens = [], onChangeItens = () => { }, isShowToolbar = false, onDropItem = () => undefined, allowDropTo = [], onContextMenu, onKeyDown, breadcrumbsPath, isDisabledSelection = false }) => {
 
     /** Referencia o svg onde está todos os itens de fluxo. */
     const editorPanelRef = useRef<any>(null);
@@ -207,6 +207,10 @@ const CodeEditor: React.FC<ICodeEditorProps> = ({ itens = [], toolItens = [], on
 
         /** Identifica teclas que foram acionadas enquando o editor está focado. */
         editorPanelRef.current.onkeydown = (event: React.KeyboardEvent<SVGSVGElement>) => {
+
+            // Direciona o evento para fora do componente.
+            if (onKeyDown) onKeyDown(event);
+
             if (event.key === 'Delete') onRemoveItem();
 
             /** Ctrl + a */
@@ -272,7 +276,6 @@ const CodeEditor: React.FC<ICodeEditorProps> = ({ itens = [], toolItens = [], on
                 }
 
                 return (index !== -1) ? findNewPosition(num + 10, type) : num;
-
             }
 
             try {
@@ -315,6 +318,7 @@ const CodeEditor: React.FC<ICodeEditorProps> = ({ itens = [], toolItens = [], on
                 });
 
                 setState({ ...state });
+                onChangeFlow();
             } catch (e) { }
 
         }
@@ -335,7 +339,6 @@ const CodeEditor: React.FC<ICodeEditorProps> = ({ itens = [], toolItens = [], on
             }
 
             setState({ ...state, flowItens: state.flowItens });
-
             onChangeFlow();
         }
 
@@ -346,14 +349,15 @@ const CodeEditor: React.FC<ICodeEditorProps> = ({ itens = [], toolItens = [], on
             });
 
             setState({ ...state, flowItens: state.flowItens });
+            onChangeFlow();
         }
 
         /** Remove o item que estiver selecionado no fluxo. */
         const onRemoveItem = () => {
-            const itemCurrentIndex = state.flowItens.findIndex((item: FlowItem) => { if (item.isSelected === true) return item; else return undefined; });
+            const itemCurrentIndex = state.flowItens.findIndex((item: FlowItem) => item.isSelected);
             if (itemCurrentIndex === -1) return;
 
-            const itemAntecessorIndex = state.flowItens.findIndex((item: FlowItem) => { if (item.sucessor[0] === state.flowItens[itemCurrentIndex].id) return item; else return undefined; });
+            const itemAntecessorIndex = state.flowItens.findIndex((item: FlowItem) => item.sucessor[0] === state.flowItens[itemCurrentIndex].id);
             if (itemAntecessorIndex !== -1) { state.flowItens[itemAntecessorIndex].sucessor[0] = '0'; }
 
             state.flowItens.splice(itemCurrentIndex, 1);
@@ -442,7 +446,6 @@ const CodeEditor: React.FC<ICodeEditorProps> = ({ itens = [], toolItens = [], on
 
     /** Desabilita qualquer item que esteja selecionado. */
     const onMouseDown = (event: React.MouseEvent<SVGSVGElement, MouseEvent>) => {
-        console.log(event.currentTarget);
 
         // Exibi a área de seleção apenas se o ID do target for igual ao do painel
         if (event.currentTarget.id === editorPanelRef.current.id) {
