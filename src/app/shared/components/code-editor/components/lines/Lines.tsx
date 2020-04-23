@@ -23,12 +23,12 @@ export const Lines: React.FC<LinesProps> = ({ itensSucessores, item, refItemPai,
             return <Line
                 left1={(item.left || 0) + ((item.width || 0) / 2)}
                 top1={(item.top || 0) + (item.height || 0) / 2}
+                key={item.id + "_" + sucessorItem.id}
                 onSucessorChange={onSucessorChange}
                 refItemPai={refItemPai}
-                id={item.id.toString()}
                 sucessorIndex={index}
-                key={item.id}
                 left2={left2}
+                id={item.id}
                 color="gray"
                 top2={top2}
             />;

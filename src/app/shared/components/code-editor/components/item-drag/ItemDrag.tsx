@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { useDrag } from 'react-dnd';
 
 import { ItemType } from '../../models/ItemFluxo';
@@ -19,7 +19,7 @@ export interface ItemDragProps {
     id?: any;
     title: string;
     children?: any;
-    refItemPai?: any;
+    parentElementRef?: any;
     hasError?: boolean;
     style: CustomStyle;
     allowDrag?: boolean;
@@ -28,9 +28,10 @@ export interface ItemDragProps {
     itemType?: any;/* ComponentType */
 
     /** Devolve 'itemId, top, left'. */
-    outputPosition?: Function;
-    onChangeSelecionado?: Function;
+    onChangePosition?(top: number, left: number, e?: React.MouseEvent<SVGGElement, MouseEvent>): void;
     onContextMenu?(data?: any, e?: React.MouseEvent<SVGGElement, MouseEvent>): void;
+    onMouseDown?(e?: React.MouseEvent<SVGGElement, MouseEvent>): void;
+    onMouseUp?(e?: React.MouseEvent<SVGGElement, MouseEvent>): void;
 }
 
 /** Auxilia na hora de passar configurações para o editor de fluxo. */
@@ -45,39 +46,20 @@ interface CustomStyle {
 /** Usado para representar os itens de lógica no fluxo do editor e na toolbar. */
 export const ItemToDrag: React.FC<ItemDragProps> = (props: ItemDragProps) => {
     const {
-        isSelected, onChangeSelecionado = () => { },
-        id, outputPosition, onContextMenu,
-        allowDrag, refItemPai, itemType, hasError
+        isSelected, onContextMenu, hasError, onMouseUp,
+        id, onChangePosition, onMouseDown, style,
+        allowDrag, parentElementRef, itemType,
     } = props;
+    const { width, height, top, left } = style;
 
     let { title } = props;
 
-    const { width, height, top, left } = props.style;
-
-    /** Usado para manter e gerenciar o stado deste componente. */
-    const [state, setState] = useState({
-        /** Usado para não bugar o onchangesucessor da linha que estou trocando.  */
-        isMouseDown: false,
-    });
-
-    const sucessores: number[] = [0];
 
     /** Permite que uym elemento seja arrastado e adicionado dentro do editor de fluxo. */
     const [, dragRef] = useDrag({
-        item: { type: itemType, itemProps: { id, left, top, title, itemType, sucessor: sucessores } },
+        item: { type: itemType, itemProps: { id, left, top, title, itemType, sucessor: [0] } },
         collect: monitor => ({ isDragging: monitor.isDragging() }),
     });
-
-    window.onmouseup = () => mouseUp;
-
-    /** Declara a fun no ref da svg para que o item atual possa ser arrastado na tela. */
-    const mouseDown = (e: React.MouseEvent<SVGGElement, MouseEvent>) => {
-        onChangeSelecionado(id, e);
-        if (refItemPai.current)
-            refItemPai.current.onmousemove = mouseMove;
-
-        setState({ ...state, isMouseDown: true });
-    }
 
     /**
      * Ajuda a evitar que bugs aconteçam por estar uma fun declarada
@@ -85,25 +67,31 @@ export const ItemToDrag: React.FC<ItemDragProps> = (props: ItemDragProps) => {
      * 
      * Também serve para fechar o menu de contexto.
      */
-    const mouseUp = (e: React.MouseEvent<SVGGElement, MouseEvent>) => {
-        if (refItemPai.current)
-            refItemPai.current.onmousemove = null;
-
-        if (state.isMouseDown) {
-            onChangeSelecionado(id, e);
-            setState({ ...state, isMouseDown: false });
+    const mouseUp = (e: MouseEvent) => {
+        if (parentElementRef.current) {
+            parentElementRef.current.onmousemove = null;
+            parentElementRef.current.onmouseup = null;
         }
     }
 
     /** Quando um item estiver selecionado e for arrastado na tale esta fun vai fazer isso acontecer. */
     const mouseMove = (event: any) => {
-        outputPosition &&
-            outputPosition(
-                id,
-                event.offsetY - ((height || 0) / 2),
-                event.offsetX - ((width || 0) / 2),
-                event,
-            );
+        const top = event.offsetY - ((height || 0) / 2);
+        const left = event.offsetX - ((width || 0) / 2);
+
+        if (onChangePosition) {
+            onChangePosition(top, left, event);
+        }
+    }
+
+    /** Declara a fun no ref da svg para que o item atual possa ser arrastado na tela. */
+    const mouseDown = (e: React.MouseEvent<SVGGElement, MouseEvent>) => {
+        if (onMouseDown) onMouseDown(e);
+
+        if (parentElementRef.current) {
+            parentElementRef.current.onmousemove = mouseMove;
+            parentElementRef.current.onmouseup = mouseUp;
+        }
     }
 
     // Assim que configurado exibirá o menu de contexto deste item corrente.
@@ -146,7 +134,7 @@ export const ItemToDrag: React.FC<ItemDragProps> = (props: ItemDragProps) => {
                 onContextMenu={contextMenu}
                 style={{ cursor: 'move' }}
                 onMouseDown={mouseDown}
-                onMouseUp={mouseUp}
+                onMouseUp={onMouseUp}
                 key={id}
                 id={id}
             >

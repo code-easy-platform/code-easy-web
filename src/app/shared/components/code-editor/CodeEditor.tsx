@@ -41,13 +41,12 @@ let backupFlow: string = "";
 const CodeEditor: React.FC<ICodeEditorProps> = ({ itens = [], toolItens = [], onChangeItens = () => { }, isShowToolbar = false, onDropItem = () => undefined, allowDropTo = [], onContextMenu, breadcrumbsPath, isDisabledSelection = false }) => {
 
     /** Referencia o svg onde está todos os itens de fluxo. */
-    const svgRef = useRef<any>(null);
+    const editorPanelRef = useRef<any>(null);
     const inputCopyRef = useRef<any>(null);
 
     /** Controla o estado do editor inteiro. */
     const [state, setState] = useState<ICodeEditorState>({
         flowItens: itens,
-        selectedItem: { itemId: undefined },
         svgSize: { svgHeight: 0, svgWidth: 0 },
         selectionProps: {
             isMouseDown: false,
@@ -79,7 +78,7 @@ const CodeEditor: React.FC<ICodeEditorProps> = ({ itens = [], toolItens = [], on
 
     const onDropFlowItem = (item: any, monitor: DropTargetMonitor) => {
 
-        const target: any = svgRef.current;
+        const target: any = editorPanelRef.current;
         const targetSize: any = target.getBoundingClientRect();
         const draggedOffSet: any = monitor.getClientOffset();
         const targetOffsetY: number = ((draggedOffSet.y) + (targetSize.top - targetSize.top - targetSize.top) - 25);
@@ -105,7 +104,7 @@ const CodeEditor: React.FC<ICodeEditorProps> = ({ itens = [], toolItens = [], on
 
             setState({ ...state, flowItens: state.flowItens });
 
-            svgRef.current.focus();
+            editorPanelRef.current.focus();
 
             onChangeFlow();
 
@@ -115,7 +114,7 @@ const CodeEditor: React.FC<ICodeEditorProps> = ({ itens = [], toolItens = [], on
 
             setState({ ...state, flowItens: state.flowItens });
 
-            svgRef.current.focus();
+            editorPanelRef.current.focus();
 
             onChangeFlow();
 
@@ -129,34 +128,29 @@ const CodeEditor: React.FC<ICodeEditorProps> = ({ itens = [], toolItens = [], on
     });
 
     /** Agrupa as referências do drop com as da ref. */
-    dropRef(svgRef);
+    dropRef(editorPanelRef);
 
     /**
      * Depois que um elemento já está na tela, esta função muda a posição dele!
-     * @param itemId Identificador do elemento que está sendo arrastado na tela
      * @param mousePositionTop Posição do mouse com relação ao topo(top) do quadro do editor
      * @param mousePositionLeft Posição do mouse com relação a esquerda(left) do quadro do editor
      * @param event Evento de mouse move
      */
-    const positionChange = (itemId: string | undefined, mousePositionTop: number, mousePositionLeft: number, event?: any) => {
+    const onChangePositionItens = (mousePositionTop: number, mousePositionLeft: number, event?: any) => {
 
-        let components = state.flowItens.filter((item: FlowItem) => item.isSelected || item.id === itemId);
+        let components = state.flowItens.filter((item: FlowItem) => item.isSelected);
 
-        if (event && event.ctrlKey)
+        if (event && event.ctrlKey) {
             components.forEach(comp => {
-                //        80
-                const oldLeft = comp.left;
                 const oldTop = comp.top;
-
-                //         -11            80         91
-                const distanceLeft = oldLeft - mousePositionLeft;
+                const oldLeft = comp.left;
                 const distanceTop = oldTop - mousePositionTop;
+                const distanceLeft = oldLeft - mousePositionLeft;
 
-                //    77         80             50              91                 80           -11
-                comp.left = (oldLeft + (mousePositionLeft - oldLeft) - distanceLeft);
                 comp.top = (oldTop + (mousePositionTop - oldTop) - distanceTop);
-
-            })
+                comp.left = (oldLeft + (mousePositionLeft - oldLeft) - distanceLeft);
+            });
+        }
         else {
             components.forEach(comp => {
                 const oldLeft = comp.left;
@@ -172,12 +166,9 @@ const CodeEditor: React.FC<ICodeEditorProps> = ({ itens = [], toolItens = [], on
 
         setState({
             ...state,
-            selectedItem: { itemId },
             flowItens: state.flowItens,
             svgSize: state.svgSize
         });
-
-        // onChangeFlow();
     }
 
     /**
@@ -188,11 +179,13 @@ const CodeEditor: React.FC<ICodeEditorProps> = ({ itens = [], toolItens = [], on
      */
     const onSucessorChange = (itemId: string | undefined, sucessorId: string, branchIndex: number = 0) => {
 
-        const itemCurrentIndex = state.flowItens.findIndex((item: FlowItem) => { if (item.id === itemId) return item; else return undefined; });
+        const itemCurrentIndex = state.flowItens.findIndex((item: FlowItem) => item.id === itemId);
+        //if (itemCurrentIndex < 0) return;
+
         let itemCurrent: FlowItem = state.flowItens[itemCurrentIndex];
 
         // Se tentar ligar um item nele mesmo deve ser perdida a ligação com qualquer elemento anterior desta branch específica.
-        if (itemId === sucessorId) {
+        if (itemId === sucessorId || itemId === undefined) {
             sucessorId = "";
         }
 
@@ -205,19 +198,15 @@ const CodeEditor: React.FC<ICodeEditorProps> = ({ itens = [], toolItens = [], on
         // OBS: O update no fluxo principal é feito pela referencia entre variáveis js.
         itemCurrent.sucessor[branchIndex] = sucessorId;
 
-        setState({
-            ...state,
-            flowItens: state.flowItens
-        });
-
+        setState({ ...state, flowItens: state.flowItens });
         onChangeFlow();
     }
 
     /** CONFIG TECLAS: Valida se existe um elemento no current e define os eventos das teclas para aquele elemento */
-    if (svgRef.current) {
+    if (editorPanelRef.current) {
 
         /** Identifica teclas que foram acionadas enquando o editor está focado. */
-        svgRef.current.onkeydown = (event: React.KeyboardEvent<SVGSVGElement>) => {
+        editorPanelRef.current.onkeydown = (event: React.KeyboardEvent<SVGSVGElement>) => {
             if (event.key === 'Delete') onRemoveItem();
 
             /** Ctrl + a */
@@ -241,7 +230,7 @@ const CodeEditor: React.FC<ICodeEditorProps> = ({ itens = [], toolItens = [], on
             inputCopyRef.current.focus()
             inputCopyRef.current.select()
             document.execCommand('copy');
-            svgRef.current.focus()
+            editorPanelRef.current.focus()
 
         }
 
@@ -356,7 +345,7 @@ const CodeEditor: React.FC<ICodeEditorProps> = ({ itens = [], toolItens = [], on
                 item.isSelected = true;
             });
 
-            setState({ ...state, flowItens: state.flowItens, selectedItem: { itemId: undefined } });
+            setState({ ...state, flowItens: state.flowItens });
         }
 
         /** Remove o item que estiver selecionado no fluxo. */
@@ -393,7 +382,7 @@ const CodeEditor: React.FC<ICodeEditorProps> = ({ itens = [], toolItens = [], on
     /** Ativa a seleção na tela. */
     const exibiSelection = (event: any) => {
 
-        if (event.target.id !== svgRef.current.id) return;
+        if (event.target.id !== editorPanelRef.current.id) return;
 
         // Impede a seleção de itens na tela
         if (isDisabledSelection) return;
@@ -448,42 +437,45 @@ const CodeEditor: React.FC<ICodeEditorProps> = ({ itens = [], toolItens = [], on
             runtimeStartTop: ((state.selectionProps.endTop - state.selectionProps.startTop) > 0) ? state.selectionProps.startTop : state.selectionProps.endTop,
         };
 
-        setState({
-            ...state,
-            selectionProps: state.selectionProps,
-            selectedItem: { itemId: undefined }
-        });
-
+        setState({ ...state, selectionProps: state.selectionProps });
     }
 
     /** Desabilita qualquer item que esteja selecionado. */
-    const onMouseDown = (event: React.MouseEvent<SVGSVGElement, MouseEvent>, reset?: boolean) => {
-        exibiSelection(event);
+    const onMouseDown = (event: React.MouseEvent<SVGSVGElement, MouseEvent>) => {
+        console.log(event.currentTarget);
 
-        if (!event.ctrlKey) {
+        // Exibi a área de seleção apenas se o ID do target for igual ao do painel
+        if (event.currentTarget.id === editorPanelRef.current.id) {
+            exibiSelection(event);
+            return;
+        }
+
+        if (event.ctrlKey) {
+
             state.flowItens.forEach((item: FlowItem) => {
-                item.isSelected = (!reset && (item.id === state.selectedItem.itemId));
-            });
-        } else {
-            state.flowItens.forEach((item: FlowItem) => {
-                if (item.id === state.selectedItem.itemId)
+
+                if (item.id === event.currentTarget.id) {
                     item.isSelected = !item.isSelected;
+                }
+
             });
+
+        } else {
+
+            state.flowItens.forEach((item: FlowItem) => {
+
+                if (item.id === event.currentTarget.id) {
+                    item.isSelected = true;
+                } else {
+                    item.isSelected = false;
+                }
+
+            });
+
         }
 
         setState({ ...state, flowItens: state.flowItens });
-    }
-
-    /** Muda item que está selecionado. */
-    const onChangeSelecionado = (itemId: string | undefined, e: React.MouseEvent<SVGSVGElement, MouseEvent>) => {
-
-        state.selectedItem.itemId = itemId;
-        setState({ ...state, flowItens: state.flowItens, selectedItem: state.selectedItem });
-
-        onMouseDown(e, false);
-
         onChangeFlow();
-
     }
 
     return (
@@ -494,11 +486,11 @@ const CodeEditor: React.FC<ICodeEditorProps> = ({ itens = [], toolItens = [], on
                 <BreandCamps breadcrumbsPath={breadcrumbsPath} />
 
                 <EditorPanel
-                    ref={svgRef}
+                    ref={editorPanelRef}
                     id={"CODE_EDITOR_SVG"}
                     width={state.svgSize.svgWidth}
                     height={state.svgSize.svgHeight}
-                    onMouseDown={(e: any) => onMouseDown(e, true)}
+                    onMouseDown={(e: any) => onMouseDown(e)}
                     onContextMenu={(e: any) => {
                         if (onContextMenu) {
                             e.preventDefault();
@@ -534,7 +526,7 @@ const CodeEditor: React.FC<ICodeEditorProps> = ({ itens = [], toolItens = [], on
                         /* Reinderiza todos os branchs de um item de fluxo. */
                         return <Lines
                             item={item}
-                            refItemPai={svgRef}
+                            refItemPai={editorPanelRef}
                             isUseNewBranch={isUseNewBranch}
                             itensSucessores={itensSucessores}
                             onSucessorChange={onSucessorChange}
@@ -546,13 +538,14 @@ const CodeEditor: React.FC<ICodeEditorProps> = ({ itens = [], toolItens = [], on
                     {state.flowItens.map((item: FlowItem) => {
                         return <ItemToDrag
                             style={{ top: item.top, left: item.left, width: item.width, height: item.height }}
-                            onChangeSelecionado={onChangeSelecionado}
-                            outputPosition={positionChange}
+                            onMouseDown={(e: any) => onMouseDown(e)}
+                            onChangePosition={onChangePositionItens}
+                            onMouseUp={(e: any) => onChangeFlow()}
+                            parentElementRef={editorPanelRef}
                             onContextMenu={onContextMenu}
                             isSelected={item.isSelected}
                             itemType={item.itemType}
                             hasError={item.hasError}
-                            refItemPai={svgRef}
                             title={item.name}
                             key={item.id}
                             id={item.id}

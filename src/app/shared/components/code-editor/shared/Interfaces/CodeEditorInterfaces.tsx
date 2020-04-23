@@ -39,9 +39,6 @@ export interface ICodeEditorState {
     /** Mantem aqui o estado de todos os componentes contidos no fluxo */
     flowItens: FlowItem[],
 
-    /** Ajuda a manter o estado do item que está selecionado. */
-    selectedItem: { itemId: string | undefined },
-
     /** Controla o tamanho do "painel" onde os elementos de fluxo estão */
     svgSize: {
 

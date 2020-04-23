@@ -5,7 +5,18 @@ export const BreandCamps = ({ breadcrumbsPath }: any) => {
 
     return (
         display
-            ? <div style={{ position: 'absolute', backgroundColor: 'var(--main-background-panels)', padding: 4, paddingRight: 10, borderBottomRightRadius: 2 }}>{breadcrumbsPath}</div>
+            ? <div
+                style={{
+                    zIndex: 1,
+                    padding: 4,
+                    paddingRight: 10,
+                    position: 'absolute',
+                    borderBottomRightRadius: 2,
+                    backgroundColor: 'var(--main-background-panels)',
+                }}
+            >
+                {breadcrumbsPath}
+            </div>
             : <></>
     );
 }
