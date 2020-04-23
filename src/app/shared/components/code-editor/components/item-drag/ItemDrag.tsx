@@ -125,7 +125,7 @@ export const ItemToDrag: React.FC<ItemDragProps> = (props: ItemDragProps) => {
             width: 30,
         };
 
-        return <div tabIndex={0} className="toolbar-item">
+        return <div className="toolbar-item">
             {itemType === ItemType.COMMENT && <img id={id} title="COMMENT" style={style} ref={dragRef} src={icons_comment} alt="COMMENT" />}
             {itemType === ItemType.FOREACH && <img id={id} title="FOREACH" style={style} ref={dragRef} src={icons_foreach} alt="FOREACH" />}
             {itemType === ItemType.SWITCH && <img id={id} title="SWITCH" style={style} ref={dragRef} src={icons_switch} alt="SWITCH" />}
@@ -150,7 +150,7 @@ export const ItemToDrag: React.FC<ItemDragProps> = (props: ItemDragProps) => {
                 key={id}
                 id={id}
             >
-                <text x={(left || 0) + ((width || 0) / 2)} textAnchor="middle" fill="#fff" y={(top || 0) - 5} id={id}>{title}</text>
+                <text x={(left || 0) + ((width || 0) / 2)} textAnchor="middle" fill="var(--color-white)" y={(top || 0) - 5} id={id}>{title}</text>
                 {itemType === ItemType.COMMENT && <FlowComment id={id} top={top} left={left} width={width} height={height} isSelected={isSelected} name="COMMENT" childImage={icons_comment} />}
                 {itemType === ItemType.FOREACH && <FlowComponent id={id} top={top} left={left} width={width} height={height} isSelected={isSelected} hasError={hasError} name="FOREACH" childImage={icons_foreach} />}
                 {itemType === ItemType.ASSIGN && <FlowComponent id={id} top={top} left={left} width={width} height={height} isSelected={isSelected} hasError={hasError} name="ASSIGN" childImage={icons_assign} />}

@@ -1,8 +1,8 @@
 import React, { useState, useRef } from 'react';
 
-export const FlowComment = ({ id, isSelected, width, height, left, top, childImage, name }: any) => {
+export const FlowComment = ({ id, isSelected, width, height, left, top, name }: any) => {
 
-    const strokeColor: string = isSelected ? "#999fff" : "#219653";
+    const strokeColor: string = isSelected ? "var(--color-botton-bar)" : "#219653";
 
     const [isEditing, setIsEditing] = useState(false);
     const textAreaRef: any = useRef(null);
@@ -29,7 +29,7 @@ export const FlowComment = ({ id, isSelected, width, height, left, top, childIma
                     style={{
                         backgroundColor: 'var(--main-background-highlighted)',
                         pointerEvents: isEditing ? undefined : 'none',
-                        border: `2px solid ${strokeColor}`,
+                        border: `var(--main-border-width) solid ${strokeColor}`,
                         height: '-webkit-fill-available',
                         width: '-webkit-fill-available',
                         color: '#fff',

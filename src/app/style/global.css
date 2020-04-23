@@ -122,6 +122,17 @@ input[type="number"] {
 }
 /*  ---------------- */
 
+.display-block {
+  display: block;
+}
+
+.overflow-auto {
+  overflow: auto;
+}
+.overflow-scroll {
+  overflow: scroll;
+}
+
 .main-header {
   font-size: var(--font-size-6);
   color: var(--color-gray-5);
@@ -224,6 +235,9 @@ input[type="number"] {
 ::-webkit-scrollbar {
   width: var(--size-x-scroll-bar);
   height: var(--size-x-scroll-bar);
+}
+::-webkit-scrollbar:horizontal {
+  height: var(--size-x-scroll-bar-horizontal);
 }
 ::-webkit-scrollbar-button {
   display: none;

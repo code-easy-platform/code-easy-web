@@ -4,12 +4,14 @@ import HTML5Backend from 'react-dnd-html5-backend';
 
 import { ICodeEditorProps, ICodeEditorState } from './shared/Interfaces/CodeEditorInterfaces';
 import { SelectorArea } from './components/selector/SelectorArea';
+import { BreandCamps } from './components/breadcamps/BreandCamps';
 import { ItemToDrag } from './components/item-drag/ItemDrag';
 import { ItemType, FlowItem } from './models/ItemFluxo';
 import { Toolbar } from './components/tool-bar/ToolBar';
 import { Lines } from './components/lines/Lines';
 import { Utils } from './shared/Utils';
-import { BreandCamps } from './components/breadcamps/BreandCamps';
+import { EditorPanel } from './components/editor-panel/EditorPanel';
+import { InputCopy } from './components/input-copy/InputCopy';
 
 
 /**
@@ -178,10 +180,10 @@ const CodeEditor: React.FC<ICodeEditorProps> = ({ itens = [], toolItens = [], on
         // onChangeFlow();
     }
 
-    /** 
+    /**
      * Usado para mudar o "sucessorId" de um elemento.
      * Sucessor é usado para indicar onde o apontamento deve estar.
-     * 
+     *
      * @param branchIndex indica qual a branch do item para liga no item sucessor
      */
     const onSucessorChange = (itemId: string | undefined, sucessorId: string, branchIndex: number = 0) => {
@@ -485,28 +487,23 @@ const CodeEditor: React.FC<ICodeEditorProps> = ({ itens = [], toolItens = [], on
     }
 
     return (
-        <div style={{ flex: 1, maxHeight: "100%" }}>
-            <input ref={inputCopyRef} style={{ height: '1px', width: '1px', top: '-1000px', position: "fixed" }} />
+        <>
+            <InputCopy ref={inputCopyRef} />
             <Toolbar itensLogica={toolItens} isShow={((toolItens.length > 0) && isShowToolbar)} />
-
-            <div key={"CODE_EDITOR"} style={{ flex: 1, overflow: "auto", }}>
+            <main key={"CODE_EDITOR"} className='overflow-scroll flex1' >
                 <BreandCamps breadcrumbsPath={breadcrumbsPath} />
 
-                <svg ref={svgRef} tabIndex={0}
+                <EditorPanel
+                    ref={svgRef}
                     id={"CODE_EDITOR_SVG"}
-                    onContextMenu={e => {
+                    width={state.svgSize.svgWidth}
+                    height={state.svgSize.svgHeight}
+                    onMouseDown={(e: any) => onMouseDown(e, true)}
+                    onContextMenu={(e: any) => {
                         if (onContextMenu) {
                             e.preventDefault();
                             onContextMenu(undefined, e);
                         }
-                    }}
-                    onMouseDown={e => onMouseDown(e, true)}
-                    style={{
-                        height: state.svgSize.svgHeight,
-                        width: state.svgSize.svgWidth,
-                        minHeight: "100%",
-                        minWidth: "100%",
-                        outline: "none"
                     }}>
 
                     {/* Reinderiza a área de seleção na tela. */}
@@ -562,10 +559,8 @@ const CodeEditor: React.FC<ICodeEditorProps> = ({ itens = [], toolItens = [], on
                         />;
                     })}
 
-                </svg>
-
-            </div>
-
-        </div>
+                </EditorPanel>
+            </main>
+        </>
     );
 }

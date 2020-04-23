@@ -2,7 +2,7 @@ import React from 'react';
 
 export const FlowComponent = ({ id, isSelected, width, height, left, top, childImage, name, hasError = false }: any) => {
 
-    const strokeColor: string = isSelected ? "#999fff" : hasError ? "var(--main-error-color)" :  "#21965300";
+    const strokeColor: string = isSelected ? "var(--color-botton-bar)" : hasError ? "var(--main-error-color)" :  "var(--main-background)";
 
     return (
         <>
@@ -12,7 +12,7 @@ export const FlowComponent = ({ id, isSelected, width, height, left, top, childI
                 stroke={strokeColor}
                 key={name + id}
                 height={height}
-                strokeWidth="1"
+                strokeWidth="var(--main-border-width)"
                 width={width}
                 x={left}
                 y={top}
@@ -22,12 +22,12 @@ export const FlowComponent = ({ id, isSelected, width, height, left, top, childI
                 style={{ pointerEvents: 'none' }}
                 key={name + "Image_" + id}
                 xlinkHref={childImage}
+                stroke={strokeColor}
                 height={height}
                 width={width}
                 x={left}
                 y={top}
                 id={id}
-                stroke={strokeColor}
             />
         </>
     );

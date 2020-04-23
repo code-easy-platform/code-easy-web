@@ -79,6 +79,7 @@
 
     --main-select-color: #1f724340;
     --main-error-color: #ff0000;
+    --main-border-width: 2px;
 
     --color-transparent: transparent;
     --color-white: white;
@@ -104,6 +105,7 @@
 
     /* Sizes */
     --size-x-scroll-bar: var(--size-2);
+    --size-x-scroll-bar-horizontal: var(--size-4);
     --size-x-scroll-bar-small: var(--size-1);
     --size-x-scroll-bar-hover: var(--size-2); /* Não funciona */
     --size-x-scroll-bar-active: var(--size-2); /* Não funciona */
