@@ -3,10 +3,10 @@ import React from 'react';
 import { TwoVerticalColumnsResizable } from '../../../shared/components/resizable-columns/TwoVerticalColumnsResizable';
 import { IItem, TypeValues, IProperties } from '../../../shared/components/properties-editor/shared/interfaces';
 import { CodeEditorContext, ICodeEditorContext } from '../../../shared/services/contexts/CodeEditorContext';
+import { TwoColumnsResizable } from '../../../shared/components/resizable-columns/TwoColumnsResizable';
 import { TreeItensTypes } from '../../../shared/components/tree-manager/shared/models/TreeItensTypes';
 import { TreeInterface } from '../../../shared/components/tree-manager/shared/models/TreeInterface';
 import { PropertiesEditor } from './../../../shared/components/properties-editor/PropertiesEditor';
-import { TwoColumnsResizable } from '../../../shared/components/resizable-columns/TwoColumnsResizable';
 import { ContextMenuService } from '../../../shared/components/context-menu/ContextMenuService';
 import { FlowItem, ItemType } from './../../../shared/components/code-editor/models/ItemFluxo';
 import { Tab, ItemComponent, ItemFlowComplete } from '../../../shared/interfaces/Aplication';
@@ -198,11 +198,7 @@ export default class EditorTab extends React.Component {
 
     /** Toda vez que houver uma alteração nos itens de fluxo está função será executada. */
     private codeEditorOutputFlowItens = (updatedItens: FlowItem[]) => {
-
         console.table(updatedItens);
-
-        // Caso não haja itens de fluxo, evita o processamento desnecessário.
-        if (updatedItens.length === 0) return;
 
         // Atualiza o currentFocus da tab
         this.setState({ currentFocus: CurrentFocus.flow });
