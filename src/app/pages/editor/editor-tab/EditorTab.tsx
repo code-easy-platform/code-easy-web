@@ -1,15 +1,15 @@
 import React from 'react';
 
+import { TwoVerticalColumnsResizable } from '../../../shared/components/resizable-columns/TwoVerticalColumnsResizable';
 import { IItem, TypeValues, IProperties } from '../../../shared/components/properties-editor/shared/interfaces';
 import { CodeEditorContext, ICodeEditorContext } from '../../../shared/services/contexts/CodeEditorContext';
 import { TreeItensTypes } from '../../../shared/components/tree-manager/shared/models/TreeItensTypes';
 import { TreeInterface } from '../../../shared/components/tree-manager/shared/models/TreeInterface';
 import { PropertiesEditor } from './../../../shared/components/properties-editor/PropertiesEditor';
-import { EditorTabTemplate } from '../../../shared/components/resize-tamplate/EditorTabTemplate';
+import { TwoColumnsResizable } from '../../../shared/components/resizable-columns/TwoColumnsResizable';
 import { ContextMenuService } from '../../../shared/components/context-menu/ContextMenuService';
 import { FlowItem, ItemType } from './../../../shared/components/code-editor/models/ItemFluxo';
 import { Tab, ItemComponent, ItemFlowComplete } from '../../../shared/interfaces/Aplication';
-import ColRightTemplate from '../../../shared/components/resize-tamplate/ColRightTemplate';
 import { TreeManager } from '../../../shared/components/tree-manager/TreeManager';
 import { FlowEditor } from '../../../shared/components/code-editor/CodeEditor';
 import { Utils } from '../../../shared/services/Utils';
@@ -565,7 +565,8 @@ export default class EditorTab extends React.Component {
     render() {
         const flowEditorItens = this.codeEditorGetItensLogica.bind(this)();
         return (
-            <EditorTabTemplate
+            <TwoColumnsResizable
+                id="EditorTabCenter"
                 columnCenter={
                     <FlowEditor
                         isShowToolbar={true}
@@ -585,8 +586,9 @@ export default class EditorTab extends React.Component {
                     />
                 }
                 columnRight={
-                    <ColRightTemplate
-                        rowTop={
+                    <TwoVerticalColumnsResizable
+                        id="EditorTabRightVertical"
+                        top={
                             <TreeManager
                                 isUseDrag={true}
                                 isUseDrop={true}
@@ -608,7 +610,7 @@ export default class EditorTab extends React.Component {
                                 }}
                             />
                         }
-                        rowBottom={
+                        bottom={
                             <PropertiesEditor
                                 itens={this.propertiesEditorGetSelectedItem.bind(this)(this.state.currentFocus)}
                                 onChange={this.propertiesEditorOutputItens.bind(this)}

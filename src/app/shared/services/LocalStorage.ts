@@ -532,6 +532,7 @@ const mockProjeto: Project = new Project({
 })
 
 export class Storage {
+
     public static getProject(): Project {
         let project: Project;
 
@@ -555,7 +556,20 @@ export class Storage {
 
     public static resetProject(): Project {
         localStorage.removeItem(StorageEnum.projectStorage);
-
         return new Project(Storage.getProject());
     }
+
+    public static getColumnsResizableSize(id: string): number {
+        let props = localStorage.getItem(id);
+        if (!props) {
+            props = Storage.setColumnsResizableSize(id, 300).toString();
+        }
+        return parseInt(props);
+    }
+
+    public static setColumnsResizableSize(id: string, size: number): number {
+        localStorage.setItem(id, size.toString());
+        return size;
+    }
+
 }

@@ -81,6 +81,8 @@
     --main-error-color: #ff0000;
     --main-border-width: 2px;
 
+    --main-grapper-size: var(--size-2);
+
     --color-transparent: transparent;
     --color-white: white;
     --color-gray-5: #e0e0e0;

@@ -2,31 +2,23 @@
   background-color: var(--main-background-panels);
   justify-content: space-between;
   min-width: var(--size-38);
-}
-.col-right .content {
-  flex-direction: column;
-}
-
-.grabber-col-right,
-.grabber-col-right-resize-y {
-  height: var(--size-fill);
-  width: var(--size-1);
-  cursor: col-resize;
-  overflow: hidden;
+  max-width: 70%;
 }
 
 .grabber-col-right {
+  width: var(--main-grapper-size);
   height: var(--size-fill);
-  width: var(--size-2);
   position: absolute;
   cursor: col-resize;
   border-left: none;
+  overflow: hidden;
   z-index: 1;
 }
 
 .grabber-col-right-resize-y {
+  height: var(--main-grapper-size);
   width: var(--size-fill);
-  height: var(--size-2);
-  position: absolute;
   cursor: row-resize;
+  position: absolute;
+  overflow: hidden;
 }
