@@ -72,6 +72,10 @@ input[type="number"] {
   -moz-appearance: textfield;
 }
 
+.no-events {
+  pointer-events: none;
+}
+
 .input-medium {
   height: var(--size-5);
   padding: var(--size-1);

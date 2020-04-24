@@ -8,17 +8,16 @@ interface LineProps {
     left1: number
     left2?: number
     color?: string
-    refItemPai: any
     lineWidth?: number
+    parentElementRef: any
     sucessorIndex?: number
     onSucessorChange?: Function
 }
 
 export const Line: React.FC<LineProps> = (props: LineProps) => {
+    const { lineWidth = 2, color = "var(--main-background-highlighted)", left1, left2 = 0 } = props;
     const onSucessorChange: Function = props.onSucessorChange || (() => { });
-    const { lineWidth = 2, color = "blue", left1, left2 = 0 } = props;
     const { id = "0", top1 = 0, top2 = 0, sucessorIndex = 999999 } = props;
-    const refItemPai: any = props.refItemPai;
 
     const polygonBottonCenter: number = left2;
     const polygonRight: number = (left2 + 5);
@@ -26,23 +25,24 @@ export const Line: React.FC<LineProps> = (props: LineProps) => {
     const polygonTop: number = (top2 - 10);
     const polygonBotton: number = top2;
 
-
-    const [isSelected, setIsSelected] = useState(false);
     const [position, setPosition] = useState({ polygonTop: polygonTop, polygonLeft: polygonLeft });
+    const [isSelected, setIsSelected] = useState(false);
 
-    window.onmouseup = (event: any) => {
-        if (event.target.id && isSelected)
-            onSucessorChange(id, event.target.id, sucessorIndex);
-        onMouseEvent(false);
+
+    const onMouseDown = () => {
+        setIsSelected(true);
+
+        window.onmousemove = mouseMove;
+        window.onmouseup = onMouseUp
     }
 
-    const onMouseEvent = (value: boolean) => {
-        setIsSelected(value);
-        if (value) {
-            refItemPai.current.onmousemove = mouseMove;
-        } else {
-            refItemPai.current.onmousemove = null;
-        }
+    const onMouseUp = (e: any) => {
+        setIsSelected(false);
+
+        window.onmouseup = null;
+        window.onmousemove = null;
+
+        onSucessorChange(id, e.target.id, sucessorIndex);
     }
 
     const mouseMove = (event: any) => {
@@ -61,15 +61,22 @@ export const Line: React.FC<LineProps> = (props: LineProps) => {
                 x2={isSelected ? position.polygonLeft : left2}
                 y1={top1}
                 y2={isSelected ? position.polygonTop : top2 - 10}
-                strokeWidth={lineWidth}
-                stroke={color || "blue"}
                 stroke-line-cap="round"
+                strokeWidth={lineWidth}
+                stroke={color || "var(--main-background-highlighted)"}
             />
             {
                 !isSelected
                     ? <polygon
                         id={id}
                         key={"polygon_" + id}
+                        onMouseDown={onMouseDown}
+                        style={{
+                            cursor: 'move',
+                            strokeWidth: lineWidth,
+                            fill: color || "var(--main-background-highlighted)",
+                            stroke: color || "var(--main-background-highlighted)",
+                        }}
                         points={
                             polygonLeft + ", " +
                             polygonTop + ", " +
@@ -78,14 +85,6 @@ export const Line: React.FC<LineProps> = (props: LineProps) => {
                             polygonBottonCenter + ", " +
                             polygonBotton
                         }
-                        style={{
-                            cursor: 'move',
-                            fill: color || "blue",
-                            strokeWidth: lineWidth,
-                            stroke: color || "blue",
-                        }}
-                        onMouseDown={() => onMouseEvent(true)}
-                        onMouseUp={() => onMouseEvent(false)}
                     />
                     : <rect
                         id={id}
@@ -94,13 +93,18 @@ export const Line: React.FC<LineProps> = (props: LineProps) => {
                         width="10"
                         height="10"
                         key={"rect_" + id}
+                        onMouseDown={onMouseDown}
                         y={position.polygonTop - 5}
                         x={position.polygonLeft - 5}
-                        onMouseUp={() => onMouseEvent(false)}
-                        onMouseDown={() => onMouseEvent(true)}
-                        style={{ cursor: 'default', fill: "#1e1e1e", stroke: isSelected ? "#999fff" : "gray", strokeWidth: 1 }}
+                        style={{
+                            cursor: 'default',
+                            fill: "var(--main-background)",
+                            strokeWidth: 'var(--main-border-width)',
+                            stroke: isSelected ? "var(--color-botton-bar)" : "var(--main-background)",
+                        }}
                     />
             }
         </g>
     );
+
 }

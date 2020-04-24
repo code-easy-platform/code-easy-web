@@ -69,7 +69,7 @@ export const ItemToDrag: React.FC<ItemDragProps> = (props: ItemDragProps) => {
      */
     const mouseUp = (e: MouseEvent) => {
         if (parentElementRef.current) {
-            parentElementRef.current.onmousemove = null;
+            window.onmousemove = null;
             parentElementRef.current.onmouseup = null;
         }
     }
@@ -89,7 +89,7 @@ export const ItemToDrag: React.FC<ItemDragProps> = (props: ItemDragProps) => {
         if (onMouseDown) onMouseDown(e);
 
         if (parentElementRef.current) {
-            parentElementRef.current.onmousemove = mouseMove;
+            window.onmousemove = mouseMove;
             parentElementRef.current.onmouseup = mouseUp;
         }
     }

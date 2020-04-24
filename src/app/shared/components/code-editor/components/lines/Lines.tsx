@@ -8,9 +8,9 @@ interface LinesProps {
     isUseNewBranch: boolean;
     itensSucessores: FlowItem[];
     onSucessorChange: Function | undefined;
-    refItemPai: React.MutableRefObject<any>;
+    parentElementRef: React.MutableRefObject<any>;
 };
-export const Lines: React.FC<LinesProps> = ({ itensSucessores, item, refItemPai, onSucessorChange, isUseNewBranch }) => {
+export const Lines: React.FC<LinesProps> = ({ itensSucessores, item, parentElementRef, onSucessorChange, isUseNewBranch }) => {
     return <>
         {itensSucessores.map((sucessorItem: FlowItem, index: number) => {
 
@@ -25,7 +25,7 @@ export const Lines: React.FC<LinesProps> = ({ itensSucessores, item, refItemPai,
                 top1={(item.top || 0) + (item.height || 0) / 2}
                 key={item.id + "_" + sucessorItem.id}
                 onSucessorChange={onSucessorChange}
-                refItemPai={refItemPai}
+                parentElementRef={parentElementRef}
                 sucessorIndex={index}
                 left2={left2}
                 id={item.id}
@@ -44,7 +44,7 @@ export const Lines: React.FC<LinesProps> = ({ itensSucessores, item, refItemPai,
                 left2={item.left + (item.width / 2)}
                 top2={item.top + (item.height + 20)}
                 onSucessorChange={onSucessorChange}
-                refItemPai={refItemPai}
+                parentElementRef={parentElementRef}
                 key={item.id}
                 id={item.id}
             />

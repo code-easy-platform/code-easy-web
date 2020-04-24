@@ -1,8 +1,7 @@
 import React from 'react';
 
 export const EditorPanel = React.forwardRef((props: React.SVGProps<SVGSVGElement>, ref: any) => (
-    <svg
-        {...props}
+    <svg {...props}
         ref={ref}
         tabIndex={0}
         style={{

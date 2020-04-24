@@ -485,7 +485,7 @@ const CodeEditor: React.FC<ICodeEditorProps> = ({ itens = [], toolItens = [], on
         <>
             <InputCopy ref={inputCopyRef} />
             <Toolbar itensLogica={toolItens} isShow={((toolItens.length > 0) && isShowToolbar)} />
-            <main key={"CODE_EDITOR"} className='overflow-scroll flex1' >
+            <main key={"CODE_EDITOR"} className='overflow-auto flex1' >
                 <BreandCamps breadcrumbsPath={breadcrumbsPath} />
 
                 <EditorPanel
@@ -529,8 +529,8 @@ const CodeEditor: React.FC<ICodeEditorProps> = ({ itens = [], toolItens = [], on
                         /* Reinderiza todos os branchs de um item de fluxo. */
                         return <Lines
                             item={item}
-                            refItemPai={editorPanelRef}
                             isUseNewBranch={isUseNewBranch}
+                            parentElementRef={editorPanelRef}
                             itensSucessores={itensSucessores}
                             onSucessorChange={onSucessorChange}
                         />;
