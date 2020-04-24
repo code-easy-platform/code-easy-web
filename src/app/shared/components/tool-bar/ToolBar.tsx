@@ -23,31 +23,36 @@ export const ToolBar = (props: any) => {
             <div>
                 <TabButton
                     id="tabMenu"
+                    title="Menu"
                     onClick={() => { }}
                     className=" btn btn-open-menu-tab"
-                    title="Menu"
                 />
-                <TabButton
-                    id="tabEditor"
-                    onClick={() => changeCurrentTab(CurrentTab.editor)}
-                    className=" btn-open-editor-tab"
-                    isSelected={currentTab === CurrentTab.editor}
-                    title="Editor"
-                />
-                <TabButton
-                    id="tabPropriedades"
-                    onClick={() => changeCurrentTab(CurrentTab.properties)}
-                    className=" btn-open-properties-tab"
-                    isSelected={currentTab === CurrentTab.properties}
-                    title="Propriedades do projeto"
-                />
-                <TabButton
-                    id="tabDependencias"
-                    onClick={() => changeCurrentTab(CurrentTab.plugins)}
-                    className=" btn-open-plugins-tab"
-                    isSelected={currentTab === CurrentTab.plugins}
-                    title="Adicione e remova dependências do projeto"
-                />
+                <TabGroup className="width-auto">
+                    <TabButton
+                        id="tabEditor"
+                        title="Editor"
+                        className=" btn-open-editor-tab"
+                        isSelected={currentTab === CurrentTab.editor}
+                        onClick={() => changeCurrentTab(CurrentTab.editor)}
+                        onFocus={() => changeCurrentTab(CurrentTab.editor)}
+                    />
+                    <TabButton
+                        id="tabPropriedades"
+                        title="Propriedades do projeto"
+                        className=" btn-open-properties-tab"
+                        isSelected={currentTab === CurrentTab.properties}
+                        onClick={() => changeCurrentTab(CurrentTab.properties)}
+                        onFocus={() => changeCurrentTab(CurrentTab.properties)}
+                    />
+                    <TabButton
+                        id="tabDependencias"
+                        className=" btn-open-plugins-tab"
+                        isSelected={currentTab === CurrentTab.plugins}
+                        title="Adicione e remova dependências do projeto"
+                        onClick={() => changeCurrentTab(CurrentTab.plugins)}
+                        onFocus={() => changeCurrentTab(CurrentTab.plugins)}
+                    />
+                </TabGroup>
                 <TabButton
                     id="tabResetApplication"
                     onClick={() => {
@@ -80,6 +85,7 @@ export const ToolBar = (props: any) => {
                                     isSelected={tab.configs.isEditando}
                                     className="btn-open-routers-tab flex1"
                                     onClick={() => codeEditorContext.toggleResourcesTab(tab.configs.type)}
+                                    onFocus={() => codeEditorContext.toggleResourcesTab(tab.configs.type)}
                                 />
                             );
                         })}

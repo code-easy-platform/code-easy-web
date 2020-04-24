@@ -150,6 +150,7 @@
     --toolbar-item-background-active: #52525252;
 
     /* Outlines */
+    --outline-none: none;
     --outline-padrao: auto;
     --outline-padrao: 1px solid #f3f3f3;
 

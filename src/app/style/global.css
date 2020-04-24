@@ -137,6 +137,10 @@ input[type="number"] {
   overflow: scroll;
 }
 
+.outline-none {
+  outline: var(--outline-none);
+}
+
 .main-header {
   font-size: var(--font-size-6);
   color: var(--color-gray-5);
@@ -185,6 +189,10 @@ input[type="number"] {
 }
 .btn:focus {
   outline: var(--outline-padrao);
+}
+
+.width-auto {
+  width: auto;
 }
 
 .margin-xs {
