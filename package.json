@@ -2,6 +2,12 @@
   "name": "code-easy-react",
   "version": "0.1.0",
   "private": false,
+  "husky": {
+    "hooks": {
+      "commit-msg": "commitlint -E HUSKY_GIT_PARAMS",
+      "prepare-commit-msg": "exec < /dev/tty && git cz --hook || true"
+    }
+  },
   "dependencies": {
     "immutability-helper": "^3.0.1",
     "node-sass": "^4.12.0",
@@ -37,9 +43,19 @@
     ]
   },
   "devDependencies": {
+    "@commitlint/cli": "^8.3.5",
+    "@commitlint/config-conventional": "^8.3.4",
     "@types/react": "^16.9.9",
     "@types/react-dom": "^16.9.0",
     "@types/uuid": "^7.0.2",
+    "commitizen": "^4.0.4",
+    "cz-conventional-changelog": "3.1.0",
+    "husky": "^4.2.5",
     "typescript": "^3.6.3"
+  },
+  "config": {
+    "commitizen": {
+      "path": "./node_modules/cz-conventional-changelog"
+    }
   }
 }

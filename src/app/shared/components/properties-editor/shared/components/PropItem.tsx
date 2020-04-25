@@ -43,13 +43,14 @@ export const PropItem: React.FC<PropItemProps> = ({ id, name, type, value, input
         flex: '1',
     }
 
-    const minWidth = 80;
+    const minWidth = 60;
     const css_prop_item_input: React.CSSProperties = {
         textDecoration: valueHasError ? `var(--text-underline-error)` : undefined,
         border: valueHasError ? 'var(--input-border-error)' : 'var(--input-border)',
         width: inputWidth ? `${inputWidth}px` : '70%',
         backgroundColor: 'var(--main-background-bars)',
         minWidth: minWidth,
+        maxWidth: '90%',
         borderRadius: 4,
         color: 'white',
         padding: 8,
@@ -70,7 +71,16 @@ export const PropItem: React.FC<PropItemProps> = ({ id, name, type, value, input
                     <label htmlFor={'prop_id_' + state.id} style={css_prop_item_label}>{state.name}</label>
                     <Resizer paiRef={paiRef} left={inputWidth} onChange={newLeft => changeInputWidth(newLeft)} />
                     <label
-                        style={{ ...css_prop_item_input, backgroundColor: 'transparent', border: 'none', textAlign: 'start' }}
+                        style={{
+                            ...css_prop_item_input,
+                            backgroundColor: 'transparent',
+                            textOverflow: 'ellipsis',
+                            display: 'inline-block',
+                            whiteSpace: 'nowrap',
+                            textAlign: 'start',
+                            overflow: 'hidden',
+                            border: 'none',
+                        }}
                         key={'prop_key_' + state.id}
                         id={'prop_id_' + state.id}
                         children={state.value}
