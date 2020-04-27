@@ -491,6 +491,7 @@ const CodeEditor: React.FC<ICodeEditorProps> = ({ itens = [], toolItens = [], on
                 <EditorPanel
                     ref={editorPanelRef}
                     id={"CODE_EDITOR_SVG"}
+                    backgroundType='dotted'
                     width={state.svgSize.svgWidth}
                     height={state.svgSize.svgHeight}
                     onMouseDown={(e: any) => onMouseDown(e)}
