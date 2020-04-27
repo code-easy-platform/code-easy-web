@@ -18,20 +18,34 @@ interface PropItemProps extends IProperties {
     onChangeInputWidth(width: number): void;
     onChange(data: IProperties): void;
     inputWidth: number;
-    paiRef: any;
 }
-export const PropItem: React.FC<PropItemProps> = ({ id, name, type, value, inputWidth, onChange, paiRef, nameHasError = false, valueHasError = false, onChangeInputWidth, editValueDisabled = false, editNameDisabled = false }) => { // Extende outra interface
+export const PropItem: React.FC<PropItemProps> = (props) => { // Extende outra interface
 
-    const [state, setState] = useState<IProperties>({ id, name, type, value, valueHasError, nameHasError, editNameDisabled, editValueDisabled });
+    const { inputWidth, onChange, onChangeInputWidth, valueHasError = false, nameHasError = false } = props;
+
+    const [state, setState] = useState<IProperties>({
+        editValueDisabled: props.editValueDisabled,
+        editNameDisabled: props.editNameDisabled,
+        valueHasError: props.valueHasError,
+        nameHasError: props.nameHasError,
+        value: props.value,
+        type: props.type,
+        name: props.name,
+        id: props.id,
+    });
+
     useEffect(() => {
-        setState({ id, name, type, value, valueHasError, nameHasError, editNameDisabled, editValueDisabled })
-    }, [id, name, type, value, valueHasError, nameHasError, editNameDisabled, editValueDisabled]);
-
-    //const [inputWidth, setInputWidth] = useState(0);
-    const changeInputWidth = (width: number) => {
-        // setInputWidth(width);
-        onChangeInputWidth(width);
-    }
+        setState({
+            editValueDisabled: props.editValueDisabled,
+            editNameDisabled: props.editNameDisabled,
+            valueHasError: props.valueHasError,
+            nameHasError: props.nameHasError,
+            value: props.value,
+            type: props.type,
+            name: props.name,
+            id: props.id,
+        });
+    }, [props]);
 
     const css_prop_item_label: React.CSSProperties = {
         textDecoration: nameHasError ? `var(--text-underline-error)` : undefined,
@@ -40,22 +54,12 @@ export const PropItem: React.FC<PropItemProps> = ({ id, name, type, value, input
         whiteSpace: 'nowrap',
         textAlign: 'start',
         overflow: 'hidden',
-        flex: '1',
     }
 
     const minWidth = 60;
     const css_prop_item_input: React.CSSProperties = {
         textDecoration: valueHasError ? `var(--text-underline-error)` : undefined,
         border: valueHasError ? 'var(--input-border-error)' : 'var(--input-border)',
-        width: inputWidth ? `${inputWidth}px` : '70%',
-        backgroundColor: 'var(--main-background-bars)',
-        minWidth: minWidth,
-        maxWidth: '90%',
-        borderRadius: 4,
-        color: 'white',
-        padding: 8,
-        paddingRight: 4,
-        paddingLeft: 4,
     }
 
     const onkeyPress = (e: any) => {
@@ -67,124 +71,141 @@ export const PropItem: React.FC<PropItemProps> = ({ id, name, type, value, input
     switch (state.type) {
         case TypeValues.viewOnly:
             return (
-                <div ref={paiRef} style={css_prop_item}>
-                    <label htmlFor={'prop_id_' + state.id} style={css_prop_item_label}>{state.name}</label>
-                    <Resizer paiRef={paiRef} left={inputWidth} onChange={newLeft => changeInputWidth(newLeft)} />
-                    <label
-                        style={{
-                            ...css_prop_item_input,
-                            backgroundColor: 'transparent',
-                            textOverflow: 'ellipsis',
-                            display: 'inline-block',
-                            whiteSpace: 'nowrap',
-                            textAlign: 'start',
-                            overflow: 'hidden',
-                            border: 'none',
-                        }}
-                        key={'prop_key_' + state.id}
-                        id={'prop_id_' + state.id}
-                        children={state.value}
-                    />
+                <div key={'prop_item_key_' + state.id} style={css_prop_item}>
+                    <label htmlFor={'prop_id_' + state.id} className="flex1 " style={css_prop_item_label}>{state.name}</label>
+                    <Resizer onChange={newWidth => onChangeInputWidth(newWidth)} />
+                    <div style={{ width: inputWidth ? `${inputWidth}px` : '70%', minWidth: minWidth, maxWidth: '90%' }}>
+                        <label
+                            style={{
+                                ...css_prop_item_input,
+                                backgroundColor: 'transparent',
+                                textOverflow: 'ellipsis',
+                                display: 'inline-block',
+                                whiteSpace: 'nowrap',
+                                textAlign: 'start',
+                                overflow: 'hidden',
+                                border: 'none',
+                            }}
+                            key={'prop_key_' + state.id}
+                            id={'prop_id_' + state.id}
+                            children={state.value}
+                        />
+                    </div>
                 </div>
             );
 
         case TypeValues.string:
             return (
-                <div style={css_prop_item}>
-                    <label htmlFor={'prop_id_' + state.id} style={css_prop_item_label}>{state.name}</label>
-                    <Resizer paiRef={paiRef} left={inputWidth} onChange={newLeft => changeInputWidth(newLeft)} />
-                    <input
-                        onChange={e => setState({ ...state, value: e.target.value })}
-                        disabled={state.editValueDisabled}
-                        onKeyDown={(e) => onkeyPress(e)}
-                        onBlur={_ => onChange(state)}
-                        key={'prop_key_' + state.id}
-                        style={css_prop_item_input}
-                        id={'prop_id_' + state.id}
-                        value={state.value}
-                        autoComplete='off'
-                    />
+                <div key={'prop_item_key_' + state.id} style={css_prop_item}>
+                    <label htmlFor={'prop_id_' + state.id} className="flex1 " style={css_prop_item_label}>{state.name}</label>
+                    <Resizer onChange={newWidth => onChangeInputWidth(newWidth)} />
+                    <div style={{ width: inputWidth ? `${inputWidth}px` : '70%', minWidth: minWidth, maxWidth: '90%' }}>
+                        <input
+                            className="full-width background-bars"
+                            onChange={e => setState({ ...state, value: e.target.value })}
+                            disabled={state.editValueDisabled}
+                            onKeyDown={(e) => onkeyPress(e)}
+                            onBlur={_ => onChange(state)}
+                            key={'prop_key_' + state.id}
+                            style={css_prop_item_input}
+                            id={'prop_id_' + state.id}
+                            value={state.value}
+                            autoComplete='off'
+                        />
+                    </div>
                 </div>
             );
 
         case TypeValues.expression:
             return (
-                <div style={css_prop_item}>
-                    <label htmlFor={'prop_id_' + state.id} style={css_prop_item_label}>{state.name}</label>
-                    <Resizer paiRef={paiRef} left={inputWidth} onChange={newLeft => changeInputWidth(newLeft)} />
-                    <ExpressionInput
-                        style={{ ...css_prop_item_input, minWidth: minWidth - 33, width: inputWidth ? `${inputWidth + 8}px` : '70%' }}
-                        onChange={e => setState({ ...state, value: e.target.value })}
-                        onDoubleClick={e => alert('Abre o editor...')}
-                        disabled={state.editValueDisabled}
-                        onKeyDown={(e) => onkeyPress(e)}
-                        onBlur={_ => onChange(state)}
-                        key={'prop_key_' + state.id}
-                        id={'prop_id_' + state.id}
-                        value={state.value}
-                    />
+                <div key={'prop_item_key_' + state.id} style={css_prop_item}>
+                    <label htmlFor={'prop_id_' + state.id} className="flex1 " style={css_prop_item_label}>{state.name}</label>
+                    <Resizer onChange={newWidth => onChangeInputWidth(newWidth)} />
+                    <div style={{ width: inputWidth ? `${inputWidth}px` : '70%', minWidth: minWidth, maxWidth: '90%' }}>
+                        <ExpressionInput
+                            className="full-width background-bars"
+                            onChange={e => setState({ ...state, value: e.target.value })}
+                            openEditor={e => alert('Abre o editor...')}
+                            disabled={state.editValueDisabled}
+                            onKeyDown={(e) => onkeyPress(e)}
+                            onBlur={_ => onChange(state)}
+                            key={'prop_key_' + state.id}
+                            style={css_prop_item_input}
+                            id={'prop_id_' + state.id}
+                            value={state.value}
+                        />
+                    </div>
                 </div>
             );
 
         case TypeValues.bigstring:
             return (
-                <div style={css_prop_item}>
-                    <label htmlFor={'prop_id_' + state.id} style={css_prop_item_label}>{state.name}</label>
-                    <Resizer paiRef={paiRef} left={inputWidth} onChange={newLeft => changeInputWidth(newLeft)} />
-                    <textarea
-                        style={{ ...css_prop_item_input, height: '50px', resize: 'vertical' }}
-                        onChange={e => setState({ ...state, value: e.target.value })}
-                        disabled={state.editValueDisabled}
-                        onKeyDown={(e) => onkeyPress(e)}
-                        onBlur={_ => onChange(state)}
-                        key={'prop_key_' + state.id}
-                        id={'prop_id_' + state.id}
-                        value={state.value}
-                        autoComplete='off'
-                    />
+                <div key={'prop_item_key_' + state.id} style={css_prop_item}>
+                    <label htmlFor={'prop_id_' + state.id} className="flex1 " style={css_prop_item_label}>{state.name}</label>
+                    <Resizer onChange={newWidth => onChangeInputWidth(newWidth)} />
+                    <div style={{ width: inputWidth ? `${inputWidth}px` : '70%', minWidth: minWidth, maxWidth: '90%' }}>
+                        <textarea
+                            className="full-width background-bars"
+                            style={{ ...css_prop_item_input, height: '50px', resize: 'vertical' }}
+                            onChange={e => setState({ ...state, value: e.target.value })}
+                            disabled={state.editValueDisabled}
+                            onKeyDown={(e) => onkeyPress(e)}
+                            onBlur={_ => onChange(state)}
+                            key={'prop_key_' + state.id}
+                            id={'prop_id_' + state.id}
+                            value={state.value}
+                            autoComplete='off'
+                        />
+                    </div>
                 </div>
             );
 
         case TypeValues.number:
             return (
-                <div style={css_prop_item}>
-                    <label htmlFor={'prop_id_' + state.id} style={css_prop_item_label}>{state.name}</label>
-                    <Resizer paiRef={paiRef} left={inputWidth} onChange={newLeft => changeInputWidth(newLeft)} />
-                    <input
-                        onChange={e => setState({ ...state, value: e.target.value })}
-                        disabled={state.editValueDisabled}
-                        onKeyDown={(e) => onkeyPress(e)}
-                        onBlur={_ => onChange(state)}
-                        key={'prop_key_' + state.id}
-                        style={css_prop_item_input}
-                        id={'prop_id_' + state.id}
-                        value={state.value}
-                        autoComplete='off'
-                        type='number'
-                    />
+                <div key={'prop_item_key_' + state.id} style={css_prop_item}>
+                    <label htmlFor={'prop_id_' + state.id} className="flex1 " style={css_prop_item_label}>{state.name}</label>
+                    <Resizer onChange={newWidth => onChangeInputWidth(newWidth)} />
+                    <div style={{ width: inputWidth ? `${inputWidth}px` : '70%', minWidth: minWidth, maxWidth: '90%' }}>
+                        <input
+                            className="full-width background-bars"
+                            onChange={e => setState({ ...state, value: e.target.value })}
+                            disabled={state.editValueDisabled}
+                            onKeyDown={(e) => onkeyPress(e)}
+                            onBlur={_ => onChange(state)}
+                            key={'prop_key_' + state.id}
+                            style={css_prop_item_input}
+                            id={'prop_id_' + state.id}
+                            value={state.value}
+                            autoComplete='off'
+                            type='number'
+                        />
+                    </div>
                 </div>
             );
 
 
         case TypeValues.binary:
             return (
-                <div style={css_prop_item}>
-                    <label htmlFor={'prop_id_' + state.id} style={css_prop_item_label}>{state.name}</label>
-                    <Resizer paiRef={paiRef} left={inputWidth} onChange={newLeft => changeInputWidth(newLeft)} />
-                    <CustomInputFile
-                        onChange={e => setState({ ...state, value: e.target.value })}
-                        disabled={state.editValueDisabled}
-                        key={'prop_key_' + state.id}
-                        style={css_prop_item_input}
-                        id={'prop_id_' + state.id}
-                    />
+                <div key={'prop_item_key_' + state.id} style={css_prop_item}>
+                    <label htmlFor={'prop_id_' + state.id} className="flex1 " style={css_prop_item_label}>{state.name}</label>
+                    <Resizer onChange={newWidth => onChangeInputWidth(newWidth)} />
+                    <div style={{ width: inputWidth ? `${inputWidth}px` : '70%', minWidth: minWidth, maxWidth: '90%' }}>
+                        <CustomInputFile
+                            className="full-width background-bars"
+                            onChange={e => setState({ ...state, value: e.target.value })}
+                            disabled={state.editValueDisabled}
+                            key={'prop_key_' + state.id}
+                            style={css_prop_item_input}
+                            id={'prop_id_' + state.id}
+                        />
+                    </div>
                 </div>
             );
 
         case TypeValues.boolean:
             return (
-                <div style={css_prop_item}>
-                    <label htmlFor={'prop_id_' + state.id} style={css_prop_item_label}>{state.name}</label>
+                <div key={'prop_key_' + state.id} style={css_prop_item}>
+                    <label htmlFor={'prop_id_' + state.id} className="flex1 " style={css_prop_item_label}>{state.name}</label>
                     <DefaultSwitch
                         checked={state.value}
                         hasError={valueHasError}

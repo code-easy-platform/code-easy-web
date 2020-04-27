@@ -37,6 +37,7 @@ body,
 
 div {
   display: flex;
+  background-color: var(--color-transparent);
 }
 
 a {
@@ -56,11 +57,17 @@ label {
   cursor: pointer;
 }
 
-input {
+input, textarea {
   background-color: var(--main-background-bars);
   border: var(--input-border);
   color: var(--color-white);
+  padding: var(--size-2);
+  border-radius: var(--size-1);
+  padding-right: var(--size-1);
+  padding-left: var(--size-1);
+  color: var(--color-white);
 }
+/* Remove os botões da input de texto */
 /* Chrome, Safari, Edge, Opera */
 input::-webkit-outer-spin-button,
 input::-webkit-inner-spin-button {
@@ -146,6 +153,7 @@ input[type="number"] {
   color: var(--color-gray-5);
   font-weight: 500;
 }
+
 .display-flex {
   display: flex;
 }

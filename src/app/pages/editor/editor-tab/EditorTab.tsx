@@ -610,6 +610,7 @@ export default class EditorTab extends React.Component {
                             <PropertiesEditor
                                 itens={this.propertiesEditorGetSelectedItem.bind(this)(this.state.currentFocus)}
                                 onChange={this.propertiesEditorOutputItens.bind(this)}
+                                onChangeInputWidth={width => console.log(width)}
                             />
                         }
                     />

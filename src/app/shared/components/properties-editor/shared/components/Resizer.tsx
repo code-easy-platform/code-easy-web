@@ -1,27 +1,20 @@
-import React, { useState } from 'react';
+import React from 'react';
 
-interface ResizerProps { left: number; onChange(left: number): void, paiRef: any }
-export const Resizer: React.FC<ResizerProps> = ({ left, onChange, paiRef }) => {
+interface ResizerProps { onChange(left: number): void }
+export const Resizer: React.FC<ResizerProps> = ({ onChange }) => {
 
-    const [state, setState] = useState({ left: ((window.innerWidth / 2) - left) + 130 });
-
-    const mouseMove = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
-        setState({ ...state, left: e.pageX });
-        onChange(((window.innerWidth / 2) - e.pageX) + 130);
+    const mouseMove = (e: MouseEvent) => {
+        onChange(window.innerWidth - e.pageX);
     }
 
     const mouseUp = () => {
-        if (paiRef.current) {
-            paiRef.current.onmousemove = null;
-            window.onmouseup = null;
-        }
+        window.onmousemove = null;
+        window.onmouseup = null;
     }
 
-    const mouseDown = (e: React.MouseEvent<HTMLHRElement, MouseEvent>) => {
-        if (paiRef.current) {
-            paiRef.current.onmousemove = mouseMove;
-            window.onmouseup = mouseUp;
-        }
+    const mouseDown = () => {
+        window.onmousemove = mouseMove;
+        window.onmouseup = mouseUp;
     }
 
     return (
@@ -37,5 +30,4 @@ export const Resizer: React.FC<ResizerProps> = ({ left, onChange, paiRef }) => {
             }}
         />
     );
-
 }
