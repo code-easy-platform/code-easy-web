@@ -4,16 +4,16 @@ import HTML5Backend from 'react-dnd-html5-backend';
 
 import { TreeInterface } from './shared/models/TreeInterface';
 import { Tree } from './shared/components/Tree';
-import './TreeManager.scss';
+import './TreeManager.css';
 
 interface TreeManagerProps {
     isUseDrop?: boolean;
     isUseDrag?: boolean;
     itemBase: TreeInterface;
+    onDropItem?(targetItemId: string, dropppedItemId: string, droppedItemProps: any): void;
+    onContextMenu(itemTreeId: string, e: React.MouseEvent<HTMLDivElement, MouseEvent>): void | undefined;
     onClick(itemTreeId: string, item: TreeInterface, e: React.MouseEvent<HTMLDivElement, MouseEvent>): void | undefined;
     onDoubleClick(itemTreeId: string, item: TreeInterface, e: React.MouseEvent<HTMLDivElement, MouseEvent>): void | undefined;
-    onContextMenu(itemTreeId: string, e: React.MouseEvent<HTMLDivElement, MouseEvent>): void | undefined;
-    onDropItem?(targetItemId: string, dropppedItemId: string, droppedItemProps: any): void;
 }
 export const TreeManager: FC<TreeManagerProps> = ({ itemBase, onClick, onContextMenu, onDoubleClick, onDropItem = () => { }, isUseDrag = false, isUseDrop = false }) => {
 

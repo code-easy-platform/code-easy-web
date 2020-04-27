@@ -27,7 +27,7 @@ export const EditorPanel = React.forwardRef((props: any, ref: any) => {
                 outline: 'none',
                 minWidth: '100%',
                 minHeight: '100%',
-                backgroundSize: '28px 28px',
+                backgroundSize: '15px 15px',
                 backgroundImage: background,
             }}
         />

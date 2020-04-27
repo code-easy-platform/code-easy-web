@@ -14,9 +14,10 @@ interface TreeProps {
     onDoubleClick(itemTreeId: string | undefined, item: TreeInterface, e: React.MouseEvent<HTMLDivElement, MouseEvent>): void | undefined;
 }
 export const Tree: FC<TreeProps> = ({ item, paddingLeft = 0, onClick, onContextMenu, onDoubleClick, onDropItem, itemIdSelected, isUseDrag, isUseDrop }) => {
-    
+
     const [state, setState] = useState<TreeInterface>(item);
     state.isSelected = itemIdSelected === item.id;
+
     useEffect(() => {
         setState(item);
     }, [item]);
@@ -33,7 +34,7 @@ export const Tree: FC<TreeProps> = ({ item, paddingLeft = 0, onClick, onContextM
             onSelect={(_, e) => {
                 setState({
                     ...state,
-                    nodeExpanded: !state.nodeExpanded,
+                    nodeExpanded: state.isAllowedToggleNodeExpand === false ? state.nodeExpanded : !state.nodeExpanded,
                 });
                 onClick(item.id, item, e);
             }}

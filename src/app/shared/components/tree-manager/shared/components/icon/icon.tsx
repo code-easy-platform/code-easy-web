@@ -1,5 +1,5 @@
 import React from 'react';
-import './icon.scss';
+import './icon.css';
 
 /**
  * @param onClick Uma função como callBack.

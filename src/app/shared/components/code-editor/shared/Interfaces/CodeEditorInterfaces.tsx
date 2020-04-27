@@ -32,7 +32,10 @@ export interface ICodeEditorProps {
     /** Function - usada para emitir um evento de output para que seja exibido um menu de contexto  */
     onContextMenu?(data?: any, e?: React.MouseEvent<SVGGElement, MouseEvent>): void;
 
-    /** Function - usada para emitir um evento de output para que seja exibido um menu de contexto  */
+    /** Function - usada para emitir um evento quando o mouse passar sobre o editor */
+    onMouseOver?(e?: React.MouseEvent<SVGSVGElement, MouseEvent> | undefined): void;
+
+    /** Function - usada para emitir um evento quando uma tecla é precionada  */
     onKeyDown?(e?: React.KeyboardEvent<SVGSVGElement>): void;
 
 }

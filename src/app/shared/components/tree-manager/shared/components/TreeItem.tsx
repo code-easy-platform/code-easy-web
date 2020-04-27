@@ -31,14 +31,8 @@ export const TreeItem: FC<ItemTreeProps> = ({ itemTree, paddingLeft, onSelect, o
         onContextMenu(itemTree.id, e);
     }
 
+    /** Cria a referencia ao item que está sendo arrastado */
     const itemRef = useRef(null);
-    if (itemRef.current) {
-        let item: any = itemRef.current
-
-        if (!isDisabledSelect)
-            item.setAttribute('selected', itemTree.isSelected);
-
-    }
 
     /** Permite que um elemento seja arrastado e dropado em outro lugar.. */
     const [{ isDragging }, dragRef, preview] = useDrag({
@@ -73,12 +67,16 @@ export const TreeItem: FC<ItemTreeProps> = ({ itemTree, paddingLeft, onSelect, o
             id={"tree_" + itemTree.id}
             title={itemTree.description}
             onContextMenu={isDisabledSelect ? undefined : onContext}
+            className={`tree-item${(!isDisabledSelect) ? '' : ' disabled'}${isDisabledSelect ? '' : (itemTree.isSelected ? ' selected' : '')}`}
             onClick={isDisabledSelect ? undefined : ((e: any) => onSelect(itemTree.id, e))}
             onDoubleClick={isDisabledSelect ? undefined : (e => { onDoubleClick(itemTree.id, itemTree, e) })}
-            className={`tree-item${(!isDisabledSelect) ? '' : ' disabled'}`}
         >
             <DragPreviewImage connect={preview} src={img_tree_item_preview} />
-            <div key={itemTree.id} className={`item${hasError ? ' text-underline-error' : ''}${isDragging ? ' dragging' : ''}${(isDraggingOver && isUseDrop && !isDisabledDrop) ? ' dragging-over' : ''}`} style={{ paddingLeft: `${paddingLeft}px` }}>
+            <div
+                key={itemTree.id}
+                className={`item${isDragging ? ' dragging' : ''}${(isDraggingOver && isUseDrop && !isDisabledDrop) ? ' dragging-over' : ''}`}
+                style={{ paddingLeft: `${paddingLeft}px`, color: hasError ? 'var(--main-error-color)' : '' }}
+            >
                 {(itemTree.type === TreeItensTypes.folder || itemTree.childs.length > 0) &&
                     <Icon onClick={isAllowedToggleNodeExpand ? ((e: any) => onSelect(itemTree.id, e)) : undefined} iconName={itemTree.nodeExpanded ? "btn-collapse-folder" : "btn-expand-folder"} />
                 }

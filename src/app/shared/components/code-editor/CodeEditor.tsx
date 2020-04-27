@@ -3,15 +3,15 @@ import { useDrop, DropTargetMonitor, DndProvider } from 'react-dnd';
 import HTML5Backend from 'react-dnd-html5-backend';
 
 import { ICodeEditorProps, ICodeEditorState } from './shared/Interfaces/CodeEditorInterfaces';
+import { EditorPanel } from './components/editor-panel/EditorPanel';
 import { SelectorArea } from './components/selector/SelectorArea';
 import { BreandCamps } from './components/breadcamps/BreandCamps';
+import { InputCopy } from './components/input-copy/InputCopy';
 import { ItemToDrag } from './components/item-drag/ItemDrag';
 import { ItemType, FlowItem } from './models/ItemFluxo';
 import { Toolbar } from './components/tool-bar/ToolBar';
 import { Lines } from './components/lines/Lines';
 import { Utils } from './shared/Utils';
-import { EditorPanel } from './components/editor-panel/EditorPanel';
-import { InputCopy } from './components/input-copy/InputCopy';
 
 
 /**
@@ -38,7 +38,7 @@ const acceptedInDrop: ItemType[] = [ItemType.START, ItemType.ACTION, ItemType.IF
 let backupFlow: string = "";
 
 /** Editor do fluxo. */
-const CodeEditor: React.FC<ICodeEditorProps> = ({ itens = [], toolItens = [], onChangeItens = () => { }, isShowToolbar = false, onDropItem = () => undefined, allowDropTo = [], onContextMenu, onKeyDown, breadcrumbsPath, isDisabledSelection = false }) => {
+const CodeEditor: React.FC<ICodeEditorProps> = ({ itens = [], toolItens = [], onChangeItens = () => { }, onMouseOver, isShowToolbar = false, onDropItem = () => undefined, allowDropTo = [], onContextMenu, onKeyDown, breadcrumbsPath, isDisabledSelection = false }) => {
 
     /** Referencia o svg onde está todos os itens de fluxo. */
     const editorPanelRef = useRef<any>(null);
@@ -492,6 +492,7 @@ const CodeEditor: React.FC<ICodeEditorProps> = ({ itens = [], toolItens = [], on
                     ref={editorPanelRef}
                     id={"CODE_EDITOR_SVG"}
                     backgroundType='dotted'
+                    onMouseOver={onMouseOver}
                     width={state.svgSize.svgWidth}
                     height={state.svgSize.svgHeight}
                     onMouseDown={(e: any) => onMouseDown(e)}
