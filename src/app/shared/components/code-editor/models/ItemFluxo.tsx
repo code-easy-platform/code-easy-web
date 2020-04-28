@@ -9,6 +9,7 @@ export interface ItemFluxo {
     name: string;
     left: number;
     top: number;
+    icon: any;
     select(startTop: number, startLeft: number, endTop: number, endLeft: number): any;
 }
 
@@ -37,6 +38,7 @@ export class FlowItem implements ItemFluxo {
     public name: string = "";
     public left: number = 0;
     public top: number = 0;
+    public icon: any;
 
     /** Valida se o elemento está ou não na área que está sendo selecionada pelo mouse. */
     public select = (startTop: number, startLeft: number, endTop: number, endLeft: number) => {
@@ -69,6 +71,7 @@ export class FlowItem implements ItemFluxo {
             name: string,
             left?: number,
             top?: number,
+            icon?: any,
         }
     ) {
         this.isSelected = this.props.isSelected || false;
@@ -80,6 +83,7 @@ export class FlowItem implements ItemFluxo {
         this.left = this.props.left || 0;
         this.top = this.props.top || 0;
         this.name = this.props.name;
+        this.icon = this.props.icon;
         this.id = this.props.id;
     }
 

@@ -22,6 +22,7 @@ export const EditorPanel = React.forwardRef((props: any, ref: any) => {
         <svg
             {...props}
             ref={ref}
+            preserveaspectratio="none"
             tabIndex={0}
             style={{
                 outline: 'none',

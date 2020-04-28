@@ -17,47 +17,44 @@ import { FlowComment } from './FlowComment';
 /** Usado para definir o tipo de input de parâmetros no item drag. */
 export interface ItemDragProps {
     id?: any;
+    icon?: any;
+    top?: number;
+    left?: number;
     title: string;
     children?: any;
-    parentElementRef?: any;
+    width?: number;
+    height?: number;
+    border?: number;
     hasError?: boolean;
-    style: CustomStyle;
     allowDrag?: boolean;
     isSelected: boolean;
+    itemType?: ItemType;
+    parentElementRef?: any;
     hideSourceOnDrag?: boolean;
-    itemType?: any;/* ComponentType */
 
+    onMouseUp?(e?: React.MouseEvent<SVGGElement, MouseEvent>): void;
+    onMouseOver?(e?: React.MouseEvent<SVGGElement, MouseEvent>): void;
+    onMouseDown?(e?: React.MouseEvent<SVGGElement, MouseEvent>): void;
+    onContextMenu?(data?: any, e?: React.MouseEvent<SVGGElement, MouseEvent>): void;
     /** Devolve 'itemId, top, left'. */
     onChangePosition?(top: number, left: number, e?: React.MouseEvent<SVGGElement, MouseEvent>): void;
-    onContextMenu?(data?: any, e?: React.MouseEvent<SVGGElement, MouseEvent>): void;
-    onMouseDown?(e?: React.MouseEvent<SVGGElement, MouseEvent>): void;
-    onMouseUp?(e?: React.MouseEvent<SVGGElement, MouseEvent>): void;
-}
-
-/** Auxilia na hora de passar configurações para o editor de fluxo. */
-interface CustomStyle {
-    top?: number
-    left?: number
-    width?: number
-    height?: number
-    border?: number
 }
 
 /** Usado para representar os itens de lógica no fluxo do editor e na toolbar. */
 export const ItemToDrag: React.FC<ItemDragProps> = (props: ItemDragProps) => {
     const {
         isSelected, onContextMenu, hasError, onMouseUp,
-        id, onChangePosition, onMouseDown, style,
-        allowDrag, parentElementRef, itemType,
+        id, onChangePosition, onMouseDown, onMouseOver,
+        width = 0, height = 0, top = 0, left = 0,
+        allowDrag, itemType, icon,
     } = props;
-    const { width, height, top, left } = style;
 
     let { title } = props;
 
 
     /** Permite que uym elemento seja arrastado e adicionado dentro do editor de fluxo. */
     const [, dragRef] = useDrag({
-        item: { type: itemType, itemProps: { id, left, top, title, itemType, sucessor: [0] } },
+        item: { type: itemType || 'undefined', itemProps: { id, left, top, title, itemType, sucessor: [0] } },
         collect: monitor => ({ isDragging: monitor.isDragging() }),
     });
 
@@ -68,19 +65,18 @@ export const ItemToDrag: React.FC<ItemDragProps> = (props: ItemDragProps) => {
      * Também serve para fechar o menu de contexto.
      */
     const mouseUp = (e: MouseEvent) => {
-        if (parentElementRef.current) {
-            window.onmousemove = null;
-            parentElementRef.current.onmouseup = null;
-        }
+        window.onmousemove = null;
+        window.onmouseup = null;
     }
 
     /** Quando um item estiver selecionado e for arrastado na tale esta fun vai fazer isso acontecer. */
-    const mouseMove = (event: any) => {
+    const mouseMove = (event: MouseEvent) => {
+        console.log(event);
         const top = event.offsetY - ((height || 0) / 2);
         const left = event.offsetX - ((width || 0) / 2);
 
         if (onChangePosition) {
-            onChangePosition(top, left, event);
+            onChangePosition(top, left, event as any);
         }
     }
 
@@ -88,10 +84,9 @@ export const ItemToDrag: React.FC<ItemDragProps> = (props: ItemDragProps) => {
     const mouseDown = (e: React.MouseEvent<SVGGElement, MouseEvent>) => {
         if (onMouseDown) onMouseDown(e);
 
-        if (parentElementRef.current) {
-            window.onmousemove = mouseMove;
-            parentElementRef.current.onmouseup = mouseUp;
-        }
+        window.onmousemove = mouseMove;
+        window.onmouseup = mouseUp;
+
     }
 
     // Assim que configurado exibirá o menu de contexto deste item corrente.
@@ -113,16 +108,16 @@ export const ItemToDrag: React.FC<ItemDragProps> = (props: ItemDragProps) => {
             width: 30,
         };
 
-        return <div className="toolbar-item">
-            {itemType === ItemType.COMMENT && <img id={id} title="COMMENT" style={style} ref={dragRef} src={icons_comment} alt="COMMENT" />}
-            {itemType === ItemType.FOREACH && <img id={id} title="FOREACH" style={style} ref={dragRef} src={icons_foreach} alt="FOREACH" />}
-            {itemType === ItemType.SWITCH && <img id={id} title="SWITCH" style={style} ref={dragRef} src={icons_switch} alt="SWITCH" />}
-            {itemType === ItemType.ASSIGN && <img id={id} title="ASSIGN" style={style} ref={dragRef} src={icons_assign} alt="ASSIGN" />}
-            {itemType === ItemType.ACTION && <img id={id} title="ACTION" style={style} ref={dragRef} src={icons_action} alt="ACTION" />}
-            {itemType === ItemType.START && <img id={id} title="START" style={style} ref={dragRef} src={icons_start} alt="START" />}
-            {itemType === ItemType.END && <img id={id} title="END" style={style} ref={dragRef} src={icons_end} alt="END" />}
-            {itemType === ItemType.IF && <img id={id} title="IF" style={style} ref={dragRef} src={icons_if} alt="IF" />}
-        </div>;
+        return <>
+            {itemType === ItemType.COMMENT && <img id={id} className="toolbar-item" title="COMMENT" style={style} ref={dragRef} src={icons_comment} alt="COMMENT" />}
+            {itemType === ItemType.FOREACH && <img id={id} className="toolbar-item" title="FOREACH" style={style} ref={dragRef} src={icons_foreach} alt="FOREACH" />}
+            {itemType === ItemType.SWITCH && <img id={id} className="toolbar-item" title="SWITCH" style={style} ref={dragRef} src={icons_switch} alt="SWITCH" />}
+            {itemType === ItemType.ASSIGN && <img id={id} className="toolbar-item" title="ASSIGN" style={style} ref={dragRef} src={icons_assign} alt="ASSIGN" />}
+            {itemType === ItemType.ACTION && <img id={id} className="toolbar-item" title="ACTION" style={style} ref={dragRef} src={icons_action} alt="ACTION" />}
+            {itemType === ItemType.START && <img id={id} className="toolbar-item" title="START" style={style} ref={dragRef} src={icons_start} alt="START" />}
+            {itemType === ItemType.END && <img id={id} className="toolbar-item" title="END" style={style} ref={dragRef} src={icons_end} alt="END" />}
+            {itemType === ItemType.IF && <img id={id} className="toolbar-item" title="IF" style={style} ref={dragRef} src={icons_if} alt="IF" />}
+        </>;
     } else {
 
         // Ajusta o tamanho do titulo para não ficar muito grande
@@ -131,22 +126,23 @@ export const ItemToDrag: React.FC<ItemDragProps> = (props: ItemDragProps) => {
         /** Reinderiza um tipo de tag svg na tela, somente dentro do editor de fluxo. */
         return (
             <g
-                onContextMenu={contextMenu}
-                style={{ cursor: 'move' }}
-                onMouseDown={mouseDown}
-                onMouseUp={onMouseUp}
-                key={id}
                 id={id}
+                key={id}
+                onMouseUp={onMouseUp}
+                onMouseDown={mouseDown}
+                onMouseOver={onMouseOver}
+                onContextMenu={contextMenu}
+                style={{ cursor: 'move', zIndex: 2 }}
             >
                 <text x={(left || 0) + ((width || 0) / 2)} textAnchor="middle" fill="var(--color-white)" y={(top || 0) - 5} id={id}>{title}</text>
                 {itemType === ItemType.COMMENT && <FlowComment id={id} top={top} left={left} width={width} height={height} isSelected={isSelected} name="COMMENT" childImage={icons_comment} />}
-                {itemType === ItemType.FOREACH && <FlowComponent id={id} top={top} left={left} width={width} height={height} isSelected={isSelected} hasError={hasError} name="FOREACH" childImage={icons_foreach} />}
-                {itemType === ItemType.ASSIGN && <FlowComponent id={id} top={top} left={left} width={width} height={height} isSelected={isSelected} hasError={hasError} name="ASSIGN" childImage={icons_assign} />}
-                {itemType === ItemType.SWITCH && <FlowComponent id={id} top={top} left={left} width={width} height={height} isSelected={isSelected} hasError={hasError} name="SWITCH" childImage={icons_switch} />}
-                {itemType === ItemType.ACTION && <FlowComponent id={id} top={top} left={left} width={width} height={height} isSelected={isSelected} hasError={hasError} name="ACTION" childImage={icons_action} />}
-                {itemType === ItemType.START && <FlowComponent id={id} top={top} left={left} width={width} height={height} isSelected={isSelected} hasError={hasError} name="START" childImage={icons_start} />}
-                {itemType === ItemType.END && <FlowComponent id={id} top={top} left={left} width={width} height={height} isSelected={isSelected} hasError={hasError} name="END" childImage={icons_end} />}
-                {itemType === ItemType.IF && <FlowComponent id={id} top={top} left={left} width={width} height={height} isSelected={isSelected} hasError={hasError} name="IF" childImage={icons_if} />}
+                {itemType === ItemType.FOREACH && <FlowComponent id={id} top={top} left={left} width={width} height={height} isSelected={isSelected} hasError={hasError} name="FOREACH" icon={icons_foreach} />}
+                {itemType === ItemType.ASSIGN && <FlowComponent id={id} top={top} left={left} width={width} height={height} isSelected={isSelected} hasError={hasError} name="ASSIGN" icon={icons_assign} />}
+                {itemType === ItemType.SWITCH && <FlowComponent id={id} top={top} left={left} width={width} height={height} isSelected={isSelected} hasError={hasError} name="SWITCH" icon={icons_switch} />}
+                {itemType === ItemType.ACTION && <FlowComponent id={id} top={top} left={left} width={width} height={height} isSelected={isSelected} hasError={hasError} name="ACTION" icon={icon || icons_action} />}
+                {itemType === ItemType.START && <FlowComponent id={id} top={top} left={left} width={width} height={height} isSelected={isSelected} hasError={hasError} name="START" icon={icons_start} />}
+                {itemType === ItemType.END && <FlowComponent id={id} top={top} left={left} width={width} height={height} isSelected={isSelected} hasError={hasError} name="END" icon={icons_end} />}
+                {itemType === ItemType.IF && <FlowComponent id={id} top={top} left={left} width={width} height={height} isSelected={isSelected} hasError={hasError} name="IF" icon={icons_if} />}
             </g>
         );
     }

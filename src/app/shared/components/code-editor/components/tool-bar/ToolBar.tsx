@@ -17,7 +17,6 @@ export const Toolbar = ({ itensLogica, isShow }: { itensLogica: FlowItem[], isSh
                         allowDrag={true}
                         key={item.id}
                         id={item.id}
-                        style={{}}
                     />;
                 })}
             </div>

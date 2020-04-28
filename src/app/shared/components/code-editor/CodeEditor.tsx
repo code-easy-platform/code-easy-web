@@ -485,23 +485,22 @@ const CodeEditor: React.FC<ICodeEditorProps> = ({ itens = [], toolItens = [], on
         <>
             <InputCopy ref={inputCopyRef} />
             <Toolbar itensLogica={toolItens} isShow={((toolItens.length > 0) && isShowToolbar)} />
-            <main key={"CODE_EDITOR"} className='overflow-auto flex1' >
+            <main
+                key={"CODE_EDITOR"}
+                className='overflow-auto flex1'
+                onMouseOver={(e: any) => onMouseOver && onMouseOver(e)}
+            >
                 <BreandCamps breadcrumbsPath={breadcrumbsPath} />
 
                 <EditorPanel
                     ref={editorPanelRef}
                     id={"CODE_EDITOR_SVG"}
                     backgroundType='dotted'
-                    onMouseOver={onMouseOver}
                     width={state.svgSize.svgWidth}
                     height={state.svgSize.svgHeight}
                     onMouseDown={(e: any) => onMouseDown(e)}
-                    onContextMenu={(e: any) => {
-                        if (onContextMenu) {
-                            e.preventDefault();
-                            onContextMenu(undefined, e);
-                        }
-                    }}>
+                    onContextMenu={(e: any) => onContextMenu && onContextMenu(undefined, e)}
+                >
 
                     {/* Reinderiza a área de seleção na tela. */}
                     <SelectorArea
@@ -532,7 +531,6 @@ const CodeEditor: React.FC<ICodeEditorProps> = ({ itens = [], toolItens = [], on
                         return <Lines
                             item={item}
                             isUseNewBranch={isUseNewBranch}
-                            parentElementRef={editorPanelRef}
                             itensSucessores={itensSucessores}
                             onSucessorChange={onSucessorChange}
                         />;
@@ -541,20 +539,26 @@ const CodeEditor: React.FC<ICodeEditorProps> = ({ itens = [], toolItens = [], on
 
                     {/* Reinderiza os itens arrastáveis na tela! */}
                     {state.flowItens.map((item: FlowItem) => {
-                        return <ItemToDrag
-                            style={{ top: item.top, left: item.left, width: item.width, height: item.height }}
-                            onMouseDown={(e: any) => onMouseDown(e)}
-                            onChangePosition={onChangePositionItens}
-                            onMouseUp={(e: any) => onChangeFlow()}
-                            parentElementRef={editorPanelRef}
-                            onContextMenu={onContextMenu}
-                            isSelected={item.isSelected}
-                            itemType={item.itemType}
-                            hasError={item.hasError}
-                            title={item.name}
-                            key={item.id}
-                            id={item.id}
-                        />;
+
+                        return <>
+                            <ItemToDrag
+                                onMouseDown={(e: any) => onMouseDown(e)}
+                                onChangePosition={onChangePositionItens}
+                                onMouseUp={(e: any) => onChangeFlow()}
+                                onContextMenu={onContextMenu}
+                                isSelected={item.isSelected}
+                                itemType={item.itemType}
+                                hasError={item.hasError}
+                                height={item.height}
+                                width={item.width}
+                                title={item.name}
+                                icon={item.icon}
+                                left={item.left}
+                                top={item.top}
+                                key={item.id}
+                                id={item.id}
+                            />
+                        </>;
                     })}
 
                 </EditorPanel>
