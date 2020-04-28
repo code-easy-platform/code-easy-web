@@ -1,13 +1,12 @@
-import { TreeItensTypes } from './TreeItensTypes';
-
 export interface TreeInterface {
-    id: string | undefined;
+    type: any;
     label: string;
     hasError?: boolean;
     isSelected: boolean;
-    type: TreeItensTypes;
     description?: string;
     nodeExpanded: boolean;
+    canDropList?: string[];
+    id: string | undefined;
     childs: TreeInterface[];
     isDisabledDrag?: boolean;
     isDisabledDrop?: boolean;

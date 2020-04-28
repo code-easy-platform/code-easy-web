@@ -4,14 +4,15 @@ import { TwoVerticalColumnsResizable } from '../../../shared/components/resizabl
 import { IItem, TypeValues, IProperties } from '../../../shared/components/properties-editor/shared/interfaces';
 import { CodeEditorContext, ICodeEditorContext } from '../../../shared/services/contexts/CodeEditorContext';
 import { TwoColumnsResizable } from '../../../shared/components/resizable-columns/TwoColumnsResizable';
-import { TreeItensTypes } from '../../../shared/components/tree-manager/shared/models/TreeItensTypes';
 import { TreeInterface } from '../../../shared/components/tree-manager/shared/models/TreeInterface';
 import { PropertiesEditor } from './../../../shared/components/properties-editor/PropertiesEditor';
 import { ContextMenuService } from '../../../shared/components/context-menu/ContextMenuService';
 import { FlowItem, ItemType } from './../../../shared/components/code-editor/models/ItemFluxo';
 import { Tab, ItemComponent, ItemFlowComplete } from '../../../shared/interfaces/Aplication';
+import { IContextItemList } from './../../../shared/components/context-menu/ContextMenu';
 import { TreeManager } from '../../../shared/components/tree-manager/TreeManager';
 import { FlowEditor } from '../../../shared/components/code-editor/CodeEditor';
+import { ComponentType } from '../../../shared/enuns/ComponentType';
 import { Utils } from '../../../shared/services/Utils';
 
 
@@ -127,7 +128,7 @@ export default class EditorTab extends React.Component {
     }
 
     /** Devolve uma lista de propriedades para ser adicionado em novos itens de fluxo ou da árvore. */
-    private propertiesEditorGetNewProperties(itemType: ItemType | TreeItensTypes, name: string): IProperties[] {
+    private propertiesEditorGetNewProperties(itemType: ItemType | ComponentType, name: string): IProperties[] {
         switch (itemType) {
             case ItemType.START:
                 return [
@@ -175,13 +176,41 @@ export default class EditorTab extends React.Component {
                     { id: Utils.getUUID(), name: 'Label', type: TypeValues.viewOnly, value: name },
                 ];
 
-            case TreeItensTypes.file:
+            case ComponentType.router:
                 return [
-                    { id: Utils.getUUID(), name: 'Label', type: TypeValues.string, value: name },
+                    { id: Utils.getUUID(), name: 'Label', value: name, type: TypeValues.string },
+                    { id: Utils.getUUID(), name: 'Description', type: TypeValues.bigstring, value: "" },
+                    { id: Utils.getUUID(), name: 'Url', type: TypeValues.string, value: "/newroute" },
                 ];
-            case TreeItensTypes.folder:
+
+            case ComponentType.globalAction:
                 return [
-                    { id: Utils.getUUID(), name: 'Label', type: TypeValues.string, value: name },
+                    { id: Utils.getUUID(), name: 'Label', value: name, type: TypeValues.string },
+                    { id: Utils.getUUID(), name: 'Description', type: TypeValues.bigstring, value: "" },
+                ];
+
+            case ComponentType.inputVariable:
+                return [
+                    { id: Utils.getUUID(), name: 'Label', value: name, type: TypeValues.string },
+                    { id: Utils.getUUID(), name: 'Description', type: TypeValues.bigstring, value: "" },
+                    { id: Utils.getUUID(), name: 'Data type', type: TypeValues.expression, value: "" },
+                    { id: Utils.getUUID(), name: 'Default value', type: TypeValues.expression, value: "" },
+                ];
+
+            case ComponentType.localVariable:
+                return [
+                    { id: Utils.getUUID(), name: 'Label', value: name, type: TypeValues.string },
+                    { id: Utils.getUUID(), name: 'Description', type: TypeValues.bigstring, value: "" },
+                    { id: Utils.getUUID(), name: 'Data type', type: TypeValues.expression, value: "" },
+                    { id: Utils.getUUID(), name: 'Default value', type: TypeValues.expression, value: "" },
+                ];
+
+            case ComponentType.outputVariable:
+                return [
+                    { id: Utils.getUUID(), name: 'Label', value: name, type: TypeValues.string },
+                    { id: Utils.getUUID(), name: 'Description', type: TypeValues.bigstring, value: "" },
+                    { id: Utils.getUUID(), name: 'Data type', type: TypeValues.expression, value: "" },
+                    { id: Utils.getUUID(), name: 'Default value', type: TypeValues.expression, value: "" },
                 ];
 
             default:
@@ -263,14 +292,12 @@ export default class EditorTab extends React.Component {
      */
     private codeEditorOnDropItem(oldItemId: string, newItemId: string, newItem: FlowItem): FlowItem {
 
-        if (newItem.itemType.toString() === TreeItensTypes.file.toString()) {
+        if (newItem.itemType.toString() === ComponentType.globalAction.toString() || newItem.itemType.toString() === ComponentType.localAction.toString()) {
             newItem.itemType = ItemType.ACTION;
         }
 
         this.setState({ currentFocus: CurrentFocus.flow });
-
         return newItem;
-
     }
 
     /** Usando o state pode pegar os itens que devem ser editados pelo fluxo. */
@@ -369,7 +396,7 @@ export default class EditorTab extends React.Component {
         // Pega a lista de itens corrente na árvore
         let itens: ItemComponent[] = [];
         this.editorContext.project.tabs.forEach((tab: Tab) => {
-            if (tab.configs.isEditando) {
+            if (tab.configs.isEditing) {
                 itens = tab.itens;
             }
         });
@@ -431,7 +458,7 @@ export default class EditorTab extends React.Component {
 
         let itens: ItemComponent[] = [];
         this.editorContext.project.tabs.forEach((tab: Tab) => {
-            if (tab.configs.isEditando) {
+            if (tab.configs.isEditing) {
                 itens = tab.itens;
             }
         });
@@ -486,7 +513,10 @@ export default class EditorTab extends React.Component {
     }
 
     /** Quando clicado com o botão esquerdo do mouse no interior da árvore esta função é acionada. */
-    private treeManagerContextMenu(itemId: string): any[] {
+    private treeManagerContextMenu(itemId: string): IContextItemList[] {
+        this.setState({ currentFocus: CurrentFocus.tree });
+
+        let options: IContextItemList[] = [];
 
         const removeItem = (inputItemId: string) => {
             this.setState({ currentFocus: CurrentFocus.tree });
@@ -508,10 +538,9 @@ export default class EditorTab extends React.Component {
             }
 
             this.onChangeState();
-
         };
 
-        const addParam = (inputItemId: string) => {
+        const addParam = (inputItemId: string, paramType: ComponentType.inputVariable | ComponentType.localVariable | ComponentType.outputVariable) => {
             let tabIndex: number | undefined;
             this.editorContext.project.tabs.forEach((tab: Tab, indexTab) => {
                 tab.itens.forEach(item => {
@@ -526,32 +555,174 @@ export default class EditorTab extends React.Component {
                     id: Utils.getUUID(),
                     itens: [],
                     description: '',
-                    properties: this.propertiesEditorGetNewProperties(TreeItensTypes.file, 'newinputparam'),
+                    type: paramType,
                     isSelected: true,
                     isEditing: false,
+                    name: 'newparam',
+                    label: 'newparam',
                     nodeExpanded: true,
-                    name: 'newinputparam',
                     itemPaiId: inputItemId,
-                    type: TreeItensTypes.file,
-                    label: '(New input param)',
+                    properties: this.propertiesEditorGetNewProperties(paramType, 'newparam'),
                 }));
             }
 
-            this.setState({ currentFocus: CurrentFocus.tree });
             this.onChangeState();
         }
 
-        return [
-            {
-                action: () => removeItem(itemId),
-                label: 'Delete'
-            },
-            {
-                action: () => addParam(itemId),
-                label: 'Add input param'
-            }
-        ];
+        const addRoute = (inputItemId: string) => {
+            if (inputItemId === undefined) {
+                let tabIndex: number | undefined;
+                this.editorContext.project.tabs.forEach((tab: Tab, indexTab) => {
+                    if (tab.configs.isEditing) {
+                        tabIndex = indexTab;
+                    }
+                });
 
+                if (tabIndex !== undefined) {
+                    this.editorContext.project.tabs[tabIndex].itens.push(new ItemComponent({
+                        id: Utils.getUUID(),
+                        itens: [],
+                        description: '',
+                        isSelected: true,
+                        isEditing: false,
+                        name: 'newrouter',
+                        nodeExpanded: true,
+                        label: 'newrouter',
+                        itemPaiId: inputItemId,
+                        type: ComponentType.router,
+                        properties: this.propertiesEditorGetNewProperties(ComponentType.router, 'newrouter'),
+                    }));
+                }
+            }
+            this.onChangeState();
+        }
+
+        const addAction = (inputItemId: string) => {
+            if (inputItemId === undefined) {
+                let tabIndex: number | undefined;
+                this.editorContext.project.tabs.forEach((tab: Tab, indexTab) => {
+                    if (tab.configs.isEditing) {
+                        tabIndex = indexTab;
+                    }
+                });
+
+                if (tabIndex !== undefined) {
+                    this.editorContext.project.tabs[tabIndex].itens.push(new ItemComponent({
+                        id: Utils.getUUID(),
+                        itens: [],
+                        description: '',
+                        isSelected: true,
+                        isEditing: false,
+                        name: 'newaction',
+                        nodeExpanded: true,
+                        label: 'newaction',
+                        itemPaiId: inputItemId,
+                        type: ComponentType.globalAction,
+                        properties: this.propertiesEditorGetNewProperties(ComponentType.globalAction, 'newaction'),
+                    }));
+                }
+            }
+            this.onChangeState()
+        }
+
+        this.editorContext.project.tabs.forEach((tab: Tab) => {
+            if (tab.configs.isEditing) {
+                if (tab.configs.type === ComponentType.tabRouters) {
+
+                    options.push({
+                        action: () => addRoute(itemId),
+                        disabled: itemId !== undefined,
+                        label: 'Add new route'
+                    });
+
+                } else if (tab.configs.type === ComponentType.tabActions) {
+
+                    options.push({
+                        action: () => addAction(itemId),
+                        disabled: itemId !== undefined,
+                        label: 'Add new action'
+                    });
+
+                } else if (tab.configs.type === ComponentType.tabDates) {
+
+                }
+
+                tab.itens.forEach(item => {
+                    if (item.id === itemId) {
+                        switch (item.type) {
+                            case ComponentType.globalAction:
+                                options.push({
+                                    action: () => addParam(itemId, ComponentType.inputVariable),
+                                    disabled: itemId === undefined,
+                                    label: 'Add input variable'
+                                });
+                                options.push({
+                                    action: () => addParam(itemId, ComponentType.outputVariable),
+                                    disabled: itemId === undefined,
+                                    label: 'Add output variable'
+                                });
+                                options.push({
+                                    action: () => addParam(itemId, ComponentType.localVariable),
+                                    disabled: itemId === undefined,
+                                    label: 'Add local variable'
+                                });
+                                break;
+
+                            case ComponentType.localAction:
+                                options.push({
+                                    action: () => addParam(itemId, ComponentType.inputVariable),
+                                    disabled: itemId === undefined,
+                                    label: 'Add input variable'
+                                });
+                                options.push({
+                                    action: () => addParam(itemId, ComponentType.outputVariable),
+                                    disabled: itemId === undefined,
+                                    label: 'Add output variable'
+                                });
+                                options.push({
+                                    action: () => addParam(itemId, ComponentType.localVariable),
+                                    disabled: itemId === undefined,
+                                    label: 'Add local variable'
+                                });
+                                break;
+
+                            case ComponentType.router:
+                                options.push({
+                                    action: () => addParam(itemId, ComponentType.inputVariable),
+                                    disabled: itemId === undefined,
+                                    label: 'Add input param'
+                                });
+                                options.push({
+                                    action: () => addParam(itemId, ComponentType.outputVariable),
+                                    disabled: itemId === undefined,
+                                    label: 'Add output param'
+                                });
+                                options.push({
+                                    action: () => addParam(itemId, ComponentType.localVariable),
+                                    disabled: itemId === undefined,
+                                    label: 'Add local variable'
+                                });
+                                break;
+
+                            default:
+                                break;
+                        }
+                    }
+                });
+
+            }
+        });
+
+        if (itemId !== undefined) {
+            options.push({
+                action: () => removeItem(itemId),
+                disabled: itemId === undefined,
+                useConfirmation: true,
+                label: 'Delete'
+            });
+        }
+
+        return options;
     }
 
     //#endregion
@@ -567,12 +738,12 @@ export default class EditorTab extends React.Component {
                     <FlowEditor
                         isShowToolbar={true}
                         itens={flowEditorItens}
-                        allowDropTo={[TreeItensTypes.file]}
                         toolItens={this.codeEditorGetToolBoxItens()}
                         onDropItem={this.codeEditorOnDropItem.bind(this)}
                         isDisabledSelection={flowEditorItens.length === 0}
                         onChangeItens={this.codeEditorOutputFlowItens.bind(this)}
                         breadcrumbsPath={this.codeEditorGetBreadcamps.bind(this)()}
+                        allowDropTo={[ComponentType.globalAction, ComponentType.localAction]}
                         onContextMenu={(data, e) => {
                             if (e) {
                                 e.preventDefault();
@@ -600,9 +771,9 @@ export default class EditorTab extends React.Component {
                                     isSelected: false,
                                     nodeExpanded: true,
                                     isDisabledDrag: true,
-                                    type: TreeItensTypes.folder,
+                                    type: ComponentType.grouper,
                                     childs: this.treeManagerGetTree.bind(this)(),
-                                    label: this.editorContext.project.tabs.find(item => item.configs.isEditando)?.configs.label || '',
+                                    label: this.editorContext.project.tabs.find(item => item.configs.isEditing)?.configs.label || '',
                                 }}
                             />
                         }

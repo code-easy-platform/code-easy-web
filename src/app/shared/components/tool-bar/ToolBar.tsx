@@ -82,7 +82,7 @@ export const ToolBar = (props: any) => {
                                     key={tab.configs.name}
                                     content={tab.configs.label}
                                     title={tab.configs.description}
-                                    isSelected={tab.configs.isEditando}
+                                    isSelected={tab.configs.isEditing}
                                     className="btn-open-routers-tab flex1"
                                     onClick={() => codeEditorContext.toggleResourcesTab(tab.configs.type)}
                                     onFocus={() => codeEditorContext.toggleResourcesTab(tab.configs.type)}

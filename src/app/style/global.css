@@ -57,7 +57,8 @@ label {
   cursor: pointer;
 }
 
-input, textarea {
+input,
+textarea {
   background-color: var(--main-background-bars);
   border: var(--input-border);
   color: var(--color-white);
@@ -283,4 +284,27 @@ input[type="number"] {
 .mini-scroll-bar::-webkit-scrollbar-thumb {
   background-color: var(--main-background-bars);
   width: var(--size-x-scroll-bar-small);
+}
+
+[aria-label] {
+  position: relative;
+}
+
+[aria-label]::after {
+  background-color: var(var(--main-background-bars));
+  color: var(--color-white);
+  content: attr(aria-label);
+  bottom: var(--size-none);
+  text-decoration: none;
+  pointer-events: none;
+  position: absolute;
+  padding: 8px 10px;
+  font-size: 0.9em;
+  z-index: 5000;
+  display: none;
+  top: 110%;
+}
+
+[aria-label]:hover::after {
+  display: block;
 }

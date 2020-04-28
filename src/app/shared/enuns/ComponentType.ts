@@ -3,6 +3,14 @@
  * Tipos possíveis de item, pode ser uma "action", uma "pasta" ou uma "rota" por exemplo!
  */
 export enum ComponentType {
+
+    /**
+     * Usado em itens que tem apenas a função de agrupar itens
+     * 
+     * ex: "pastas";
+     */
+    grouper = "GROUPER",
+
     outputVariable = "OUTPUT_VARIABLE",
     inputVariable = "INPUT_VARIABLE",
     localVariable = "LOCAL_VARIABLE",
@@ -22,4 +30,10 @@ export enum ComponentType {
      * Aba do sistema onde é definido as tabelas ou as estruturas de dados
     */
     tabDates = "TAB_DATE",
+
+    /**
+     * Tipa um item que será considerado uma rota do sistema
+     * */
+    router = "ROUTER",
+
 }

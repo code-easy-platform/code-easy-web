@@ -1,5 +1,4 @@
 import { Project, Tab, ComponentConfigs, ItemFlowComplete, ItemComponent } from "../interfaces/Aplication";
-import { TreeItensTypes } from "../components/tree-manager/shared/models/TreeItensTypes";
 import { TypeValues } from "../components/properties-editor/shared/interfaces";
 import { ItemType } from "../components/code-editor/models/ItemFluxo";
 import { ComponentType } from "../enuns/ComponentType";
@@ -24,13 +23,13 @@ const mockProjeto: Project = new Project({
     tabs: [
         new Tab({
             configs: new ComponentConfigs({
-                id: `${Utils.getUUID()}`,
                 name: "routes",
                 isExpanded: true,
                 label: "Routes",
-                isEditando: true,
+                isEditing: true,
+                id: `${Utils.getUUID()}`,
+                type: ComponentType.tabRouters,
                 description: "Minha tab de routes",
-                type: ComponentType.tabRouters
             }),
             itens: [
                 new ItemComponent({
@@ -41,7 +40,7 @@ const mockProjeto: Project = new Project({
                     name: 'authenticate',
                     itemPaiId: undefined,
                     label: "Authenticate",
-                    type: TreeItensTypes.file,
+                    type: ComponentType.router,
                     description: "Autentica os usuários!",
                     properties: [
                         {
@@ -161,7 +160,7 @@ const mockProjeto: Project = new Project({
                     isSelected: false,
                     nodeExpanded: true,
                     itemPaiId: undefined,
-                    type: TreeItensTypes.file,
+                    type: ComponentType.router,
                     description: "Cadastra novos usuários!",
                     properties: [
                         {
@@ -279,7 +278,7 @@ const mockProjeto: Project = new Project({
             configs: new ComponentConfigs({
                 id: `${Utils.getUUID()}`,
                 name: 'actions',
-                isEditando: false,
+                isEditing: false,
                 isExpanded: false,
                 label: 'Actions',
                 type: ComponentType.tabActions,
@@ -295,7 +294,7 @@ const mockProjeto: Project = new Project({
                     isSelected: false,
                     nodeExpanded: true,
                     itemPaiId: undefined,
-                    type: TreeItensTypes.file,
+                    type: ComponentType.globalAction,
                     properties: [
                         {
                             id: '1',
@@ -408,7 +407,7 @@ const mockProjeto: Project = new Project({
                     isSelected: false,
                     nodeExpanded: true,
                     itemPaiId: undefined,
-                    type: TreeItensTypes.file,
+                    type: ComponentType.globalAction,
                     description: "Cadastra novos usuários!",
                     properties: [
                         {
@@ -521,7 +520,7 @@ const mockProjeto: Project = new Project({
                 id: `${Utils.getUUID()}`,
                 name: 'data',
                 label: 'Data',
-                isEditando: false,
+                isEditing: false,
                 isExpanded: false,
                 type: ComponentType.tabDates,
                 description: 'Permite a criação do banco de dados da aplicação de APIs',

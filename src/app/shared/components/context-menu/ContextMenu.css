@@ -2,9 +2,9 @@
     background-color: var(--color-context-menu-background);
     box-shadow: var(--box-shadow-context-menu);
     flex-direction: column;
+    min-width: 200px;
     position: fixed;
     display: flex;
-    min-width: 200px;
 }
 
 .context-menu-title {
@@ -16,6 +16,7 @@
 
 .context-menu-list-item {
     padding: var(--size-2);
+    font-size: small;
     cursor: pointer;
 }
 

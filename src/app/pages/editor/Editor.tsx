@@ -43,9 +43,9 @@ export class Editor extends React.Component {
 
         project.tabs.forEach(tab => {
             if (tab.configs.type === type) {
-                tab.configs.isEditando = true;
+                tab.configs.isEditing = true;
             } else {
-                tab.configs.isEditando = false;
+                tab.configs.isEditing = false;
             }
         });
 

@@ -3,12 +3,15 @@ import React from 'react';
 import { ContextMenuService } from './ContextMenuService';
 import './ContextMenu.css';
 
-export interface IItemListContext {
+export interface IContextItemList {
     label: string;
     action(): any;
+    disabled?: boolean;
+    useConfirmation?: boolean;
+    confirmationMessage?: string;
 }
 interface ContextMenuSate {
-    actions: IItemListContext[],
+    actions: IContextItemList[],
     isShow: boolean,
     left: number,
     top: number,
@@ -53,11 +56,21 @@ export class ContextMenu extends React.Component<{ title?: string }> {
             {this.state.actions.map((action) => (
                 <div
                     key={action.label}
-                    className="context-menu-list-item"
-                    onClick={() => {
-                        action.action();
-                        ContextMenuService.clearMessages();
-                    }}
+                    className={`context-menu-list-item${action.disabled ? ' disabled' : ''}`}
+                    onClick={
+                        action.disabled
+                            ? undefined
+                            : () => {
+                                ContextMenuService.clearMessages();
+                                if (action.useConfirmation) {
+                                    if (window.confirm(action.confirmationMessage || 'Continue?')) {
+                                        action.action();
+                                    }
+                                } else {
+                                    action.action();
+                                }
+                            }
+                    }
                 >
                     {action.label}
                 </div>

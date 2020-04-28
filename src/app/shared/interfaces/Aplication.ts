@@ -1,8 +1,7 @@
-import { TreeItensTypes } from "../components/tree-manager/shared/models/TreeItensTypes";
 import { FlowItem, ItemType } from "../components/code-editor/models/ItemFluxo";
+import { IProperties } from "../components/properties-editor/shared/interfaces";
 import { ComponentType } from "../enuns/ComponentType";
 import { ProjectType } from "../enuns/ProjectType";
-import { IProperties } from "../components/properties-editor/shared/interfaces";
 
 
 interface BaseFields {
@@ -42,10 +41,10 @@ export interface ProjectConfigs extends BaseFields {
     id: string | undefined;
     name: string;
     label: string;
-    description: string;
-    type: ProjectType;
-    version: string;
     autor: string;
+    version: string;
+    type: ProjectType;
+    description: string;
     currentProcess: string;
 }
 
@@ -88,7 +87,7 @@ export class ComponentConfigs implements BaseFields {
     public name: string;
     public description: string;
     public type: ComponentType;
-    public isEditando: boolean;
+    public isEditing: boolean;
     public isExpanded?: boolean;
 
     constructor(
@@ -108,7 +107,7 @@ export class ComponentConfigs implements BaseFields {
             label: string;
             description: string,
             type: ComponentType,
-            isEditando: boolean;
+            isEditing: boolean;
             isExpanded?: boolean;
         }
     ) {
@@ -116,7 +115,7 @@ export class ComponentConfigs implements BaseFields {
         this.type = this.fields.type;
         this.name = this.fields.name;
         this.label = this.fields.label;
-        this.isEditando = this.fields.isEditando;
+        this.isEditing = this.fields.isEditing;
         this.isExpanded = this.fields.isExpanded;
         this.description = this.fields.description;
     }
@@ -129,18 +128,18 @@ export class ItemFlowComplete extends FlowItem {
     public isSelected: boolean = false;
     public sucessor: string[] = [];
     public id: string | undefined;
+    public select = () => { };
     public height: number = 0;
     public width: number = 0;
     public name: string = "";
     public left: number = 0;
-    public select = () => { };
     public top: number = 0;
 
     constructor(
         props: {
             properties: IProperties[],
-            isSelected: boolean,
             id: string | undefined,
+            isSelected: boolean,
             sucessor: string[],
             itemType: ItemType,
             height: number,
@@ -178,7 +177,7 @@ export class ItemComponent implements BaseFields {
     /** Indica onde o item está selecionado na árvore. */
     public isSelected: boolean;
     /** Usado para arvore ajuda a sabe se o item é uma pasta ou um arquivo */
-    public type: TreeItensTypes;
+    public type: ComponentType;
     /** Indica se um node(nó) de uma arvore está aberto ou fechado. */
     public nodeExpanded: boolean;
     /** Usado para fazer auto referência usado para construir árvores */
@@ -201,14 +200,14 @@ export class ItemComponent implements BaseFields {
              * Usado para nomear um registro apenas de forma visual
              */
             label: string;
-            itens: ItemFlowComplete[];
             isEditing: boolean;
             isSelected: boolean;
             description: string;
-            type: TreeItensTypes;
+            type: ComponentType;
             nodeExpanded: boolean;
             /** Usado para lista todas as propriedades de um item */
             properties: IProperties[];
+            itens: ItemFlowComplete[];
             itemPaiId: string | undefined;
         }
     ) {
@@ -224,4 +223,5 @@ export class ItemComponent implements BaseFields {
         this.description = this._fields.description;
         this.nodeExpanded = this._fields.nodeExpanded;
     }
+
 }

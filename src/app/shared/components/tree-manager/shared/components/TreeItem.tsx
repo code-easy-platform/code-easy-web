@@ -1,7 +1,6 @@
 import React, { FC, useRef } from 'react';
 import { useDrag, useDrop, DropTargetMonitor, DragPreviewImage } from 'react-dnd';
 
-import { TreeItensTypes } from '../models/TreeItensTypes';
 import { TreeInterface } from '../models/TreeInterface';
 import img_tree_item_preview from './TreeItemPreview.svg';
 import { Icon } from './icon/icon';
@@ -53,8 +52,8 @@ export const TreeItem: FC<ItemTreeProps> = ({ itemTree, paddingLeft, onSelect, o
 
     /** Usado para que seja possível o drop de itens no editor. */
     const [{ isDraggingOver }, dropRef] = useDrop({
+        accept: itemTree?.canDropList || [],
         canDrop: () => isUseDrop && !isDisabledDrop,
-        accept: [TreeItensTypes.file, TreeItensTypes.folder],
         collect: (monitor) => ({ isDraggingOver: monitor.isOver() }),
         drop(item: any, monitor: DropTargetMonitor) { onDropItem(itemTree.id, item.itemProps.id, item) },
     });
@@ -77,10 +76,10 @@ export const TreeItem: FC<ItemTreeProps> = ({ itemTree, paddingLeft, onSelect, o
                 className={`item${isDragging ? ' dragging' : ''}${(isDraggingOver && isUseDrop && !isDisabledDrop) ? ' dragging-over' : ''}`}
                 style={{ paddingLeft: `${paddingLeft}px`, color: hasError ? 'var(--main-error-color)' : '' }}
             >
-                {(itemTree.type === TreeItensTypes.folder || itemTree.childs.length > 0) &&
+                {(itemTree.childs.length > 0) &&
                     <Icon onClick={isAllowedToggleNodeExpand ? ((e: any) => onSelect(itemTree.id, e)) : undefined} iconName={itemTree.nodeExpanded ? "btn-collapse-folder" : "btn-expand-folder"} />
                 }
-                {(itemTree.type === TreeItensTypes.file && itemTree.childs.length === 0) &&
+                {(itemTree.childs.length === 0) &&
                     <Icon />
                 }
                 {itemTree.label}
