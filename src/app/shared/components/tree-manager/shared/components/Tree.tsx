@@ -31,12 +31,12 @@ export const Tree: FC<TreeProps> = ({ item, paddingLeft = 0, onClick, onContextM
             paddingLeft={paddingLeft}
             onContextMenu={onContextMenu}
             onDoubleClick={onDoubleClick}
-            onSelect={(_, e) => {
+            onClick={(_, e) => onClick(item.id, item, e)}
+            onExpandNode={(_, e) => {
                 setState({
                     ...state,
                     nodeExpanded: state.isAllowedToggleNodeExpand === false ? state.nodeExpanded : !state.nodeExpanded,
                 });
-                onClick(item.id, item, e);
             }}
         />
         {state.nodeExpanded &&

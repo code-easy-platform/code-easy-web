@@ -11,11 +11,12 @@ interface ItemTreeProps {
     paddingLeft: number;
     itemTree: TreeInterface;
     onDropItem(targetItemId: string | undefined, dropppedItemId: string | undefined, droppedItemProps: any): void;
-    onSelect(itemTreeId: string | undefined, event: React.MouseEvent<HTMLDivElement, MouseEvent>): void | undefined;
+    onClick(itemTreeId: string | undefined, event: React.MouseEvent<HTMLDivElement, MouseEvent>): void | undefined;
+    onExpandNode(itemTreeId: string | undefined, event: React.MouseEvent<HTMLDivElement, MouseEvent>): void | undefined;
     onContextMenu(itemTreeId: string | undefined, e: React.MouseEvent<HTMLDivElement, MouseEvent>): void | undefined;
     onDoubleClick(itemTreeId: string | undefined, item: TreeInterface, e: React.MouseEvent<HTMLDivElement, MouseEvent>): void | undefined;
 }
-export const TreeItem: FC<ItemTreeProps> = ({ itemTree, paddingLeft, onSelect, onContextMenu, onDoubleClick, onDropItem, isUseDrag, isUseDrop }) => {
+export const TreeItem: FC<ItemTreeProps> = ({ itemTree, paddingLeft, onExpandNode, onContextMenu, onDoubleClick, onDropItem, isUseDrag, isUseDrop, onClick }) => {
 
     let { hasError, isAllowedToggleNodeExpand, isDisabledDrag, isDisabledSelect, isDisabledDrop } = itemTree;
 
@@ -67,7 +68,7 @@ export const TreeItem: FC<ItemTreeProps> = ({ itemTree, paddingLeft, onSelect, o
             title={itemTree.description}
             onContextMenu={isDisabledSelect ? undefined : onContext}
             className={`tree-item${(!isDisabledSelect) ? '' : ' disabled'}${isDisabledSelect ? '' : (itemTree.isSelected ? ' selected' : '')}`}
-            onClick={isDisabledSelect ? undefined : ((e: any) => onSelect(itemTree.id, e))}
+            onClick={isDisabledSelect ? undefined : ((e: any) => onClick(itemTree.id, e))}
             onDoubleClick={isDisabledSelect ? undefined : (e => { onDoubleClick(itemTree.id, itemTree, e) })}
         >
             <DragPreviewImage connect={preview} src={img_tree_item_preview} />
@@ -77,7 +78,7 @@ export const TreeItem: FC<ItemTreeProps> = ({ itemTree, paddingLeft, onSelect, o
                 style={{ paddingLeft: `${paddingLeft}px`, color: hasError ? 'var(--main-error-color)' : '' }}
             >
                 {(itemTree.childs.length > 0) &&
-                    <Icon onClick={isAllowedToggleNodeExpand ? ((e: any) => onSelect(itemTree.id, e)) : undefined} iconName={itemTree.nodeExpanded ? "btn-collapse-folder" : "btn-expand-folder"} />
+                    <Icon onClick={isAllowedToggleNodeExpand ? ((e: any) => onExpandNode(itemTree.id, e)) : undefined} iconName={itemTree.nodeExpanded ? "btn-collapse-folder" : "btn-expand-folder"} />
                 }
                 {(itemTree.childs.length === 0) &&
                     <Icon />
