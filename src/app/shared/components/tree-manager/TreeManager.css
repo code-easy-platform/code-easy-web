@@ -3,11 +3,15 @@
   overflow: auto;
   flex: 1;
 }
+.tree-base:focus {
+  outline: thin solid var(--color-background-col-click);
+}
 
 .tree-item {
   height: min-content;
+  min-width: max-content;
+  width: var(--size-fill);
   cursor: pointer;
-  width: 100%;
 }
 .item {
   padding: 5px;
@@ -19,19 +23,4 @@
 }
 .tree-item:active {
   background-color: var(--color-background-col-click);
-}
-
-.menu-context {
-  position: fixed;
-  width: 200px;
-  margin-left: -200px;
-  background-color: var(--color-background-col);
-  box-shadow: var(--size-none) var(--size-none) var(--size-3) var(--size-none) var(--color-black);
-  padding-top: var(--size-3);
-  padding-bottom: var(--size-3);
-  cursor: default;
-  .item-list-pai {
-    padding: var(--size-2);
-    padding-left: var(--size-3);
-  }
 }

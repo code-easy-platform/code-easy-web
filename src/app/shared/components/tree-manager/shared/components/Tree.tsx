@@ -16,7 +16,7 @@ interface TreeProps {
 export const Tree: FC<TreeProps> = ({ item, paddingLeft = 0, onClick, onContextMenu, onDoubleClick, onDropItem, itemIdSelected, isUseDrag, isUseDrop }) => {
 
     const [state, setState] = useState<TreeInterface>(item);
-    state.isSelected = itemIdSelected === item.id;
+    state.isSelected = (state.isDisabledSelect || true) && itemIdSelected === item.id;
 
     useEffect(() => {
         setState(item);

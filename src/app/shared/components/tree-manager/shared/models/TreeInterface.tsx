@@ -4,6 +4,7 @@ export interface TreeInterface {
     hasError?: boolean;
     isSelected: boolean;
     description?: string;
+    isDisabled?: boolean;
     nodeExpanded: boolean;
     canDropList?: string[];
     id: string | undefined;

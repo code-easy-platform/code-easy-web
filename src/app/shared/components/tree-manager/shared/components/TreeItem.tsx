@@ -18,12 +18,12 @@ interface ItemTreeProps {
 }
 export const TreeItem: FC<ItemTreeProps> = ({ itemTree, paddingLeft, onExpandNode, onContextMenu, onDoubleClick, onDropItem, isUseDrag, isUseDrop, onClick }) => {
 
-    let { hasError, isAllowedToggleNodeExpand, isDisabledDrag, isDisabledSelect, isDisabledDrop } = itemTree;
+    let { hasError, isAllowedToggleNodeExpand, isDisabledDrag, isDisabled, isDisabledDrop } = itemTree;
 
     hasError = hasError !== undefined ? hasError : false;
     isDisabledDrag = isDisabledDrag !== undefined ? isDisabledDrag : false;
     isDisabledDrop = isDisabledDrop !== undefined ? isDisabledDrop : false;
-    isDisabledSelect = isDisabledSelect !== undefined ? isDisabledSelect : false;
+    isDisabled = isDisabled !== undefined ? isDisabled : false;
     isAllowedToggleNodeExpand = isAllowedToggleNodeExpand !== undefined ? isAllowedToggleNodeExpand : true;
 
     // Vai mandar para fora da arvore qual o id do item que foi clicado.
@@ -66,23 +66,24 @@ export const TreeItem: FC<ItemTreeProps> = ({ itemTree, paddingLeft, onExpandNod
             key={itemTree.id}
             id={"tree_" + itemTree.id}
             title={itemTree.description}
-            onContextMenu={isDisabledSelect ? undefined : onContext}
-            className={`tree-item${(!isDisabledSelect) ? '' : ' disabled'}${isDisabledSelect ? '' : (itemTree.isSelected ? ' selected' : '')}`}
-            onClick={isDisabledSelect ? undefined : ((e: any) => onClick(itemTree.id, e))}
-            onDoubleClick={isDisabledSelect ? undefined : (e => { onDoubleClick(itemTree.id, itemTree, e) })}
+            onContextMenu={isDisabled ? undefined : onContext}
+            onClick={isDisabled ? undefined : ((e: any) => onClick(itemTree.id, e))}
+            onDoubleClick={isDisabled ? undefined : (e => { onDoubleClick(itemTree.id, itemTree, e) })}
+            className={`tree-item${(!isDisabled) ? '' : ' disabled'}${isDisabled ? '' : (itemTree.isSelected ? ' selected' : '')}`}
         >
             <DragPreviewImage connect={preview} src={img_tree_item_preview} />
             <div
                 key={itemTree.id}
-                className={`item${isDragging ? ' dragging' : ''}${(isDraggingOver && isUseDrop && !isDisabledDrop) ? ' dragging-over' : ''}`}
                 style={{ paddingLeft: `${paddingLeft}px`, color: hasError ? 'var(--main-error-color)' : '' }}
+                className={`item${isDragging ? ' dragging' : ''}${(isDraggingOver && isUseDrop && !isDisabledDrop) ? ' dragging-over' : ''}`}
             >
                 {(itemTree.childs.length > 0) &&
-                    <Icon onClick={isAllowedToggleNodeExpand ? ((e: any) => onExpandNode(itemTree.id, e)) : undefined} iconName={itemTree.nodeExpanded ? "btn-collapse-folder" : "btn-expand-folder"} />
+                    <Icon
+                        onClick={isAllowedToggleNodeExpand ? ((e: any) => onExpandNode(itemTree.id, e)) : undefined}
+                        iconName={itemTree.nodeExpanded ? "btn-collapse-folder" : "btn-expand-folder"}
+                    />
                 }
-                {(itemTree.childs.length === 0) &&
-                    <Icon />
-                }
+                {(itemTree.childs.length === 0) && <Icon />}
                 {itemTree.label}
             </div>
         </div>

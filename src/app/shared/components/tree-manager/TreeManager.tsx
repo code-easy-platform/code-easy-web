@@ -9,40 +9,48 @@ import './TreeManager.css';
 interface TreeManagerProps {
     isUseDrop?: boolean;
     isUseDrag?: boolean;
-    itemBase: TreeInterface;
+    itens: TreeInterface[];
+    onFocus?(e: React.FocusEvent<HTMLDivElement>): void;
     onDropItem?(targetItemId: string, dropppedItemId: string, droppedItemProps: any): void;
     onContextMenu(itemTreeId: string, e: React.MouseEvent<HTMLDivElement, MouseEvent>): void | undefined;
     onClick(itemTreeId: string, item: TreeInterface, e: React.MouseEvent<HTMLDivElement, MouseEvent>): void | undefined;
     onDoubleClick(itemTreeId: string, item: TreeInterface, e: React.MouseEvent<HTMLDivElement, MouseEvent>): void | undefined;
 }
-export const TreeManager: FC<TreeManagerProps> = ({ itemBase, onClick, onContextMenu, onDoubleClick, onDropItem = () => { }, isUseDrag = false, isUseDrop = false }) => {
+export const TreeManager: FC<TreeManagerProps> = ({ itens, onClick, onFocus, onContextMenu, onDoubleClick, onDropItem = () => { }, isUseDrag = false, isUseDrop = false }) => {
 
     const [clickedId, setClickedId] = useState("");
     useEffect(() => {
         setClickedId(clickedId)
     }, [clickedId]);
 
-    const onSelect = (id: string, item: TreeInterface, e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
-        setClickedId(id);
+    const click = (id: string, item: TreeInterface, e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
 
-        if (!item.isDisabledSelect)
+        if (!item.isDisabledSelect) {
+            setClickedId(id);
+        }
+
+        if (!item.isDisabled) {
             onClick(id, item, e);
+        }
+
     }
 
     return (
         <DndProvider backend={HTML5Backend}>
-            <div className="tree-base">
-                <Tree
-                    item={itemBase}
-                    paddingLeft={5}
-                    onClick={onSelect}
-                    isUseDrag={isUseDrag}
-                    isUseDrop={isUseDrop}
-                    onDropItem={onDropItem}
-                    itemIdSelected={clickedId}
-                    onContextMenu={onContextMenu}
-                    onDoubleClick={onDoubleClick}
-                />
+            <div tabIndex={0} onFocus={onFocus} className="tree-base">
+                {itens.map(item => (
+                    <Tree
+                        item={item}
+                        paddingLeft={5}
+                        onClick={click}
+                        isUseDrag={isUseDrag}
+                        isUseDrop={isUseDrop}
+                        onDropItem={onDropItem}
+                        itemIdSelected={clickedId}
+                        onContextMenu={onContextMenu}
+                        onDoubleClick={onDoubleClick}
+                    />
+                ))}
                 <div style={{ paddingBottom: 100 }} />
             </div>
         </DndProvider>

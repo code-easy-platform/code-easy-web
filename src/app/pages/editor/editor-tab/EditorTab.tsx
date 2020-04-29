@@ -509,7 +509,16 @@ export default class EditorTab extends React.Component {
             itemTree.childs = loadChilds(itemTree);
         });
 
-        return tree;
+        return [{
+            childs: tree,
+            id: undefined,
+            isSelected: false,
+            nodeExpanded: true,
+            isDisabledDrag: true,
+            isDisabledSelect: true,
+            type: ComponentType.grouper,
+            label: this.editorContext.project.tabs.find(item => item.configs.isEditing)?.configs.label || '',
+        }];
     }
 
     /** Quando clicado com o botão esquerdo do mouse no interior da árvore esta função é acionada. */
@@ -766,15 +775,7 @@ export default class EditorTab extends React.Component {
                                     e.preventDefault();
                                     ContextMenuService.showMenu(e.clientX, e.clientY, this.treeManagerContextMenu.bind(this)(itemId));
                                 }}
-                                itemBase={{
-                                    id: undefined,
-                                    isSelected: false,
-                                    nodeExpanded: true,
-                                    isDisabledDrag: true,
-                                    type: ComponentType.grouper,
-                                    childs: this.treeManagerGetTree.bind(this)(),
-                                    label: this.editorContext.project.tabs.find(item => item.configs.isEditing)?.configs.label || '',
-                                }}
+                                itens={this.treeManagerGetTree.bind(this)()}
                             />
                         }
                         bottom={
