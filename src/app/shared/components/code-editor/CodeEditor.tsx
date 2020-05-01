@@ -1,4 +1,4 @@
-import React, { useState, useRef, FC } from 'react';
+import React, { useState, useRef, FC, useEffect } from 'react';
 import { useDrop, DropTargetMonitor, DndProvider } from 'react-dnd';
 import HTML5Backend from 'react-dnd-html5-backend';
 
@@ -58,7 +58,11 @@ const CodeEditor: React.FC<ICodeEditorProps> = ({ itens = [], toolItens = [], on
             endLeft: 0
         }
     });
-    state.flowItens = itens;
+
+    useEffect(() => {
+        setState(oldState => ({ ...oldState, flowItens: itens }));
+    }, [itens]);
+
 
     /** Usada para emitir os itens para fora do componente. */
     const onChangeFlow = () => {
@@ -488,7 +492,7 @@ const CodeEditor: React.FC<ICodeEditorProps> = ({ itens = [], toolItens = [], on
             <main
                 key={"CODE_EDITOR"}
                 className='overflow-auto flex1'
-                onMouseOver={(e: any) => onMouseOver && onMouseOver(e)}
+                onMouseOver={(e: any) => (onMouseOver && state.selectionProps.isMouseDown === false) && onMouseOver(e)}
             >
                 <BreandCamps breadcrumbsPath={breadcrumbsPath} />
 

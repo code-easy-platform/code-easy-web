@@ -1,31 +1,35 @@
 import React, { useState, useRef } from 'react';
 
-export const FlowComment = ({ id, isSelected, width, height, left, top, name }: any) => {
+export const FlowComment = ({ id, isSelected, width, height, left, top, name, onNameChange = (text: string) => { } }: any) => {
 
     const strokeColor: string = isSelected ? "var(--color-botton-bar)" : "#219653";
 
     const [isEditing, setIsEditing] = useState(false);
+    const [comment, setComment] = useState(name);
     const textAreaRef: any = useRef(null);
 
     return (
         <>
             <foreignObject
+                id={id}
+                y={top}
+                x={left}
+                width={width}
+                height={height}
+                key={name + id}
+                style={{ pointerEvents: !isEditing ? undefined : 'none' }}
                 onDoubleClick={() => {
                     setIsEditing(true);
-                    if (textAreaRef.current)
-                        textAreaRef.current.focus()
+                    if (textAreaRef.current) {
+                        textAreaRef.current.focus();
+                    }
                 }}
-                style={{ pointerEvents: !isEditing ? undefined : 'none' }}
-                key={name + id}
-                height={height}
-                width={width}
-                x={left}
-                y={top}
-                id={id}
             >
                 <textarea
+                    value={comment}
                     ref={textAreaRef}
-                    onBlur={() => setIsEditing(false)}
+                    onChange={e => setComment(e.target.value)}
+                    onBlur={(e) => { setIsEditing(false); onNameChange(comment); }}
                     style={{
                         backgroundColor: 'var(--main-background-highlighted)',
                         pointerEvents: isEditing ? undefined : 'none',
@@ -34,7 +38,8 @@ export const FlowComment = ({ id, isSelected, width, height, left, top, name }: 
                         width: '-webkit-fill-available',
                         color: '#fff',
                         padding: 5,
-                    }} />
+                    }}
+                />
             </foreignObject>
         </>
     );

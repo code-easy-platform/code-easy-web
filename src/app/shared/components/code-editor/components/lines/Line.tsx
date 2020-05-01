@@ -28,18 +28,6 @@ export const Line: React.FC<LineProps> = (props: LineProps) => {
 
 
     let rotate: number = 0;
-    /* if (top1 < top2 && left1 < left2) {// 1
-        rotate = Math.atan2(top2 - top1, left2 - left1) * left2 - left1 / Math.PI;
-    }
-    else if (top1 > top2 && left1 > left2) {// 2
-        rotate = Math.atan2(top1 - top2, left1 - left2) * left1 - left2 / Math.PI;
-    }
-    else if (top1 < top2 && left1 > left2) {// 3
-        rotate = Math.atan2(top1 - top2, left2 - left1) * left2 - left1 / Math.PI;
-    }
-    else if (top1 > top2 && left1 < left2) {// 4
-        rotate = Math.atan2(top1 - top2, left2 - left1) * left2 - left1 / Math.PI;
-    } */
 
 
     const [position, setPosition] = useState({ polygonTop: polygonTop, polygonLeft: polygonLeft });

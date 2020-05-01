@@ -40,4 +40,16 @@ export class Utils {
         }
     }
 
+    public static getAngle(currX: number, currY: number, endX: number, endY: number): number {
+        var angle = Math.atan2(currX - endX, currY - endY) * (180 / Math.PI);
+
+        if (angle < 0) {
+            angle = Math.abs(angle);
+        } else {
+            angle = 360 - angle;
+        }
+
+        return angle;
+    }
+
 }
