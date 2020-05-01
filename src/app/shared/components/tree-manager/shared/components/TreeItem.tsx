@@ -1,8 +1,8 @@
 import React, { FC, useRef } from 'react';
 import { useDrag, useDrop, DropTargetMonitor, DragPreviewImage } from 'react-dnd';
 
-import { TreeInterface } from '../models/TreeInterface';
 import img_tree_item_preview from './TreeItemPreview.svg';
+import { TreeInterface } from '../models/TreeInterface';
 import { Icon } from './icon/icon';
 
 interface ItemTreeProps {
@@ -18,7 +18,7 @@ interface ItemTreeProps {
 }
 export const TreeItem: FC<ItemTreeProps> = ({ itemTree, paddingLeft, onExpandNode, onContextMenu, onDoubleClick, onDropItem, isUseDrag, isUseDrop, onClick }) => {
 
-    let { hasError, isAllowedToggleNodeExpand, isDisabledDrag, isDisabled, isDisabledDrop } = itemTree;
+    let { hasError, isAllowedToggleNodeExpand, isDisabledDrag, isDisabled, isDisabledDrop, icon } = itemTree;
 
     hasError = hasError !== undefined ? hasError : false;
     isDisabledDrag = isDisabledDrag !== undefined ? isDisabledDrag : false;
@@ -64,9 +64,9 @@ export const TreeItem: FC<ItemTreeProps> = ({ itemTree, paddingLeft, onExpandNod
         <div
             ref={itemRef}
             key={itemTree.id}
+            onContextMenu={onContext}
             id={"tree_" + itemTree.id}
             title={itemTree.description}
-            onContextMenu={isDisabled ? undefined : onContext}
             onClick={isDisabled ? undefined : ((e: any) => onClick(itemTree.id, e))}
             onDoubleClick={isDisabled ? undefined : (e => { onDoubleClick(itemTree.id, itemTree, e) })}
             className={`tree-item${(!isDisabled) ? '' : ' disabled'}${isDisabled ? '' : (itemTree.isSelected ? ' selected' : '')}`}
@@ -83,6 +83,7 @@ export const TreeItem: FC<ItemTreeProps> = ({ itemTree, paddingLeft, onExpandNod
                         iconName={itemTree.nodeExpanded ? "btn-collapse-folder" : "btn-expand-folder"}
                     />
                 }
+                <Icon show={icon !== undefined} icon={icon} />
                 {(itemTree.childs.length === 0) && <Icon />}
                 {itemTree.label}
             </div>

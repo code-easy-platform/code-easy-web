@@ -34,8 +34,8 @@ const mockProjeto: Project = new Project({
             itens: [
                 new ItemComponent({
                     id: `${Utils.getUUID()}`,
-                    isEditing: false,
-                    isSelected: false,
+                    isEditing: true,
+                    isSelected: true,
                     nodeExpanded: true,
                     name: 'authenticate',
                     itemPaiId: undefined,

@@ -522,12 +522,12 @@ export default class EditorTab extends React.Component {
     }
 
     /** Quando clicado com o botão esquerdo do mouse no interior da árvore esta função é acionada. */
-    private treeManagerContextMenu(itemId: string): IContextItemList[] {
+    private treeManagerContextMenu(itemId: string | undefined): IContextItemList[] {
         this.setState({ currentFocus: CurrentFocus.tree });
 
         let options: IContextItemList[] = [];
 
-        const removeItem = (inputItemId: string) => {
+        const removeItem = (inputItemId: string | undefined) => {
             this.setState({ currentFocus: CurrentFocus.tree });
 
             // Pega a lista de itens corrente na árvore
@@ -549,7 +549,7 @@ export default class EditorTab extends React.Component {
             this.onChangeState();
         };
 
-        const addParam = (inputItemId: string, paramType: ComponentType.inputVariable | ComponentType.localVariable | ComponentType.outputVariable) => {
+        const addParam = (inputItemId: string | undefined, paramType: ComponentType.inputVariable | ComponentType.localVariable | ComponentType.outputVariable) => {
             let tabIndex: number | undefined;
             this.editorContext.project.tabs.forEach((tab: Tab, indexTab) => {
                 tab.itens.forEach(item => {
@@ -578,7 +578,7 @@ export default class EditorTab extends React.Component {
             this.onChangeState();
         }
 
-        const addRoute = (inputItemId: string) => {
+        const addRoute = (inputItemId: string | undefined) => {
             if (inputItemId === undefined) {
                 let tabIndex: number | undefined;
                 this.editorContext.project.tabs.forEach((tab: Tab, indexTab) => {
@@ -606,7 +606,7 @@ export default class EditorTab extends React.Component {
             this.onChangeState();
         }
 
-        const addAction = (inputItemId: string) => {
+        const addAction = (inputItemId: string | undefined) => {
             if (inputItemId === undefined) {
                 let tabIndex: number | undefined;
                 this.editorContext.project.tabs.forEach((tab: Tab, indexTab) => {

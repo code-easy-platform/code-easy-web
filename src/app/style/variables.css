@@ -76,6 +76,7 @@
     --main-background-bars: #2d2d2d;
     --main-background-panels: #252527;
     --main-background-highlighted: #3c3c3c;
+    --main-background-input-focus: #3c3c3c;
 
     --main-select-color: #1f724340;
     --main-error-color: #ff0000;

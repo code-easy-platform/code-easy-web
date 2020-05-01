@@ -1,6 +1,9 @@
 .default {
+  background-size: var(--size-3) var(--size-3);
   padding-right: var(--size-1-5);
   padding-left: var(--size-1-5);
+  background-repeat: no-repeat;
+  background-position: center;
   justify-content: center;
   height: var(--size-3);
   width: var(--size-3);

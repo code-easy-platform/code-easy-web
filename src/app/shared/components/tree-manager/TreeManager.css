@@ -8,11 +8,12 @@
 }
 
 .tree-item {
-  height: min-content;
-  min-width: max-content;
   width: var(--size-fill);
+  min-width: max-content;
+  height: min-content;
   cursor: pointer;
 }
+
 .item {
   padding: 5px;
   padding-right: 10px;

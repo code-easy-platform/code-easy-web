@@ -11,12 +11,13 @@ interface TreeManagerProps {
     isUseDrag?: boolean;
     itens: TreeInterface[];
     onFocus?(e: React.FocusEvent<HTMLDivElement>): void;
+    onKeyDown?(e: React.FocusEvent<HTMLDivElement>): void;
     onDropItem?(targetItemId: string, dropppedItemId: string, droppedItemProps: any): void;
-    onContextMenu(itemTreeId: string, e: React.MouseEvent<HTMLDivElement, MouseEvent>): void | undefined;
+    onContextMenu(itemTreeId: string | undefined, e: React.MouseEvent<HTMLDivElement, MouseEvent>): void | undefined;
     onClick(itemTreeId: string, item: TreeInterface, e: React.MouseEvent<HTMLDivElement, MouseEvent>): void | undefined;
     onDoubleClick(itemTreeId: string, item: TreeInterface, e: React.MouseEvent<HTMLDivElement, MouseEvent>): void | undefined;
 }
-export const TreeManager: FC<TreeManagerProps> = ({ itens, onClick, onFocus, onContextMenu, onDoubleClick, onDropItem = () => { }, isUseDrag = false, isUseDrop = false }) => {
+export const TreeManager: FC<TreeManagerProps> = ({ itens, onClick, onFocus, onKeyDown, onContextMenu, onDoubleClick, onDropItem = () => { }, isUseDrag = false, isUseDrop = false }) => {
 
     const [clickedId, setClickedId] = useState("");
     useEffect(() => {
@@ -37,7 +38,12 @@ export const TreeManager: FC<TreeManagerProps> = ({ itens, onClick, onFocus, onC
 
     return (
         <DndProvider backend={HTML5Backend}>
-            <div tabIndex={0} onFocus={onFocus} className="tree-base">
+            <div
+                tabIndex={0}
+                onFocus={onFocus}
+                className="tree-base"
+                onKeyDown={(e: any) => onKeyDown && onKeyDown(e)}
+            >
                 {itens.map(item => (
                     <Tree
                         item={item}
@@ -51,7 +57,7 @@ export const TreeManager: FC<TreeManagerProps> = ({ itens, onClick, onFocus, onC
                         onDoubleClick={onDoubleClick}
                     />
                 ))}
-                <div style={{ paddingBottom: 100 }} />
+                <div onContextMenu={e => onContextMenu(undefined, e)} className="flex1" style={{ paddingBottom: 100 }} />
             </div>
         </DndProvider>
     );

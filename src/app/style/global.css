@@ -60,13 +60,18 @@ label {
 input,
 textarea {
   background-color: var(--main-background-bars);
-  border: var(--input-border);
-  color: var(--color-white);
   padding: var(--size-2);
   border-radius: var(--size-1);
   padding-right: var(--size-1);
   padding-left: var(--size-1);
+  border: var(--input-border);
   color: var(--color-white);
+}
+
+input:focus,
+textarea:focus {
+  background-color: var(--main-background-input-focus);
+  outline: none;
 }
 /* Remove os botões da input de texto */
 /* Chrome, Safari, Edge, Opera */

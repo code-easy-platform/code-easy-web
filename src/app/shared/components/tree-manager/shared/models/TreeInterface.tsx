@@ -1,5 +1,6 @@
 export interface TreeInterface {
     type: any;
+    icon?: any;
     label: string;
     hasError?: boolean;
     isSelected: boolean;
