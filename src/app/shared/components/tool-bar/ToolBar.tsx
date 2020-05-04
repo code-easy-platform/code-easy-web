@@ -24,7 +24,8 @@ export const ToolBar = (props: any) => {
                 <TabButton
                     id="tabMenu"
                     title="Menu"
-                    onClick={() => { }}
+                    to="/projects"
+                    style={{ outline: 'none' }}
                     className=" btn btn-open-menu-tab"
                 />
                 <TabGroup className="width-auto">
@@ -53,8 +54,12 @@ export const ToolBar = (props: any) => {
                         onFocus={() => changeCurrentTab(CurrentTab.plugins)}
                     />
                 </TabGroup>
+            </div>
+            <div>
                 <TabButton
+                    content="Reset project"
                     id="tabResetApplication"
+                    style={{ justifyContent: "center", alignSelf: "center", height: '-webkit-fill-available' }}
                     onClick={() => {
                         // eslint-disable-next-line no-restricted-globals
                         if (confirm('Deseja realmente resetaro projeto?')) {
@@ -62,17 +67,21 @@ export const ToolBar = (props: any) => {
                             window.location.reload();
                         }
                     }}
-                    style={{ justifyContent: "center", alignSelf: "center" }}
-                    content='Reset project'
                 />
                 <hr style={{ margin: 10 }} />
                 <TabButton
                     id="openGithubApplication"
-                    style={{ justifyContent: "center", alignSelf: "center" }}
+                    style={{ justifyContent: "center", alignSelf: "center", height: '-webkit-fill-available' }}
                     content={<a style={{ textDecoration: 'none', color: 'white' }} href='https://github.com/code-easy-platform' target='_blank' rel="noopener noreferrer" >Abrir no Github</a>}
                 />
+                <hr style={{ margin: 10 }} />
+                <TabButton
+                    id="openFigmaApplication"
+                    style={{ justifyContent: "center", alignSelf: "center", height: '-webkit-fill-available' }}
+                    content={<a style={{ textDecoration: 'none', color: 'white' }} href='https://www.figma.com/file/NmtaptPKChB7t2nMk8LWkCxW/Code-Easy?node-id=0%3A1' target='_blank' rel="noopener noreferrer" >Abrir no Figma</a>}
+                />
             </div>
-            <div style={{ width: 300, justifyContent: "flex-end" }}>
+            <div style={{ justifyContent: "flex-end" }}>
                 {currentTab === CurrentTab.editor &&
                     <TabGroup>
                         {tabs.map((tab: Tab) => {
@@ -94,8 +103,32 @@ export const ToolBar = (props: any) => {
                 <TabButton
                     id="tabMenu"
                     onClick={() => { }}
-                    className=" btn-open-menu-user-tab"
                     title="Menu do usuário"
+                    className=" btn-open-menu-user-tab"
+                />
+            </div>
+        </div>
+    );
+}
+
+export const ToolBarHome = (props: any) => {
+    return (
+        <div className="tool-bar background-bars">
+            <div>
+                <TabButton
+                    id="tabMenu"
+                    title="Menu"
+                    to="/projects"
+                    style={{ outline: 'none' }}
+                    className=" btn btn-open-menu-tab"
+                />
+            </div>
+            <div style={{ justifyContent: "flex-end" }}>
+                <TabButton
+                    id="tabMenu"
+                    onClick={() => { }}
+                    title="Menu do usuário"
+                    className=" btn-open-menu-user-tab"
                 />
             </div>
         </div>

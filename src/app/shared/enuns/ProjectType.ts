@@ -8,3 +8,19 @@ export enum ProjectType {
     web = "WEB",
     mobile = "MOBILE",
 }
+
+/** Lista de tipos, pode ser usada para listagens */
+export const ProjectTypeList: { name: string, type: ProjectType }[] = [
+    {
+        name: 'Api',
+        type: ProjectType.api
+    },
+    {
+        name: 'Web',
+        type: ProjectType.web
+    },
+    {
+        name: 'Mobile',
+        type: ProjectType.mobile
+    },
+]

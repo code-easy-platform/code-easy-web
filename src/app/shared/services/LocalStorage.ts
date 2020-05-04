@@ -6,7 +6,8 @@ import { ProjectType } from "../enuns/ProjectType";
 import { Utils } from "./Utils";
 
 export enum StorageEnum {
-    projectStorage = "PROJECT_STORAGE"
+    projectStorage = "PROJECT_STORAGE",
+    projectsStorage = "PROJECTS_STORAGE",
 }
 
 const mockProjeto: Project = new Project({
@@ -528,10 +529,113 @@ const mockProjeto: Project = new Project({
             itens: [],
         }),
     ]
-})
+});
+
+const newProject = (name: string, version: string, type: ProjectType, description: string) => new Project({
+    projectConfigs: {
+        id: `${Utils.getUUID()}`,
+        type: type,
+        label: name,
+        version: version,
+        currentProcess: '',
+        description: description,
+        autor: Storage.getAuthorName(),
+        name: Utils.getNormalizedString(name.toLowerCase()),
+    },
+    tabs: [
+        new Tab({
+            configs: new ComponentConfigs({
+                name: "routes",
+                isExpanded: true,
+                label: "Routes",
+                isEditing: true,
+                id: `${Utils.getUUID()}`,
+                type: ComponentType.tabRouters,
+                description: "Routes tab",
+            }),
+            itens: []
+        }),
+        new Tab({
+            configs: new ComponentConfigs({
+                id: `${Utils.getUUID()}`,
+                name: 'actions',
+                isEditing: false,
+                isExpanded: false,
+                label: 'Actions',
+                type: ComponentType.tabActions,
+                description: 'Actions tab',
+            }),
+            itens: [],
+        }),
+        new Tab({
+            configs: new ComponentConfigs({
+                id: `${Utils.getUUID()}`,
+                name: 'data',
+                label: 'Data',
+                isEditing: false,
+                isExpanded: false,
+                type: ComponentType.tabDates,
+                description: 'Data tab',
+            }),
+            itens: [],
+        }),
+    ]
+});
 
 export class Storage {
 
+    public static getNewProject(name: string, version: string, type: ProjectType, description: string) {
+        return newProject(name, version, type, description);
+    }
+
+    public static getAuthorName() {
+        return "(Sem nome)";
+    }
+
+    /** Pega do localstorage uma lista de projetos */
+    public static getProjects(): Project[] {
+        let projects: Project[];
+
+        let res = localStorage.getItem(StorageEnum.projectsStorage);
+
+        if (res !== null && res !== "" && res !== undefined)
+            projects = JSON.parse(res);
+        else {
+            Storage.setProjects([]);
+            projects = [];
+        }
+
+        return projects;
+    }
+
+    /** Salva no localstorage uma lista de projetos */
+    public static setProjects(projects: Project[]): Project[] {
+        localStorage.setItem(StorageEnum.projectsStorage, JSON.stringify(projects));
+
+        return Storage.getProjects();
+    }
+
+    /** Atualiza no localstorage a lista de projetos */
+    public static updateProjectById(project: Project) {
+        let projects: Project[] = Storage.getProjects();
+        let itemIndex: number | undefined;
+
+        projects.forEach((item_project, index) => {
+            if (item_project.projectConfigs.id === project.projectConfigs.id) {
+                // item_project = project;
+                itemIndex = index;
+            }
+        });
+
+        if (itemIndex) {
+            projects.splice(itemIndex, 1); // Remove item
+            projects.push(project); // Adiciona novamente o item atualizado
+        }
+
+        Storage.setProjects(projects);
+    }
+
+    /** Pego o projeto que está sendo editado no momento */
     public static getProject(): Project {
         let project: Project;
 
@@ -547,15 +651,24 @@ export class Storage {
         return new Project(project);
     }
 
+    /** Salva o projeto que está sendo editado no momento */
     public static setProject(project: Project): Project {
         localStorage.setItem(StorageEnum.projectStorage, JSON.stringify(project));
+
+        Storage.updateProjectById(project);
 
         return new Project(Storage.getProject());
     }
 
+    /** Reseta o projeto que está sendo editado no momento */
     public static resetProject(): Project {
         localStorage.removeItem(StorageEnum.projectStorage);
         return new Project(Storage.getProject());
+    }
+
+    /** Remove o projeto que está sendo editado no momento */
+    public static removeProject(): void {
+        localStorage.removeItem(StorageEnum.projectStorage);
     }
 
     public static getColumnsResizableSize(id: string): number {

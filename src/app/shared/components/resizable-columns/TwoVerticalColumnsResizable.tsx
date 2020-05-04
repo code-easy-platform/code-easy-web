@@ -13,7 +13,7 @@ export class TwoVerticalColumnsResizable extends Component<IRecipeProps> {
 
     state = { bottomHeight: 400 }
 
-    componentWillMount() {
+    componentDidMount() {
         this.setState({
             bottomHeight: Storage.getColumnsResizableSize(this.props.id),
         });

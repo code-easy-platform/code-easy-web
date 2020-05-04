@@ -2,28 +2,29 @@ import React, { Component } from 'react';
 import { Storage } from '../../services/LocalStorage';
 
 interface IRecipeProps {
-    columnCenter: JSX.Element,
-    columnRight: JSX.Element,
     id: string,
+    columnLeft: JSX.Element,
+    columnRight: JSX.Element,
+    aligment: 'left' | 'center' | 'right',
 }
 
 export class TwoColumnsResizable extends Component<IRecipeProps> {
-    state = { colRightX: 300, }
+    private isRight = this.props.aligment === 'right';
+        
+    state = { colX: 300 }
 
-    componentWillMount() {
-        this.setState({
-            colRightX: Storage.getColumnsResizableSize(this.props.id),
-        });
+    componentDidMount() {
+        this.setState({ colX: Storage.getColumnsResizableSize(this.props.id) });
     }
 
     mouseMove = (event: any) => {
-        this.setState({ colRightX: (window.innerWidth - event.pageX) });
+        this.setState({ colX: this.isRight ? (window.innerWidth - event.pageX) : event.pageX });
     }
 
     mouseUp = () => {
         window.onmouseup = null;
         window.onmousemove = null;
-        Storage.setColumnsResizableSize(this.props.id, this.state.colRightX);
+        Storage.setColumnsResizableSize(this.props.id, this.state.colX);
     }
 
     mouseDown = () => {
@@ -32,9 +33,9 @@ export class TwoColumnsResizable extends Component<IRecipeProps> {
     }
 
     render = () => (<>
-        {this.props.columnCenter}
+        {this.props.columnLeft}
 
-        <div className='col-right' style={{ width: this.state.colRightX }}>
+        <div className={`col-align-${this.props.aligment}`} style={{ width: !this.isRight ? (window.innerWidth - this.state.colX) : this.state.colX }}>
             <div className="grabber-col-right" onMouseDown={this.mouseDown} />
             <hr className='hr hr-vertical' />
             {this.props.columnRight}

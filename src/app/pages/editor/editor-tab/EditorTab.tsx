@@ -742,8 +742,9 @@ export default class EditorTab extends React.Component {
         const flowEditorItens = this.codeEditorGetItensLogica.bind(this)();
         return (
             <TwoColumnsResizable
+                aligment="right"
                 id="EditorTabCenter"
-                columnCenter={
+                columnLeft={
                     <FlowEditor
                         isShowToolbar={true}
                         itens={flowEditorItens}
@@ -760,32 +761,54 @@ export default class EditorTab extends React.Component {
                             }
                         }}
                     />
-                }
-                columnRight={
-                    <TwoVerticalColumnsResizable
-                        id="EditorTabRightVertical"
+                    /* <TwoVerticalColumnsResizable
+                        id="TwoVerticalColumnsResizableOutput"
                         top={
-                            <TreeManager
-                                isUseDrag={true}
-                                isUseDrop={true}
-                                onClick={this.treeManagerOnClick.bind(this)}
-                                onDropItem={this.treeManagerOnDropItem.bind(this)}
-                                onDoubleClick={this.treeManagerOnDoubleClick.bind(this)}
-                                onContextMenu={(itemId, e) => {
-                                    e.preventDefault();
-                                    ContextMenuService.showMenu(e.clientX, e.clientY, this.treeManagerContextMenu.bind(this)(itemId));
-                                }}
-                                itens={this.treeManagerGetTree.bind(this)()}
-                            />
+                            <div className="flex1 overflow-auto">
+                            </div>
                         }
                         bottom={
-                            <PropertiesEditor
-                                itens={this.propertiesEditorGetSelectedItem.bind(this)(this.state.currentFocus)}
-                                onChange={this.propertiesEditorOutputItens.bind(this)}
-                                onChangeInputWidth={width => console.log(width)}
-                            />
+                            <div className="flex1 background-panels flex-column">
+                                <div className="background-bars flex-space-between">
+                                    <TabGroup>
+                                        <TabButton id="output" content="Output" style={{ height: 'var(--size-xs)' }} />
+                                    </TabGroup>
+                                </div>
+                                <hr className="hr" />
+                                <div className="flex1">
+
+                                </div>
+                            </div>
                         }
-                    />
+                    /> */
+                }
+                columnRight={
+                    <div className="flex1 background-panels">
+                        <TwoVerticalColumnsResizable
+                            id="EditorTabRightVertical"
+                            top={
+                                <TreeManager
+                                    isUseDrag={true}
+                                    isUseDrop={true}
+                                    onClick={this.treeManagerOnClick.bind(this)}
+                                    onDropItem={this.treeManagerOnDropItem.bind(this)}
+                                    onDoubleClick={this.treeManagerOnDoubleClick.bind(this)}
+                                    onContextMenu={(itemId, e) => {
+                                        e.preventDefault();
+                                        ContextMenuService.showMenu(e.clientX, e.clientY, this.treeManagerContextMenu.bind(this)(itemId));
+                                    }}
+                                    itens={this.treeManagerGetTree.bind(this)()}
+                                />
+                            }
+                            bottom={
+                                <PropertiesEditor
+                                    onChangeInputWidth={width => console.log(width)}
+                                    onChange={this.propertiesEditorOutputItens.bind(this)}
+                                    itens={this.propertiesEditorGetSelectedItem.bind(this)(this.state.currentFocus)}
+                                />
+                            }
+                        />
+                    </div>
                 }
             />
         );

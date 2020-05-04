@@ -1,7 +1,18 @@
-.col-right {
-  background-color: var(--main-background-panels);
+.col-align-left {
+  justify-content: space-between;
+  max-width: 85%;
+  min-width: 50%;
+}
+
+.col-align-right {
   justify-content: space-between;
   min-width: var(--size-38);
+  max-width: 70%;
+}
+
+.col-align-center {
+  justify-content: space-between;
+  min-width: 30%;
   max-width: 70%;
 }
 

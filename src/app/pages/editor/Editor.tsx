@@ -16,15 +16,15 @@ import './Editor.css';
 export class Editor extends React.Component {
 
     public state = {
-        project: Storage.getProject(),
         currentTab: <EditorTab />,
+        project: Storage.getProject(),
         editingTab: ComponentType.tabRouters,
 
         updateProjectState: (project: Project) => this.updateProjectState(project),
         toggleResourcesTab: (type: ComponentType) => this.toggleResourcesTab(type),
     }
 
-    componentWillReceiveProps() {
+    componentDidUpdate() {
         document.title = this.state.project.projectConfigs.label + ' - Code Easy'
     }
 
@@ -54,8 +54,8 @@ export class Editor extends React.Component {
 
     /** Usada para atualizar o state global do projeto e para atualizar o localstorage */
     private updateProjectState(project: Project) {
-        this.setState(project)
         Storage.setProject(project);
+        this.setState(project)
     }
 
     render() {

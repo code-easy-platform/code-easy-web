@@ -1,7 +1,7 @@
 .tool-bar {
   justify-content: space-between;
   width: var(--size-window-vw-fill);
-  height: var(--size-10);
+  height: var(--tool-bar-height);
   display: flex;
 }
 
