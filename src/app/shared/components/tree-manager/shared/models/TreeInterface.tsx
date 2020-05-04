@@ -2,6 +2,7 @@ export interface TreeInterface {
     type: any;
     icon?: any;
     label: string;
+    isEditing?: boolean;
     hasError?: boolean;
     isSelected: boolean;
     description?: string;

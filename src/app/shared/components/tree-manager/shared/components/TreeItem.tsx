@@ -69,7 +69,7 @@ export const TreeItem: FC<ItemTreeProps> = ({ itemTree, paddingLeft, onExpandNod
             title={itemTree.description}
             onClick={isDisabled ? undefined : ((e: any) => onClick(itemTree.id, e))}
             onDoubleClick={isDisabled ? undefined : (e => { onDoubleClick(itemTree.id, itemTree, e) })}
-            className={`tree-item${(!isDisabled) ? '' : ' disabled'}${isDisabled ? '' : (itemTree.isSelected ? ' selected' : '')}`}
+            className={`tree-item${(!isDisabled) ? '' : ' disabled'}${isDisabled ? '' : (itemTree.isEditing ? ' editing' : '')}${isDisabled ? '' : (itemTree.isSelected ? ' selected' : '')}`}
         >
             <DragPreviewImage connect={preview} src={img_tree_item_preview} />
             <div

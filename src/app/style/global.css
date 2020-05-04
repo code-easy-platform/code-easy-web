@@ -17,6 +17,9 @@
 *[selected="true"] {
   background-color: var(--main-select-color);
 }
+.editing {
+  background-color: var(--main-editing-color);
+}
 .selected,
 *[selected="true"]:hover {
   background-color: var(--main-select-color) !important;
