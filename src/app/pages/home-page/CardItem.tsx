@@ -2,8 +2,10 @@ import React, { useState } from 'react';
 
 import icon_star from './../../assets/icons/icon-star.png';
 import { ProjectTypeList, ProjectType } from '../../shared/enuns/ProjectType';
+import { ContextMenuService } from '../../shared/components/context-menu/ContextMenuService';
 
 interface CardItemProps {
+    onDelete?(id: string): void;
     onCancel?(): void;
     onClick(item: {
         icon?: any;
@@ -26,9 +28,20 @@ interface CardItemProps {
 export const CardItem = (props: CardItemProps) => {
     const [item, setItem] = useState(props.item);
 
+    const contextMenu = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
+        e.preventDefault();
+        ContextMenuService.showMenu(e.pageX, e.pageY, [
+            {
+                label: 'Delete',
+                useConfirmation: true,
+                action: () => props.onDelete ? props.onDelete(props.item.id) : {},
+            }
+        ]);
+    }
+
     return (
         !props.isAdding
-            ? <div onClick={() => props.onClick(item)} className="margin-right-m margin-bottom-m border-radius btn padding-none flex-column" style={{ border: 'var(--input-border)', width: 200, height: 'fit-content' }}>
+            ? <div onContextMenu={contextMenu} onClick={() => props.onClick(item)} className="margin-right-m margin-bottom-m border-radius btn padding-none flex-column" style={{ border: 'var(--input-border)', width: 200, height: 'fit-content' }}>
                 <div className="flex1 padding-m" style={{ alignSelf: 'center' }}>
                     <img height="50" src={props.item.icon || icon_star} alt="Placeholder" />
                 </div>

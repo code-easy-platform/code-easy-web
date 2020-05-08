@@ -1,0 +1,18 @@
+.base-modal {
+    min-height: 300px;
+    min-width: 400px;
+    position: fixed;
+    z-index: 2;
+}
+
+.modal-top-bar {
+    justify-content: flex-end;
+    cursor: move;
+}
+
+.modal-top-content {
+}
+
+.modal-top-footer {
+    justify-content: flex-end;
+}

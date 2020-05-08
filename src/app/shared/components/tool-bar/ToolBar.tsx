@@ -57,13 +57,13 @@ export const ToolBar = (props: any) => {
             </div>
             <div>
                 <TabButton
-                    content="Reset project"
+                    content="Remove project"
                     id="tabResetApplication"
                     style={{ justifyContent: "center", alignSelf: "center", height: '-webkit-fill-available' }}
                     onClick={() => {
                         // eslint-disable-next-line no-restricted-globals
-                        if (confirm('Deseja realmente resetaro projeto?')) {
-                            codeEditorContext.updateProjectState(Storage.resetProject());
+                        if (confirm('Realy want delete?')) {
+                            Storage.removeProjectById(codeEditorContext.project.projectConfigs.id);
                             window.location.reload();
                         }
                     }}

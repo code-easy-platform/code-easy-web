@@ -23,7 +23,7 @@ export const Routes = () => {
             <Switch>
                 <Route path={"/projects"} exact component={HomePage} />
 
-                <Route path={"/editor"} exact component={Editor} />
+                <Route path={"/editor/:id"} exact component={Editor} />
 
                 <Route path='*' component={HomePage} />
             </Switch>

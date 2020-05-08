@@ -6,13 +6,12 @@ import { ProjectType } from "../enuns/ProjectType";
 import { Utils } from "./Utils";
 
 export enum StorageEnum {
-    projectStorage = "PROJECT_STORAGE",
     projectsStorage = "PROJECTS_STORAGE",
 }
 
 const mockProjeto: Project = new Project({
     projectConfigs: {
-        id: `${Utils.getUUID()}`,
+        id: undefined,
         version: '0.0.1',
         currentProcess: '',
         autor: '(Sem nome)',
@@ -611,21 +610,14 @@ export class Storage {
     /** Salva no localstorage uma lista de projetos */
     public static setProjects(projects: Project[]): Project[] {
         localStorage.setItem(StorageEnum.projectsStorage, JSON.stringify(projects));
-
-        return Storage.getProjects();
+        return projects;
     }
 
     /** Atualiza no localstorage a lista de projetos */
-    public static updateProjectById(project: Project) {
-        let projects: Project[] = Storage.getProjects();
-        let itemIndex: number | undefined;
+    public static setProjectById(project: Project) {
 
-        projects.forEach((item_project, index) => {
-            if (item_project.projectConfigs.id === project.projectConfigs.id) {
-                // item_project = project;
-                itemIndex = index;
-            }
-        });
+        let projects: Project[] = Storage.getProjects();
+        let itemIndex = projects.findIndex(item_project => item_project.projectConfigs.id === project.projectConfigs.id);
 
         if (itemIndex) {
             projects.splice(itemIndex, 1); // Remove item
@@ -636,39 +628,37 @@ export class Storage {
     }
 
     /** Pego o projeto que está sendo editado no momento */
-    public static getProject(): Project {
-        let project: Project;
+    public static getProjectById(id?: string): Project {
+        const projects = Storage.getProjects();
 
-        let res = localStorage.getItem(StorageEnum.projectStorage);
+        let project = projects.find(proj => proj.projectConfigs.id === id);
 
-        if (res !== null && res !== "" && res !== undefined)
-            project = JSON.parse(res);
-        else {
-            Storage.setProject(mockProjeto);
-            project = mockProjeto;
+        if (project === undefined) {
+            return new Project(mockProjeto);
+        } else {
+            return new Project(project);
         }
-
-        return new Project(project);
     }
 
-    /** Salva o projeto que está sendo editado no momento */
-    public static setProject(project: Project): Project {
-        localStorage.setItem(StorageEnum.projectStorage, JSON.stringify(project));
+    /** Remove o item do local storage */
+    public static removeProjectById(id?: string): Project[] {
 
-        Storage.updateProjectById(project);
+        let projects = Storage.getProjects();
+        if (!id) return projects;
 
-        return new Project(Storage.getProject());
+        const itemIndex = projects.findIndex(project => project.projectConfigs.id === id);
+
+        if (itemIndex > -1) {
+            projects.splice(itemIndex, 1); // Remove item
+        }
+
+        Storage.setProjects(projects);
+        return projects;
     }
 
     /** Reseta o projeto que está sendo editado no momento */
     public static resetProject(): Project {
-        localStorage.removeItem(StorageEnum.projectStorage);
-        return new Project(Storage.getProject());
-    }
-
-    /** Remove o projeto que está sendo editado no momento */
-    public static removeProject(): void {
-        localStorage.removeItem(StorageEnum.projectStorage);
+        return new Project(Storage.getProjectById());
     }
 
     public static getColumnsResizableSize(id: string): number {

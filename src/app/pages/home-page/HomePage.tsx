@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 
 import { TwoColumnsResizable } from '../../shared/components/resizable-columns/TwoColumnsResizable';
 import { BottonStatusBar } from '../../shared/components/botton-status-bar/BottonStatusBar';
@@ -14,17 +14,19 @@ import icon_download from './../../assets/icons/icon-download.png';
 import icon_plugins from './../../assets/icons/icon-plugins.png';
 import icon_config from './../../assets/icons/icon-config.png';
 import icon_accont from './../../assets/icons/icon-accont.png';
+import { ProjectType } from '../../shared/enuns/ProjectType';
 import icon_tips from './../../assets/icons/icon-tips.png';
 import icon_help from './../../assets/icons/icon-help.png';
-import { Link } from 'react-router-dom';
-import { ProjectType } from '../../shared/enuns/ProjectType';
+import { useHistory } from 'react-router-dom';
+//import { Modal } from '../../shared/components/modal/Modal';
 
 export const HomePage = () => {
 
-    const linkRef = useRef<any>(null);
     const [projects, setProjects] = useState<Project[]>(Storage.getProjects() || []);
     const [isAdding, setIsAdding] = useState(false);
     const [filter, setFilter] = useState('');
+    const history = useHistory();
+
     useEffect(() => {
         Storage.setProjects(projects);
     }, [projects]);
@@ -44,6 +46,7 @@ export const HomePage = () => {
 
     return (
         <div className="main-page">
+            {/* <Modal isOpen={true}  /> */}
             <ToolBarHome />
             <hr className="hr" />
 
@@ -57,6 +60,7 @@ export const HomePage = () => {
                                 <div>
                                     <Button
                                         icon={icon_config}
+                                        onClick={e => { }}
                                         style={{ height: 'var(--tool-bar-height)', padding: '10px' }}
                                     />
                                     <Button
@@ -120,9 +124,10 @@ export const HomePage = () => {
                                 {projects.filter(item => (item.projectConfigs.label.toLowerCase().indexOf(filter) >= 0)).map(card => {
                                     return <CardItem
                                         key={card.projectConfigs.id}
+                                        onDelete={() => setProjects(Storage.removeProjectById(card.projectConfigs.id))}
                                         onClick={() => {
-                                            Storage.setProject(card);
-                                            if (linkRef.current) { linkRef.current.click(); }
+                                            Storage.setProjectById(card);
+                                            history.push(`/editor/${card.projectConfigs.id}`);
                                         }}
                                         item={{
                                             type: card.projectConfigs.type,
@@ -135,7 +140,6 @@ export const HomePage = () => {
                                 })}
                                 {(projects.length === 0 && !isAdding) && <div className="font-size-m margin-s" style={{ opacity: 0.5 }}>No itens to ahow...</div>}
                             </div>
-                            <Link style={{ display: 'none' }} ref={linkRef} to="/editor" />
                         </div>
                     }
                 />

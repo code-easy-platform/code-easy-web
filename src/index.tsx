@@ -9,4 +9,4 @@ setInterval(() => {
     ReactDOM.render(<App />, document.getElementById('root'));
 }, 200);
 
-serviceWorker.unregister();
+serviceWorker.register();

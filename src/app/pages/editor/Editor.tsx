@@ -1,4 +1,5 @@
 import React from 'react';
+import { Redirect } from 'react-router-dom';
 
 import { BottonStatusBar } from '../../shared/components/botton-status-bar/BottonStatusBar';
 import { CodeEditorContext } from '../../shared/services/contexts/CodeEditorContext';
@@ -13,11 +14,12 @@ import EditorTab from './editor-tab/EditorTab';
 import './Editor.css';
 
 
-export class Editor extends React.Component {
+export class Editor extends React.Component<any> {
+    private params: any = this.props.match.params
 
     public state = {
         currentTab: <EditorTab />,
-        project: Storage.getProject(),
+        project: Storage.getProjectById(this.params.id),
         editingTab: ComponentType.tabRouters,
 
         updateProjectState: (project: Project) => this.updateProjectState(project),
@@ -54,7 +56,7 @@ export class Editor extends React.Component {
 
     /** Usada para atualizar o state global do projeto e para atualizar o localstorage */
     private updateProjectState(project: Project) {
-        Storage.setProject(project);
+        Storage.setProjectById(project);
         this.setState(project)
     }
 
@@ -72,6 +74,7 @@ export class Editor extends React.Component {
                     <hr className="hr" />
                     <BottonStatusBar />
                 </div>
+                {(this.state.project.projectConfigs.id === undefined) && <Redirect to="/" />}
             </CodeEditorContext.Provider>
         );
     }
