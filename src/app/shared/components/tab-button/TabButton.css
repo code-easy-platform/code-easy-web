@@ -1,6 +1,4 @@
 .tab-group {
-  justify-content: space-between;
-  font-size: var(--font-size-4);
   min-height: var(--size-8);
 }
 .btn-tab {

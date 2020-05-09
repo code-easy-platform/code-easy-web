@@ -8,13 +8,25 @@ import './icon.css';
  * @param iconName Nome do icone a ser exibido.
  * @param onDoubleClick Uma função como callBack.
  */
-export const Icon = (props: any) => (
-    props.show !== undefined && props.show === false
-        ? <></>
-        : <div
-            onClick={props.onClick}
-            onDoubleClick={props.onDoubleClick}
-            className={"default " + props.iconName}
-            style={{ backgroundImage: `url('${props.icon}')` }}
-        />
+interface IconProps {
+    icon: any;
+    show: boolean;
+    iconName: string;
+    onClick?(e: React.MouseEvent<HTMLImageElement, MouseEvent>): void;
+    onDoubleClick?(e: React.MouseEvent<HTMLImageElement, MouseEvent>): void;
+}
+export const Icon: React.FC<IconProps> = ({ onClick, onDoubleClick, icon, iconName, show }) => (
+    (show !== undefined)
+        ? (show !== false)
+            ? <img
+                width={15}
+                src={icon}
+                height={15}
+                className="margin-xs"
+                onClick={onClick}
+                alt={"TreeItem" + iconName}
+                onDoubleClick={onDoubleClick}
+            />
+            : <></>
+        : <></>
 );

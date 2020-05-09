@@ -4,6 +4,7 @@ import './ResizeTemplate.css';
 import { Storage } from '../../services/LocalStorage';
 
 interface IRecipeProps {
+    useMinHeight?: boolean,
     bottom: JSX.Element,
     top: JSX.Element,
     id: string,
@@ -35,10 +36,12 @@ export class TwoVerticalColumnsResizable extends Component<IRecipeProps> {
     }
 
     render() {
+        const useMinHeight = this.props.useMinHeight !== undefined ? this.props.useMinHeight : true
+
         return (
             <div className="flex1 flex-column">
                 {this.props.top}
-                <div className="flex-column" style={{ height: this.state.bottomHeight, minHeight: '20%', maxHeight: '90%' }}>
+                <div className="flex-column" style={{ height: this.state.bottomHeight, minHeight: useMinHeight ? '20%' : undefined, maxHeight: '90%' }}>
                     <hr className='hr' />
                     <div className="grabber-col-right-resize-y" onMouseDown={this.mouseDown} />
                     {this.props.bottom}

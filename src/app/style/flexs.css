@@ -1,0 +1,33 @@
+.display-flex {
+    display: flex;
+}
+.flex1 {
+    flex: 1;
+}
+.flex2 {
+    flex: 2;
+}
+.flex3 {
+    flex: 3;
+}
+.flex-column {
+    flex-direction: column;
+}
+.flex-row {
+    flex-direction: row;
+}
+.flex-space-between {
+    justify-content: space-between;
+}
+.flex-justfy-start {
+    justify-content: flex-start;
+}
+.flex-itens-center {
+    align-items: center;
+}
+.flex-wrap {
+    flex-wrap: wrap;
+}
+.flex-no-wrap {
+    flex-wrap: nowrap;
+}

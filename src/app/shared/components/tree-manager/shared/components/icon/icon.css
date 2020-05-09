@@ -9,11 +9,3 @@
   width: var(--size-3);
   align-self: center;
 }
-
-.btn-expand-folder {
-  content: url("./../../icons/btn-expand-folder.svg");
-}
-
-.btn-collapse-folder {
-  content: url("./../../icons/btn-collapse-folder.svg");
-}

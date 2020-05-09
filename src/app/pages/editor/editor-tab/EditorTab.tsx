@@ -11,6 +11,7 @@ import { FlowItem, ItemType } from './../../../shared/components/code-editor/mod
 import { Tab, ItemComponent, ItemFlowComplete } from '../../../shared/interfaces/Aplication';
 import { IContextItemList } from './../../../shared/components/context-menu/ContextMenu';
 import { TreeManager } from '../../../shared/components/tree-manager/TreeManager';
+import { OutputPanel } from '../../../shared/components/output-panel/OutputPanel';
 import { FlowEditor } from '../../../shared/components/code-editor/CodeEditor';
 import { ComponentType } from '../../../shared/enuns/ComponentType';
 import { Utils } from '../../../shared/services/Utils';
@@ -227,7 +228,7 @@ export default class EditorTab extends React.Component {
 
     /** Toda vez que houver uma alteração nos itens de fluxo está função será executada. */
     private codeEditorOutputFlowItens = (updatedItens: FlowItem[]) => {
-        console.table(updatedItens);
+        // console.table(updatedItens);
 
         // Atualiza o currentFocus da tab
         this.setState({ currentFocus: CurrentFocus.flow });
@@ -523,33 +524,34 @@ export default class EditorTab extends React.Component {
         }];
     }
 
+    /** Remove itens da árvore */
+    private treeManagerRemoveItem(inputItemId: string | undefined) {
+        this.setState({ currentFocus: CurrentFocus.tree });
+
+        // Pega a lista de itens corrente na árvore
+        let indexTabToRemove: number | any;
+        let indexItemToRemove: number | any;
+        this.editorContext.project.tabs.forEach((tab: Tab, indexTab) => {
+            tab.itens.forEach((item, index) => {
+                if (item.id === inputItemId) {
+                    indexItemToRemove = index;
+                    indexTabToRemove = indexTab;
+                }
+            });
+        });
+
+        if (indexItemToRemove !== undefined && indexItemToRemove !== undefined) {
+            this.editorContext.project.tabs[indexTabToRemove].itens.splice(indexItemToRemove, 1);
+        }
+
+        this.onChangeState();
+    };
+
     /** Quando clicado com o botão esquerdo do mouse no interior da árvore esta função é acionada. */
     private treeManagerContextMenu(itemId: string | undefined): IContextItemList[] {
         this.setState({ currentFocus: CurrentFocus.tree });
 
         let options: IContextItemList[] = [];
-
-        const removeItem = (inputItemId: string | undefined) => {
-            this.setState({ currentFocus: CurrentFocus.tree });
-
-            // Pega a lista de itens corrente na árvore
-            let indexTabToRemove: number | any;
-            let indexItemToRemove: number | any;
-            this.editorContext.project.tabs.forEach((tab: Tab, indexTab) => {
-                tab.itens.forEach((item, index) => {
-                    if (item.id === inputItemId) {
-                        indexItemToRemove = index;
-                        indexTabToRemove = indexTab;
-                    }
-                });
-            });
-
-            if (indexItemToRemove !== undefined && indexItemToRemove !== undefined) {
-                this.editorContext.project.tabs[indexTabToRemove].itens.splice(indexItemToRemove, 1);
-            }
-
-            this.onChangeState();
-        };
 
         const addParam = (inputItemId: string | undefined, paramType: ComponentType.inputVariable | ComponentType.localVariable | ComponentType.outputVariable) => {
             let tabIndex: number | undefined;
@@ -593,9 +595,9 @@ export default class EditorTab extends React.Component {
                     this.editorContext.project.tabs[tabIndex].itens.push(new ItemComponent({
                         id: Utils.getUUID(),
                         itens: [],
+                        isEditing: true,
                         description: '',
                         isSelected: true,
-                        isEditing: false,
                         name: 'newrouter',
                         nodeExpanded: true,
                         label: 'newrouter',
@@ -623,7 +625,7 @@ export default class EditorTab extends React.Component {
                         itens: [],
                         description: '',
                         isSelected: true,
-                        isEditing: false,
+                        isEditing: true,
                         name: 'newaction',
                         nodeExpanded: true,
                         label: 'newaction',
@@ -726,7 +728,7 @@ export default class EditorTab extends React.Component {
 
         if (itemId !== undefined) {
             options.push({
-                action: () => removeItem(itemId),
+                action: () => this.treeManagerRemoveItem(itemId),
                 disabled: itemId === undefined,
                 useConfirmation: true,
                 label: 'Delete'
@@ -734,6 +736,23 @@ export default class EditorTab extends React.Component {
         }
 
         return options;
+    }
+
+    private treeManagerKeyDowm(e: React.FocusEvent<HTMLDivElement> | any) {
+        if (e.key === 'Delete') {
+            let itens: ItemComponent[] = [];
+            this.editorContext.project.tabs.forEach((tab: Tab) => {
+                if (tab.configs.isEditing) {
+                    itens = tab.itens;
+                }
+            });
+
+            const itemToEdit = itens.find(item => item.isSelected);
+            if (itemToEdit) {
+                this.treeManagerRemoveItem(itemToEdit.id);
+            }
+
+        }
     }
 
     //#endregion
@@ -747,42 +766,33 @@ export default class EditorTab extends React.Component {
                 aligment="right"
                 id="EditorTabCenter"
                 columnLeft={
-                    <FlowEditor
-                        isShowToolbar={true}
-                        itens={flowEditorItens}
-                        toolItens={this.codeEditorGetToolBoxItens()}
-                        onDropItem={this.codeEditorOnDropItem.bind(this)}
-                        isDisabledSelection={flowEditorItens.length === 0}
-                        onChangeItens={this.codeEditorOutputFlowItens.bind(this)}
-                        breadcrumbsPath={this.codeEditorGetBreadcamps.bind(this)()}
-                        allowDropTo={[ComponentType.globalAction, ComponentType.localAction]}
-                        onContextMenu={(data, e) => {
-                            if (e) {
-                                e.preventDefault();
-                                ContextMenuService.showMenu(e.clientX, e.clientY, this.codeEditorContextMenu.bind(this)(data));
-                            }
-                        }}
-                    />
-                    /* <TwoVerticalColumnsResizable
+                    <TwoVerticalColumnsResizable
                         id="TwoVerticalColumnsResizableOutput"
+                        useMinHeight={false}
                         top={
                             <div className="flex1 overflow-auto">
+                                <FlowEditor
+                                    isShowToolbar={true}
+                                    itens={flowEditorItens}
+                                    toolItens={this.codeEditorGetToolBoxItens()}
+                                    onDropItem={this.codeEditorOnDropItem.bind(this)}
+                                    isDisabledSelection={flowEditorItens.length === 0}
+                                    onChangeItens={this.codeEditorOutputFlowItens.bind(this)}
+                                    breadcrumbsPath={this.codeEditorGetBreadcamps.bind(this)()}
+                                    allowDropTo={[ComponentType.globalAction, ComponentType.localAction]}
+                                    onContextMenu={(data, e) => {
+                                        if (e) {
+                                            e.preventDefault();
+                                            ContextMenuService.showMenu(e.clientX, e.clientY, this.codeEditorContextMenu.bind(this)(data));
+                                        }
+                                    }}
+                                />
                             </div>
                         }
                         bottom={
-                            <div className="flex1 background-panels flex-column">
-                                <div className="background-bars flex-space-between">
-                                    <TabGroup>
-                                        <TabButton id="output" content="Output" style={{ height: 'var(--size-xs)' }} />
-                                    </TabGroup>
-                                </div>
-                                <hr className="hr" />
-                                <div className="flex1">
-
-                                </div>
-                            </div>
+                            <OutputPanel />
                         }
-                    /> */
+                    />
                 }
                 columnRight={
                     <div className="flex1 background-panels">
@@ -793,6 +803,7 @@ export default class EditorTab extends React.Component {
                                     isUseDrag={true}
                                     isUseDrop={true}
                                     onClick={this.treeManagerOnClick.bind(this)}
+                                    onKeyDown={this.treeManagerKeyDowm.bind(this)}
                                     onDropItem={this.treeManagerOnDropItem.bind(this)}
                                     onDoubleClick={this.treeManagerOnDoubleClick.bind(this)}
                                     onContextMenu={(itemId, e) => {
