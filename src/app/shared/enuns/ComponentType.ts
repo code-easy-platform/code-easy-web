@@ -15,7 +15,7 @@ export enum ComponentType {
     inputVariable = "INPUT_VARIABLE",
     localVariable = "LOCAL_VARIABLE",
 
-    globalAction = "GLOBAL_ACTION",
+    globalAction = "Global action",
     localAction = "LOCAL_ACTION",
 
     /**
@@ -34,6 +34,6 @@ export enum ComponentType {
     /**
      * Tipa um item que será considerado uma rota do sistema
      * */
-    router = "ROUTER",
+    router = "Router",
 
 }

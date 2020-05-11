@@ -31,4 +31,14 @@ export class Utils {
         document.body.removeChild(element);
     }
 
+    /** Valida o campo de name do projeto */
+    public static isValidName(name: string) {
+        return !(/^(?! )((?! {2})(?<! )$[a-zA-Z ]){3,50}$/.test(name));
+    }
+
+    /** Valida o campo de versão do projeto */
+    public static isValidVersion(version: string) {
+        return !(/^\d{1,2}\.\d{1,2}\.\d{1,2}$/.test(version));
+    }
+
 }
