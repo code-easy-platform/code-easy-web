@@ -15,6 +15,8 @@ import { OutputPanel } from '../../../shared/components/output-panel/OutputPanel
 import { FlowEditor } from '../../../shared/components/code-editor/CodeEditor';
 import { ComponentType } from '../../../shared/enuns/ComponentType';
 import { Utils } from '../../../shared/services/Utils';
+import { ProblemsHelper } from '../../../shared/services/helpers/ProblemsHelper';
+import { OutputHelper } from '../../../shared/services/helpers/OutputHelper';
 
 
 enum CurrentFocus {
@@ -790,7 +792,10 @@ export default class EditorTab extends React.Component {
                             </div>
                         }
                         bottom={
-                            <OutputPanel />
+                            <OutputPanel
+                                problems={ProblemsHelper.getProblems(this.editorContext.project)}
+                                output={OutputHelper.getOutput(this.editorContext.project)}
+                            />
                         }
                     />
                 }

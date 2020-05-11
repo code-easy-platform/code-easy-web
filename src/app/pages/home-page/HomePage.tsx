@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useHistory } from 'react-router-dom';
 
 import { TwoColumnsResizable } from '../../shared/components/resizable-columns/TwoColumnsResizable';
 import { BottonStatusBar } from '../../shared/components/botton-status-bar/BottonStatusBar';
@@ -17,12 +18,13 @@ import icon_accont from './../../assets/icons/icon-accont.png';
 import { ProjectType } from '../../shared/enuns/ProjectType';
 import icon_tips from './../../assets/icons/icon-tips.png';
 import icon_help from './../../assets/icons/icon-help.png';
-import { useHistory } from 'react-router-dom';
-//import { Modal } from '../../shared/components/modal/Modal';
+import { Utils } from '../../shared/services/Utils';
+import { Modal } from '../../shared/components/modal/Modal';
 
 export const HomePage = () => {
 
     const [projects, setProjects] = useState<Project[]>(Storage.getProjects() || []);
+    const [openConfig, setOpenConfig] = useState(false);
     const [isAdding, setIsAdding] = useState(false);
     const [filter, setFilter] = useState('');
     const history = useHistory();
@@ -46,7 +48,6 @@ export const HomePage = () => {
 
     return (
         <div className="main-page">
-            {/* <Modal isOpen={true}  /> */}
             <ToolBarHome />
             <hr className="hr" />
 
@@ -60,7 +61,7 @@ export const HomePage = () => {
                                 <div>
                                     <Button
                                         icon={icon_config}
-                                        onClick={e => { }}
+                                        onClick={e => setOpenConfig(true)}
                                         style={{ height: 'var(--tool-bar-height)', padding: '10px' }}
                                     />
                                     <Button
@@ -76,6 +77,7 @@ export const HomePage = () => {
                                     <Button
                                         icon={icon_download}
                                         style={{ height: 'var(--tool-bar-height)', padding: '10px' }}
+                                        onClick={() => Utils.downloadFile('YourProjects', 'json', JSON.stringify(projects))}
                                     />
                                     <Button
                                         icon={icon_tips}
@@ -147,6 +149,14 @@ export const HomePage = () => {
 
             <hr className="hr" />
             <BottonStatusBar />
+            <Modal
+                onClose={() => { setOpenConfig(false); return true }}
+                onCancel={() => setOpenConfig(false)}
+                allowBackdropClick={false}
+                isOpen={openConfig}
+                children={<>
+
+                </>}
+            />
         </div>);
 }
-

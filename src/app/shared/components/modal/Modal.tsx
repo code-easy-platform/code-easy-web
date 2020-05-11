@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 
 import './Modal.css';
 
@@ -11,12 +11,14 @@ interface ModalProps {
     onMaximize?(value: boolean): boolean;
     onMinimize?(value: boolean): boolean;
     onClose?(value: boolean): boolean;
+    closeWithBackdropClick?: boolean;
+    allowBackdropClick?: boolean;
     isOpen: boolean;
 }
-export const Modal: React.FC<ModalProps> = ({ children, onMaximize, onMinimize, onClose, isOpen, onCancel, onSave }) => {
+export const Modal: React.FC<ModalProps> = ({ children, onMaximize, onMinimize, onClose, isOpen, onCancel, onSave, allowBackdropClick = true, closeWithBackdropClick = false }) => {
 
     const [{ clickedLeft, clickedTop }, setClickedPosition] = useState({ clickedTop: 0, clickedLeft: 0 });
-    
+
     /** Controla a posição da modal na tela */
     const [{ left, top }, setPosition] = useState({ top: 90, left: 90 });
 
@@ -25,6 +27,9 @@ export const Modal: React.FC<ModalProps> = ({ children, onMaximize, onMinimize, 
 
     /** Controla se a modal está aberta ou fechada */
     const [closed, setClosed] = useState(!isOpen);
+    useEffect(() => {
+        setClosed(!isOpen);
+    }, [isOpen]);
 
     const toggleMaximize = () => {
         if (maximized) {
@@ -60,22 +65,25 @@ export const Modal: React.FC<ModalProps> = ({ children, onMaximize, onMinimize, 
     return (
         closed
             ? <></>
-            : <div style={{ top, left }} className={`base-modal background-bars box-shadow-small border-radius flex-column${maximized ? ' full-width full-height' : ' padding-xs'}`}>
-                <div onMouseDown={mouseDown} className={`modal-top-bar flex-row${maximized ? ' margin-left-xs margin-right-xs' : ''}`}>
-                    <button onClick={toggleMaximize} className="btn padding-xs margin-right-s border-radius outline-none">
-                        <img height={30} src={icon_maximizar} alt="Toggle maximize modal" />
-                    </button>
-                    <button onClick={close} className="btn padding-xs border-radius outline-none">
-                        <img height={30} src={icon_close} alt="Close modal" />
-                    </button>
+            : <>
+                {!allowBackdropClick && <div className="full-height full-width absolute" style={{ backgroundColor: '#ffffff05' }} onClick={() => closeWithBackdropClick ? close() : () => { }} />}
+                <div style={{ top: !maximized ? top : 0, left: !maximized ? left : 0 }} className={`base-modal background-bars box-shadow-small border-radius flex-column${maximized ? ' full-width full-height' : ' padding-xs'}`}>
+                    <div onMouseDown={mouseDown} className={`modal-top-bar flex-row${maximized ? ' margin-left-xs margin-right-xs' : ''}`}>
+                        <button onClick={toggleMaximize} className="btn padding-xs margin-right-s border-radius outline-none">
+                            <img height={30} src={icon_maximizar} alt="Toggle maximize modal" />
+                        </button>
+                        <button onClick={close} className="btn padding-xs border-radius outline-none">
+                            <img height={30} src={icon_close} alt="Close modal" />
+                        </button>
+                    </div>
+                    <div className={`modal-top-content background border-radius flex-column padding-s margin-top-xs margin-bottom-xs flex1${maximized ? ' margin-left-xs margin-right-xs' : ''}`}>
+                        {children}
+                    </div>
+                    <div className={`modal-top-footer flex-row modal-top-footer${maximized ? ' margin-left-xs margin-right-xs' : ''}`}>
+                        <button onClick={onCancel} className="btn padding-s padding-left-m padding-right-m margin-right-s border-radius outline-none">Cancel</button>
+                        <button onClick={onSave} style={{ backgroundColor: 'var(--color-primary)' }} className="btn padding-s padding-left-m padding-right-m border-radius outline-none">Save</button>
+                    </div>
                 </div>
-                <div className={`modal-top-content background border-radius flex-column padding-s margin-top-xs margin-bottom-xs flex1${maximized ? ' margin-left-xs margin-right-xs' : ''}`}>
-                    {children}
-                </div>
-                <div className={`modal-top-footer flex-row modal-top-footer${maximized ? ' margin-left-xs margin-right-xs' : ''}`}>
-                    <button onClick={onCancel} className="btn padding-s padding-left-m padding-right-m margin-right-s border-radius outline-none">Cancel</button>
-                    <button onClick={onSave} style={{ backgroundColor: 'var(--color-primary)' }} className="btn padding-s padding-left-m padding-right-m border-radius outline-none">Save</button>
-                </div>
-            </div>
+            </>
     );
 }

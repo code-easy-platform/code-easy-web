@@ -10,8 +10,10 @@
     }
   },
   "dependencies": {
+    "@types/marked": "^0.7.4",
     "@types/react-router-dom": "^5.1.5",
     "immutability-helper": "^3.0.1",
+    "marked": "^1.0.0",
     "node-sass": "^4.12.0",
     "react": "^16.10.2",
     "react-dnd": "^9.4.0",

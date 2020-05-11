@@ -16,5 +16,19 @@ export class Utils {
 
     /** Retorna uma string sem caracteres especiais, espaços e quebras de linha  */
     public static getNormalizedString = (value: string) => value.trim().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+    
+    /** Executa o download de um arquivo */
+    public static downloadFile = (filename: string, fileType: 'json', content: string) => {
+        var element = document.createElement('a');
+        element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(content));
+        element.setAttribute('download', `${filename}.${fileType}`);
+
+        element.style.display = 'none';
+        document.body.appendChild(element);
+
+        element.click();
+
+        document.body.removeChild(element);
+    }
 
 }
