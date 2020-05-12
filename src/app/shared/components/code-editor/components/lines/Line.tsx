@@ -11,12 +11,13 @@ interface LineProps {
     lineWidth?: number
     sucessorIndex?: number
     onSucessorChange?: Function
+    lineType?: 'dotted' | 'normal'
 }
-
+    
 export const Line: React.FC<LineProps> = (props: LineProps) => {
     const { lineWidth = 2, color = "var(--main-background-highlighted)", left1, left2 = 0 } = props;
     const onSucessorChange: Function = props.onSucessorChange || (() => { });
-    const { id = "0", sucessorIndex = 999999 } = props;
+    const { id = "0", sucessorIndex = 999999, lineType = 'normal' } = props;
     let { top1 = 0, top2 = 0 } = props;
 
 
@@ -27,18 +28,19 @@ export const Line: React.FC<LineProps> = (props: LineProps) => {
     const polygonBotton: number = top2;
 
 
-    let rotate: number = 0;
-
-
     const [position, setPosition] = useState({ polygonTop: polygonTop, polygonLeft: polygonLeft });
     const [isSelected, setIsSelected] = useState(false);
 
 
-    const onMouseDown = () => {
-        setIsSelected(true);
+    let rotate: number = 0;
+    // let rotate: number = isSelected ? Utils.getAngle(left1, top1, position.polygonLeft, position.polygonTop) : 0;
 
-        window.onmousemove = mouseMove;
-        window.onmouseup = onMouseUp
+
+    const mouseMove = (event: any) => {
+        setPosition({
+            polygonTop: event.offsetY,
+            polygonLeft: event.offsetX,
+        });
     }
 
     const onMouseUp = (e: any) => {
@@ -47,14 +49,24 @@ export const Line: React.FC<LineProps> = (props: LineProps) => {
         window.onmouseup = null;
         window.onmousemove = null;
 
+        setPosition({
+            polygonTop: top1,
+            polygonLeft: top2 - 10,
+        });
+
         onSucessorChange(id, e.target.id, sucessorIndex);
     }
 
-    const mouseMove = (event: any) => {
+    const onMouseDown = () => {
+        setIsSelected(true);
+
         setPosition({
-            polygonTop: event.offsetY,
-            polygonLeft: event.offsetX,
+            polygonTop: top1,
+            polygonLeft: top2 - 10,
         });
+
+        window.onmousemove = mouseMove;
+        window.onmouseup = onMouseUp
     }
 
     return (
@@ -69,6 +81,7 @@ export const Line: React.FC<LineProps> = (props: LineProps) => {
                 stroke-line-cap="round"
                 strokeWidth={lineWidth}
                 stroke={color || "var(--main-background-highlighted)"}
+                strokeDasharray={lineType === 'normal' ? undefined : "5,5"}
             />
             {
                 !isSelected

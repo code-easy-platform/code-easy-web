@@ -65,27 +65,29 @@ export const ItemToDrag: React.FC<ItemDragProps> = (props: ItemDragProps) => {
      * Também serve para fechar o menu de contexto.
      */
     const mouseUp = (e: MouseEvent) => {
+        e.stopPropagation();
         window.onmousemove = null;
         window.onmouseup = null;
     }
 
     /** Quando um item estiver selecionado e for arrastado na tale esta fun vai fazer isso acontecer. */
-    const mouseMove = (event: MouseEvent) => {
-        const top = event.offsetY - ((height || 0) / 2);
-        const left = event.offsetX - ((width || 0) / 2);
+    const mouseMove = (e: MouseEvent) => {
+        e.stopPropagation();
+        const top = e.offsetY - ((height || 0) / 2);
+        const left = e.offsetX - ((width || 0) / 2);
 
         if (onChangePosition) {
-            onChangePosition(top, left, event as any);
+            onChangePosition(top, left, e as any);
         }
     }
 
     /** Declara a fun no ref da svg para que o item atual possa ser arrastado na tela. */
     const mouseDown = (e: React.MouseEvent<SVGGElement, MouseEvent>) => {
+        e.stopPropagation();
         if (onMouseDown) onMouseDown(e);
 
         window.onmousemove = mouseMove;
         window.onmouseup = mouseUp;
-
     }
 
     // Assim que configurado exibirá o menu de contexto deste item corrente.
@@ -134,7 +136,7 @@ export const ItemToDrag: React.FC<ItemDragProps> = (props: ItemDragProps) => {
                 style={{ cursor: 'move', zIndex: 2 }}
             >
                 <text x={(left || 0) + ((width || 0) / 2)} textAnchor="middle" fill="var(--color-white)" y={(top || 0) - 5} id={id}>{title}</text>
-                {itemType === ItemType.COMMENT && <FlowComment id={id} top={top} left={left} width={width} height={height} isSelected={isSelected} name="COMMENT" childImage={icons_comment} />}
+                {itemType === ItemType.COMMENT && <FlowComment id={id} top={top} left={left} width={width} height={height} isSelected={isSelected} name="COMMENT" childImage={icons_comment} onNameChange={console.log} />}
                 {itemType === ItemType.FOREACH && <FlowComponent id={id} top={top} left={left} width={width} height={height} isSelected={isSelected} hasError={hasError} name="FOREACH" icon={icons_foreach} />}
                 {itemType === ItemType.ASSIGN && <FlowComponent id={id} top={top} left={left} width={width} height={height} isSelected={isSelected} hasError={hasError} name="ASSIGN" icon={icons_assign} />}
                 {itemType === ItemType.SWITCH && <FlowComponent id={id} top={top} left={left} width={width} height={height} isSelected={isSelected} hasError={hasError} name="SWITCH" icon={icons_switch} />}

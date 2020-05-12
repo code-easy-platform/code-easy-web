@@ -774,11 +774,12 @@ export default class EditorTab extends React.Component {
                         top={
                             <div className="flex1 overflow-auto">
                                 <FlowEditor
+                                    id={"CODE_EDITOR"}
                                     isShowToolbar={true}
                                     itens={flowEditorItens}
                                     toolItens={this.codeEditorGetToolBoxItens()}
+                                    enabledSelection={flowEditorItens.length !== 0}
                                     onDropItem={this.codeEditorOnDropItem.bind(this)}
-                                    isDisabledSelection={flowEditorItens.length === 0}
                                     onChangeItens={this.codeEditorOutputFlowItens.bind(this)}
                                     breadcrumbsPath={this.codeEditorGetBreadcamps.bind(this)()}
                                     allowDropTo={[ComponentType.globalAction, ComponentType.localAction]}

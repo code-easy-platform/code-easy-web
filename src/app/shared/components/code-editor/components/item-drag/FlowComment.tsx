@@ -17,7 +17,7 @@ export const FlowComment = ({ id, isSelected, width, height, left, top, name, on
                 width={width}
                 height={height}
                 key={name + id}
-                style={{ pointerEvents: !isEditing ? undefined : 'none' }}
+                style={{ pointerEvents: !isEditing ? undefined : 'none', resize: 'both' }}
                 onDoubleClick={() => {
                     setIsEditing(true);
                     if (textAreaRef.current) {
@@ -28,6 +28,7 @@ export const FlowComment = ({ id, isSelected, width, height, left, top, name, on
                 <textarea
                     value={comment}
                     ref={textAreaRef}
+                    onKeyDown={e => { e.preventDefault(); e.stopPropagation() }}
                     onChange={e => setComment(e.target.value)}
                     onBlur={(e) => { setIsEditing(false); onNameChange(comment); }}
                     style={{

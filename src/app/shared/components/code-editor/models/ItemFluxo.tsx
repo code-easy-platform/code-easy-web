@@ -1,3 +1,5 @@
+import { Coords } from "../shared/Interfaces/CodeEditorInterfaces";
+
 export interface ItemFluxo {
     id: string | undefined;
     isSelected: boolean;
@@ -10,7 +12,7 @@ export interface ItemFluxo {
     left: number;
     top: number;
     icon: any;
-    select(startTop: number, startLeft: number, endTop: number, endLeft: number): any;
+    select(coords: Coords): any;
 }
 
 /** Tipos de itens existentes na toolbar. */
@@ -41,20 +43,20 @@ export class FlowItem implements ItemFluxo {
     public icon: any;
 
     /** Valida se o elemento está ou não na área que está sendo selecionada pelo mouse. */
-    public select = (startTop: number, startLeft: number, endTop: number, endLeft: number) => {
+    public select = (coords: Coords) => {
         const top2 = this.top + this.height;
         const left2 = this.left + this.width;
         this.isSelected = (
             (
-                ((endTop - startTop) > 0)
-                    ? ((this.top >= startTop) || (top2 >= startTop)) && ((this.top <= endTop) || (top2 <= endTop))
-                    : ((this.top <= startTop) || (top2 <= startTop)) && ((this.top >= endTop) || (top2 >= endTop))
+                ((coords.endY - coords.startY) > 0)
+                    ? ((this.top >= coords.startY) || (top2 >= coords.startY)) && ((this.top <= coords.endY) || (top2 <= coords.endY))
+                    : ((this.top <= coords.startY) || (top2 <= coords.startY)) && ((this.top >= coords.endY) || (top2 >= coords.endY))
             )
             &&
             (
-                ((endLeft - startLeft) > 0)
-                    ? ((this.left >= startLeft) || (left2 >= startLeft)) && ((this.left <= endLeft) || (left2 <= endLeft))
-                    : ((this.left <= startLeft) || (left2 <= startLeft)) && ((this.left >= endLeft) || (left2 >= endLeft))
+                ((coords.endX - coords.startX) > 0)
+                    ? ((this.left >= coords.startX) || (left2 >= coords.startX)) && ((this.left <= coords.endX) || (left2 <= coords.endX))
+                    : ((this.left <= coords.startX) || (left2 <= coords.startX)) && ((this.left >= coords.endX) || (left2 >= coords.endX))
             )
         );
     };
