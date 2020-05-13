@@ -11,19 +11,20 @@ import './icon.css';
 interface IconProps {
     icon: any;
     show: boolean;
+    iconSize?: number;
     iconName: string;
     onClick?(e: React.MouseEvent<HTMLImageElement, MouseEvent>): void;
     onDoubleClick?(e: React.MouseEvent<HTMLImageElement, MouseEvent>): void;
 }
-export const Icon: React.FC<IconProps> = ({ onClick, onDoubleClick, icon, iconName, show }) => (
+export const Icon: React.FC<IconProps> = ({ onClick, onDoubleClick, icon, iconName, show, iconSize = 25 }) => (
     (show !== undefined)
         ? (show !== false)
             ? <img
-                width={15}
                 src={icon}
-                height={15}
-                className="margin-xs"
+                width={iconSize}
+                height={iconSize}
                 onClick={onClick}
+                className="margin-xs"
                 alt={"TreeItem" + iconName}
                 onDoubleClick={onDoubleClick}
             />

@@ -616,12 +616,12 @@ export class Storage {
     /** Atualiza no localstorage a lista de projetos */
     public static setProjectById(project: Project) {
 
-        let projects: Project[] = Storage.getProjects();
+        let projects: Project[] = [...Storage.getProjects()];
+
         let itemIndex = projects.findIndex(item_project => item_project.projectConfigs.id === project.projectConfigs.id);
 
         if (itemIndex) {
-            projects.splice(itemIndex, 1); // Remove item
-            projects.push(project); // Adiciona novamente o item atualizado
+            projects.splice(itemIndex, 1, project); // Remove elemento antigo e coloca um novo no lugar
         }
 
         Storage.setProjects(projects);

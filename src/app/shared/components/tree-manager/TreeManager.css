@@ -8,6 +8,7 @@
 }
 
 .tree-item {
+  outline: var(--outline-none);
   width: var(--size-fill);
   min-width: max-content;
   height: min-content;
@@ -15,10 +16,12 @@
 }
 
 .item {
-  padding: 5px;
   padding-right: 10px;
 }
 
+.tree-item:focus {
+  background-color: #3c3c3c3b;
+}
 .tree-item:hover {
   background-color: #3c3c3c3b;
 }

@@ -30,13 +30,22 @@ export const TreeItem: FC<ItemTreeProps> = ({ itemTree, paddingLeft, onExpandNod
     isDisabled = isDisabled !== undefined ? isDisabled : false;
     isAllowedToggleNodeExpand = isAllowedToggleNodeExpand !== undefined ? isAllowedToggleNodeExpand : true;
 
+    /** Cria a referencia ao item que está sendo arrastado */
+    const itemRef = useRef(null);
+
+
     // Vai mandar para fora da arvore qual o id do item que foi clicado.
     const onContext = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
         onContextMenu(itemTree.id, e);
     }
 
-    /** Cria a referencia ao item que está sendo arrastado */
-    const itemRef = useRef(null);
+    const onKeyDown = (e: React.KeyboardEvent<HTMLDivElement>) => {
+        if (e.keyCode === 32) {
+            !isDisabled && onExpandNode(itemTree.id, e as any);
+        } else if (e.keyCode === 13) {
+            !isDisabled && onDoubleClick(itemTree.id, itemTree, e as any)
+        }
+    }
 
     /** Permite que um elemento seja arrastado e dropado em outro lugar.. */
     const [{ isDragging }, dragRef, preview] = useDrag({
@@ -66,22 +75,26 @@ export const TreeItem: FC<ItemTreeProps> = ({ itemTree, paddingLeft, onExpandNod
 
     return (
         <div
+            tabIndex={0}
             ref={itemRef}
             key={itemTree.id}
+            onKeyDown={onKeyDown}
             onContextMenu={onContext}
             id={"tree_" + itemTree.id}
             title={itemTree.description}
+            onFocus={isDisabled ? undefined : ((e: any) => onClick(itemTree.id, e))}
             onClick={isDisabled ? undefined : ((e: any) => onClick(itemTree.id, e))}
             onDoubleClick={isDisabled ? undefined : (e => { onDoubleClick(itemTree.id, itemTree, e) })}
-            className={`tree-item${(!isDisabled) ? '' : ' disabled'}${isDisabled ? '' : (itemTree.isEditing ? ' editing' : '')}${isDisabled ? '' : (itemTree.isSelected ? ' selected' : '')}`}
+            className={`tree-item outline-none${(!isDisabled) ? '' : ' disabled'}${isDisabled ? '' : (itemTree.isEditing ? ' editing' : '')}${isDisabled ? '' : (itemTree.isSelected ? ' selected' : '')}`}
         >
             <DragPreviewImage connect={preview} src={img_tree_item_preview} />
             <div
                 key={itemTree.id}
-                style={{ paddingLeft: `${paddingLeft + (itemTree.childs.length === 0 ? 25 : 0)}px`, color: hasError ? 'var(--main-error-color)' : '' }}
+                style={{ padding: icon !== undefined ? undefined : 5, paddingLeft: `${paddingLeft + (itemTree.childs.length === 0 ? 25 : 0)}px`, color: hasError ? 'var(--main-error-color)' : '' }}
                 className={`flex-itens-center item${isDragging ? ' dragging' : ''}${(isDraggingOver && isUseDrop && !isDisabledDrop) ? ' dragging-over' : ''}`}
             >
                 <Icon
+                    iconSize={15}
                     show={itemTree.childs.length > 0}
                     icon={itemTree.nodeExpanded ? icon_expanded : icon_collepsed}
                     iconName={itemTree.nodeExpanded ? "btn-collapse-folder" : "btn-expand-folder"}

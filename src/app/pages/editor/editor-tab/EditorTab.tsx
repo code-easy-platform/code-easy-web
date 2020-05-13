@@ -12,11 +12,12 @@ import { Tab, ItemComponent, ItemFlowComplete } from '../../../shared/interfaces
 import { IContextItemList } from './../../../shared/components/context-menu/ContextMenu';
 import { TreeManager } from '../../../shared/components/tree-manager/TreeManager';
 import { OutputPanel } from '../../../shared/components/output-panel/OutputPanel';
+import { ProblemsHelper } from '../../../shared/services/helpers/ProblemsHelper';
 import { FlowEditor } from '../../../shared/components/code-editor/CodeEditor';
+import { OutputHelper } from '../../../shared/services/helpers/OutputHelper';
 import { ComponentType } from '../../../shared/enuns/ComponentType';
 import { Utils } from '../../../shared/services/Utils';
-import { ProblemsHelper } from '../../../shared/services/helpers/ProblemsHelper';
-import { OutputHelper } from '../../../shared/services/helpers/OutputHelper';
+import { AssetsService } from '../../../shared/services/AssetsService';
 
 
 enum CurrentFocus {
@@ -423,12 +424,12 @@ export default class EditorTab extends React.Component {
     private treeManagerOnClick(itemTreeId: string, item: TreeInterface) {
 
         this.editorContext.project.tabs.forEach((tab: Tab) => {
-            tab.itens.forEach(item => {
-                if (item.id === itemTreeId) {
-                    item.isSelected = true;
-                    item.nodeExpanded = !item.nodeExpanded;
+            tab.itens.forEach(item_loop => {
+                if (item_loop.id === itemTreeId) {
+                    item_loop.isSelected = true;
+                    item_loop.nodeExpanded = !item_loop.nodeExpanded;
                 } else {
-                    item.isSelected = false;
+                    item_loop.isSelected = false;
                 }
             });
         });
@@ -443,11 +444,16 @@ export default class EditorTab extends React.Component {
 
         this.editorContext.project.tabs.forEach((tab: Tab) => {
             tab.itens.forEach(item => {
-                if (item.id === itemTreeId) {
-                    item.isEditing = true;
-                } else {
-                    item.isEditing = false;
+
+                /** Valida para que seja editado somente se for actions ou routers */
+                if (item.type === ComponentType.globalAction || item.type === ComponentType.localAction || item.type === ComponentType.router) {
+                    if (item.id === itemTreeId) {
+                        item.isEditing = true;
+                    } else {
+                        item.isEditing = false;
+                    }
                 }
+
             });
         });
 
@@ -479,6 +485,7 @@ export default class EditorTab extends React.Component {
                     isSelected: item.isSelected,
                     description: item.description,
                     nodeExpanded: item.nodeExpanded,
+                    icon: AssetsService.getIcon(item.type),
                     hasError: item.itens.some(itemFlow => itemFlow.properties.some(prop => (prop.valueHasError || prop.nameHasError))),
                 });
             });
@@ -505,6 +512,7 @@ export default class EditorTab extends React.Component {
                 isSelected: item.isSelected,
                 description: item.description,
                 nodeExpanded: item.nodeExpanded,
+                icon: AssetsService.getIcon(item.type),
                 hasError: item.itens.some(itemFlow => itemFlow.properties.some(prop => (prop.valueHasError || prop.nameHasError))),
             });
         });
@@ -522,6 +530,7 @@ export default class EditorTab extends React.Component {
             isDisabledDrag: true,
             isDisabledSelect: true,
             type: ComponentType.grouper,
+            icon: AssetsService.getIcon(ComponentType.grouper),
             label: this.editorContext.project.tabs.find(item => item.configs.isEditing)?.configs.label || '',
         }];
     }
@@ -595,7 +604,6 @@ export default class EditorTab extends React.Component {
 
                 if (tabIndex !== undefined) {
                     this.editorContext.project.tabs[tabIndex].itens.push(new ItemComponent({
-                        id: Utils.getUUID(),
                         itens: [],
                         isEditing: true,
                         description: '',
@@ -603,6 +611,7 @@ export default class EditorTab extends React.Component {
                         name: 'newrouter',
                         nodeExpanded: true,
                         label: 'newrouter',
+                        id: Utils.getUUID(),
                         itemPaiId: inputItemId,
                         type: ComponentType.router,
                         properties: this.propertiesEditorGetNewProperties(ComponentType.router, 'newrouter'),

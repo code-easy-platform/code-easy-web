@@ -41,12 +41,14 @@ class ProblemsHelperService {
 
             tab.itens.forEach(item => {
 
-                if (!(item.itens.some(comp => comp.itemType === ItemType.START) && item.itens.some(comp => comp.itemType === ItemType.END))) {
-                    addProblem(`A ${item.type} must be have a "start" and an "end" item in "${item.label}"`, 'error');
+                if (item.type === ComponentType.globalAction || item.type === ComponentType.localAction || item.type === ComponentType.router) {
+                    if (!(item.itens.some(comp => comp.itemType === ItemType.START) && item.itens.some(comp => comp.itemType === ItemType.END))) {
+                        addProblem(`A ${item.type} must be have a "start" and an "end" item in "${item.label}"`, 'error');
+                    }
                 }
 
                 item.itens.forEach(flowItem => {
-                    if((flowItem.itemType !== ItemType.END && flowItem.itemType !== ItemType.COMMENT) && flowItem.sucessor.length === 0) {
+                    if ((flowItem.itemType !== ItemType.END && flowItem.itemType !== ItemType.COMMENT) && flowItem.sucessor.length === 0) {
                         addProblem(`In ${item.label} a flow item is missing a connector`, 'error');
                     }
                 });
