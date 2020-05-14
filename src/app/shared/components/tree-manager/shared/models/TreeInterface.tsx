@@ -2,8 +2,9 @@ export interface TreeInterface {
     type: any;
     icon?: any;
     label: string;
-    isEditing?: boolean;
+    iconSize?: number;
     hasError?: boolean;
+    isEditing?: boolean;
     isSelected: boolean;
     description?: string;
     isDisabled?: boolean;
@@ -11,8 +12,10 @@ export interface TreeInterface {
     canDropList?: string[];
     id: string | undefined;
     childs: TreeInterface[];
+    showExpandIcon?: boolean;
     isDisabledDrag?: boolean;
     isDisabledDrop?: boolean;
     isDisabledSelect?: boolean;
+    useCustomIconToExpand?: boolean;
     isAllowedToggleNodeExpand?: boolean;
 }

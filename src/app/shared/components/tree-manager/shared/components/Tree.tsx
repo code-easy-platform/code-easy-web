@@ -9,16 +9,23 @@ interface TreeProps {
     paddingLeft: number;
     itemIdSelected: string;
     onDropItem(targetItemId: string | undefined, dropppedItemId: string | undefined, droppedItemProps: any): void;
-    onContextMenu(itemTreeId: string | undefined, e: React.MouseEvent<HTMLDivElement, MouseEvent>): void | undefined;
+    onContextMenu?(itemTreeId: string | undefined, e: React.MouseEvent<HTMLDivElement, MouseEvent>): void | undefined;
     onClick(itemTreeId: string | undefined, item: TreeInterface, e: React.MouseEvent<HTMLDivElement, MouseEvent>): void | undefined;
-    onDoubleClick(itemTreeId: string | undefined, item: TreeInterface, e: React.MouseEvent<HTMLDivElement, MouseEvent>): void | undefined;
+    onExpandNode?(itemTreeId: string | undefined, item: TreeInterface, e: React.MouseEvent<HTMLDivElement, MouseEvent>): void | undefined;
+    onDoubleClick?(itemTreeId: string | undefined, item: TreeInterface, e: React.MouseEvent<HTMLDivElement, MouseEvent>): void | undefined;
 }
-export const Tree: FC<TreeProps> = ({ item, paddingLeft = 0, onClick, onContextMenu, onDoubleClick, onDropItem, itemIdSelected, isUseDrag, isUseDrop }) => {
+export const Tree: FC<TreeProps> = ({ item, paddingLeft = 0, onClick, onContextMenu, onDoubleClick, onExpandNode, onDropItem, itemIdSelected, isUseDrag, isUseDrop }) => {
 
     const [state, setState] = useState<TreeInterface>(item);
 
-    if(itemIdSelected !== ""){
+    if (itemIdSelected !== "") {
         state.isSelected = (state.isDisabledSelect || true) && itemIdSelected === item.id;
+    }
+
+    const onDrop = (targetItemId: string | undefined, dropppedItemId: string | undefined, droppedItemProps: any) => {
+        // Deve impede que um item pai seja dropado em um item filho.
+        if (dropppedItemId === item.id) return;
+        onDropItem(targetItemId, dropppedItemId, droppedItemProps);
     }
 
     useEffect(() => {
@@ -28,9 +35,9 @@ export const Tree: FC<TreeProps> = ({ item, paddingLeft = 0, onClick, onContextM
     return (<>
         <TreeItem
             itemTree={state}
+            onDropItem={onDrop}
             isUseDrag={isUseDrag}
             isUseDrop={isUseDrop}
-            onDropItem={onDropItem}
             paddingLeft={paddingLeft}
             onContextMenu={onContextMenu}
             onDoubleClick={onDoubleClick}
@@ -40,16 +47,19 @@ export const Tree: FC<TreeProps> = ({ item, paddingLeft = 0, onClick, onContextM
                     ...state,
                     nodeExpanded: state.isAllowedToggleNodeExpand === false ? state.nodeExpanded : !state.nodeExpanded,
                 });
+                onExpandNode && onExpandNode(item.id, item, e);
             }}
         />
         {state.nodeExpanded &&
-            state.childs.map((item: TreeInterface) => {
+            state.childs.map((item: TreeInterface, index) => {
                 return (<Tree
+                    key={index}
                     item={item}
                     onClick={onClick}
                     isUseDrag={isUseDrag}
                     isUseDrop={isUseDrop}
                     onDropItem={onDropItem}
+                    onExpandNode={onExpandNode}
                     onDoubleClick={onDoubleClick}
                     onContextMenu={onContextMenu}
                     paddingLeft={paddingLeft + 10}
