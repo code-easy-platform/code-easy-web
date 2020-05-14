@@ -17,33 +17,36 @@ interface ItemTreeProps {
     onDropItem(targetItemId: string | undefined, dropppedItemId: string | undefined, droppedItemProps: any): void;
     onClick(itemTreeId: string | undefined, event: React.MouseEvent<HTMLDivElement, MouseEvent>): void | undefined;
     onExpandNode(itemTreeId: string | undefined, event: React.MouseEvent<HTMLDivElement, MouseEvent>): void | undefined;
-    onContextMenu(itemTreeId: string | undefined, e: React.MouseEvent<HTMLDivElement, MouseEvent>): void | undefined;
-    onDoubleClick(itemTreeId: string | undefined, item: TreeInterface, e: React.MouseEvent<HTMLDivElement, MouseEvent>): void | undefined;
+    onContextMenu?(itemTreeId: string | undefined, e: React.MouseEvent<HTMLDivElement, MouseEvent>): void | undefined;
+    onDoubleClick?(itemTreeId: string | undefined, item: TreeInterface, e: React.MouseEvent<HTMLDivElement, MouseEvent>): void | undefined;
 }
 export const TreeItem: FC<ItemTreeProps> = ({ itemTree, paddingLeft, onExpandNode, onContextMenu, onDoubleClick, onDropItem, isUseDrag, isUseDrop, onClick }) => {
 
-    let { hasError, isAllowedToggleNodeExpand, isDisabledDrag, isDisabled, isDisabledDrop, icon } = itemTree;
-
-    hasError = hasError !== undefined ? hasError : false;
-    isDisabledDrag = isDisabledDrag !== undefined ? isDisabledDrag : false;
-    isDisabledDrop = isDisabledDrop !== undefined ? isDisabledDrop : false;
-    isDisabled = isDisabled !== undefined ? isDisabled : false;
-    isAllowedToggleNodeExpand = isAllowedToggleNodeExpand !== undefined ? isAllowedToggleNodeExpand : true;
+    const {
+        icon,
+        iconSize = 20,
+        hasError = false,
+        isDisabled = false,
+        showExpandIcon = true,
+        isDisabledDrag = false,
+        isDisabledDrop = false,
+        useCustomIconToExpand = false,
+        isAllowedToggleNodeExpand = true,
+    } = itemTree;
 
     /** Cria a referencia ao item que está sendo arrastado */
     const itemRef = useRef(null);
 
-
     // Vai mandar para fora da arvore qual o id do item que foi clicado.
     const onContext = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
-        onContextMenu(itemTree.id, e);
+        onContextMenu && onContextMenu(itemTree.id, e);
     }
 
     const onKeyDown = (e: React.KeyboardEvent<HTMLDivElement>) => {
         if (e.keyCode === 32) {
             !isDisabled && onExpandNode(itemTree.id, e as any);
         } else if (e.keyCode === 13) {
-            !isDisabled && onDoubleClick(itemTree.id, itemTree, e as any)
+            !isDisabled && onDoubleClick && onDoubleClick(itemTree.id, itemTree, e as any)
         }
     }
 
@@ -84,7 +87,7 @@ export const TreeItem: FC<ItemTreeProps> = ({ itemTree, paddingLeft, onExpandNod
             title={itemTree.description}
             onFocus={isDisabled ? undefined : ((e: any) => onClick(itemTree.id, e))}
             onClick={isDisabled ? undefined : ((e: any) => onClick(itemTree.id, e))}
-            onDoubleClick={isDisabled ? undefined : (e => { onDoubleClick(itemTree.id, itemTree, e) })}
+            onDoubleClick={isDisabled ? undefined : (e => { onDoubleClick && onDoubleClick(itemTree.id, itemTree, e) })}
             className={`tree-item outline-none${(!isDisabled) ? '' : ' disabled'}${isDisabled ? '' : (itemTree.isEditing ? ' editing' : '')}${isDisabled ? '' : (itemTree.isSelected ? ' selected' : '')}`}
         >
             <DragPreviewImage connect={preview} src={img_tree_item_preview} />
@@ -95,12 +98,18 @@ export const TreeItem: FC<ItemTreeProps> = ({ itemTree, paddingLeft, onExpandNod
             >
                 <Icon
                     iconSize={15}
-                    show={itemTree.childs.length > 0}
+                    show={(itemTree.childs.length > 0) && showExpandIcon}
                     icon={itemTree.nodeExpanded ? icon_expanded : icon_collepsed}
                     iconName={itemTree.nodeExpanded ? "btn-collapse-folder" : "btn-expand-folder"}
                     onClick={isAllowedToggleNodeExpand ? ((e: any) => onExpandNode(itemTree.id, e)) : undefined}
                 />
-                <Icon show={icon !== undefined} icon={icon} iconName="Aux icon" />
+                <Icon
+                    icon={icon}
+                    iconName="Aux icon"
+                    iconSize={iconSize}
+                    show={icon !== undefined}
+                    onClick={(useCustomIconToExpand && isAllowedToggleNodeExpand) ? ((e: any) => onExpandNode(itemTree.id, e)) : undefined}
+                />
                 {itemTree.label}
             </div>
         </div>

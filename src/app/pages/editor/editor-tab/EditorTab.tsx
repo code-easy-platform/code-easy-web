@@ -431,13 +431,11 @@ export default class EditorTab extends React.Component {
         this.onChangeState()
     }
 
-    /** Quando um item da árvore for clicado, está função será chamada */
-    private treeManagerOnClick(itemTreeId: string, item: TreeInterface) {
-
+    /** Quando um item for expandido na árvore está função será chamada */
+    private treeManagerOnNodeExpand(itemTreeId: string, item: TreeInterface) {
         this.editorContext.project.tabs.forEach((tab: Tab) => {
             tab.itens.forEach(item_loop => {
                 if (item_loop.id === itemTreeId) {
-                    item_loop.isSelected = true;
                     item_loop.nodeExpanded = !item_loop.nodeExpanded;
                 } else {
                     item_loop.isSelected = false;
@@ -447,7 +445,22 @@ export default class EditorTab extends React.Component {
 
         this.setState({ currentFocus: CurrentFocus.tree });
         this.onChangeState()
+    }
 
+    /** Quando um item da árvore for clicado, está função será chamada */
+    private treeManagerOnClick(itemTreeId: string, item: TreeInterface) {
+        this.editorContext.project.tabs.forEach((tab: Tab) => {
+            tab.itens.forEach(item_loop => {
+                if (item_loop.id === itemTreeId) {
+                    item_loop.isSelected = true;
+                } else {
+                    item_loop.isSelected = false;
+                }
+            });
+        });
+
+        this.setState({ currentFocus: CurrentFocus.tree });
+        this.onChangeState()
     }
 
     /** Quando houver um duplo clique em um item da árvore, está função será chamada */
@@ -541,6 +554,7 @@ export default class EditorTab extends React.Component {
             isSelected: false,
             nodeExpanded: true,
             isDisabledDrag: true,
+            showExpandIcon: false,
             isDisabledSelect: true,
             type: ComponentType.grouper,
             icon: AssetsService.getIcon(ComponentType.grouper),
@@ -832,6 +846,7 @@ export default class EditorTab extends React.Component {
                                     isUseDrop={true}
                                     onClick={this.treeManagerOnClick.bind(this)}
                                     onKeyDown={this.treeManagerKeyDowm.bind(this)}
+                                    onExpandNode={this.treeManagerOnNodeExpand.bind(this)}
                                     onDropItem={this.treeManagerOnDropItem.bind(this)}
                                     onDoubleClick={this.treeManagerOnDoubleClick.bind(this)}
                                     onContextMenu={(itemId, e) => {
