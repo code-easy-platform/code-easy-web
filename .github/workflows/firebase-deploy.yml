@@ -34,6 +34,7 @@ jobs:
         uses: actions/upload-artifact@master
         with:
           name: build
+          path: build
       - name: Deploy to firebase
         uses: w9jds/firebase-action@master
         with:
