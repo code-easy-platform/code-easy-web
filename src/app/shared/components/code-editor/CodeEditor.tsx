@@ -1,5 +1,5 @@
 import React, { useState, useRef, FC, useEffect } from 'react';
-import { useDrop, DropTargetMonitor, DndProvider } from 'react-dnd';
+import { DropTargetMonitor, DndProvider } from 'react-dnd';
 import HTML5Backend from 'react-dnd-html5-backend';
 
 import { ICodeEditorProps } from './shared/Interfaces/CodeEditorInterfaces';
@@ -16,7 +16,7 @@ import { Utils } from './shared/Utils';
 
 /**
  * Editor de lógica de programação através de fluxo simples.
- * 
+ *
  * @param itens FlowItem[] - Usado para exibir os itens na tela do editor.
  * @param toolItens FlowItem[] - Usado para exibir os itens na toolbox do editor.
  * @param onChangeItens Function - Usada para emitir através do output o fluxo atualidado, acontece a cada mudança de estado dos itens de fluxo.
@@ -31,14 +31,11 @@ export const FlowEditor: FC<ICodeEditorProps> = (props: ICodeEditorProps) => {
     );
 }
 
-/** Define quais itens são aceitos no drop do start. */
-const acceptedInDrop: ItemType[] = [ItemType.START, ItemType.ACTION, ItemType.IF, ItemType.FOREACH, ItemType.SWITCH, ItemType.ASSIGN, ItemType.END, ItemType.COMMENT];
-
 /** Usada para validar houve mudanças no estados dos itens e impedir a realização outputs desnecessários. */
 let backupFlow: string = "";
 
 /** Editor do fluxo. */
-const CodeEditor: React.FC<ICodeEditorProps> = ({ id, itens = [], toolItens = [], onChangeItens = () => { }, onMouseOver, isShowToolbar = false, onDropItem = () => undefined, allowDropTo = [], onContextMenu, onKeyDown, breadcrumbsPath, enabledSelection = true }) => {
+const CodeEditor: React.FC<ICodeEditorProps> = ({ id, itens = [], toolItens = [], onChangeItens = () => { }, onMouseOver, showToolbar = false, onDropItem = () => undefined, allowedsInDrop = [], onContextMenu, onKeyDown, breadcrumbs, enabledSelection = true }) => {
 
     /** Referencia o svg onde está todos os itens de fluxo. */
     const editorPanelRef = useRef<any>(null);
@@ -105,14 +102,6 @@ const CodeEditor: React.FC<ICodeEditorProps> = ({ id, itens = [], toolItens = []
         }
 
     }
-
-    /** Usado para que seja possível o drop de itens no editor. */
-    const [, dropRef] = useDrop({
-        accept: [...acceptedInDrop, ...allowDropTo], // Especifica quem pode ser dropado na editor
-        drop: onDropFlowItem,
-    });
-    /** Agrupa as referências do drop com as da ref. */
-    dropRef(editorPanelRef);
 
     /**
      * Depois que um elemento já está na tela, esta função muda a posição dele!
@@ -386,18 +375,26 @@ const CodeEditor: React.FC<ICodeEditorProps> = ({ id, itens = [], toolItens = []
         onChangeFlow();
     }
 
+    const itemNameChange = (text: string, index: number) => {
+        flowItens.list[index].name = text;
+        setFlowItens({ list: flowItens.list });
+        onChangeFlow();
+    }
+
     return (
-        <div className="full-width">
+        <div className="full-width" onMouseOver={(e: any) => onMouseOver && onMouseOver(e)}>
             <InputCopy ref={inputCopyRef} />
-            <Toolbar itensLogica={toolItens} isShow={((toolItens.length > 0) && isShowToolbar)} />
-            <main key={id} className='overflow-auto flex1' onMouseOver={(e: any) => onMouseOver && onMouseOver(e)}>
-                <BreandCamps breadcrumbsPath={breadcrumbsPath} />
+            <Toolbar itensLogica={toolItens} isShow={((toolItens.length > 0) && showToolbar)} />
+            <main key={id} className='overflow-auto flex1'>
+                <BreandCamps breadcrumbs={breadcrumbs} />
 
                 <EditorPanel
                     id={`${id}_SVG`}
                     ref={editorPanelRef}
                     width={svgSize.svgWidth}
                     height={svgSize.svgHeight}
+                    onDropItem={onDropFlowItem}
+                    allowedsInDrop={allowedsInDrop}
                     onMouseDown={(e: any) => onMouseDown(e)}
                     onContextMenu={(e: any) => onContextMenu && onContextMenu(undefined, e)}
                 >
@@ -407,10 +404,8 @@ const CodeEditor: React.FC<ICodeEditorProps> = ({ id, itens = [], toolItens = []
                         parentRef={editorPanelRef}
                         enabled={enabledSelection}
                         onCoordsChange={coords => {
-                            // console.log(coords);
                             flowItens.list.forEach((item: FlowItem) => item.select(coords));
                             setFlowItens({ list: flowItens.list });
-                            onChangeFlow();
                         }}
                     />
 
@@ -441,12 +436,13 @@ const CodeEditor: React.FC<ICodeEditorProps> = ({ id, itens = [], toolItens = []
                     })}
 
                     {/* Reinderiza os itens arrastáveis na tela! */}
-                    {flowItens.list.map((item: FlowItem) => (
+                    {flowItens.list.map((item: FlowItem, index) => (
                         <ItemToDrag
                             onMouseDown={(e: any) => onMouseDown(e)}
                             onChangePosition={onChangePositionItens}
                             onMouseUp={(e: any) => onChangeFlow()}
                             onContextMenu={onContextMenu}
+                            onNameChange={text => itemNameChange(text, index)}
                             title={item.name}
                             key={item.id}
                             {...item}
@@ -457,4 +453,5 @@ const CodeEditor: React.FC<ICodeEditorProps> = ({ id, itens = [], toolItens = []
             </main>
         </div>
     );
+
 }

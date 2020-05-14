@@ -4,7 +4,7 @@
 
 - [Add icons in actions, routes and params](https://github.com/code-easy-platform/code-easy-web/projects/1#card-38070096)
 - [Added dotted lines in comment component](https://github.com/code-easy-platform/flow-editor/projects/1#card-38068527)
-- [Isolated area selector](https://github.com/code-easy-platform/flow-editor/projects/1#card-38069196)
+- [Isolated area selector in flow editor](https://github.com/code-easy-platform/flow-editor/projects/1#card-38069196)
 - Added roboto font in the project
 - [Variables is not allowed to edit as a flow](https://github.com/code-easy-platform/code-easy-web/projects/1#card-38066239)
 - Tab index in tree manager

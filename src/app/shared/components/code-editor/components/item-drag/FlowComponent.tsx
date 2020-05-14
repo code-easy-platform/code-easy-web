@@ -1,8 +1,20 @@
 import React from 'react';
 
-export const FlowComponent = ({ id, isSelected, width, height, left, top, icon, name, hasError = false }: any) => {
+interface FlowComponentProps {
+    isSelected: boolean;
+    hasError?: boolean;
+    height: number;
+    width: number;
+    left: number;
+    name: string;
+    top: number;
+    id: string;
+    icon: any;
+    ref?: any;
+}
+export const FlowComponent: React.FC<FlowComponentProps> = ({ id, isSelected, width, height, left, top, icon, name, hasError = false, ref }) => {
 
-    const strokeColor: string = isSelected ? "var(--color-botton-bar)" : hasError ? "var(--main-error-color)" :  "var(--main-background)";
+    const strokeColor: string = isSelected ? "var(--color-botton-bar)" : hasError ? "var(--main-error-color)" : "var(--main-background)";
 
     return (
         <>
@@ -14,6 +26,7 @@ export const FlowComponent = ({ id, isSelected, width, height, left, top, icon, 
                 key={name + id}
                 height={height}
                 width={width}
+                ref={ref}
                 x={left}
                 y={top}
                 id={id}

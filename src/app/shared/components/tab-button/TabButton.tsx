@@ -31,6 +31,7 @@ export const TabButton = (props: ITabButtonProps) => {
                 onClick={props.onClick}
                 onFocus={props.onFocus}
                 children={props.content}
+                onDragEnter={props.onClick}
                 className={"btn-tab outline-none padding-m " + (props.isSelected ? "btn-tab-selected " : "") + props.className}
             />
             : <Link

@@ -18,6 +18,7 @@ import { OutputHelper } from '../../../shared/services/helpers/OutputHelper';
 import { ComponentType } from '../../../shared/enuns/ComponentType';
 import { Utils } from '../../../shared/services/Utils';
 import { AssetsService } from '../../../shared/services/AssetsService';
+import { BreadCampButton } from '../../../shared/components/code-editor/shared/Interfaces/CodeEditorInterfaces';
 
 
 enum CurrentFocus {
@@ -369,14 +370,24 @@ export default class EditorTab extends React.Component {
     }
 
     /** Monta o breadcamps que será exibido no top do editor de fluxos. */
-    private codeEditorGetBreadcamps(): string {
+    private codeEditorGetBreadcamps(): BreadCampButton[] {
 
-        let breadcamps = '';
+        let breadcamps: BreadCampButton[] = [];
 
         this.editorContext.project.tabs.forEach((tab: Tab) => {
             tab.itens.forEach(item => {
                 if (item.isEditing) {
-                    breadcamps = `${tab.configs.label}/${item.label}`;
+
+                    breadcamps.push({
+                        label: tab.configs.label,
+                        onClick: () => { }
+                    });
+
+                    breadcamps.push({
+                        label: item.label,
+                        onClick: () => { }
+                    });
+
                 }
             });
         });
@@ -480,6 +491,7 @@ export default class EditorTab extends React.Component {
                     childs: [],
                     id: item.id,
                     type: item.type,
+                    canDropList: [],
                     label: item.label,
                     isEditing: item.isEditing,
                     isSelected: item.isSelected,
@@ -513,6 +525,7 @@ export default class EditorTab extends React.Component {
                 description: item.description,
                 nodeExpanded: item.nodeExpanded,
                 icon: AssetsService.getIcon(item.type),
+                canDropList: [ComponentType.inputVariable, ComponentType.localVariable, ComponentType.outputVariable],
                 hasError: item.itens.some(itemFlow => itemFlow.properties.some(prop => (prop.valueHasError || prop.nameHasError))),
             });
         });
@@ -784,14 +797,14 @@ export default class EditorTab extends React.Component {
                             <div className="flex1 overflow-auto">
                                 <FlowEditor
                                     id={"CODE_EDITOR"}
-                                    isShowToolbar={true}
+                                    showToolbar={true}
                                     itens={flowEditorItens}
                                     toolItens={this.codeEditorGetToolBoxItens()}
                                     enabledSelection={flowEditorItens.length !== 0}
                                     onDropItem={this.codeEditorOnDropItem.bind(this)}
                                     onChangeItens={this.codeEditorOutputFlowItens.bind(this)}
-                                    breadcrumbsPath={this.codeEditorGetBreadcamps.bind(this)()}
-                                    allowDropTo={[ComponentType.globalAction, ComponentType.localAction]}
+                                    breadcrumbs={this.codeEditorGetBreadcamps.bind(this)()}
+                                    allowedsInDrop={[ComponentType.globalAction, ComponentType.localAction]}
                                     onContextMenu={(data, e) => {
                                         if (e) {
                                             e.preventDefault();

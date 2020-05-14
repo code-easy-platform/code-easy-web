@@ -3,6 +3,8 @@ import { FlowItem } from "../../models/ItemFluxo";
 /** Usado para mapear um quadrado de coordenadas */
 export interface Coords { startY: number, startX: number, endY: number, endX: number };
 
+export interface BreadCampButton { label: string; disabled?: boolean; onClick(e: any): void; }
+
 /**
  * Propriedades aceitas pelo editor.
  */
@@ -11,8 +13,8 @@ export interface ICodeEditorProps {
     /** Identifier of the component in react and html native elements */
     id: string;
 
-    /** boolean - Usado para exibir ou não a toolbox cons itens de lógica. */
-    isShowToolbar: boolean;
+    /** boolean - Usado para exibir ou não a toolbox com itens de lógica. */
+    showToolbar: boolean;
 
     /** FlowItem[] - Usado para exibir os itens na toolbox do editor. */
     toolItens?: FlowItem[];
@@ -21,10 +23,10 @@ export interface ICodeEditorProps {
     itens: FlowItem[];
 
     /** string[] - Usado para definir quais itens adicionais são permitidos no fluxo */
-    allowDropTo?: string[];
+    allowedsInDrop?: string[];
 
-    /** string - Usado para identifica qual o caminho da action que está aberta */
-    breadcrumbsPath?: string;
+    /** BreadCampButton[] - Usado para identifica qual o caminho da action que está aberta */
+    breadcrumbs?: BreadCampButton[];
 
     /** Se "true" desabilita a área de seleção na tela. */
     enabledSelection?: boolean;

@@ -1,0 +1,25 @@
+.breadcrump-base {
+    z-index: 1;
+    position: 'absolute';
+    color: var(--font-color-label-propertie-editor);
+}
+
+.breadcrump-button {
+    color: var(--font-color-label-propertie-editor);
+    background-color: var(--color-transparent);
+    border-width: var(--border-size-0);
+    cursor: pointer;
+}
+
+.breadcrump-button:hover {
+    color: var(--font-color-input-propertie-editor);
+}
+
+.breadcrump-button:active {
+    opacity: 0.5;
+}
+
+.breadcrump-button:focus {
+    outline: auto;
+    outline-color: var(--color-primary);
+}

@@ -13,9 +13,9 @@ interface LineProps {
     onSucessorChange?: Function
     lineType?: 'dotted' | 'normal'
 }
-    
+
 export const Line: React.FC<LineProps> = (props: LineProps) => {
-    const { lineWidth = 2, color = "var(--main-background-highlighted)", left1, left2 = 0 } = props;
+    const { lineWidth = 1, color = "var(--main-background-highlighted)", left1, left2 = 0 } = props;
     const onSucessorChange: Function = props.onSucessorChange || (() => { });
     const { id = "0", sucessorIndex = 999999, lineType = 'normal' } = props;
     let { top1 = 0, top2 = 0 } = props;

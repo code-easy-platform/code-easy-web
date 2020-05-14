@@ -32,11 +32,11 @@ export interface ItemDragProps {
     parentElementRef?: any;
     hideSourceOnDrag?: boolean;
 
+    onNameChange?(text: string): void;
     onMouseUp?(e?: React.MouseEvent<SVGGElement, MouseEvent>): void;
     onMouseOver?(e?: React.MouseEvent<SVGGElement, MouseEvent>): void;
     onMouseDown?(e?: React.MouseEvent<SVGGElement, MouseEvent>): void;
     onContextMenu?(data?: any, e?: React.MouseEvent<SVGGElement, MouseEvent>): void;
-    /** Devolve 'itemId, top, left'. */
     onChangePosition?(top: number, left: number, e?: React.MouseEvent<SVGGElement, MouseEvent>): void;
 }
 
@@ -46,7 +46,7 @@ export const ItemToDrag: React.FC<ItemDragProps> = (props: ItemDragProps) => {
         isSelected, onContextMenu, hasError, onMouseUp,
         id, onChangePosition, onMouseDown, onMouseOver,
         width = 0, height = 0, top = 0, left = 0,
-        allowDrag, itemType, icon,
+        allowDrag, itemType, icon, onNameChange
     } = props;
 
     let { title } = props;
@@ -61,7 +61,7 @@ export const ItemToDrag: React.FC<ItemDragProps> = (props: ItemDragProps) => {
     /**
      * Ajuda a evitar que bugs aconteçam por estar uma fun declarada
      * na ref do svg que está no container de fora.
-     * 
+     *
      * Também serve para fechar o menu de contexto.
      */
     const mouseUp = (e: MouseEvent) => {
@@ -136,7 +136,7 @@ export const ItemToDrag: React.FC<ItemDragProps> = (props: ItemDragProps) => {
                 style={{ cursor: 'move', zIndex: 2 }}
             >
                 <text x={(left || 0) + ((width || 0) / 2)} textAnchor="middle" fill="var(--color-white)" y={(top || 0) - 5} id={id}>{title}</text>
-                {itemType === ItemType.COMMENT && <FlowComment id={id} top={top} left={left} width={width} height={height} isSelected={isSelected} name="COMMENT" childImage={icons_comment} onNameChange={console.log} />}
+                {itemType === ItemType.COMMENT && <FlowComment id={id} top={top} left={left} width={width} height={height} isSelected={isSelected} name="COMMENT" childImage={icons_comment} onNameChange={onNameChange} />}
                 {itemType === ItemType.FOREACH && <FlowComponent id={id} top={top} left={left} width={width} height={height} isSelected={isSelected} hasError={hasError} name="FOREACH" icon={icons_foreach} />}
                 {itemType === ItemType.ASSIGN && <FlowComponent id={id} top={top} left={left} width={width} height={height} isSelected={isSelected} hasError={hasError} name="ASSIGN" icon={icons_assign} />}
                 {itemType === ItemType.SWITCH && <FlowComponent id={id} top={top} left={left} width={width} height={height} isSelected={isSelected} hasError={hasError} name="SWITCH" icon={icons_switch} />}

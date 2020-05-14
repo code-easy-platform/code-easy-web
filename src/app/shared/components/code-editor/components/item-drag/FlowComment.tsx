@@ -28,7 +28,6 @@ export const FlowComment = ({ id, isSelected, width, height, left, top, name, on
                 <textarea
                     value={comment}
                     ref={textAreaRef}
-                    onKeyDown={e => { e.preventDefault(); e.stopPropagation() }}
                     onChange={e => setComment(e.target.value)}
                     onBlur={(e) => { setIsEditing(false); onNameChange(comment); }}
                     style={{
