@@ -5,7 +5,7 @@ name: Build and deploy to firebase
 
 on:
   push:
-    branches: [ master ]
+    branches: [ release-alpha ]
 
 jobs:
   build:
