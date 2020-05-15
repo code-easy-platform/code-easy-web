@@ -843,8 +843,9 @@ export default class EditorTab extends React.Component {
                                     toolItens={this.codeEditorGetToolBoxItens()}
                                     enabledSelection={flowEditorItens.length !== 0}
                                     onDropItem={this.codeEditorOnDropItem.bind(this)}
-                                    onChangeItens={this.codeEditorOutputFlowItens.bind(this)}
                                     breadcrumbs={this.codeEditorGetBreadcamps.bind(this)()}
+                                    onChangeItens={this.codeEditorOutputFlowItens.bind(this)}
+                                    backgroundType={flowEditorItens.length !== 0 ?  'dotted' : 'custom'}
                                     allowedsInDrop={[ComponentType.globalAction, ComponentType.localAction]}
                                     onContextMenu={(data, e) => {
                                         if (e) {

@@ -13,6 +13,9 @@ export interface ICodeEditorProps {
     /** Identifier of the component in react and html native elements */
     id: string;
 
+    /** Usado para custumizar o background do painel */
+    backgroundType?: 'dotted' | 'checkered' | 'custom';
+
     /** boolean - Usado para exibir ou não a toolbox com itens de lógica. */
     showToolbar: boolean;
 
