@@ -1,6 +1,6 @@
 {
   "name": "code-easy-react",
-  "version": "0.0.3",
+  "version": "0.0.6",
   "private": false,
   "license": "MIT",
   "husky": {
@@ -28,7 +28,7 @@
     "uuid": "^7.0.3"
   },
   "scripts": {
-    "start": "cross-env PLATFORM_VERSION=$(node -p 'require(\"./package.json\").version') react-scripts start",
+    "start": "cross-env PLATFORM_VERSION=$(node -p 'require(\"./package.json\").version') && yarn version --patch & react-scripts start",
     "build": "yarn version --patch & cross-env PLATFORM_VERSION=$(node -p 'require(\"./package.json\").version') react-scripts build",
     "tsc-build": "tsc",
     "test": "react-scripts test",
