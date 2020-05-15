@@ -13,21 +13,19 @@ export const Assign: React.FC<IAssign> = ({ id, name, value, nameHasError = fals
     const css_prop_item_input_name: React.CSSProperties = {
         border: nameHasError ? 'var(--input-border-error)' : 'var(--input-border)',
         textDecoration: nameHasError ? `var(--text-underline-error)` : undefined,
-        backgroundColor: '#ffffff10',
         borderBottomRightRadius: 0,
         borderBottomLeftRadius: 0,
     }
     const css_prop_item_input_value: React.CSSProperties = {
         border: valueHasError ? 'var(--input-border-error)' : 'var(--input-border)',
         textDecoration: valueHasError ? `var(--text-underline-error)` : undefined,
-        backgroundColor: '#ffffff10',
         borderTopRightRadius: 0,
         borderTopLeftRadius: 0,
         paddingLeft: 30,
     }
 
     return (
-        <div className="flex-column" style={{ padding: 6 }}>
+        <div className="flex-column padding-s padding-bottom-none">
             <ExpressionInput
                 value={name}
                 onBlur={onBlur}
@@ -41,7 +39,7 @@ export const Assign: React.FC<IAssign> = ({ id, name, value, nameHasError = fals
                 onChange={e => onChangeName(e.target.value)}
             />
             <div style={{ alignItems: 'center' }}>
-                <span children='=' style={{ marginRight: -20, marginLeft: 10.5 }} />
+                <span children='=' style={{ marginRight: -20, marginLeft: 10.5, zIndex: 1 }} />
                 <ExpressionInput
                     value={value}
                     onBlur={onBlur}

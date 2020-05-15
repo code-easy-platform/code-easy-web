@@ -35,7 +35,7 @@ export const FlowEditor: FC<ICodeEditorProps> = (props: ICodeEditorProps) => {
 let backupFlow: string = "";
 
 /** Editor do fluxo. */
-const CodeEditor: React.FC<ICodeEditorProps> = ({ id, itens = [], toolItens = [], onChangeItens = () => { }, onMouseOver, showToolbar = false, onDropItem = () => undefined, allowedsInDrop = [], onContextMenu, onKeyDown, breadcrumbs, enabledSelection = true }) => {
+const CodeEditor: React.FC<ICodeEditorProps> = ({ id, itens = [], toolItens = [], onChangeItens = () => { }, onMouseOver, backgroundType, showToolbar = false, onDropItem = () => undefined, allowedsInDrop = [], onContextMenu, onKeyDown, breadcrumbs, enabledSelection = true }) => {
 
     /** Referencia o svg onde está todos os itens de fluxo. */
     const editorPanelRef = useRef<any>(null);
@@ -395,6 +395,7 @@ const CodeEditor: React.FC<ICodeEditorProps> = ({ id, itens = [], toolItens = []
                     height={svgSize.svgHeight}
                     onDropItem={onDropFlowItem}
                     allowedsInDrop={allowedsInDrop}
+                    backgroundType={backgroundType}
                     onMouseDown={(e: any) => onMouseDown(e)}
                     onContextMenu={(e: any) => onContextMenu && onContextMenu(undefined, e)}
                 >

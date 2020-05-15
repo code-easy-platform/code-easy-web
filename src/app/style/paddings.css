@@ -70,8 +70,46 @@
 .padding-right-xg {
   padding-right: var(--padding-xg);
 }
+.padding-bottom-none {
+  padding-bottom: 0px;
+}
+.padding-bottom-xs {
+  padding-bottom: var(--padding-xs);
+}
+.padding-bottom-s {
+  padding-bottom: var(--padding-s);
+}
+.padding-bottom-m {
+  padding-bottom: var(--padding-m);
+}
+.padding-bottom-g {
+  padding-bottom: var(--padding-g);
+}
+.padding-bottom-xg {
+  padding-bottom: var(--padding-xg);
+}
 
+.padding-horizontal-none {
+  padding-right: unset;
+  padding-left: unset;
+}
+.padding-horizontal-xs {
+  padding-right: var(--padding-xs);
+  padding-left: var(--padding-xs);
+}
+.padding-horizontal-s {
+  padding-right: var(--padding-s);
+  padding-left: var(--padding-s);
+}
 .padding-horizontal-m {
   padding-right: var(--padding-m);
   padding-left: var(--padding-m);
+}
+.padding-horizontal-g {
+  padding-right: var(--padding-g);
+  padding-left: var(--padding-g);
+}
+.padding-horizontal-xg {
+  padding-right: var(--padding-xg);
+  padding-left: var(--padding-xg);
 }

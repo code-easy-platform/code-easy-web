@@ -7,12 +7,12 @@ import { DefaultSwitch } from './DefaultSwitch';
 import { Resizer } from './Resizer';
 import { Assign } from './Assign';
 
+import icon_info from './../icons/info-icon.png';
+
 const css_prop_item: React.CSSProperties = {
     justifyContent: 'space-between',
     height: 'min-content',
     alignItems: 'center',
-    padding: 6,
-    paddingBottom: 0,
 }
 interface PropItemProps extends IProperties {
     onChangeInputWidth(width: number): void;
@@ -28,6 +28,8 @@ export const PropItem: React.FC<PropItemProps> = (props) => { // Extende outra i
         editNameDisabled: props.editNameDisabled,
         valueHasError: props.valueHasError,
         nameHasError: props.nameHasError,
+        information: props.information,
+        suggestions: props.suggestions,
         value: props.value,
         type: props.type,
         name: props.name,
@@ -40,6 +42,8 @@ export const PropItem: React.FC<PropItemProps> = (props) => { // Extende outra i
             editNameDisabled: props.editNameDisabled,
             valueHasError: props.valueHasError,
             nameHasError: props.nameHasError,
+            information: props.information,
+            suggestions: props.suggestions,
             value: props.value,
             type: props.type,
             name: props.name,
@@ -71,8 +75,11 @@ export const PropItem: React.FC<PropItemProps> = (props) => { // Extende outra i
     switch (state.type) {
         case TypeValues.viewOnly:
             return (
-                <div key={'prop_item_key_' + state.id} style={css_prop_item}>
-                    <label htmlFor={'prop_id_' + state.id} className="flex1 " style={css_prop_item_label}>{state.name}</label>
+                <div key={'prop_item_key_' + state.id} style={css_prop_item} className="padding-s padding-bottom-none">
+                    <label htmlFor={'prop_id_' + state.id} className="flex1 " style={css_prop_item_label} info-message={state.information}>
+                        {state.name}
+                        {(state.information !== "" && state.information !== undefined) && <img className="margin-left-xs" aria-label="teste" width={10} height={10} src={icon_info} alt="info-icon" />}
+                    </label>
                     <Resizer onChange={newWidth => onChangeInputWidth(newWidth)} />
                     <div style={{ width: inputWidth ? `${inputWidth}px` : '70%', minWidth: minWidth, maxWidth: '90%' }}>
                         <label
@@ -96,8 +103,11 @@ export const PropItem: React.FC<PropItemProps> = (props) => { // Extende outra i
 
         case TypeValues.string:
             return (
-                <div key={'prop_item_key_' + state.id} style={css_prop_item}>
-                    <label htmlFor={'prop_id_' + state.id} className="flex1 " style={css_prop_item_label}>{state.name}</label>
+                <div key={'prop_item_key_' + state.id} style={css_prop_item} className="padding-s padding-bottom-none">
+                    <label htmlFor={'prop_id_' + state.id} className="flex1 " style={css_prop_item_label} info-message={state.information}>
+                        {state.name}
+                        {(state.information !== "" && state.information !== undefined) && <img className="margin-left-xs" aria-label="teste" width={10} height={10} src={icon_info} alt="info-icon" />}
+                    </label>
                     <Resizer onChange={newWidth => onChangeInputWidth(newWidth)} />
                     <div style={{ width: inputWidth ? `${inputWidth}px` : '70%', minWidth: minWidth, maxWidth: '90%' }}>
                         <input
@@ -118,8 +128,11 @@ export const PropItem: React.FC<PropItemProps> = (props) => { // Extende outra i
 
         case TypeValues.expression:
             return (
-                <div key={'prop_item_key_' + state.id} style={css_prop_item}>
-                    <label htmlFor={'prop_id_' + state.id} className="flex1 " style={css_prop_item_label}>{state.name}</label>
+                <div key={'prop_item_key_' + state.id} style={css_prop_item} className="padding-s padding-bottom-none">
+                    <label htmlFor={'prop_id_' + state.id} className="flex1 " style={css_prop_item_label} info-message={state.information}>
+                        {state.name}
+                        {(state.information !== "" && state.information !== undefined) && <img className="margin-left-xs" aria-label="teste" width={10} height={10} src={icon_info} alt="info-icon" />}
+                    </label>
                     <Resizer onChange={newWidth => onChangeInputWidth(newWidth)} />
                     <div style={{ width: inputWidth ? `${inputWidth}px` : '70%', minWidth: minWidth, maxWidth: '90%' }}>
                         <ExpressionInput
@@ -140,8 +153,11 @@ export const PropItem: React.FC<PropItemProps> = (props) => { // Extende outra i
 
         case TypeValues.bigstring:
             return (
-                <div key={'prop_item_key_' + state.id} style={css_prop_item}>
-                    <label htmlFor={'prop_id_' + state.id} className="flex1 " style={css_prop_item_label}>{state.name}</label>
+                <div key={'prop_item_key_' + state.id} style={css_prop_item} className="padding-s padding-bottom-none">
+                    <label htmlFor={'prop_id_' + state.id} className="flex1 " style={css_prop_item_label} info-message={state.information}>
+                        {state.name}
+                        {(state.information !== "" && state.information !== undefined) && <img className="margin-left-xs" aria-label="teste" width={10} height={10} src={icon_info} alt="info-icon" />}
+                    </label>
                     <Resizer onChange={newWidth => onChangeInputWidth(newWidth)} />
                     <div style={{ width: inputWidth ? `${inputWidth}px` : '70%', minWidth: minWidth, maxWidth: '90%' }}>
                         <textarea
@@ -162,8 +178,11 @@ export const PropItem: React.FC<PropItemProps> = (props) => { // Extende outra i
 
         case TypeValues.number:
             return (
-                <div key={'prop_item_key_' + state.id} style={css_prop_item}>
-                    <label htmlFor={'prop_id_' + state.id} className="flex1 " style={css_prop_item_label}>{state.name}</label>
+                <div key={'prop_item_key_' + state.id} style={css_prop_item} className="padding-s padding-bottom-none">
+                    <label htmlFor={'prop_id_' + state.id} className="flex1 " style={css_prop_item_label} info-message={state.information}>
+                        {state.name}
+                        {(state.information !== "" && state.information !== undefined) && <img className="margin-left-xs" aria-label="teste" width={10} height={10} src={icon_info} alt="info-icon" />}
+                    </label>
                     <Resizer onChange={newWidth => onChangeInputWidth(newWidth)} />
                     <div style={{ width: inputWidth ? `${inputWidth}px` : '70%', minWidth: minWidth, maxWidth: '90%' }}>
                         <input
@@ -183,20 +202,23 @@ export const PropItem: React.FC<PropItemProps> = (props) => { // Extende outra i
                 </div>
             );
 
-
         case TypeValues.binary:
             return (
-                <div key={'prop_item_key_' + state.id} style={css_prop_item}>
-                    <label htmlFor={'prop_id_' + state.id} className="flex1 " style={css_prop_item_label}>{state.name}</label>
+                <div key={'prop_item_key_' + state.id} style={css_prop_item} className="padding-s padding-bottom-none">
+                    <label htmlFor={'prop_id_' + state.id} className="flex1 " style={css_prop_item_label} info-message={state.information}>
+                        {state.name}
+                        {(state.information !== "" && state.information !== undefined) && <img className="margin-left-xs" aria-label="teste" width={10} height={10} src={icon_info} alt="info-icon" />}
+                    </label>
                     <Resizer onChange={newWidth => onChangeInputWidth(newWidth)} />
                     <div style={{ width: inputWidth ? `${inputWidth}px` : '70%', minWidth: minWidth, maxWidth: '90%' }}>
                         <CustomInputFile
-                            className="full-width background-bars"
+                            className="full-width background-bars border-radius outline-none"
                             onChange={e => setState({ ...state, value: e.target.value })}
                             disabled={state.editValueDisabled}
                             key={'prop_key_' + state.id}
                             style={css_prop_item_input}
                             id={'prop_id_' + state.id}
+                            tabIndex={0}
                         />
                     </div>
                 </div>
@@ -204,8 +226,11 @@ export const PropItem: React.FC<PropItemProps> = (props) => { // Extende outra i
 
         case TypeValues.boolean:
             return (
-                <div key={'prop_key_' + state.id} style={css_prop_item}>
-                    <label htmlFor={'prop_id_' + state.id} className="flex1 " style={css_prop_item_label}>{state.name}</label>
+                <div key={'prop_key_' + state.id} style={css_prop_item} className="padding-s padding-bottom-none">
+                    <label htmlFor={'prop_id_' + state.id} className="flex1 " style={css_prop_item_label} info-message={state.information}>
+                        {state.name}
+                        {(state.information !== "" && state.information !== undefined) && <img className="margin-left-xs" aria-label="teste" width={10} height={10} src={icon_info} alt="info-icon" />}
+                    </label>
                     <DefaultSwitch
                         checked={state.value}
                         hasError={valueHasError}
@@ -227,12 +252,70 @@ export const PropItem: React.FC<PropItemProps> = (props) => { // Extende outra i
                     valueHasError={valueHasError}
                     onBlur={_ => onChange(state)}
                     key={'assign_key_' + state.id}
+                    information={state.information}
                     onKeyDown={(e) => onkeyPress(e)}
                     editNameDisabled={state.editNameDisabled}
                     editValueDisabled={state.editValueDisabled}
                     onChangeName={name => setState({ ...state, name })}
                     onChangeValue={value => setState({ ...state, value })}
                 />
+            );
+
+        case TypeValues.selection:
+            return (
+                <div key={'prop_key_' + state.id} style={css_prop_item} className="padding-s padding-bottom-none">
+                    <label htmlFor={'prop_id_' + state.id} className="flex1 " style={css_prop_item_label} info-message={state.information}>
+                        {state.name}
+                        {(state.information !== "" && state.information !== undefined) && <img className="margin-left-xs" aria-label="teste" width={10} height={10} src={icon_info} alt="info-icon" />}
+                    </label>
+                    <Resizer onChange={newWidth => onChangeInputWidth(newWidth)} />
+                    <select
+                        style={{ ...css_prop_item_input, width: inputWidth ? `${inputWidth}px` : '70%', minWidth: minWidth, maxWidth: '90%' }}
+                        onChange={e => setState({ ...state, value: e.target.value })}
+                        disabled={state.editValueDisabled}
+                        className={"background-bars"}
+                        onBlur={_ => onChange(state)}
+                        key={'prop_key_' + state.id}
+                        id={'prop_id_' + state.id}
+                        value={state.value}
+                    >
+                        <option value={"undefined"}>Selecione</option>
+                        {state.suggestions?.map(item => {
+                            return (
+                                <option
+                                    disabled={item.disabled}
+                                    children={item.label}
+                                    value={item.value}
+                                />
+                            );
+                        })}
+                    </select>
+                </div>
+            );
+
+        case TypeValues.yesNoSelection:
+            return (
+                <div key={'prop_key_' + state.id} style={css_prop_item} className="padding-s padding-bottom-none">
+                    <label htmlFor={'prop_id_' + state.id} className="flex1 " style={css_prop_item_label} info-message={state.information}>
+                        {state.name}
+                        {(state.information !== "" && state.information !== undefined) && <img className="margin-left-xs" aria-label="teste" width={10} height={10} src={icon_info} alt="info-icon" />}
+                    </label>
+                    <Resizer onChange={newWidth => onChangeInputWidth(newWidth)} />
+                    <select
+                        style={{ ...css_prop_item_input, width: inputWidth ? `${inputWidth}px` : '70%', minWidth: minWidth, maxWidth: '90%' }}
+                        onDoubleClick={_ => setState({ ...state, value: (state.value === "true" ? "false" : "true") })}
+                        onChange={e => setState({ ...state, value: e.target.value })}
+                        disabled={state.editValueDisabled}
+                        onBlur={_ => onChange(state)}
+                        className={"background-bars"}
+                        key={'prop_key_' + state.id}
+                        id={'prop_id_' + state.id}
+                        value={state.value}
+                    >
+                        <option value={"true"}>Yes</option>
+                        <option value={"false"}>No</option>
+                    </select>
+                </div>
             );
 
         default:

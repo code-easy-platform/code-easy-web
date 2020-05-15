@@ -24,10 +24,12 @@ export class TwoColumnsResizable extends Component<IRecipeProps> {
     mouseUp = () => {
         window.onmouseup = null;
         window.onmousemove = null;
+        window.document.body.style.pointerEvents = 'unset';
         Storage.setColumnsResizableSize(this.props.id, this.state.colX);
     }
 
     mouseDown = () => {
+        window.document.body.style.pointerEvents = 'none';
         window.onmousemove = this.mouseMove;
         window.onmouseup = this.mouseUp;
     }

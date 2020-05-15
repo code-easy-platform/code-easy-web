@@ -61,6 +61,7 @@
     /* Main base colors */
     --main-background: #1e1e1e;
     --main-background-bars: #2d2d2d;
+    --main-background-info: #414141;
     --main-background-panels: #252527;
     --main-background-highlighted: #3c3c3c;
     --main-background-input-focus: #3c3c3c;
@@ -177,6 +178,7 @@
 
     --font-size-xs: var(--font-size-1);
     --font-size-s: var(--font-size-2);
+    --font-size-sm: var(--font-size-3);
     --font-size-m: var(--font-size-4);
     --font-size-g: var(--font-size-6);
     --font-size-xg: var(--font-size-8);
