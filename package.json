@@ -1,6 +1,6 @@
 {
   "name": "code-easy-react",
-  "version": "2.1.1",
+  "version": "2.1.2",
   "private": false,
   "license": "MIT",
   "husky": {
@@ -28,7 +28,7 @@
   },
   "scripts": {
     "start": "react-scripts start",
-    "build": "yarn version && react-scripts build",
+    "build": "yarn version --patch && react-scripts build",
     "tsc-build": "tsc",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
