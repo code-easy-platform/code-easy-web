@@ -21,6 +21,7 @@ class ProblemsHelperService {
                 nodeExpanded: false,
                 isSelected: false,
                 id: undefined,
+                iconSize: 15,
                 type: "ITEM",
                 childs: [],
                 label,

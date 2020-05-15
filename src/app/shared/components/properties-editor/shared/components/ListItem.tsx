@@ -13,9 +13,6 @@ export const ListItem: React.FC<ListItemProps> = ({ id, name, properties, isHead
 
     const css_list_item: React.CSSProperties = {
         backgroundColor: isHeader ? 'var(--main-background-bars)' : '',
-        padding: 12,
-        paddingRight: 8,
-        paddingLeft: 8,
     }
 
     const onChangeItemProp = (item: IProperties, propIndex: number) => {
@@ -27,7 +24,8 @@ export const ListItem: React.FC<ListItemProps> = ({ id, name, properties, isHead
 
     return (
         <>
-            <div style={css_list_item}>{state.name}</div>
+            <div className="padding-m padding-left-s" style={css_list_item}>{state.name}</div>
+            <hr className="hr" />
             {state.properties.map((prop, index) => (
                 <PropItem
                     onChange={item => onChangeItemProp(item, index)}

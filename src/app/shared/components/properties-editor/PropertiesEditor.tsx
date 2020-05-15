@@ -5,17 +5,16 @@ import { IItem } from './shared/interfaces';
 
 interface PropertiesEditorProps {
     /** Itens que serão listado para edição */
-    itens: IItem[],
+    item: IItem,
     /** Controla a largura das inputs */
     inputsWidth?: number;
     /** Acionada toda vez que um campo perde o foco ou que algum campo modifica o valor */
-    onChange?(itens: IItem[]): void,
+    onChange?(item: IItem): void,
     /** Acionada toda vez que as inputs são redimencionadas */
     onChangeInputWidth?(width: number): void,
 }
-
 /** Permite a edição de vários itens de em foma de lista */
-export const PropertiesEditor: React.FC<PropertiesEditorProps> = ({ inputsWidth = 180, itens, onChangeInputWidth, onChange = (_: any) => { } }) => {
+export const PropertiesEditor: React.FC<PropertiesEditorProps> = ({ inputsWidth = 180, item, onChangeInputWidth, onChange = (_: any) => { } }) => {
 
     /** Controla o estado estado do wisth das inputs */
     const [inputWidth, setInputWidth] = useState<number>(inputsWidth);
@@ -24,41 +23,34 @@ export const PropertiesEditor: React.FC<PropertiesEditorProps> = ({ inputsWidth 
     }, [inputsWidth]);
 
     /** Controla o estado dos itens */
-    const [state, setState] = useState<{ itens: IItem[] }>({ itens });
+    const [state, setState] = useState<{ item: IItem }>({ item });
     useEffect(() => {
-        setState({ itens });
-    }, [itens]);
+        setState({ item });
+    }, [item]);
 
-    const onChangeListItem = (data: IItem, listItemIndex: number) => {
-        state.itens[listItemIndex] = data;
-
+    const onChangeListItem = (data: IItem) => {
+        state.item = data;
         setState({ ...state });
-        onChange(state.itens || itens);
+        onChange(state.item || item);
     }
 
     const changeInputWidth = (newWidth: number) => {
-
         if (onChangeInputWidth) {
             onChangeInputWidth(newWidth);
         }
-
         setInputWidth(newWidth);
     }
 
     return (
         <div className="flex1 flex-column overflow-auto">
-            {state.itens.map((item, index) => {
-                return (<>
-                    <ListItem
-                        onChange={data => onChangeListItem(data, index)}
-                        onChangeInputWidth={changeInputWidth}
-                        inputWidth={inputWidth}
-                        key={item.id}
-                        {...item}
-                    />
-                    <div style={{ minHeight: '30px' }} />
-                </>);
-            })}
+            <ListItem
+                onChange={data => onChangeListItem(data)}
+                onChangeInputWidth={changeInputWidth}
+                inputWidth={inputWidth}
+                key={item.id}
+                {...item}
+            />
+            <div style={{ minHeight: '30px' }} />
         </div>
     );
 

@@ -40,26 +40,24 @@ export default class EditorTab extends React.Component {
     //#region Editor de propriedades
 
     /** O editor de propriedades emite a lista de propriedades alteradas */
-    private propertiesEditorOutputItens(itens: IItem[]) {
+    private propertiesEditorOutputItens(item: IItem) {
 
         if (this.state.currentFocus === CurrentFocus.tree) {
 
-            itens.forEach(item => {
-                if (item.id !== undefined) {
-                    this.editorContext.project.tabs.forEach((tab: Tab) => {
-                        tab.itens.forEach(itemTree => {
-                            if (itemTree.isSelected && itemTree.id === item.id) {
+            if (item.id !== undefined) {
+                this.editorContext.project.tabs.forEach((tab: Tab) => {
+                    tab.itens.forEach(itemTree => {
+                        if (itemTree.isSelected && itemTree.id === item.id) {
 
-                                if (itemTree) {
-                                    itemTree.label = item.properties[0].value;
-                                    itemTree.description = item.properties[1].value;
-                                }
-
+                            if (itemTree) {
+                                itemTree.label = item.properties[0].value;
+                                itemTree.description = item.properties[1].value;
                             }
-                        });
+
+                        }
                     });
-                }
-            });
+                });
+            }
 
         } else if (this.state.currentFocus === CurrentFocus.flow) {
 
@@ -73,15 +71,11 @@ export default class EditorTab extends React.Component {
             });
 
             if (itemEditing !== null) {
-                itens.forEach(item => {
+                let index = itemEditing.itens.findIndex((oldItem: ItemFlowComplete) => oldItem.id === item.id);
+                if (index && (index < 0)) return;
 
-                    let index = itemEditing.itens.findIndex((oldItem: ItemFlowComplete) => oldItem.id === item.id);
-                    if (index && (index < 0)) return;
-
-                    itemEditing.itens[index].name = item.name;
-                    itemEditing.itens[index].properties = item.properties;
-
-                });
+                itemEditing.itens[index].name = item.name;
+                itemEditing.itens[index].properties = item.properties;
             }
 
         }
@@ -90,27 +84,27 @@ export default class EditorTab extends React.Component {
     }
 
     /** Devolve para o editor de propriedades as propriedades do item selecionado no momento. */
-    private propertiesEditorGetSelectedItem(currentFocus: CurrentFocus): IItem[] {
+    private propertiesEditorGetSelectedItem(currentFocus: CurrentFocus): IItem {
+        const nullRes = {
+            id: '',
+            name: '',
+            properties: [],
+            isHeader: false,
+        }
 
         if (currentFocus === CurrentFocus.tree) { // Mapeia os itens da árvore.
-            let res: IItem[] = [];
 
-            this.editorContext.project.tabs.forEach((tab: Tab) => {
-                tab.itens.forEach(item => {
-                    if (item.isSelected) {
-                        res = [
-                            {
-                                id: item.id,
-                                isHeader: true,
-                                name: item.label,
-                                properties: item.properties,
-                            }
-                        ]
-                    }
-                });
-            });
+            const tab = this.editorContext.project.tabs.find((tab: Tab) => tab.itens.find(item => item.isSelected));
+            if (!tab) return nullRes;
+            const res = tab.itens.find(item => item.isSelected);
+            if (!res) return nullRes;
+            else return {
+                id: res.id,
+                isHeader: true,
+                name: res.label,
+                properties: res.properties,
+            };
 
-            return res;
         } else if (currentFocus === CurrentFocus.flow) { // Mapeia os itens de fluxo
             const itensLogica = this.codeEditorGetItensLogica('ItemFlowComplete');
             const itensFiltereds = itensLogica.filter(flowItem => flowItem.isSelected);
@@ -125,11 +119,14 @@ export default class EditorTab extends React.Component {
                 });
             });
 
-            return mappedItens;
+            if (mappedItens.length > 0) {
+                return mappedItens[0];
+            } else {
+                return nullRes;
+            }
         }
 
-        return [];
-
+        return nullRes;
     }
 
     /** Devolve uma lista de propriedades para ser adicionado em novos itens de fluxo ou da árvore. */
@@ -186,6 +183,36 @@ export default class EditorTab extends React.Component {
                     { id: Utils.getUUID(), name: 'Label', value: name, type: TypeValues.string },
                     { id: Utils.getUUID(), name: 'Description', type: TypeValues.bigstring, value: "" },
                     { id: Utils.getUUID(), name: 'Url', type: TypeValues.string, value: "/newroute" },
+                    { id: Utils.getUUID(), name: 'Type', type: TypeValues.selection, value: "post", suggestions:[
+                        {
+                            name: 'get',
+                            value: 'get',
+                            label: 'get',
+                            disabled: false,
+                            description: '',
+                        },
+                        {
+                            name: 'post',
+                            value: 'post',
+                            label: 'post',
+                            disabled: false,
+                            description: '',
+                        },
+                        {
+                            name: 'update',
+                            value: 'update',
+                            label: 'update',
+                            disabled: false,
+                            description: '',
+                        },
+                        {
+                            name: 'delete',
+                            value: 'delete',
+                            label: 'delete',
+                            disabled: false,
+                            description: '',
+                        }
+                    ] },
                 ];
 
             case ComponentType.globalAction:
@@ -860,7 +887,7 @@ export default class EditorTab extends React.Component {
                                 <PropertiesEditor
                                     onChangeInputWidth={width => console.log(width)}
                                     onChange={this.propertiesEditorOutputItens.bind(this)}
-                                    itens={this.propertiesEditorGetSelectedItem.bind(this)(this.state.currentFocus)}
+                                    item={this.propertiesEditorGetSelectedItem.bind(this)(this.state.currentFocus)}
                                 />
                             }
                         />

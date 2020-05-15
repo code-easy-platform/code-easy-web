@@ -1,7 +1,9 @@
 
 export enum TypeValues {
+    yesNoSelection='yesNoSelection',
     expression='expression',
     bigstring='bigstring',
+    selection='selection',
     viewOnly='viewOnly',
     boolean='boolean',
     string='string',
@@ -25,6 +27,7 @@ export interface IProperties {
     valueHasError?: boolean;
     id: string | undefined;
     nameHasError?: boolean;
+    information?: string;
     type: TypeValues;
     name: string;
     value: any;
