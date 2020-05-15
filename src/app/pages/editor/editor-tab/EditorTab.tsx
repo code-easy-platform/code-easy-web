@@ -183,36 +183,38 @@ export default class EditorTab extends React.Component {
                     { id: Utils.getUUID(), name: 'Label', value: name, type: TypeValues.string },
                     { id: Utils.getUUID(), name: 'Description', type: TypeValues.bigstring, value: "" },
                     { id: Utils.getUUID(), name: 'Url', type: TypeValues.string, value: "/newroute" },
-                    { id: Utils.getUUID(), name: 'Type', type: TypeValues.selection, value: "post", suggestions:[
-                        {
-                            name: 'get',
-                            value: 'get',
-                            label: 'get',
-                            disabled: false,
-                            description: '',
-                        },
-                        {
-                            name: 'post',
-                            value: 'post',
-                            label: 'post',
-                            disabled: false,
-                            description: '',
-                        },
-                        {
-                            name: 'update',
-                            value: 'update',
-                            label: 'update',
-                            disabled: false,
-                            description: '',
-                        },
-                        {
-                            name: 'delete',
-                            value: 'delete',
-                            label: 'delete',
-                            disabled: false,
-                            description: '',
-                        }
-                    ] },
+                    {
+                        id: Utils.getUUID(), name: 'Type', type: TypeValues.selection, value: "post", suggestions: [
+                            {
+                                name: 'get',
+                                value: 'get',
+                                label: 'get',
+                                disabled: false,
+                                description: '',
+                            },
+                            {
+                                name: 'post',
+                                value: 'post',
+                                label: 'post',
+                                disabled: false,
+                                description: '',
+                            },
+                            {
+                                name: 'update',
+                                value: 'update',
+                                label: 'update',
+                                disabled: false,
+                                description: '',
+                            },
+                            {
+                                name: 'delete',
+                                value: 'delete',
+                                label: 'delete',
+                                disabled: false,
+                                description: '',
+                            }
+                        ]
+                    },
                 ];
 
             case ComponentType.globalAction:
@@ -326,6 +328,12 @@ export default class EditorTab extends React.Component {
 
         if (newItem.itemType.toString() === ComponentType.globalAction.toString() || newItem.itemType.toString() === ComponentType.localAction.toString()) {
             newItem.itemType = ItemType.ACTION;
+        } else if (
+            newItem.itemType.toString() === ComponentType.outputVariable.toString() ||
+            newItem.itemType.toString() === ComponentType.inputVariable.toString() ||
+            newItem.itemType.toString() === ComponentType.localVariable.toString()
+        ) {
+            newItem.itemType = ItemType.ASSIGN;
         }
 
         this.setState({ currentFocus: CurrentFocus.flow });
@@ -845,8 +853,7 @@ export default class EditorTab extends React.Component {
                                     onDropItem={this.codeEditorOnDropItem.bind(this)}
                                     breadcrumbs={this.codeEditorGetBreadcamps.bind(this)()}
                                     onChangeItens={this.codeEditorOutputFlowItens.bind(this)}
-                                    backgroundType={flowEditorItens.length !== 0 ?  'dotted' : 'custom'}
-                                    allowedsInDrop={[ComponentType.globalAction, ComponentType.localAction]}
+                                    allowedsInDrop={[ComponentType.globalAction, ComponentType.localAction, ComponentType.localVariable, ComponentType.inputVariable, ComponentType.outputVariable]}
                                     onContextMenu={(data, e) => {
                                         if (e) {
                                             e.preventDefault();
