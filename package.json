@@ -1,11 +1,11 @@
 {
   "name": "code-easy-react",
-  "version": "2.1.2",
+  "version": "2.1.3",
   "private": false,
   "license": "MIT",
   "husky": {
     "hooks": {
-      "commit-msg": "yarn version && commitlint -E HUSKY_GIT_PARAMS",
+      "commit-msg": "commitlint -E HUSKY_GIT_PARAMS",
       "prepare-commit-msg": "exec < /dev/tty && git cz --hook || true"
     }
   },
@@ -28,7 +28,7 @@
   },
   "scripts": {
     "start": "react-scripts start",
-    "build": "yarn version --patch && react-scripts build",
+    "build": "yarn version --patch & react-scripts build",
     "tsc-build": "tsc",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
