@@ -662,6 +662,11 @@ export default class EditorTab extends React.Component {
                     if (tab.configs.isEditing) {
                         tabIndex = indexTab;
                     }
+                    // Garante não existirá duas tabs sendo editadas ao mesmo tempo.
+                    tab.itens.forEach(item => {
+                        item.isEditing = false;
+                        item.isSelected = false;
+                    });
                 });
 
                 if (tabIndex !== undefined) {
@@ -690,6 +695,11 @@ export default class EditorTab extends React.Component {
                     if (tab.configs.isEditing) {
                         tabIndex = indexTab;
                     }
+                    // Garante não existirá duas tabs sendo editadas ao mesmo tempo.
+                    tab.itens.forEach(item => {
+                        item.isEditing = false;
+                        item.isSelected = false;
+                    });
                 });
 
                 if (tabIndex !== undefined) {

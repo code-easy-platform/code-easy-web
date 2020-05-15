@@ -7,7 +7,6 @@ import { ToolBarHome } from '../../shared/components/tool-bar/ToolBar';
 import { Button } from '../../shared/components/buttons/Button';
 import { Storage } from '../../shared/services/LocalStorage';
 import { Project } from '../../shared/interfaces/Aplication';
-import { RecentOpen } from './RecentOpen';
 import { CardItem } from './CardItem';
 
 import icon_open_github from './../../assets/icons/icon-open-github.png';
@@ -96,8 +95,28 @@ export const HomePage = () => {
                                 </div>
                             </div>
                             <hr className="hr" />
-                            <div className="flex1 padding-s padding-top-m">
-                                <RecentOpen />
+                            <div className="flex1 padding-s padding-top-m flex-column">
+                                <div>Recents</div>
+                                <div className="flex1 padding-s padding-top-m flex-column">
+                                    {projects.sort((a, b) => Utils.compareDate(b.projectConfigs.updatedDate, a.projectConfigs.updatedDate)).map(card => {
+                                        return <CardItem
+                                            listMode
+                                            key={card.projectConfigs.id}
+                                            onDelete={() => setProjects(Storage.removeProjectById(card.projectConfigs.id))}
+                                            onClick={() => {
+                                                Storage.setProjectById(card);
+                                                history.push(`/editor/${card.projectConfigs.id}`);
+                                            }}
+                                            item={{
+                                                type: card.projectConfigs.type,
+                                                name: card.projectConfigs.label,
+                                                id: card.projectConfigs.id || '',
+                                                version: card.projectConfigs.version,
+                                                description: card.projectConfigs.description,
+                                            }}
+                                        />
+                                    })}
+                                </div>
                             </div>
                         </div>
                     }
@@ -123,23 +142,27 @@ export const HomePage = () => {
                                     onCancel={() => setIsAdding(false)}
                                     item={{ id: '', name: '', version: '', description: '', type: ProjectType.api }}
                                 />}
-                                {projects.filter(item => (item.projectConfigs.label.toLowerCase().indexOf(filter) >= 0)).map(card => {
-                                    return <CardItem
-                                        key={card.projectConfigs.id}
-                                        onDelete={() => setProjects(Storage.removeProjectById(card.projectConfigs.id))}
-                                        onClick={() => {
-                                            Storage.setProjectById(card);
-                                            history.push(`/editor/${card.projectConfigs.id}`);
-                                        }}
-                                        item={{
-                                            type: card.projectConfigs.type,
-                                            name: card.projectConfigs.label,
-                                            id: card.projectConfigs.id || '',
-                                            version: card.projectConfigs.version,
-                                            description: card.projectConfigs.description,
-                                        }}
-                                    />
-                                })}
+                                {projects
+                                    .filter(item => (item.projectConfigs.label.toLowerCase().indexOf(filter.toLowerCase()) >= 0))
+                                    .sort((a,b) => a.projectConfigs.label.localeCompare(b.projectConfigs.label))
+                                    .map(card => {
+                                        return <CardItem
+                                            key={card.projectConfigs.id}
+                                            onDelete={() => setProjects(Storage.removeProjectById(card.projectConfigs.id))}
+                                            onClick={() => {
+                                                Storage.setProjectById(card);
+                                                history.push(`/editor/${card.projectConfigs.id}`);
+                                            }}
+                                            item={{
+                                                type: card.projectConfigs.type,
+                                                name: card.projectConfigs.label,
+                                                id: card.projectConfigs.id || '',
+                                                version: card.projectConfigs.version,
+                                                description: card.projectConfigs.description,
+                                            }}
+                                        />
+                                    })
+                                }
                                 {(projects.length === 0 && !isAdding) && <div className="font-size-m margin-s" style={{ opacity: 0.5 }}>No itens to ahow...</div>}
                             </div>
                         </div>

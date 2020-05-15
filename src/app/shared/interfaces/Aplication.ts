@@ -44,6 +44,8 @@ export interface ProjectConfigs extends BaseFields {
     autor: string;
     version: string;
     type: ProjectType;
+    createdDate: Date;
+    updatedDate: Date;
     description: string;
     currentProcess: string;
 }

@@ -24,8 +24,9 @@ interface CardItemProps {
         type: ProjectType;
         description: string;
     }
+    listMode?: boolean;
 }
-export const CardItem = (props: CardItemProps) => {
+export const CardItem = ({ listMode, ...props }: CardItemProps) => {
     const [item, setItem] = useState(props.item);
 
     const contextMenu = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
@@ -41,15 +42,17 @@ export const CardItem = (props: CardItemProps) => {
 
     return (
         !props.isAdding
-            ? <div onContextMenu={contextMenu} onClick={() => props.onClick(item)} className="margin-right-m margin-bottom-m border-radius btn padding-none flex-column" style={{ border: 'var(--input-border)', width: 200, height: 'fit-content' }}>
-                <div className="flex1 padding-m" style={{ alignSelf: 'center' }}>
-                    <img height="50" src={props.item.icon || icon_star} alt="Placeholder" />
-                </div>
-                <hr className="hr margin-bottom-s margin-top-s" style={{ backgroundColor: 'var(--main-background-highlighted)' }} />
+            ? <div onContextMenu={contextMenu} onClick={() => props.onClick(item)} className={`${!listMode && "margin-right-m"} margin-bottom-m border-radius btn padding-none flex-column`} style={{ border: 'var(--input-border)', width: listMode ? 'auto' : 200, height: 'fit-content' }}>
+                {!listMode && <>
+                    <div className="flex1 padding-m" style={{ alignSelf: 'center' }}>
+                        <img height="50" src={props.item.icon || icon_star} alt="Placeholder" />
+                    </div>
+                    <hr className="hr margin-bottom-s margin-top-s" style={{ backgroundColor: 'var(--main-background-highlighted)' }} />
+                </>}
                 <div className="flex-column">
                     <div className="padding-s">{props.item.name}</div>
                     <div className="padding-s font-size-s" style={{ alignItems: 'center' }}>
-                        <div className="flex1">{props.item.description}</div>
+                        {!listMode && <div className="flex1">{props.item.description}</div>}
                         <div style={{ whiteSpace: 'nowrap' }}>v. {props.item.version}</div>
                     </div>
                 </div>
