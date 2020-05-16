@@ -48,6 +48,7 @@ export interface ProjectConfigs extends BaseFields {
     updatedDate: Date;
     description: string;
     currentProcess: string;
+    currentPlatformVersion: string;
 }
 
 export class Project {

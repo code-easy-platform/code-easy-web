@@ -42,7 +42,17 @@ export const CardItem = ({ listMode, ...props }: CardItemProps) => {
 
     return (
         !props.isAdding
-            ? <div onContextMenu={contextMenu} onClick={() => props.onClick(item)} className={`${!listMode && "margin-right-m"} margin-bottom-m border-radius btn padding-none flex-column`} style={{ border: 'var(--input-border)', width: listMode ? 'auto' : 200, height: 'fit-content' }}>
+            ? <div
+                onContextMenu={contextMenu}
+                onClick={() => props.onClick(item)}
+                className={`${!listMode && "margin-right-m"} margin-bottom-m border-radius btn padding-none flex-column`}
+                style={{
+                    border: 'var(--input-border)',
+                    width: listMode ? 'auto' : 200,
+                    height: 'fit-content',
+                    maxWidth: 400,
+                }}
+            >
                 {!listMode && <>
                     <div className="flex1 padding-m" style={{ alignSelf: 'center' }}>
                         <img height="50" src={props.item.icon || icon_star} alt="Placeholder" />
@@ -50,7 +60,7 @@ export const CardItem = ({ listMode, ...props }: CardItemProps) => {
                     <hr className="hr margin-bottom-s margin-top-s" style={{ backgroundColor: 'var(--main-background-highlighted)' }} />
                 </>}
                 <div className="flex-column">
-                    <div className="padding-s">{props.item.name}</div>
+                    <div className="padding-s text-ellipsis">{props.item.name}</div>
                     <div className="padding-s font-size-s" style={{ alignItems: 'center' }}>
                         {!listMode && <div className="flex1">{props.item.description}</div>}
                         <div style={{ whiteSpace: 'nowrap' }}>v. {props.item.version}</div>

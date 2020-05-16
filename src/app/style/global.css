@@ -94,6 +94,14 @@ input[type="number"] {
   -moz-appearance: textfield;
 }
 
+.text-ellipsis {
+  text-overflow: ellipsis;
+  display: inline-block;
+  white-space: nowrap;
+  text-align: start;
+  overflow: hidden;
+}
+
 /* Backgrounds base */
 .background {
   background-color: var(--main-background);

@@ -21,6 +21,7 @@ const mockProjeto: Project = new Project({
         createdDate: new Date(),
         updatedDate: new Date(),
         description: 'Projeto simples, apenas para demostração',
+        currentPlatformVersion: `${process.env.REACT_APP_VERSION}`,
     },
     tabs: [
         new Tab({
@@ -544,6 +545,7 @@ const newProject = (name: string, version: string, type: ProjectType, descriptio
         description: description,
         autor: Storage.getAuthorName(),
         name: Utils.getNormalizedString(name.toLowerCase()),
+        currentPlatformVersion: `${process.env.REACT_APP_VERSION}`,
     },
     tabs: [
         new Tab({
@@ -570,7 +572,7 @@ const newProject = (name: string, version: string, type: ProjectType, descriptio
             }),
             itens: [],
         }),
-        new Tab({
+        /* new Tab({
             configs: new ComponentConfigs({
                 id: `${Utils.getUUID()}`,
                 name: 'data',
@@ -581,7 +583,7 @@ const newProject = (name: string, version: string, type: ProjectType, descriptio
                 description: 'Data tab',
             }),
             itens: [],
-        }),
+        }), */
     ]
 });
 

@@ -396,12 +396,66 @@ export default class EditorTab extends React.Component {
     }
 
     /** Quando clicado com o botão esquerdo do mouse no interior do editor esta função é acionada. */
-    private codeEditorContextMenu(data: any): any[] {
-        console.log("--------");
-        console.log(data);
-        console.log("--------");
+    private codeEditorContextMenu(data: any, e: any): IContextItemList[] {
+        const left = e.nativeEvent.offsetX;
+        const top = e.nativeEvent.offsetY;
 
-        return [];
+        this.setState({ currentFocus: CurrentFocus.flow });
+        let options: IContextItemList[] = [];
+
+        if (data) {
+            console.log(data);
+            options.push({
+                label: '-',
+                action: () => {
+                }
+            });
+            options.push({
+                label: 'Delete ' + data.itemType,
+                action: () => {
+                }
+            });
+        }
+
+        this.codeEditorGetToolBoxItens().forEach(item => {
+            options.push({
+                label: 'Add ' + item.name,
+                action: () => {
+
+                    // Encontra a tab certa e adiciona um item de fluxo aos itens
+                    this.editorContext.project.tabs.forEach((tab: Tab) => {
+                        tab.itens.forEach(item_tree => {
+                            if (item_tree.isEditing) {
+
+                                // Deseleciona todos os itens anteriores
+                                item_tree.itens.forEach(item_flow => item_flow.isSelected = false);
+
+                                // Adiciona a tab com os itens alterados
+                                item_tree.itens.push(new ItemFlowComplete({
+                                    properties: this.propertiesEditorGetNewProperties(item.itemType, item.name), // Criar uma função para isso
+                                    itemType: item.itemType,
+                                    id: Utils.getUUID(),
+                                    isSelected: true,
+                                    name: item.name,
+                                    sucessor: [],
+                                    height: 50,
+                                    left: left,
+                                    width: 50,
+                                    top: top,
+                                }));
+
+                            }
+                        });
+                    });
+
+                    // Atualiza o context do projeto
+                    this.onChangeState();
+                }
+            });
+
+        });
+
+        return options;
     }
 
     /** Monta o breadcamps que será exibido no top do editor de fluxos. */
@@ -415,12 +469,26 @@ export default class EditorTab extends React.Component {
 
                     breadcamps.push({
                         label: tab.configs.label,
-                        onClick: () => { }
+                        onClick: () => { },
+                        disabled: true,
                     });
 
                     breadcamps.push({
+                        onClick: ((e: any) => {
+                            /*
+                                this.editorContext.project.tabs.forEach(tab => {
+                                    tab.itens.forEach(item => {
+                                        item.isSelected = false;
+                                    });
+                                });
+ 
+                                item.isSelected = true;
+ 
+                                this.onChangeState();
+                             */
+                        }),
                         label: item.label,
-                        onClick: () => { }
+                        disabled: false,
                     });
 
                 }
@@ -813,7 +881,7 @@ export default class EditorTab extends React.Component {
             options.push({
                 action: () => this.treeManagerRemoveItem(itemId),
                 disabled: itemId === undefined,
-                useConfirmation: true,
+                useConfirmation: false,
                 label: 'Delete'
             });
         }
@@ -867,7 +935,7 @@ export default class EditorTab extends React.Component {
                                     onContextMenu={(data, e) => {
                                         if (e) {
                                             e.preventDefault();
-                                            ContextMenuService.showMenu(e.clientX, e.clientY, this.codeEditorContextMenu.bind(this)(data));
+                                            ContextMenuService.showMenu(e.clientX, e.clientY, this.codeEditorContextMenu.bind(this)(data, e));
                                         }
                                     }}
                                 />
