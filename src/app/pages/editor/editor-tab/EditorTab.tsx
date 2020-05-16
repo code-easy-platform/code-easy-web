@@ -404,16 +404,36 @@ export default class EditorTab extends React.Component {
         let options: IContextItemList[] = [];
 
         if (data) {
-            console.log(data);
+            const itemToDelte = data;
+
             options.push({
-                label: '-',
+                label: 'Delete ' + itemToDelte.itemType,
                 action: () => {
+                    let indexTreeToDelete: number | undefined;
+                    let indexTabToDelete: number | undefined;
+                    let indexToDelete: number | undefined;
+
+                    this.editorContext.project.tabs.forEach((tab: Tab, indexTab) => {
+                        tab.itens.forEach((item, indexTree) => {
+                            if (item.isEditing) {
+                                indexToDelete = item.itens.findIndex(flow_item => flow_item.id === itemToDelte.itemId);
+                                indexTreeToDelete = indexTree;
+                                indexTabToDelete = indexTab;
+                            }
+                        })
+                    });
+
+                    if (indexTabToDelete !== undefined && indexToDelete !== undefined && indexToDelete !== -1 && indexTreeToDelete !== undefined) {
+                        this.editorContext.project.tabs[indexTabToDelete].itens[indexTreeToDelete].itens.splice(indexToDelete, 1);
+
+                        // Atualiza o context do projeto
+                        this.onChangeState();
+                    }
                 }
             });
             options.push({
-                label: 'Delete ' + data.itemType,
-                action: () => {
-                }
+                label: '-',
+                action: () => { }
             });
         }
 

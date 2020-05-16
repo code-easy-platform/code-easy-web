@@ -51,7 +51,7 @@ export class ContextMenu extends React.Component<{ title?: string }> {
 
 
     render = () => (<>
-        {this.state.isShow && <div className="context-menu" style={{ left: this.state.left, top: this.state.top }}>
+        {this.state.isShow && <div className="context-menu padding-bottom-xs padding-top-xs fade-in" style={{ left: this.state.left, top: this.state.top }}>
             {this.props.title && <div className="context-menu-title">{this.props.title}</div>}
             {this.state.actions.map((action) => (
                 action.label !== '-'
@@ -75,7 +75,7 @@ export class ContextMenu extends React.Component<{ title?: string }> {
                     >
                         {action.label}
                     </div>
-                    : <hr />
+                    : <hr className="hr-white margin-bottom-xs margin-top-xs border-default"  />
             ))}
         </div>}
     </>);

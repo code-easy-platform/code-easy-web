@@ -132,8 +132,8 @@ export class ItemFlowComplete extends FlowItem {
     public sucessor: string[] = [];
     public id: string | undefined;
     public select = () => { };
-    public height: number = 0;
-    public width: number = 0;
+    public height: number = 50;
+    public width: number = 50;
     public name: string = "";
     public left: number = 0;
     public top: number = 0;
@@ -145,8 +145,8 @@ export class ItemFlowComplete extends FlowItem {
             isSelected: boolean,
             sucessor: string[],
             itemType: ItemType,
-            height: number,
-            width: number,
+            height?: number,
+            width?: number,
             name: string,
             left: number,
             top: number,
@@ -155,10 +155,10 @@ export class ItemFlowComplete extends FlowItem {
         super(props);
         this.isSelected = props.isSelected;
         this.properties = props.properties;
+        this.height = props.height || 50;
+        this.width = props.width || 50;
         this.sucessor = props.sucessor;
         this.itemType = props.itemType;
-        this.height = props.height;
-        this.width = props.width;
         this.name = props.name;
         this.left = props.left;
         this.top = props.top;
