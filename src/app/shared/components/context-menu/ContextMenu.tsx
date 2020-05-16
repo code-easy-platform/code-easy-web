@@ -38,10 +38,10 @@ export class ContextMenu extends React.Component<{ title?: string }> {
 
         window.onclick = () => {
             this.setState({
-                actions: [],
                 isShow: false,
-                left: 0,
-                top: 0,
+                actions: [],
+                left: -100,
+                top: -100,
             });
         };
 
@@ -51,29 +51,31 @@ export class ContextMenu extends React.Component<{ title?: string }> {
 
 
     render = () => (<>
-        {this.state.isShow && <div className="context-menu" style={{ left: this.state.left, top: this.state.top }}>
+        {this.state.isShow && <div className="context-menu padding-bottom-xs padding-top-xs fade-in" style={{ left: this.state.left, top: this.state.top }}>
             {this.props.title && <div className="context-menu-title">{this.props.title}</div>}
             {this.state.actions.map((action) => (
-                <div
-                    key={action.label}
-                    className={`context-menu-list-item${action.disabled ? ' disabled' : ''}`}
-                    onClick={
-                        action.disabled
-                            ? undefined
-                            : () => {
-                                ContextMenuService.clearMessages();
-                                if (action.useConfirmation) {
-                                    if (window.confirm(action.confirmationMessage || 'Continue?')) {
+                action.label !== '-'
+                    ? <div
+                        key={action.label}
+                        className={`context-menu-list-item${action.disabled ? ' disabled' : ''}`}
+                        onClick={
+                            action.disabled
+                                ? undefined
+                                : () => {
+                                    ContextMenuService.clearMessages();
+                                    if (action.useConfirmation) {
+                                        if (window.confirm(action.confirmationMessage || 'Continue?')) {
+                                            action.action();
+                                        }
+                                    } else {
                                         action.action();
                                     }
-                                } else {
-                                    action.action();
                                 }
-                            }
-                    }
-                >
-                    {action.label}
-                </div>
+                        }
+                    >
+                        {action.label}
+                    </div>
+                    : <hr className="hr-white margin-bottom-xs margin-top-xs border-default" />
             ))}
         </div>}
     </>);

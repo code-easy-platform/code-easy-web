@@ -1,6 +1,6 @@
 {
   "name": "code-easy-react",
-  "version": "0.1.0",
+  "version": "0.0.1",
   "private": false,
   "license": "MIT",
   "husky": {
@@ -12,6 +12,7 @@
   "dependencies": {
     "@types/marked": "^0.7.4",
     "@types/react-router-dom": "^5.1.5",
+    "cross-env": "^7.0.2",
     "immutability-helper": "^3.0.1",
     "marked": "^1.0.0",
     "node-sass": "^4.12.0",
@@ -27,8 +28,8 @@
     "uuid": "^7.0.3"
   },
   "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build",
+    "start": "cross-env REACT_APP_VERSION=$(node -p 'require(\"./package.json\").version') react-scripts start",
+    "build": "cross-env REACT_APP_VERSION=$(node -p 'require(\"./package.json\").version') react-scripts build",
     "tsc-build": "tsc",
     "test": "react-scripts test",
     "eject": "react-scripts eject"

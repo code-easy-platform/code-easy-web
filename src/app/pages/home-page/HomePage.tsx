@@ -7,17 +7,16 @@ import { ToolBarHome } from '../../shared/components/tool-bar/ToolBar';
 import { Button } from '../../shared/components/buttons/Button';
 import { Storage } from '../../shared/services/LocalStorage';
 import { Project } from '../../shared/interfaces/Aplication';
-import { RecentOpen } from './RecentOpen';
 import { CardItem } from './CardItem';
 
 import icon_open_github from './../../assets/icons/icon-open-github.png';
 import icon_download from './../../assets/icons/icon-download.png';
-import icon_plugins from './../../assets/icons/icon-plugins.png';
+// import icon_plugins from './../../assets/icons/icon-plugins.png';
 import icon_config from './../../assets/icons/icon-config.png';
-import icon_accont from './../../assets/icons/icon-accont.png';
+// import icon_accont from './../../assets/icons/icon-accont.png';
 import { ProjectType } from '../../shared/enuns/ProjectType';
-import icon_tips from './../../assets/icons/icon-tips.png';
-import icon_help from './../../assets/icons/icon-help.png';
+// import icon_tips from './../../assets/icons/icon-tips.png';
+// import icon_help from './../../assets/icons/icon-help.png';
 import { Utils } from '../../shared/services/Utils';
 import { Modal } from '../../shared/components/modal/Modal';
 
@@ -47,7 +46,7 @@ export const HomePage = () => {
     }
 
     return (
-        <div className="main-page">
+        <div className="main-page fade-in">
             <ToolBarHome />
             <hr className="hr" />
 
@@ -64,14 +63,14 @@ export const HomePage = () => {
                                         onClick={e => setOpenConfig(true)}
                                         style={{ height: 'var(--tool-bar-height)', padding: '10px' }}
                                     />
-                                    <Button
+                                    {/* <Button
                                         icon={icon_plugins}
                                         style={{ height: 'var(--tool-bar-height)', padding: '10px' }}
                                     />
                                     <Button
                                         icon={icon_accont}
                                         style={{ height: 'var(--tool-bar-height)', padding: '10px' }}
-                                    />
+                                    /> */}
                                 </div>
                                 <div>
                                     <Button
@@ -79,14 +78,14 @@ export const HomePage = () => {
                                         style={{ height: 'var(--tool-bar-height)', padding: '10px' }}
                                         onClick={() => Utils.downloadFile('YourProjects', 'json', JSON.stringify(projects))}
                                     />
-                                    <Button
+                                    {/* <Button
                                         icon={icon_tips}
                                         style={{ height: 'var(--tool-bar-height)', padding: '10px' }}
                                     />
                                     <Button
                                         icon={icon_help}
                                         style={{ height: 'var(--tool-bar-height)', padding: '10px' }}
-                                    />
+                                    /> */}
                                     <Button
                                         title="Open on github"
                                         icon={icon_open_github}
@@ -96,8 +95,29 @@ export const HomePage = () => {
                                 </div>
                             </div>
                             <hr className="hr" />
-                            <div className="flex1 padding-s padding-top-m">
-                                <RecentOpen />
+                            <div className="flex1 padding-s padding-top-m flex-column">
+                                <div>Recents</div>
+                                <div className="flex1 padding-top-s padding-top-m flex-column">
+                                    {projects.sort((a, b) => Utils.compareDate(b.projectConfigs.updatedDate, a.projectConfigs.updatedDate)).map(card => {
+                                        return <CardItem
+                                            listMode
+                                            key={card.projectConfigs.id}
+                                            onDelete={() => setProjects(Storage.removeProjectById(card.projectConfigs.id))}
+                                            onClick={() => {
+                                                Storage.setProjectById(card);
+                                                history.push(`/editor/${card.projectConfigs.id}`);
+                                            }}
+                                            item={{
+                                                type: card.projectConfigs.type,
+                                                name: card.projectConfigs.label,
+                                                id: card.projectConfigs.id || '',
+                                                version: card.projectConfigs.version,
+                                                description: card.projectConfigs.description,
+                                            }}
+                                        />
+                                    })}
+                                    {projects.length === 0 && <span style={{ opacity: 0.5 }}>No recently open items to show...</span>}
+                                </div>
                             </div>
                         </div>
                     }
@@ -123,23 +143,27 @@ export const HomePage = () => {
                                     onCancel={() => setIsAdding(false)}
                                     item={{ id: '', name: '', version: '', description: '', type: ProjectType.api }}
                                 />}
-                                {projects.filter(item => (item.projectConfigs.label.toLowerCase().indexOf(filter) >= 0)).map(card => {
-                                    return <CardItem
-                                        key={card.projectConfigs.id}
-                                        onDelete={() => setProjects(Storage.removeProjectById(card.projectConfigs.id))}
-                                        onClick={() => {
-                                            Storage.setProjectById(card);
-                                            history.push(`/editor/${card.projectConfigs.id}`);
-                                        }}
-                                        item={{
-                                            type: card.projectConfigs.type,
-                                            name: card.projectConfigs.label,
-                                            id: card.projectConfigs.id || '',
-                                            version: card.projectConfigs.version,
-                                            description: card.projectConfigs.description,
-                                        }}
-                                    />
-                                })}
+                                {projects
+                                    .filter(item => (item.projectConfigs.label.toLowerCase().indexOf(filter.toLowerCase()) >= 0))
+                                    .sort((a, b) => a.projectConfigs.label.localeCompare(b.projectConfigs.label))
+                                    .map(card => {
+                                        return <CardItem
+                                            key={card.projectConfigs.id}
+                                            onDelete={() => setProjects(Storage.removeProjectById(card.projectConfigs.id))}
+                                            onClick={() => {
+                                                Storage.setProjectById(card);
+                                                history.push(`/editor/${card.projectConfigs.id}`);
+                                            }}
+                                            item={{
+                                                type: card.projectConfigs.type,
+                                                name: card.projectConfigs.label,
+                                                id: card.projectConfigs.id || '',
+                                                version: card.projectConfigs.version,
+                                                description: card.projectConfigs.description,
+                                            }}
+                                        />
+                                    })
+                                }
                                 {(projects.length === 0 && !isAdding) && <div className="font-size-m margin-s" style={{ opacity: 0.5 }}>No itens to ahow...</div>}
                             </div>
                         </div>

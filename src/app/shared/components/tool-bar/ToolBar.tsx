@@ -28,6 +28,7 @@ export const ToolBar = (props: any) => {
                     style={{ outline: 'none' }}
                     className=" btn btn-open-menu-tab"
                 />
+                <hr className="hr hr-vertical" />
                 <TabGroup className="width-auto">
                     <TabButton
                         id="tabEditor"
@@ -45,14 +46,14 @@ export const ToolBar = (props: any) => {
                         onClick={() => changeCurrentTab(CurrentTab.properties)}
                         onFocus={() => changeCurrentTab(CurrentTab.properties)}
                     />
-                    <TabButton
+                    {/* <TabButton
                         id="tabDependencias"
                         className=" btn-open-plugins-tab"
                         isSelected={currentTab === CurrentTab.plugins}
                         title="Adicione e remova dependências do projeto"
                         onClick={() => changeCurrentTab(CurrentTab.plugins)}
                         onFocus={() => changeCurrentTab(CurrentTab.plugins)}
-                    />
+                    /> */}
                 </TabGroup>
             </div>
             <div>
@@ -100,12 +101,12 @@ export const ToolBar = (props: any) => {
                         })}
                     </TabGroup>
                 }
-                <TabButton
+                {/* <TabButton
                     id="tabMenu"
                     onClick={() => { }}
                     title="Menu do usuário"
                     className=" btn-open-menu-user-tab"
-                />
+                /> */}
             </div>
         </div>
     );
@@ -122,14 +123,15 @@ export const ToolBarHome = (props: any) => {
                     style={{ outline: 'none' }}
                     className=" btn btn-open-menu-tab"
                 />
+                <hr className="hr hr-vertical" />
             </div>
             <div style={{ justifyContent: "flex-end" }}>
-                <TabButton
+                {/* <TabButton
                     id="tabMenu"
                     onClick={() => { }}
                     title="Menu do usuário"
                     className=" btn-open-menu-user-tab"
-                />
+                /> */}
             </div>
         </div>
     );

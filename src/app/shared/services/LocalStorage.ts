@@ -18,7 +18,10 @@ const mockProjeto: Project = new Project({
         label: 'Demostração',
         name: 'desmostracao',
         type: ProjectType.api,
+        createdDate: new Date(),
+        updatedDate: new Date(),
         description: 'Projeto simples, apenas para demostração',
+        currentPlatformVersion: `${process.env.REACT_APP_VERSION}`,
     },
     tabs: [
         new Tab({
@@ -537,9 +540,12 @@ const newProject = (name: string, version: string, type: ProjectType, descriptio
         label: name,
         version: version,
         currentProcess: '',
+        createdDate: new Date(),
+        updatedDate: new Date(),
         description: description,
         autor: Storage.getAuthorName(),
         name: Utils.getNormalizedString(name.toLowerCase()),
+        currentPlatformVersion: `${process.env.REACT_APP_VERSION}`,
     },
     tabs: [
         new Tab({
@@ -566,7 +572,7 @@ const newProject = (name: string, version: string, type: ProjectType, descriptio
             }),
             itens: [],
         }),
-        new Tab({
+        /* new Tab({
             configs: new ComponentConfigs({
                 id: `${Utils.getUUID()}`,
                 name: 'data',
@@ -577,7 +583,7 @@ const newProject = (name: string, version: string, type: ProjectType, descriptio
                 description: 'Data tab',
             }),
             itens: [],
-        }),
+        }), */
     ]
 });
 
@@ -621,6 +627,7 @@ export class Storage {
         let itemIndex = projects.findIndex(item_project => item_project.projectConfigs.id === project.projectConfigs.id);
 
         if (itemIndex) {
+            project.projectConfigs.updatedDate = new Date();
             projects.splice(itemIndex, 1, project); // Remove elemento antigo e coloca um novo no lugar
         }
 

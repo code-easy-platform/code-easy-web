@@ -35,12 +35,40 @@ export class FlowItem implements ItemFluxo {
     public isSelected: boolean = false;
     public hasError?: boolean = false;
     public sucessor: string[] = [];
-    public height: number = 0;
-    public width: number = 0;
+    public height: number = 50;
+    public width: number = 50;
     public name: string = "";
     public left: number = 0;
     public top: number = 0;
     public icon: any;
+
+    constructor(
+        private props: {
+            id: string | undefined,
+            isSelected?: boolean,
+            sucessor?: string[],
+            hasError?: boolean,
+            itemType: ItemType,
+            height?: number,
+            width?: number,
+            left?: number,
+            name: string,
+            top?: number,
+            icon?: any,
+        }
+    ) {
+        this.isSelected = this.props.isSelected || false;
+        this.sucessor = this.props.sucessor || [];
+        this.height = this.props.height || 50;
+        this.itemType = this.props.itemType;
+        this.hasError = this.props.hasError;
+        this.width = this.props.width || 50;
+        this.left = this.props.left || 0;
+        this.top = this.props.top || 0;
+        this.name = this.props.name;
+        this.icon = this.props.icon;
+        this.id = this.props.id;
+    }
 
     /** Valida se o elemento está ou não na área que está sendo selecionada pelo mouse. */
     public select = (coords: Coords) => {
@@ -60,33 +88,5 @@ export class FlowItem implements ItemFluxo {
             )
         );
     };
-
-    constructor(
-        private props: {
-            id: string | undefined,
-            isSelected?: boolean,
-            sucessor?: string[],
-            hasError?: boolean,
-            itemType: ItemType,
-            height?: number,
-            width?: number,
-            name: string,
-            left?: number,
-            top?: number,
-            icon?: any,
-        }
-    ) {
-        this.isSelected = this.props.isSelected || false;
-        this.sucessor = this.props.sucessor || [];
-        this.height = this.props.height || 0;
-        this.itemType = this.props.itemType;
-        this.hasError = this.props.hasError;
-        this.width = this.props.width || 0;
-        this.left = this.props.left || 0;
-        this.top = this.props.top || 0;
-        this.name = this.props.name;
-        this.icon = this.props.icon;
-        this.id = this.props.id;
-    }
 
 }
