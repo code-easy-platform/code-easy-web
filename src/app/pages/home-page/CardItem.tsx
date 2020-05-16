@@ -43,9 +43,12 @@ export const CardItem = ({ listMode, ...props }: CardItemProps) => {
     return (
         !props.isAdding
             ? <div
+                tabIndex={0}
                 onContextMenu={contextMenu}
                 onClick={() => props.onClick(item)}
-                className={`${!listMode && "margin-right-m"} margin-bottom-m border-radius btn padding-none flex-column`}
+                onKeyDown={e => (e.keyCode === 13 || e.keyCode === 32) ? props.onClick(item) : {}
+                }
+                className={`${!listMode && "margin-right-m"} margin-bottom-m border-radius btn padding-none flex-column outline-none`}
                 style={{
                     border: 'var(--input-border)',
                     width: listMode ? 'auto' : 200,
@@ -66,7 +69,7 @@ export const CardItem = ({ listMode, ...props }: CardItemProps) => {
                         <div style={{ whiteSpace: 'nowrap' }}>v. {props.item.version}</div>
                     </div>
                 </div>
-            </div>
+            </div >
             : <div className="margin-right-m margin-bottom-m border-radius padding-s flex-column" style={{ border: 'var(--input-border)', width: 300 }}>
                 <div className="margin-top-s">
                     <div className="flex3 flex-column margin-right-s">

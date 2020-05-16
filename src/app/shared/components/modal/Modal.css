@@ -10,7 +10,10 @@
     cursor: move;
 }
 
-.modal-top-content {
+.modal-btn {
+    padding: unset;
+    margin: unset;
+    border-radius: unset;
 }
 
 .modal-top-footer {
