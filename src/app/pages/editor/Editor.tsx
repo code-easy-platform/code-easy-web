@@ -63,7 +63,7 @@ export class Editor extends React.Component<any> {
     render() {
         return (
             <CodeEditorContext.Provider value={this.state}>
-                <div className="main-page">
+                <div className="main-page fade-in">
                     <ToolBar onChangeTab={this.onChangeTab} />
                     <hr className="hr" />
 

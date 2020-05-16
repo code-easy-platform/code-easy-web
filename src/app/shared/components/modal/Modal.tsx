@@ -78,7 +78,7 @@ export const Modal: React.FC<ModalProps> = ({ children, onMaximize, onMinimize, 
         closed
             ? <></>
             : <>
-                {!allowBackdropClick && <div tabIndex={0} onKeyDown={keyDown} className="full-height full-width absolute" style={{ backgroundColor: '#ffffff05' }} onClick={() => closeWithBackdropClick ? close() : () => { }}>
+                {!allowBackdropClick && <div tabIndex={0} onKeyDown={keyDown} className="fade-in full-height full-width absolute" style={{ backgroundColor: '#ffffff05' }} onClick={() => closeWithBackdropClick ? close() : () => { }}>
                     <div style={{ top: !maximized ? position.top : 0, left: !maximized ? position.left : 0 }} className={`base-modal background-bars box-shadow-small border-radius flex-column${maximized ? ' full-width full-height' : ' padding-xs'}`}>
                         <div onMouseDown={mouseDown} className={`modal-top-bar flex-row${maximized ? ' margin-left-xs margin-right-xs' : ''}`}>
                             <button onClick={toggleMaximize} onMouseDown={e => e.stopPropagation()} className="btn border-radius outline-none modal-btn">

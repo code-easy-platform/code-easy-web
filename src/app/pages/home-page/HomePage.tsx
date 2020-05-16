@@ -46,7 +46,7 @@ export const HomePage = () => {
     }
 
     return (
-        <div className="main-page">
+        <div className="main-page fade-in">
             <ToolBarHome />
             <hr className="hr" />
 

@@ -40,8 +40,8 @@ export class ContextMenu extends React.Component<{ title?: string }> {
             this.setState({
                 isShow: false,
                 actions: [],
-                left: 0,
-                top: 0,
+                left: -100,
+                top: -100,
             });
         };
 
@@ -75,7 +75,7 @@ export class ContextMenu extends React.Component<{ title?: string }> {
                     >
                         {action.label}
                     </div>
-                    : <hr className="hr-white margin-bottom-xs margin-top-xs border-default"  />
+                    : <hr className="hr-white margin-bottom-xs margin-top-xs border-default" />
             ))}
         </div>}
     </>);
