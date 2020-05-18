@@ -71,4 +71,17 @@ export class Utils {
         return 0;
     }
 
+    public static newName(newName: string, names: string[]): string {
+        let nameAlreadyExist = names.some(name => name === newName);
+        if (!nameAlreadyExist) return newName;
+
+        let currentI: number = 1;
+        while (nameAlreadyExist) {
+            currentI++;
+            let num = currentI;
+            nameAlreadyExist = names.some(name => (name === (newName + num)))
+        }
+
+        return newName + currentI;
+    }
 }

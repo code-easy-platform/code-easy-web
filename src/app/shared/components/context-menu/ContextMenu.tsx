@@ -4,6 +4,7 @@ import { ContextMenuService } from './ContextMenuService';
 import './ContextMenu.css';
 
 export interface IContextItemList {
+    icon?: any;
     label: string;
     action(): any;
     disabled?: boolean;
@@ -73,6 +74,7 @@ export class ContextMenu extends React.Component<{ title?: string }> {
                                 }
                         }
                     >
+                        {action.icon && <img className="padding-right-s" width={15} height={15} src={action.icon} alt={action.label} />}
                         {action.label}
                     </div>
                     : <hr className="hr-white margin-bottom-xs margin-top-xs border-default" />

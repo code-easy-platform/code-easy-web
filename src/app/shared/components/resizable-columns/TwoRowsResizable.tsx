@@ -10,7 +10,7 @@ interface IRecipeProps {
     id: string,
 }
 
-export class TwoVerticalColumnsResizable extends Component<IRecipeProps> {
+export class TwoRowsResizable extends Component<IRecipeProps> {
 
     state = { bottomHeight: 400 }
 
@@ -41,12 +41,16 @@ export class TwoVerticalColumnsResizable extends Component<IRecipeProps> {
         const useMinHeight = this.props.useMinHeight !== undefined ? this.props.useMinHeight : true
 
         return (
-            <div className="flex1 flex-column">
-                {this.props.top}
-                <div className="flex-column" style={{ height: this.state.bottomHeight, minHeight: useMinHeight ? '20%' : undefined, maxHeight: '90%' }}>
-                    <hr className='hr' />
+            <div className="flex1 display-block">
+                <div className="full-width" style={{ height: (window.innerHeight - this.state.bottomHeight) - 60, minHeight: useMinHeight ? '5%' : undefined, maxHeight: '90%' }}>
+                    {this.props.top}
+                </div>
+                <hr className='hr' />
+                <div className="full-width" style={{ height: this.state.bottomHeight, minHeight: useMinHeight ? '10%' : undefined, maxHeight: '95%' }}>
                     <div className="grabber-col-right-resize-y" onMouseDown={this.mouseDown} />
-                    {this.props.bottom}
+                    <div className="flex1">
+                        {this.props.bottom}
+                    </div>
                 </div>
             </div>
         );

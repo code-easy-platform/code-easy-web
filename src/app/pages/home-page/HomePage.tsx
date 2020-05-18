@@ -1,28 +1,30 @@
 import React, { useState, useEffect } from 'react';
 import { useHistory } from 'react-router-dom';
 
-import { TwoColumnsResizable } from '../../shared/components/resizable-columns/TwoColumnsResizable';
 import { BottonStatusBar } from '../../shared/components/botton-status-bar/BottonStatusBar';
 import { ToolBarHome } from '../../shared/components/tool-bar/ToolBar';
 import { Button } from '../../shared/components/buttons/Button';
 import { Storage } from '../../shared/services/LocalStorage';
 import { Project } from '../../shared/interfaces/Aplication';
+import { Modal } from '../../shared/components/modal/Modal';
+import { Utils } from '../../shared/services/Utils';
+import { ImportProjects } from './ImportFiles';
 import { CardItem } from './CardItem';
 
 import icon_open_github from './../../assets/icons/icon-open-github.png';
 import icon_download from './../../assets/icons/icon-download.png';
+import icon_import from './../../assets/icons/icon-import.png';
 // import icon_plugins from './../../assets/icons/icon-plugins.png';
 import icon_config from './../../assets/icons/icon-config.png';
 // import icon_accont from './../../assets/icons/icon-accont.png';
 import { ProjectType } from '../../shared/enuns/ProjectType';
 // import icon_tips from './../../assets/icons/icon-tips.png';
 // import icon_help from './../../assets/icons/icon-help.png';
-import { Utils } from '../../shared/services/Utils';
-import { Modal } from '../../shared/components/modal/Modal';
 
 export const HomePage = () => {
 
     const [projects, setProjects] = useState<Project[]>(Storage.getProjects() || []);
+    const [openImportProjects, setOpenImportProjects] = useState(false);
     const [openConfig, setOpenConfig] = useState(false);
     const [isAdding, setIsAdding] = useState(false);
     const [filter, setFilter] = useState('');
@@ -50,20 +52,16 @@ export const HomePage = () => {
             <ToolBarHome />
             <hr className="hr" />
 
-            <div className="full-width" style={{ height: "calc(100vh - 60px)" }}>
-                <TwoColumnsResizable
-                    aligment={"left"}
-                    id={"TwoColumnsResizableHomepage"}
-                    columnLeft={
-                        <div className="flex1 background-panels flex-column">
-                            <div className="flex-space-between">
-                                <div>
-                                    <Button
-                                        icon={icon_config}
-                                        onClick={e => setOpenConfig(true)}
-                                        style={{ height: 'var(--tool-bar-height)', padding: '10px' }}
-                                    />
-                                    {/* <Button
+            <div className="flex1" style={{ height: "calc(100vh - 60px)" }}>
+                <div className="background-panels flex-column" style={{ width: 350 }}>
+                    <div className="flex-space-between">
+                        <div>
+                            <Button
+                                icon={icon_config}
+                                onClick={e => setOpenConfig(true)}
+                                style={{ height: 'var(--tool-bar-height)', padding: '10px' }}
+                            />
+                            {/* <Button
                                         icon={icon_plugins}
                                         style={{ height: 'var(--tool-bar-height)', padding: '10px' }}
                                     />
@@ -71,14 +69,21 @@ export const HomePage = () => {
                                         icon={icon_accont}
                                         style={{ height: 'var(--tool-bar-height)', padding: '10px' }}
                                     /> */}
-                                </div>
-                                <div>
-                                    <Button
-                                        icon={icon_download}
-                                        style={{ height: 'var(--tool-bar-height)', padding: '10px' }}
-                                        onClick={() => Utils.downloadFile('YourProjects', 'json', JSON.stringify(projects))}
-                                    />
-                                    {/* <Button
+                        </div>
+                        <div>
+                            <Button
+                                icon={icon_import}
+                                title={"Import a list of projects from your files"}
+                                style={{ height: 'var(--tool-bar-height)', padding: '10px' }}
+                                onClick={() => setOpenImportProjects(true)}
+                            />
+                            <Button
+                                icon={icon_download}
+                                title={"Download your projects"}
+                                style={{ height: 'var(--tool-bar-height)', padding: '10px' }}
+                                onClick={() => Utils.downloadFile('MyProjects', 'json', JSON.stringify(projects))}
+                            />
+                            {/* <Button
                                         icon={icon_tips}
                                         style={{ height: 'var(--tool-bar-height)', padding: '10px' }}
                                     />
@@ -86,89 +91,85 @@ export const HomePage = () => {
                                         icon={icon_help}
                                         style={{ height: 'var(--tool-bar-height)', padding: '10px' }}
                                     /> */}
-                                    <Button
-                                        title="Open on github"
-                                        icon={icon_open_github}
-                                        style={{ height: 'var(--tool-bar-height)', padding: '10px' }}
-                                        onClick={() => window.open('https://github.com/code-easy-platform')}
-                                    />
-                                </div>
-                            </div>
-                            <hr className="hr" />
-                            <div className="flex1 padding-s padding-top-m flex-column">
-                                <div>Recents</div>
-                                <div className="flex1 padding-top-s padding-top-m flex-column">
-                                    {projects.sort((a, b) => Utils.compareDate(b.projectConfigs.updatedDate, a.projectConfigs.updatedDate)).map(card => {
-                                        return <CardItem
-                                            listMode
-                                            key={card.projectConfigs.id}
-                                            onDelete={() => setProjects(Storage.removeProjectById(card.projectConfigs.id))}
-                                            onClick={() => {
-                                                Storage.setProjectById(card);
-                                                history.push(`/editor/${card.projectConfigs.id}`);
-                                            }}
-                                            item={{
-                                                type: card.projectConfigs.type,
-                                                name: card.projectConfigs.label,
-                                                id: card.projectConfigs.id || '',
-                                                version: card.projectConfigs.version,
-                                                description: card.projectConfigs.description,
-                                            }}
-                                        />
-                                    })}
-                                    {projects.length === 0 && <span style={{ opacity: 0.5 }}>No recently open items to show...</span>}
-                                </div>
-                            </div>
+                            <Button
+                                title="Open on github"
+                                icon={icon_open_github}
+                                style={{ height: 'var(--tool-bar-height)', padding: '10px' }}
+                                onClick={() => window.open('https://github.com/code-easy-platform')}
+                            />
                         </div>
-                    }
-                    columnRight={
-                        <div className="flex1 padding-xg flex-column">
-                            <div className="">
-                                <header className="main-header codicon-word-wrap">My projects</header>
-                            </div>
-                            <div>
-                                <input className="padding-m margin-top-m" onChange={e => setFilter(e.target.value)} style={{ width: '40%' }} placeholder="Type here to search ..." />
-                                <button
-                                    children="New project"
-                                    onClick={() => setIsAdding(true)}
-                                    className="btn outline-none padding-m margin-top-m margin-left-s border-radius background-highlighted"
+                    </div>
+                    <hr className="hr" />
+                    <div className="flex1 padding-s padding-top-m flex-column">
+                        <div>Recents</div>
+                        <div className="flex1 padding-top-s padding-top-m flex-column">
+                            {projects.sort((a, b) => Utils.compareDate(b.projectConfigs.updatedDate, a.projectConfigs.updatedDate)).map(card => {
+                                return <CardItem
+                                    listMode
+                                    key={card.projectConfigs.id}
+                                    onDelete={() => setProjects(Storage.removeProjectById(card.projectConfigs.id))}
+                                    onClick={() => {
+                                        Storage.setProjectById(card);
+                                        history.push(`/editor/${card.projectConfigs.id}`);
+                                    }}
+                                    item={{
+                                        type: card.projectConfigs.type,
+                                        name: card.projectConfigs.label,
+                                        id: card.projectConfigs.id || '',
+                                        version: card.projectConfigs.version,
+                                        description: card.projectConfigs.description,
+                                    }}
                                 />
-                            </div>
-                            <hr className="hr margin-bottom-s margin-top-s" style={{ backgroundColor: 'var(--main-background-highlighted)' }} />
-                            <div className="flex-wrap overflow-auto">
-                                {isAdding && <CardItem
-                                    key={'undefined'}
-                                    isAdding={true}
-                                    onClick={addNewProject}
-                                    onCancel={() => setIsAdding(false)}
-                                    item={{ id: '', name: '', version: '', description: '', type: ProjectType.api }}
-                                />}
-                                {projects
-                                    .filter(item => (item.projectConfigs.label.toLowerCase().indexOf(filter.toLowerCase()) >= 0))
-                                    .sort((a, b) => a.projectConfigs.label.localeCompare(b.projectConfigs.label))
-                                    .map(card => {
-                                        return <CardItem
-                                            key={card.projectConfigs.id}
-                                            onDelete={() => setProjects(Storage.removeProjectById(card.projectConfigs.id))}
-                                            onClick={() => {
-                                                Storage.setProjectById(card);
-                                                history.push(`/editor/${card.projectConfigs.id}`);
-                                            }}
-                                            item={{
-                                                type: card.projectConfigs.type,
-                                                name: card.projectConfigs.label,
-                                                id: card.projectConfigs.id || '',
-                                                version: card.projectConfigs.version,
-                                                description: card.projectConfigs.description,
-                                            }}
-                                        />
-                                    })
-                                }
-                                {(projects.length === 0 && !isAdding) && <div className="font-size-m margin-s" style={{ opacity: 0.5 }}>No itens to ahow...</div>}
-                            </div>
+                            })}
+                            {projects.length === 0 && <span style={{ opacity: 0.5 }}>No recently open items to show...</span>}
                         </div>
-                    }
-                />
+                    </div>
+                </div>
+                <div className="full-width padding-xg flex-column">
+                    <div>
+                        <header className="main-header codicon-word-wrap">My projects</header>
+                    </div>
+                    <div>
+                        <input className="padding-m margin-top-m" onChange={e => setFilter(e.target.value)} style={{ width: '40%' }} placeholder="Type here to search ..." />
+                        <button
+                            children="New project"
+                            onClick={() => setIsAdding(true)}
+                            className="btn outline-none padding-m margin-top-m margin-left-s border-radius background-highlighted"
+                        />
+                    </div>
+                    <hr className="hr margin-bottom-s margin-top-s" style={{ backgroundColor: 'var(--main-background-highlighted)' }} />
+                    <div className="flex-wrap overflow-auto">
+                        {isAdding && <CardItem
+                            key={'undefined'}
+                            isAdding={true}
+                            onClick={addNewProject}
+                            onCancel={() => setIsAdding(false)}
+                            item={{ id: '', name: '', version: '', description: '', type: ProjectType.api }}
+                        />}
+                        {projects
+                            .filter(item => (item.projectConfigs.label.toLowerCase().indexOf(filter.toLowerCase()) >= 0))
+                            .sort((a, b) => a.projectConfigs.label.localeCompare(b.projectConfigs.label))
+                            .map(card => {
+                                return <CardItem
+                                    key={card.projectConfigs.id}
+                                    onDelete={() => setProjects(Storage.removeProjectById(card.projectConfigs.id))}
+                                    onClick={() => {
+                                        Storage.setProjectById(card);
+                                        history.push(`/editor/${card.projectConfigs.id}`);
+                                    }}
+                                    item={{
+                                        type: card.projectConfigs.type,
+                                        name: card.projectConfigs.label,
+                                        id: card.projectConfigs.id || '',
+                                        version: card.projectConfigs.version,
+                                        description: card.projectConfigs.description,
+                                    }}
+                                />
+                            })
+                        }
+                        {(projects.length === 0 && !isAdding) && <div className="font-size-m margin-s" style={{ opacity: 0.5 }}>No itens to ahow...</div>}
+                    </div>
+                </div>
             </div>
 
             <hr className="hr" />
@@ -181,6 +182,13 @@ export const HomePage = () => {
                 children={<>
 
                 </>}
+            />
+            <ImportProjects
+                open={openImportProjects}
+                close={() => {
+                    setProjects(Storage.getProjects());
+                    setOpenImportProjects(false);
+                }}
             />
         </div>);
 }
