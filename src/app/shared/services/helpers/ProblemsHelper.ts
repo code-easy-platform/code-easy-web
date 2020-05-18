@@ -52,6 +52,27 @@ class ProblemsHelperService {
                     if ((flowItem.itemType !== ItemType.END && flowItem.itemType !== ItemType.COMMENT) && flowItem.sucessor.length === 0) {
                         addProblem(`In ${item.label} a flow item is missing a connector`, 'error');
                     }
+
+                    // Valida se action está com o campo action vazio.
+                    if (flowItem.itemType === ItemType.ACTION) {
+
+                        flowItem.properties.forEach(prop => {
+                            if (prop.name === "Action" && prop.value === "") {
+                                addProblem(`In ${item.label} the flow item ${flowItem.name} must have a valid value in the ${prop.name} field.`, 'error');
+                            }
+                            if (prop.name === "Action" && prop.value !== "") {
+
+                                const tabActions = project.tabs.find(tab => tab.configs.type === ComponentType.tabActions);
+                                if (!tabActions) return;
+
+                                if (!tabActions.itens.some(item => item.id === prop.value)) {
+                                    addProblem(`In ${item.label} the flow item ${flowItem.name} must have a valid value in the ${prop.name} field.`, 'error');
+                                }
+
+                            }
+                        });
+
+                    }
                 });
 
             });

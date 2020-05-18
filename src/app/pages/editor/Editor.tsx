@@ -57,7 +57,10 @@ export class Editor extends React.Component<any> {
     /** Usada para atualizar o state global do projeto e para atualizar o localstorage */
     private updateProjectState(project: Project) {
         Storage.setProjectById(project);
-        this.setState(project)
+        
+        this.setState({
+            project: project,
+        });
     }
 
     render() {

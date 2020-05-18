@@ -15,7 +15,7 @@ export class Utils {
     public static getUUID = () => uuidv4();
 
     /** Retorna uma string sem caracteres especiais, espaços e quebras de linha  */
-    public static getNormalizedString = (value: string) => value.trim().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+    public static getNormalizedString = (value: string) => value.trim().normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase();
 
     /** Executa o download de um arquivo */
     public static downloadFile = (filename: string, fileType: 'json', content: string) => {
