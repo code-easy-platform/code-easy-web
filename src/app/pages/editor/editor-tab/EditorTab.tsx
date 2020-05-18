@@ -1,7 +1,8 @@
 import React from 'react';
 
-import { TwoVerticalColumnsResizable } from '../../../shared/components/resizable-columns/TwoVerticalColumnsResizable';
 import { IItem, TypeValues, IProperties } from '../../../shared/components/properties-editor/shared/interfaces';
+import { BreadCampButton } from '../../../shared/components/code-editor/shared/Interfaces/CodeEditorInterfaces';
+import { TwoRowsResizable } from '../../../shared/components/resizable-columns/TwoRowsResizable';
 import { CodeEditorContext, ICodeEditorContext } from '../../../shared/services/contexts/CodeEditorContext';
 import { TwoColumnsResizable } from '../../../shared/components/resizable-columns/TwoColumnsResizable';
 import { TreeInterface } from '../../../shared/components/tree-manager/shared/models/TreeInterface';
@@ -15,10 +16,11 @@ import { OutputPanel } from '../../../shared/components/output-panel/OutputPanel
 import { ProblemsHelper } from '../../../shared/services/helpers/ProblemsHelper';
 import { FlowEditor } from '../../../shared/components/code-editor/CodeEditor';
 import { OutputHelper } from '../../../shared/services/helpers/OutputHelper';
+import { AssetsService } from '../../../shared/services/AssetsService';
 import { ComponentType } from '../../../shared/enuns/ComponentType';
 import { Utils } from '../../../shared/services/Utils';
-import { AssetsService } from '../../../shared/services/AssetsService';
-import { BreadCampButton } from '../../../shared/components/code-editor/shared/Interfaces/CodeEditorInterfaces';
+
+import icon_trash from './../../../assets/icons/icon-trash-light.png';
 
 
 enum CurrentFocus {
@@ -404,10 +406,11 @@ export default class EditorTab extends React.Component {
         let options: IContextItemList[] = [];
 
         if (data) {
-            const itemToDelte = data;
+            const itemToDelete = data;
 
             options.push({
-                label: 'Delete ' + itemToDelte.itemType,
+                icon: icon_trash,
+                label: 'Delete ' + itemToDelete.itemType,
                 action: () => {
                     let indexTreeToDelete: number | undefined;
                     let indexTabToDelete: number | undefined;
@@ -416,7 +419,7 @@ export default class EditorTab extends React.Component {
                     this.editorContext.project.tabs.forEach((tab: Tab, indexTab) => {
                         tab.itens.forEach((item, indexTree) => {
                             if (item.isEditing) {
-                                indexToDelete = item.itens.findIndex(flow_item => flow_item.id === itemToDelte.itemId);
+                                indexToDelete = item.itens.findIndex(flow_item => flow_item.id === itemToDelete.itemId);
                                 indexTreeToDelete = indexTree;
                                 indexTabToDelete = indexTab;
                             }
@@ -725,6 +728,8 @@ export default class EditorTab extends React.Component {
             });
 
             if (tabIndex !== undefined) {
+                const newName = Utils.newName('NewParam', this.editorContext.project.tabs[tabIndex].itens.map(item => item.label));
+
                 this.editorContext.project.tabs[tabIndex].itens.push(new ItemComponent({
                     id: Utils.getUUID(),
                     itens: [],
@@ -732,11 +737,11 @@ export default class EditorTab extends React.Component {
                     type: paramType,
                     isSelected: true,
                     isEditing: false,
-                    name: 'newparam',
-                    label: 'newparam',
+                    label: newName,
                     nodeExpanded: true,
                     itemPaiId: inputItemId,
-                    properties: this.propertiesEditorGetNewProperties(paramType, 'newparam'),
+                    name: newName.toLocaleLowerCase(),
+                    properties: this.propertiesEditorGetNewProperties(paramType, newName),
                 }));
             }
 
@@ -758,18 +763,20 @@ export default class EditorTab extends React.Component {
                 });
 
                 if (tabIndex !== undefined) {
+                    const newName = Utils.newName('NewRouter', this.editorContext.project.tabs[tabIndex].itens.map(item => item.label));
+
                     this.editorContext.project.tabs[tabIndex].itens.push(new ItemComponent({
                         itens: [],
+                        label: newName,
                         isEditing: true,
                         description: '',
                         isSelected: true,
-                        name: 'newrouter',
                         nodeExpanded: true,
-                        label: 'newrouter',
                         id: Utils.getUUID(),
                         itemPaiId: inputItemId,
                         type: ComponentType.router,
-                        properties: this.propertiesEditorGetNewProperties(ComponentType.router, 'newrouter'),
+                        name: newName.toLowerCase(),
+                        properties: this.propertiesEditorGetNewProperties(ComponentType.router, newName),
                     }));
                 }
             }
@@ -791,18 +798,20 @@ export default class EditorTab extends React.Component {
                 });
 
                 if (tabIndex !== undefined) {
+                    const newName = Utils.newName('NewAction', this.editorContext.project.tabs[tabIndex].itens.map(item => item.label));
+
                     this.editorContext.project.tabs[tabIndex].itens.push(new ItemComponent({
                         id: Utils.getUUID(),
                         itens: [],
                         description: '',
                         isSelected: true,
                         isEditing: true,
-                        name: 'newaction',
                         nodeExpanded: true,
-                        label: 'newaction',
+                        label: newName,
                         itemPaiId: inputItemId,
                         type: ComponentType.globalAction,
-                        properties: this.propertiesEditorGetNewProperties(ComponentType.globalAction, 'newaction'),
+                        name: newName.toLocaleLowerCase(),
+                        properties: this.propertiesEditorGetNewProperties(ComponentType.globalAction, newName),
                     }));
                 }
             }
@@ -814,6 +823,7 @@ export default class EditorTab extends React.Component {
                 if (tab.configs.type === ComponentType.tabRouters) {
 
                     options.push({
+                        icon: AssetsService.getIcon(ComponentType.router),
                         action: () => addRoute(itemId),
                         disabled: itemId !== undefined,
                         label: 'Add new route'
@@ -822,6 +832,7 @@ export default class EditorTab extends React.Component {
                 } else if (tab.configs.type === ComponentType.tabActions) {
 
                     options.push({
+                        icon: AssetsService.getIcon(ComponentType.globalAction),
                         action: () => addAction(itemId),
                         disabled: itemId !== undefined,
                         label: 'Add new action'
@@ -836,17 +847,25 @@ export default class EditorTab extends React.Component {
                         switch (item.type) {
                             case ComponentType.globalAction:
                                 options.push({
+                                    action: () => { },
+                                    label: '-',
+                                });
+
+                                options.push({
                                     action: () => addParam(itemId, ComponentType.inputVariable),
+                                    icon: AssetsService.getIcon(ComponentType.inputVariable),
                                     disabled: itemId === undefined,
-                                    label: 'Add input variable'
+                                    label: 'Add input variable',
                                 });
                                 options.push({
                                     action: () => addParam(itemId, ComponentType.outputVariable),
+                                    icon: AssetsService.getIcon(ComponentType.outputVariable),
                                     disabled: itemId === undefined,
                                     label: 'Add output variable'
                                 });
                                 options.push({
                                     action: () => addParam(itemId, ComponentType.localVariable),
+                                    icon: AssetsService.getIcon(ComponentType.localVariable),
                                     disabled: itemId === undefined,
                                     label: 'Add local variable'
                                 });
@@ -854,17 +873,25 @@ export default class EditorTab extends React.Component {
 
                             case ComponentType.localAction:
                                 options.push({
+                                    action: () => { },
+                                    label: '-',
+                                });
+
+                                options.push({
                                     action: () => addParam(itemId, ComponentType.inputVariable),
+                                    icon: AssetsService.getIcon(ComponentType.inputVariable),
                                     disabled: itemId === undefined,
                                     label: 'Add input variable'
                                 });
                                 options.push({
                                     action: () => addParam(itemId, ComponentType.outputVariable),
+                                    icon: AssetsService.getIcon(ComponentType.outputVariable),
                                     disabled: itemId === undefined,
                                     label: 'Add output variable'
                                 });
                                 options.push({
                                     action: () => addParam(itemId, ComponentType.localVariable),
+                                    icon: AssetsService.getIcon(ComponentType.localVariable),
                                     disabled: itemId === undefined,
                                     label: 'Add local variable'
                                 });
@@ -872,17 +899,25 @@ export default class EditorTab extends React.Component {
 
                             case ComponentType.router:
                                 options.push({
+                                    action: () => { },
+                                    label: '-',
+                                });
+
+                                options.push({
                                     action: () => addParam(itemId, ComponentType.inputVariable),
+                                    icon: AssetsService.getIcon(ComponentType.inputVariable),
                                     disabled: itemId === undefined,
                                     label: 'Add input param'
                                 });
                                 options.push({
                                     action: () => addParam(itemId, ComponentType.outputVariable),
+                                    icon: AssetsService.getIcon(ComponentType.outputVariable),
                                     disabled: itemId === undefined,
                                     label: 'Add output param'
                                 });
                                 options.push({
                                     action: () => addParam(itemId, ComponentType.localVariable),
+                                    icon: AssetsService.getIcon(ComponentType.localVariable),
                                     disabled: itemId === undefined,
                                     label: 'Add local variable'
                                 });
@@ -899,10 +934,15 @@ export default class EditorTab extends React.Component {
 
         if (itemId !== undefined) {
             options.push({
+                action: () => { },
+                label: '-',
+            });
+            options.push({
                 action: () => this.treeManagerRemoveItem(itemId),
                 disabled: itemId === undefined,
                 useConfirmation: false,
-                label: 'Delete'
+                icon: icon_trash,
+                label: 'Delete',
             });
         }
 
@@ -936,30 +976,28 @@ export default class EditorTab extends React.Component {
             <TwoColumnsResizable
                 aligment="right"
                 id="EditorTabCenter"
-                columnLeft={
-                    <TwoVerticalColumnsResizable
-                        id="TwoVerticalColumnsResizableOutput"
-                        useMinHeight={false}
+                left={
+                    <TwoRowsResizable
+                        id="TwoRowsResizableOutput"
+                        useMinHeight={true}
                         top={
-                            <div className="flex1 overflow-auto">
-                                <FlowEditor
-                                    id={"CODE_EDITOR"}
-                                    showToolbar={true}
-                                    itens={flowEditorItens}
-                                    toolItens={this.codeEditorGetToolBoxItens()}
-                                    enabledSelection={flowEditorItens.length !== 0}
-                                    onDropItem={this.codeEditorOnDropItem.bind(this)}
-                                    breadcrumbs={this.codeEditorGetBreadcamps.bind(this)()}
-                                    onChangeItens={this.codeEditorOutputFlowItens.bind(this)}
-                                    allowedsInDrop={[ComponentType.globalAction, ComponentType.localAction, ComponentType.localVariable, ComponentType.inputVariable, ComponentType.outputVariable]}
-                                    onContextMenu={(data, e) => {
-                                        if (e) {
-                                            e.preventDefault();
-                                            ContextMenuService.showMenu(e.clientX, e.clientY, this.codeEditorContextMenu.bind(this)(data, e));
-                                        }
-                                    }}
-                                />
-                            </div>
+                            <FlowEditor
+                                id={"CODE_EDITOR"}
+                                showToolbar={true}
+                                itens={flowEditorItens}
+                                toolItens={this.codeEditorGetToolBoxItens()}
+                                enabledSelection={flowEditorItens.length !== 0}
+                                onDropItem={this.codeEditorOnDropItem.bind(this)}
+                                breadcrumbs={this.codeEditorGetBreadcamps.bind(this)()}
+                                onChangeItens={this.codeEditorOutputFlowItens.bind(this)}
+                                allowedsInDrop={[ComponentType.globalAction, ComponentType.localAction, ComponentType.localVariable, ComponentType.inputVariable, ComponentType.outputVariable]}
+                                onContextMenu={(data, e) => {
+                                    if (e) {
+                                        e.preventDefault();
+                                        ContextMenuService.showMenu(e.clientX, e.clientY, this.codeEditorContextMenu.bind(this)(data, e));
+                                    }
+                                }}
+                            />
                         }
                         bottom={
                             <OutputPanel
@@ -969,10 +1007,10 @@ export default class EditorTab extends React.Component {
                         }
                     />
                 }
-                columnRight={
+                right={
                     <div className="flex1 background-panels">
-                        <TwoVerticalColumnsResizable
-                            id="EditorTabRightVertical"
+                        <TwoRowsResizable
+                            id="EditorTabRightRows"
                             top={
                                 <TreeManager
                                     isUseDrag={true}

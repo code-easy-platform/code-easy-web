@@ -12,7 +12,7 @@ const subject = new Subject<IContextMenu>();
 export const ContextMenuService = {
     clearMessages: () => subject.next({ top: 0, left: 0, actions: [] }),
     getMessage: () => subject.asObservable(),
-    showMenu: (left: number, top: number, actions: IContextItemList[]) => {
+    showMenu: (left: number, top: number, actions: IContextItemList[], icon?: any) => {
         subject.next({ left, top, actions });
     }
 }
