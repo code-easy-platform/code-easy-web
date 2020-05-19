@@ -32,6 +32,7 @@ export const PropItem: React.FC<PropItemProps> = (props) => { // Extende outra i
         nameHasError: props.nameHasError,
         information: props.information,
         suggestions: props.suggestions,
+        openEditor: props.openEditor,
         value: props.value,
         type: props.type,
         name: props.name,
@@ -47,6 +48,7 @@ export const PropItem: React.FC<PropItemProps> = (props) => { // Extende outra i
             nameHasError: props.nameHasError,
             information: props.information,
             suggestions: props.suggestions,
+            openEditor: props.openEditor,
             value: props.value,
             type: props.type,
             name: props.name,
@@ -141,9 +143,9 @@ export const PropItem: React.FC<PropItemProps> = (props) => { // Extende outra i
                         <ExpressionInput
                             className="full-width background-bars"
                             onChange={e => setState({ ...state, value: e.target.value })}
-                            openEditor={e => alert('Abre o editor...')}
                             disabled={state.editValueDisabled}
                             onKeyDown={(e) => onkeyPress(e)}
+                            openEditor={state.openEditor}
                             onBlur={_ => onChange(state)}
                             key={'prop_key_' + state.id}
                             style={css_prop_item_input}
@@ -252,6 +254,7 @@ export const PropItem: React.FC<PropItemProps> = (props) => { // Extende outra i
                     type={state.type}
                     value={state.value}
                     nameHasError={nameHasError}
+                    openEditor={state.openEditor}
                     valueHasError={valueHasError}
                     onBlur={_ => onChange(state)}
                     key={'assign_key_' + state.id}

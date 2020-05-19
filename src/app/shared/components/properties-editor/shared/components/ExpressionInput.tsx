@@ -1,7 +1,7 @@
 import React from 'react';
 
 interface ExpressionInputProps extends React.DetailedHTMLProps<React.InputHTMLAttributes<HTMLInputElement>, HTMLInputElement> {
-    openEditor?(e: any): void;
+    openEditor?(e: React.MouseEvent<HTMLButtonElement, MouseEvent>): void;
 }
 export const ExpressionInput: React.FC<ExpressionInputProps> = ({ openEditor, ...props }) => {
 

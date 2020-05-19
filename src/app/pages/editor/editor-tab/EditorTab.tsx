@@ -1,13 +1,13 @@
 import React from 'react';
-import { Utils } from 'code-easy-components';
+import { Utils, IconTrash } from 'code-easy-components';
 
 import { IItem, TypeValues, IProperties } from '../../../shared/components/properties-editor/shared/interfaces';
 import { BreadCampButton } from '../../../shared/components/code-editor/shared/Interfaces/CodeEditorInterfaces';
-import { TwoRowsResizable } from '../../../shared/components/resizable-columns/TwoRowsResizable';
 import { CodeEditorContext, ICodeEditorContext } from '../../../shared/services/contexts/CodeEditorContext';
 import { TwoColumnsResizable } from '../../../shared/components/resizable-columns/TwoColumnsResizable';
 import { TreeInterface } from '../../../shared/components/tree-manager/shared/models/TreeInterface';
 import { PropertiesEditor } from './../../../shared/components/properties-editor/PropertiesEditor';
+import { TwoRowsResizable } from '../../../shared/components/resizable-columns/TwoRowsResizable';
 import { ContextMenuService } from '../../../shared/components/context-menu/ContextMenuService';
 import { FlowItem, ItemType } from './../../../shared/components/code-editor/models/ItemFluxo';
 import { Tab, ItemComponent, ItemFlowComplete } from '../../../shared/interfaces/Aplication';
@@ -19,8 +19,7 @@ import { FlowEditor } from '../../../shared/components/code-editor/CodeEditor';
 import { OutputHelper } from '../../../shared/services/helpers/OutputHelper';
 import { AssetsService } from '../../../shared/services/AssetsService';
 import { ComponentType } from '../../../shared/enuns/ComponentType';
-
-import icon_trash from './../../../assets/icons/icon-trash-light.png';
+import { Modal } from '../../../shared/components/modal/Modal';
 
 
 enum CurrentFocus {
@@ -31,8 +30,9 @@ enum CurrentFocus {
 export default class EditorTab extends React.Component {
     private editorContext: ICodeEditorContext = this.context;
 
-    state: { currentFocus: CurrentFocus } = {
+    state: { currentFocus: CurrentFocus, modalOpen: boolean } = {
         currentFocus: CurrentFocus.tree,
+        modalOpen: false,
     }
 
 
@@ -78,6 +78,7 @@ export default class EditorTab extends React.Component {
                 if (index && (index < 0)) return;
 
 
+                // itemEditing.itens[index].name;
 
                 itemEditing.itens[index].name = item.name;
                 itemEditing.itens[index].properties = item.properties;
@@ -138,6 +139,7 @@ export default class EditorTab extends React.Component {
                             }
                         });
                     }
+
                 });
 
                 mappedItens.push({
@@ -437,7 +439,7 @@ export default class EditorTab extends React.Component {
             const itemToDelete = data;
 
             options.push({
-                icon: icon_trash,
+                icon: IconTrash,
                 label: 'Delete ' + itemToDelete.itemType,
                 action: () => {
                     let indexTreeToDelete: number | undefined;
@@ -471,6 +473,7 @@ export default class EditorTab extends React.Component {
         this.codeEditorGetToolBoxItens().forEach(item => {
             options.push({
                 label: 'Add ' + item.name,
+                icon: AssetsService.getIcon(item.itemType),
                 action: () => {
 
                     // Encontra a tab certa e adiciona um item de fluxo aos itens
@@ -969,7 +972,7 @@ export default class EditorTab extends React.Component {
                 action: () => this.treeManagerRemoveItem(itemId),
                 disabled: itemId === undefined,
                 useConfirmation: false,
-                icon: icon_trash,
+                icon: IconTrash,
                 label: 'Delete',
             });
         }
@@ -1001,71 +1004,80 @@ export default class EditorTab extends React.Component {
     render() {
         const flowEditorItens = this.codeEditorGetItensLogica.bind(this)();
         return (
-            <TwoColumnsResizable
-                aligment="right"
-                id="EditorTabCenter"
-                left={
-                    <TwoRowsResizable
-                        id="TwoRowsResizableOutput"
-                        useMinHeight={true}
-                        top={
-                            <FlowEditor
-                                id={"CODE_EDITOR"}
-                                showToolbar={true}
-                                itens={flowEditorItens}
-                                toolItens={this.codeEditorGetToolBoxItens()}
-                                enabledSelection={flowEditorItens.length !== 0}
-                                onDropItem={this.codeEditorOnDropItem.bind(this)}
-                                breadcrumbs={this.codeEditorGetBreadcamps.bind(this)()}
-                                onChangeItens={this.codeEditorOutputFlowItens.bind(this)}
-                                allowedsInDrop={[ComponentType.globalAction, ComponentType.localAction, ComponentType.localVariable, ComponentType.inputVariable, ComponentType.outputVariable]}
-                                onContextMenu={(data, e) => {
-                                    if (e) {
-                                        e.preventDefault();
-                                        ContextMenuService.showMenu(e.clientX, e.clientY, this.codeEditorContextMenu.bind(this)(data, e));
-                                    }
-                                }}
-                            />
-                        }
-                        bottom={
-                            <OutputPanel
-                                problems={ProblemsHelper.getProblems(this.editorContext.project)}
-                                output={OutputHelper.getOutput(this.editorContext.project)}
-                            />
-                        }
-                    />
-                }
-                right={
-                    <div className="flex1 background-panels">
+            <>
+                <TwoColumnsResizable
+                    aligment="right"
+                    id="EditorTabCenter"
+                    left={
                         <TwoRowsResizable
-                            id="EditorTabRightRows"
+                            id="TwoRowsResizableOutput"
+                            useMinHeight={true}
                             top={
-                                <TreeManager
-                                    isUseDrag={true}
-                                    isUseDrop={true}
-                                    onClick={this.treeManagerOnClick.bind(this)}
-                                    onKeyDown={this.treeManagerKeyDowm.bind(this)}
-                                    onExpandNode={this.treeManagerOnNodeExpand.bind(this)}
-                                    onDropItem={this.treeManagerOnDropItem.bind(this)}
-                                    onDoubleClick={this.treeManagerOnDoubleClick.bind(this)}
-                                    onContextMenu={(itemId, e) => {
-                                        e.preventDefault();
-                                        ContextMenuService.showMenu(e.clientX, e.clientY, this.treeManagerContextMenu.bind(this)(itemId));
+                                <FlowEditor
+                                    id={"CODE_EDITOR"}
+                                    showToolbar={true}
+                                    itens={flowEditorItens}
+                                    toolItens={this.codeEditorGetToolBoxItens()}
+                                    enabledSelection={flowEditorItens.length !== 0}
+                                    onDropItem={this.codeEditorOnDropItem.bind(this)}
+                                    breadcrumbs={this.codeEditorGetBreadcamps.bind(this)()}
+                                    onChangeItens={this.codeEditorOutputFlowItens.bind(this)}
+                                    allowedsInDrop={[ComponentType.globalAction, ComponentType.localAction, ComponentType.localVariable, ComponentType.inputVariable, ComponentType.outputVariable]}
+                                    onContextMenu={(data, e) => {
+                                        if (e) {
+                                            e.preventDefault();
+                                            ContextMenuService.showMenu(e.clientX, e.clientY, this.codeEditorContextMenu.bind(this)(data, e));
+                                        }
                                     }}
-                                    itens={this.treeManagerGetTree.bind(this)()}
                                 />
                             }
                             bottom={
-                                <PropertiesEditor
-                                    onChangeInputWidth={width => console.log(width)}
-                                    onChange={this.propertiesEditorOutputItens.bind(this)}
-                                    item={this.propertiesEditorGetSelectedItem.bind(this)(this.state.currentFocus)}
+                                <OutputPanel
+                                    problems={ProblemsHelper.getProblems(this.editorContext.project)}
+                                    output={OutputHelper.getOutput(this.editorContext.project)}
                                 />
                             }
                         />
-                    </div>
-                }
-            />
+                    }
+                    right={
+                        <div className="flex1 background-panels">
+                            <TwoRowsResizable
+                                id="EditorTabRightRows"
+                                top={
+                                    <TreeManager
+                                        isUseDrag={true}
+                                        isUseDrop={true}
+                                        onClick={this.treeManagerOnClick.bind(this)}
+                                        onKeyDown={this.treeManagerKeyDowm.bind(this)}
+                                        onExpandNode={this.treeManagerOnNodeExpand.bind(this)}
+                                        onDropItem={this.treeManagerOnDropItem.bind(this)}
+                                        onDoubleClick={this.treeManagerOnDoubleClick.bind(this)}
+                                        onContextMenu={(itemId, e) => {
+                                            e.preventDefault();
+                                            ContextMenuService.showMenu(e.clientX, e.clientY, this.treeManagerContextMenu.bind(this)(itemId));
+                                        }}
+                                        itens={this.treeManagerGetTree.bind(this)()}
+                                    />
+                                }
+                                bottom={
+                                    <PropertiesEditor
+                                        onChangeInputWidth={width => console.log(width)}
+                                        onChange={this.propertiesEditorOutputItens.bind(this)}
+                                        item={this.propertiesEditorGetSelectedItem.bind(this)(this.state.currentFocus)}
+                                    />
+                                }
+                            />
+                        </div>
+                    }
+                />
+                <Modal
+                    isOpen={this.state.modalOpen}
+                    onClose={value => {
+                        this.setState({ modalOpen: value });
+                        return value;
+                    }}
+                />
+            </>
         );
     }
 

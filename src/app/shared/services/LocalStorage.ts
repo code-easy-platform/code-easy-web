@@ -4,6 +4,7 @@ import { ItemType } from "../components/code-editor/models/ItemFluxo";
 import { ComponentType } from "../enuns/ComponentType";
 import { ProjectType } from "../enuns/ProjectType";
 import { Utils } from "code-easy-components";
+import { PropertieTypes } from "../enuns/PropertieTypes";
 
 export enum StorageEnum {
     projectsStorage = "PROJECTS_STORAGE",
@@ -50,70 +51,80 @@ const mockProjeto: Project = new Project({
                             id: '1',
                             name: 'Label',
                             value: "Authenticate",
-                            type: TypeValues.string
+                            type: TypeValues.string,
+                            propertieType: PropertieTypes.label,
                         },
                         {
                             id: '2',
                             name: 'Description',
                             type: TypeValues.bigstring,
-                            value: "Autentica os usuários!"
+                            value: "Autentica os usuários!",
+                            propertieType: PropertieTypes.description,
                         },
                         {
                             id: '3',
                             name: 'Url',
                             type: TypeValues.string,
-                            value: "/authenticate"
+                            value: "/authenticate",
+                            propertieType: PropertieTypes.url,
                         }
                     ],
                     itens: [
                         new ItemFlowComplete({
                             id: '1', sucessor: ['2'], top: 100, left: 80, width: 50, height: 50, name: "START", itemType: ItemType.START, isSelected: false, properties: [{
-                                id: `${Utils.getUUID()}`,
-                                value: "START",
                                 name: "Label",
+                                value: "START",
+                                id: `${Utils.getUUID()}`,
                                 type: TypeValues.viewOnly,
+                                propertieType: PropertieTypes.label,
                             },
                             {
-                                id: `${Utils.getUUID()}`,
                                 value: "Descrição",
                                 name: "Description",
+                                id: `${Utils.getUUID()}`,
                                 type: TypeValues.bigstring,
+                                propertieType: PropertieTypes.description,
                             }]
                         }),
                         new ItemFlowComplete({
                             id: '2', sucessor: ['3'], top: 200, left: 80, width: 50, height: 50, isSelected: false, name: "IF", itemType: ItemType.IF, properties: [{
-                                id: `${Utils.getUUID()}`,
                                 value: "IF",
                                 name: "Label",
                                 type: TypeValues.string,
+                                id: `${Utils.getUUID()}`,
+                                propertieType: PropertieTypes.label,
                             },
                             {
-                                id: `${Utils.getUUID()}`,
                                 value: "",
                                 name: "Condiction",
+                                id: `${Utils.getUUID()}`,
                                 type: TypeValues.expression,
+                                propertieType: PropertieTypes.any,
                             }]
                         }),
                         new ItemFlowComplete({
                             id: '3', sucessor: ['4'], top: 300, left: 80, width: 50, height: 50, isSelected: false, name: "FOREACH", itemType: ItemType.FOREACH, properties: [{
-                                id: `${Utils.getUUID()}`,
                                 value: "FOREACH",
                                 name: "Label",
                                 type: TypeValues.string,
+                                id: `${Utils.getUUID()}`,
+                                propertieType: PropertieTypes.label,
                             },
                             {
-                                id: `${Utils.getUUID()}`,
                                 value: "",
                                 name: "Source",
+                                id: `${Utils.getUUID()}`,
                                 type: TypeValues.expression,
+                                propertieType: PropertieTypes.any,
                             }]
                         }),
                         new ItemFlowComplete({
                             id: '4', sucessor: ['5'], top: 400, left: 80, width: 50, height: 50, isSelected: false, name: "ACTION", itemType: ItemType.ACTION, properties: [{
-                                id: `${Utils.getUUID()}`,
-                                value: "ACTION",
                                 name: "Label",
+                                value: "ACTION",
                                 type: TypeValues.string,
+                                id: `${Utils.getUUID()}`,
+                                propertieType: PropertieTypes.label,
                             },
                             {
                                 id: `${Utils.getUUID()}`,
@@ -128,6 +139,7 @@ const mockProjeto: Project = new Project({
                                 value: "SWITCH",
                                 name: "Label",
                                 type: TypeValues.string,
+                                propertieType: PropertieTypes.label,
                             }]
                         }),
                         new ItemFlowComplete({
@@ -136,6 +148,7 @@ const mockProjeto: Project = new Project({
                                 value: "ASSIGN",
                                 name: "Label",
                                 type: TypeValues.string,
+                                propertieType: PropertieTypes.label,
                             },
                             {
                                 id: `${Utils.getUUID()}`,
@@ -151,6 +164,7 @@ const mockProjeto: Project = new Project({
                                 value: "END",
                                 name: "Label",
                                 type: TypeValues.viewOnly,
+                                propertieType: PropertieTypes.label,
                             }]
                         }),
                     ]
@@ -170,7 +184,8 @@ const mockProjeto: Project = new Project({
                             id: '1',
                             name: 'Label',
                             value: "Signup",
-                            type: TypeValues.string
+                            type: TypeValues.string,
+                            propertieType: PropertieTypes.label,
                         },
                         {
                             id: '2',
@@ -192,6 +207,7 @@ const mockProjeto: Project = new Project({
                                 value: "START",
                                 name: "Label",
                                 type: TypeValues.viewOnly,
+                                propertieType: PropertieTypes.label,
                             },
                             {
                                 id: `${Utils.getUUID()}`,
@@ -206,6 +222,7 @@ const mockProjeto: Project = new Project({
                                 value: "IF",
                                 name: "Label",
                                 type: TypeValues.string,
+                                propertieType: PropertieTypes.label,
                             },
                             {
                                 id: `${Utils.getUUID()}`,

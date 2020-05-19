@@ -1,37 +1,60 @@
-import { ComponentType } from "../enuns/ComponentType";
-import { ItemType } from "../components/code-editor/models/ItemFluxo";
+import {
+    IconRouter, IconAction, IconInputParam, IconLocalParam, IconFolder, IconOutpuParam,
+    IconFlowAction, IconFlowAssign, IconFlowComment, IconFlowEnd, IconFlowForeach,
+    IconFlowIf, IconFlowStart, IconFlowSwitch
+} from 'code-easy-components';
 
-import icon_output_param from './../../assets/icons/icon-output-param.png';
-import icon_local_param from './../../assets/icons/icon-local-param.png';
-import icon_input_param from './../../assets/icons/icon-input-param.png';
-import icon_router from './../../assets/icons/icon-router.png';
-import icon_action from './../../assets/icons/icon-action.png';
-import icon_folder from './../../assets/icons/icon-folder.png';
+import { ItemType } from "../components/code-editor/models/ItemFluxo";
+import { ComponentType } from "../enuns/ComponentType";
 
 
 class Assets {
     public getIcon(type: ComponentType | ItemType): string {
         switch (type) {
+            case ItemType.ACTION:
+                return IconFlowAction;
+
+            case ItemType.ASSIGN:
+                return IconFlowAssign;
+
+            case ItemType.COMMENT:
+                return IconFlowComment;
+
+            case ItemType.END:
+                return IconFlowEnd;
+
+            case ItemType.FOREACH:
+                return IconFlowForeach;
+
+            case ItemType.IF:
+                return IconFlowIf;
+
+            case ItemType.START:
+                return IconFlowStart;
+
+            case ItemType.SWITCH:
+                return IconFlowSwitch;
+
             case ComponentType.router:
-                return icon_router;
+                return IconRouter;
 
             case ComponentType.globalAction:
-                return icon_action;
+                return IconAction;
 
             case ComponentType.localAction:
-                return icon_action;
+                return IconAction;
 
             case ComponentType.grouper:
-                return icon_folder;
+                return IconFolder;
 
             case ComponentType.inputVariable:
-                return icon_input_param;
+                return IconInputParam;
 
             case ComponentType.localVariable:
-                return icon_local_param;
+                return IconLocalParam;
 
             case ComponentType.outputVariable:
-                return icon_output_param;
+                return IconOutpuParam;
 
             default:
                 return '';
