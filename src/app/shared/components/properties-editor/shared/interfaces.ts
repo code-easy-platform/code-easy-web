@@ -6,6 +6,7 @@ export enum TypeValues {
     selection='selection',
     viewOnly='viewOnly',
     boolean='boolean',
+    addProp='addProp',
     string='string',
     number='number',
     binary='binary',
@@ -28,6 +29,7 @@ export interface IProperties {
     id: string | undefined;
     nameHasError?: boolean;
     information?: string;
+    propertieType?: any;
     type: TypeValues;
     name: string;
     value: any;

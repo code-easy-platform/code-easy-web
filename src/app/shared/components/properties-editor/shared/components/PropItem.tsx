@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { IconMoreInfo } from 'code-easy-components';
 
 import { IProperties, TypeValues } from '../interfaces';
 import { CustomInputFile } from './CustomInputFile';
@@ -7,7 +8,6 @@ import { DefaultSwitch } from './DefaultSwitch';
 import { Resizer } from './Resizer';
 import { Assign } from './Assign';
 
-import icon_info from './../icons/info-icon.png';
 
 const css_prop_item: React.CSSProperties = {
     justifyContent: 'space-between',
@@ -15,17 +15,19 @@ const css_prop_item: React.CSSProperties = {
     alignItems: 'center',
 }
 interface PropItemProps extends IProperties {
+    onclick?(e: React.MouseEvent<HTMLInputElement, MouseEvent>): void;
     onChangeInputWidth(width: number): void;
-    onChange(data: IProperties): void;
+    onChange?(data: IProperties): void;
     inputWidth: number;
 }
 export const PropItem: React.FC<PropItemProps> = (props) => { // Extende outra interface
 
-    const { inputWidth, onChange, onChangeInputWidth, valueHasError = false, nameHasError = false } = props;
+    const { inputWidth, onChange = () => { }, onChangeInputWidth, onclick, valueHasError = false, nameHasError = false } = props;
 
     const [state, setState] = useState<IProperties>({
         editValueDisabled: props.editValueDisabled,
         editNameDisabled: props.editNameDisabled,
+        propertieType: props.propertieType,
         valueHasError: props.valueHasError,
         nameHasError: props.nameHasError,
         information: props.information,
@@ -40,6 +42,7 @@ export const PropItem: React.FC<PropItemProps> = (props) => { // Extende outra i
         setState({
             editValueDisabled: props.editValueDisabled,
             editNameDisabled: props.editNameDisabled,
+            propertieType: props.propertieType,
             valueHasError: props.valueHasError,
             nameHasError: props.nameHasError,
             information: props.information,
@@ -78,7 +81,7 @@ export const PropItem: React.FC<PropItemProps> = (props) => { // Extende outra i
                 <div key={'prop_item_key_' + state.id} style={css_prop_item} className="padding-s padding-bottom-none">
                     <label htmlFor={'prop_id_' + state.id} className="flex1 " style={css_prop_item_label} info-message={state.information}>
                         {state.name}
-                        {(state.information !== "" && state.information !== undefined) && <img className="margin-left-xs" aria-label="teste" width={10} height={10} src={icon_info} alt="info-icon" />}
+                        {(state.information !== "" && state.information !== undefined) && <img className="margin-left-xs" aria-label="teste" width={10} height={10} src={IconMoreInfo} alt="info-icon" />}
                     </label>
                     <Resizer onChange={newWidth => onChangeInputWidth(newWidth)} />
                     <div style={{ width: inputWidth ? `${inputWidth}px` : '70%', minWidth: minWidth, maxWidth: '90%' }}>
@@ -106,7 +109,7 @@ export const PropItem: React.FC<PropItemProps> = (props) => { // Extende outra i
                 <div key={'prop_item_key_' + state.id} style={css_prop_item} className="padding-s padding-bottom-none">
                     <label htmlFor={'prop_id_' + state.id} className="flex1 " style={css_prop_item_label} info-message={state.information}>
                         {state.name}
-                        {(state.information !== "" && state.information !== undefined) && <img className="margin-left-xs" aria-label="teste" width={10} height={10} src={icon_info} alt="info-icon" />}
+                        {(state.information !== "" && state.information !== undefined) && <img className="margin-left-xs" aria-label="teste" width={10} height={10} src={IconMoreInfo} alt="info-icon" />}
                     </label>
                     <Resizer onChange={newWidth => onChangeInputWidth(newWidth)} />
                     <div style={{ width: inputWidth ? `${inputWidth}px` : '70%', minWidth: minWidth, maxWidth: '90%' }}>
@@ -131,7 +134,7 @@ export const PropItem: React.FC<PropItemProps> = (props) => { // Extende outra i
                 <div key={'prop_item_key_' + state.id} style={css_prop_item} className="padding-s padding-bottom-none">
                     <label htmlFor={'prop_id_' + state.id} className="flex1 " style={css_prop_item_label} info-message={state.information}>
                         {state.name}
-                        {(state.information !== "" && state.information !== undefined) && <img className="margin-left-xs" aria-label="teste" width={10} height={10} src={icon_info} alt="info-icon" />}
+                        {(state.information !== "" && state.information !== undefined) && <img className="margin-left-xs" aria-label="teste" width={10} height={10} src={IconMoreInfo} alt="info-icon" />}
                     </label>
                     <Resizer onChange={newWidth => onChangeInputWidth(newWidth)} />
                     <div style={{ width: inputWidth ? `${inputWidth}px` : '70%', minWidth: minWidth, maxWidth: '90%' }}>
@@ -156,7 +159,7 @@ export const PropItem: React.FC<PropItemProps> = (props) => { // Extende outra i
                 <div key={'prop_item_key_' + state.id} style={css_prop_item} className="padding-s padding-bottom-none">
                     <label htmlFor={'prop_id_' + state.id} className="flex1 " style={css_prop_item_label} info-message={state.information}>
                         {state.name}
-                        {(state.information !== "" && state.information !== undefined) && <img className="margin-left-xs" aria-label="teste" width={10} height={10} src={icon_info} alt="info-icon" />}
+                        {(state.information !== "" && state.information !== undefined) && <img className="margin-left-xs" aria-label="teste" width={10} height={10} src={IconMoreInfo} alt="info-icon" />}
                     </label>
                     <Resizer onChange={newWidth => onChangeInputWidth(newWidth)} />
                     <div style={{ width: inputWidth ? `${inputWidth}px` : '70%', minWidth: minWidth, maxWidth: '90%' }}>
@@ -181,7 +184,7 @@ export const PropItem: React.FC<PropItemProps> = (props) => { // Extende outra i
                 <div key={'prop_item_key_' + state.id} style={css_prop_item} className="padding-s padding-bottom-none">
                     <label htmlFor={'prop_id_' + state.id} className="flex1 " style={css_prop_item_label} info-message={state.information}>
                         {state.name}
-                        {(state.information !== "" && state.information !== undefined) && <img className="margin-left-xs" aria-label="teste" width={10} height={10} src={icon_info} alt="info-icon" />}
+                        {(state.information !== "" && state.information !== undefined) && <img className="margin-left-xs" aria-label="teste" width={10} height={10} src={IconMoreInfo} alt="info-icon" />}
                     </label>
                     <Resizer onChange={newWidth => onChangeInputWidth(newWidth)} />
                     <div style={{ width: inputWidth ? `${inputWidth}px` : '70%', minWidth: minWidth, maxWidth: '90%' }}>
@@ -207,7 +210,7 @@ export const PropItem: React.FC<PropItemProps> = (props) => { // Extende outra i
                 <div key={'prop_item_key_' + state.id} style={css_prop_item} className="padding-s padding-bottom-none">
                     <label htmlFor={'prop_id_' + state.id} className="flex1 " style={css_prop_item_label} info-message={state.information}>
                         {state.name}
-                        {(state.information !== "" && state.information !== undefined) && <img className="margin-left-xs" aria-label="teste" width={10} height={10} src={icon_info} alt="info-icon" />}
+                        {(state.information !== "" && state.information !== undefined) && <img className="margin-left-xs" aria-label="teste" width={10} height={10} src={IconMoreInfo} alt="info-icon" />}
                     </label>
                     <Resizer onChange={newWidth => onChangeInputWidth(newWidth)} />
                     <div style={{ width: inputWidth ? `${inputWidth}px` : '70%', minWidth: minWidth, maxWidth: '90%' }}>
@@ -229,7 +232,7 @@ export const PropItem: React.FC<PropItemProps> = (props) => { // Extende outra i
                 <div key={'prop_key_' + state.id} style={css_prop_item} className="padding-s padding-bottom-none">
                     <label htmlFor={'prop_id_' + state.id} className="flex1 " style={css_prop_item_label} info-message={state.information}>
                         {state.name}
-                        {(state.information !== "" && state.information !== undefined) && <img className="margin-left-xs" aria-label="teste" width={10} height={10} src={icon_info} alt="info-icon" />}
+                        {(state.information !== "" && state.information !== undefined) && <img className="margin-left-xs" aria-label="teste" width={10} height={10} src={IconMoreInfo} alt="info-icon" />}
                     </label>
                     <DefaultSwitch
                         checked={state.value}
@@ -254,6 +257,7 @@ export const PropItem: React.FC<PropItemProps> = (props) => { // Extende outra i
                     key={'assign_key_' + state.id}
                     information={state.information}
                     onKeyDown={(e) => onkeyPress(e)}
+                    propertieType={state.propertieType}
                     editNameDisabled={state.editNameDisabled}
                     editValueDisabled={state.editValueDisabled}
                     onChangeName={name => setState({ ...state, name })}
@@ -266,26 +270,29 @@ export const PropItem: React.FC<PropItemProps> = (props) => { // Extende outra i
                 <div key={'prop_key_' + state.id} style={css_prop_item} className="padding-s padding-bottom-none">
                     <label htmlFor={'prop_id_' + state.id} className="flex1 " style={css_prop_item_label} info-message={state.information}>
                         {state.name}
-                        {(state.information !== "" && state.information !== undefined) && <img className="margin-left-xs" aria-label="teste" width={10} height={10} src={icon_info} alt="info-icon" />}
+                        {(state.information !== "" && state.information !== undefined) && <img className="margin-left-xs" aria-label="teste" width={10} height={10} src={IconMoreInfo} alt="info-icon" />}
                     </label>
                     <Resizer onChange={newWidth => onChangeInputWidth(newWidth)} />
                     <select
                         style={{ ...css_prop_item_input, width: inputWidth ? `${inputWidth}px` : '70%', minWidth: minWidth, maxWidth: '90%' }}
-                        onChange={e => setState({ ...state, value: e.target.value })}
+                        onChange={e => {
+                            setState({ ...state, value: e.target.value });
+                            onChange({ ...state, value: e.target.value });
+                        }}
                         disabled={state.editValueDisabled}
                         className={"background-bars"}
-                        onBlur={_ => onChange(state)}
                         key={'prop_key_' + state.id}
                         id={'prop_id_' + state.id}
                         value={state.value}
                     >
                         <option value={"undefined"}>Selecione</option>
-                        {state.suggestions?.map(item => {
+                        {state.suggestions?.map((item, index) => {
                             return (
                                 <option
                                     disabled={item.disabled}
                                     children={item.label}
                                     value={item.value}
+                                    key={index}
                                 />
                             );
                         })}
@@ -298,15 +305,17 @@ export const PropItem: React.FC<PropItemProps> = (props) => { // Extende outra i
                 <div key={'prop_key_' + state.id} style={css_prop_item} className="padding-s padding-bottom-none">
                     <label htmlFor={'prop_id_' + state.id} className="flex1 " style={css_prop_item_label} info-message={state.information}>
                         {state.name}
-                        {(state.information !== "" && state.information !== undefined) && <img className="margin-left-xs" aria-label="teste" width={10} height={10} src={icon_info} alt="info-icon" />}
+                        {(state.information !== "" && state.information !== undefined) && <img className="margin-left-xs" aria-label="teste" width={10} height={10} src={IconMoreInfo} alt="info-icon" />}
                     </label>
                     <Resizer onChange={newWidth => onChangeInputWidth(newWidth)} />
                     <select
                         style={{ ...css_prop_item_input, width: inputWidth ? `${inputWidth}px` : '70%', minWidth: minWidth, maxWidth: '90%' }}
                         onDoubleClick={_ => setState({ ...state, value: (state.value === "true" ? "false" : "true") })}
-                        onChange={e => setState({ ...state, value: e.target.value })}
+                        onChange={e => {
+                            setState({ ...state, value: e.target.value });
+                            onChange({ ...state, value: e.target.value });
+                        }}
                         disabled={state.editValueDisabled}
-                        onBlur={_ => onChange(state)}
                         className={"background-bars"}
                         key={'prop_key_' + state.id}
                         id={'prop_id_' + state.id}
@@ -315,6 +324,15 @@ export const PropItem: React.FC<PropItemProps> = (props) => { // Extende outra i
                         <option value={"true"}>Yes</option>
                         <option value={"false"}>No</option>
                     </select>
+                </div>
+            );
+
+
+
+        case TypeValues.addProp:
+            return (
+                <div key={'prop_key_' + state.id} style={css_prop_item} className="padding-s padding-bottom-none">
+                    <input type="button" value={state.value} onClick={onclick} />
                 </div>
             );
 

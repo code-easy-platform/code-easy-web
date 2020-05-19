@@ -1,5 +1,5 @@
 import React, { useRef, useState } from 'react';
-import { Utils } from '../Utils';
+import { Utils } from 'code-easy-components';
 
 export const CustomInputFile = (props: React.DetailedHTMLProps<React.InputHTMLAttributes<HTMLInputElement>, HTMLInputElement>) => {
     const input: any = useRef(null);
@@ -28,11 +28,11 @@ export const CustomInputFile = (props: React.DetailedHTMLProps<React.InputHTMLAt
             {...props}
             tabIndex={1}
             style={css_input_file}
+            id={Utils.getUUID() + "_" + props.id}
+            key={Utils.getUUID() + "_" + props.id}
             onClick={e => { input.current.click() }}
-            id={Utils.getRandomId() + "_" + props.id}
-            key={Utils.getRandomId() + "_" + props.id}
             onKeyPress={e => { input.current.click() }}
         >{state.fileName || 'Select a file...'}</div>
-        <input key={props.id} id={props.id} type='file' disabled={props.disabled} autoComplete='off' ref={input} onChange={(e) => { setState({ fileName: e.target.value }); onChange(e) }} style={{ display: 'none' }} />
+        <input key={props.id} id={props.id} type='file' disabled={props.disabled} autoComplete='off' ref={input} onChange={(e: any) => { setState({ fileName: e.target.files[0].name }); onChange(e) }} style={{ display: 'none' }} />
     </>);
 }
