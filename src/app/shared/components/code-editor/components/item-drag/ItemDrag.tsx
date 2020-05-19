@@ -1,17 +1,9 @@
 import React from 'react';
 import { useDrag } from 'react-dnd';
+import { IconFlowAction, IconFlowAssign, IconFlowComment, IconFlowEnd, IconFlowForeach, IconFlowIf, IconFlowStart, IconFlowSwitch } from 'code-easy-components';
 
 import { ItemType } from '../../models/ItemFluxo';
 import { FlowComponent } from './FlowComponent';
-
-import icons_comment from './../../shared/images/comment.png';
-import icons_foreach from './../../shared/images/foreach.png';
-import icons_switch from './../../shared/images/switch.png';
-import icons_assign from './../../shared/images/assign.png';
-import icons_action from './../../shared/images/action.png';
-import icons_start from './../../shared/images/start.png';
-import icons_end from './../../shared/images/end.png';
-import icons_if from './../../shared/images/if.png';
 import { FlowComment } from './FlowComment';
 
 /** Usado para definir o tipo de input de parâmetros no item drag. */
@@ -110,14 +102,14 @@ export const ItemToDrag: React.FC<ItemDragProps> = (props: ItemDragProps) => {
         };
 
         return <>
-            {itemType === ItemType.COMMENT && <img id={id} className="toolbar-item" title="COMMENT" style={style} ref={dragRef} src={icons_comment} alt="COMMENT" />}
-            {itemType === ItemType.FOREACH && <img id={id} className="toolbar-item" title="FOREACH" style={style} ref={dragRef} src={icons_foreach} alt="FOREACH" />}
-            {itemType === ItemType.SWITCH && <img id={id} className="toolbar-item" title="SWITCH" style={style} ref={dragRef} src={icons_switch} alt="SWITCH" />}
-            {itemType === ItemType.ASSIGN && <img id={id} className="toolbar-item" title="ASSIGN" style={style} ref={dragRef} src={icons_assign} alt="ASSIGN" />}
-            {itemType === ItemType.ACTION && <img id={id} className="toolbar-item" title="ACTION" style={style} ref={dragRef} src={icons_action} alt="ACTION" />}
-            {itemType === ItemType.START && <img id={id} className="toolbar-item" title="START" style={style} ref={dragRef} src={icons_start} alt="START" />}
-            {itemType === ItemType.END && <img id={id} className="toolbar-item" title="END" style={style} ref={dragRef} src={icons_end} alt="END" />}
-            {itemType === ItemType.IF && <img id={id} className="toolbar-item" title="IF" style={style} ref={dragRef} src={icons_if} alt="IF" />}
+            {itemType === ItemType.COMMENT && <img id={id} className="toolbar-item" title="COMMENT" style={style} ref={dragRef} src={IconFlowComment} alt="COMMENT" />}
+            {itemType === ItemType.FOREACH && <img id={id} className="toolbar-item" title="FOREACH" style={style} ref={dragRef} src={IconFlowForeach} alt="FOREACH" />}
+            {itemType === ItemType.SWITCH && <img id={id} className="toolbar-item" title="SWITCH" style={style} ref={dragRef} src={IconFlowSwitch} alt="SWITCH" />}
+            {itemType === ItemType.ASSIGN && <img id={id} className="toolbar-item" title="ASSIGN" style={style} ref={dragRef} src={IconFlowAssign} alt="ASSIGN" />}
+            {itemType === ItemType.ACTION && <img id={id} className="toolbar-item" title="ACTION" style={style} ref={dragRef} src={IconFlowAction} alt="ACTION" />}
+            {itemType === ItemType.START && <img id={id} className="toolbar-item" title="START" style={style} ref={dragRef} src={IconFlowStart} alt="START" />}
+            {itemType === ItemType.END && <img id={id} className="toolbar-item" title="END" style={style} ref={dragRef} src={IconFlowEnd} alt="END" />}
+            {itemType === ItemType.IF && <img id={id} className="toolbar-item" title="IF" style={style} ref={dragRef} src={IconFlowIf} alt="IF" />}
         </>;
     } else {
 
@@ -133,17 +125,16 @@ export const ItemToDrag: React.FC<ItemDragProps> = (props: ItemDragProps) => {
                 onMouseDown={mouseDown}
                 onMouseOver={onMouseOver}
                 onContextMenu={contextMenu}
-                style={{ cursor: 'move', zIndex: 2 }}
             >
                 <text x={(left || 0) + ((width || 0) / 2)} textAnchor="middle" fill="var(--color-white)" y={(top || 0) - 5} id={id}>{title}</text>
-                {itemType === ItemType.COMMENT && <FlowComment id={id} top={top} left={left} width={width} height={height} isSelected={isSelected} name="COMMENT" childImage={icons_comment} onNameChange={onNameChange} />}
-                {itemType === ItemType.FOREACH && <FlowComponent id={id} top={top} left={left} width={width} height={height} isSelected={isSelected} hasError={hasError} name="FOREACH" icon={icons_foreach} />}
-                {itemType === ItemType.ASSIGN && <FlowComponent id={id} top={top} left={left} width={width} height={height} isSelected={isSelected} hasError={hasError} name="ASSIGN" icon={icons_assign} />}
-                {itemType === ItemType.SWITCH && <FlowComponent id={id} top={top} left={left} width={width} height={height} isSelected={isSelected} hasError={hasError} name="SWITCH" icon={icons_switch} />}
-                {itemType === ItemType.ACTION && <FlowComponent id={id} top={top} left={left} width={width} height={height} isSelected={isSelected} hasError={hasError} name="ACTION" icon={icon || icons_action} />}
-                {itemType === ItemType.START && <FlowComponent id={id} top={top} left={left} width={width} height={height} isSelected={isSelected} hasError={hasError} name="START" icon={icons_start} />}
-                {itemType === ItemType.END && <FlowComponent id={id} top={top} left={left} width={width} height={height} isSelected={isSelected} hasError={hasError} name="END" icon={icons_end} />}
-                {itemType === ItemType.IF && <FlowComponent id={id} top={top} left={left} width={width} height={height} isSelected={isSelected} hasError={hasError} name="IF" icon={icons_if} />}
+                {itemType === ItemType.COMMENT && <FlowComment id={id} top={top} left={left} width={width} height={height} isSelected={isSelected} childImage={IconFlowComment} onNameChange={onNameChange} />}
+                {itemType === ItemType.ACTION && <FlowComponent id={id} top={top} left={left} width={width} height={height} isSelected={isSelected} hasError={hasError} icon={icon || IconFlowAction} />}
+                {itemType === ItemType.FOREACH && <FlowComponent id={id} top={top} left={left} width={width} height={height} isSelected={isSelected} hasError={hasError} icon={IconFlowForeach} />}
+                {itemType === ItemType.ASSIGN && <FlowComponent id={id} top={top} left={left} width={width} height={height} isSelected={isSelected} hasError={hasError} icon={IconFlowAssign} />}
+                {itemType === ItemType.SWITCH && <FlowComponent id={id} top={top} left={left} width={width} height={height} isSelected={isSelected} hasError={hasError} icon={IconFlowSwitch} />}
+                {itemType === ItemType.START && <FlowComponent id={id} top={top} left={left} width={width} height={height} isSelected={isSelected} hasError={hasError} icon={IconFlowStart} />}
+                {itemType === ItemType.END && <FlowComponent id={id} top={top} left={left} width={width} height={height} isSelected={isSelected} hasError={hasError} icon={IconFlowEnd} />}
+                {itemType === ItemType.IF && <FlowComponent id={id} top={top} left={left} width={width} height={height} isSelected={isSelected} hasError={hasError} icon={IconFlowIf} />}
             </g>
         );
     }

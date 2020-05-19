@@ -31,10 +31,19 @@ export const ListItem: React.FC<ListItemProps> = ({ id, name, properties, isHead
                     onChange={item => onChangeItemProp(item, index)}
                     onChangeInputWidth={onChangeInputWidth}
                     inputWidth={inputWidth}
-                    key={index}
+                    key={`${index}`}
                     {...prop}
                 />
             ))}
+            {/* <PropItem
+                onChangeInputWidth={onChangeInputWidth}
+                type={TypeValues.addProp}
+                inputWidth={inputWidth}
+                value="+ Add prop"
+                key={`add_prop`}
+                name="AddProp"
+                id="add_prop"
+            /> */}
         </>
     );
 }

@@ -1,4 +1,5 @@
 import React from 'react';
+import { Utils } from 'code-easy-components';
 
 import { IItem, TypeValues, IProperties } from '../../../shared/components/properties-editor/shared/interfaces';
 import { BreadCampButton } from '../../../shared/components/code-editor/shared/Interfaces/CodeEditorInterfaces';
@@ -18,7 +19,6 @@ import { FlowEditor } from '../../../shared/components/code-editor/CodeEditor';
 import { OutputHelper } from '../../../shared/services/helpers/OutputHelper';
 import { AssetsService } from '../../../shared/services/AssetsService';
 import { ComponentType } from '../../../shared/enuns/ComponentType';
-import { Utils } from '../../../shared/services/Utils';
 
 import icon_trash from './../../../assets/icons/icon-trash-light.png';
 
@@ -54,6 +54,7 @@ export default class EditorTab extends React.Component {
                             if (itemTree) {
                                 itemTree.label = item.properties[0].value;
                                 itemTree.description = item.properties[1].value;
+                                itemTree.name = Utils.getNormalizedString(item.properties[0].value);
                             }
 
                         }
@@ -63,7 +64,7 @@ export default class EditorTab extends React.Component {
 
         } else if (this.state.currentFocus === CurrentFocus.flow) {
 
-            let itemEditing: any;
+            let itemEditing: ItemComponent | undefined;
             this.editorContext.project.tabs.forEach((tab: Tab) => {
                 tab.itens.forEach(item => {
                     if (item.isEditing) {
@@ -72,9 +73,11 @@ export default class EditorTab extends React.Component {
                 })
             });
 
-            if (itemEditing !== null) {
+            if (itemEditing) {
                 let index = itemEditing.itens.findIndex((oldItem: ItemFlowComplete) => oldItem.id === item.id);
                 if (index && (index < 0)) return;
+
+
 
                 itemEditing.itens[index].name = item.name;
                 itemEditing.itens[index].properties = item.properties;
@@ -108,17 +111,42 @@ export default class EditorTab extends React.Component {
             };
 
         } else if (currentFocus === CurrentFocus.flow) { // Mapeia os itens de fluxo
-            const itensLogica = this.codeEditorGetItensLogica('ItemFlowComplete');
+            const itensLogica: ItemComponent[] = this.codeEditorGetItensLogica('ItemFlowComplete');
             const itensFiltereds = itensLogica.filter(flowItem => flowItem.isSelected);
 
             const mappedItens: IItem[] = [];
             itensFiltereds.forEach(filteredItem => {
+
+                filteredItem.properties.forEach(prop => {
+                    if (prop.name === "Action") {
+
+                        /** Tranforma a action atual em tipo de campo selection */
+                        prop.type = TypeValues.selection;
+                        prop.suggestions = [];
+
+                        this.editorContext.project.tabs.forEach(tab => {
+                            if (tab.configs.type === ComponentType.tabActions) {
+                                tab.itens.forEach(item => {
+                                    prop.suggestions?.push({
+                                        description: item.description,
+                                        label: item.label,
+                                        value: item.id,
+                                        name: item.name,
+                                        disabled: false,
+                                    });
+                                });
+                            }
+                        });
+                    }
+                });
+
                 mappedItens.push({
                     isHeader: true,
                     id: filteredItem.id,
                     name: filteredItem.name,
                     properties: filteredItem.properties,
                 });
+
             });
 
             if (mappedItens.length > 0) {
@@ -740,7 +768,7 @@ export default class EditorTab extends React.Component {
                     label: newName,
                     nodeExpanded: true,
                     itemPaiId: inputItemId,
-                    name: newName.toLocaleLowerCase(),
+                    name: Utils.getNormalizedString(newName),
                     properties: this.propertiesEditorGetNewProperties(paramType, newName),
                 }));
             }
@@ -775,7 +803,7 @@ export default class EditorTab extends React.Component {
                         id: Utils.getUUID(),
                         itemPaiId: inputItemId,
                         type: ComponentType.router,
-                        name: newName.toLowerCase(),
+                        name: Utils.getNormalizedString(newName),
                         properties: this.propertiesEditorGetNewProperties(ComponentType.router, newName),
                     }));
                 }
@@ -810,7 +838,7 @@ export default class EditorTab extends React.Component {
                         label: newName,
                         itemPaiId: inputItemId,
                         type: ComponentType.globalAction,
-                        name: newName.toLocaleLowerCase(),
+                        name: Utils.getNormalizedString(newName),
                         properties: this.propertiesEditorGetNewProperties(ComponentType.globalAction, newName),
                     }));
                 }

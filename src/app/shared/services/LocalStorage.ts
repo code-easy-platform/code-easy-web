@@ -3,7 +3,7 @@ import { TypeValues } from "../components/properties-editor/shared/interfaces";
 import { ItemType } from "../components/code-editor/models/ItemFluxo";
 import { ComponentType } from "../enuns/ComponentType";
 import { ProjectType } from "../enuns/ProjectType";
-import { Utils } from "./Utils";
+import { Utils } from "code-easy-components";
 
 export enum StorageEnum {
     projectsStorage = "PROJECTS_STORAGE",
@@ -626,7 +626,7 @@ export class Storage {
 
         let itemIndex = projects.findIndex(item_project => item_project.projectConfigs.id === project.projectConfigs.id);
 
-        if (itemIndex) {
+        if (itemIndex > -1) {
             project.projectConfigs.updatedDate = new Date();
             projects.splice(itemIndex, 1, project); // Remove elemento antigo e coloca um novo no lugar
         }

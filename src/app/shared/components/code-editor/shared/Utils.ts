@@ -2,15 +2,6 @@ import { ItemType } from "../models/ItemFluxo";
 
 export class Utils {
 
-    /**
-     * Retorna um valor randomico.
-     */
-    public static getRandomId() {
-        const min = Math.ceil(10000);
-        const max = Math.floor(100000000);
-        return Math.floor(Math.random() * (max - min)) + min;
-    }
-
     public static useNewBranch = (currentBranchsLength: number, itemType: ItemType) => {
         switch (itemType) {
             case ItemType.IF:
@@ -38,18 +29,6 @@ export class Utils {
                 return currentBranchsLength < 1;
 
         }
-    }
-
-    public static getAngle(currX: number, currY: number, endX: number, endY: number): number {
-        var angle = Math.atan2(currX - endX, currY - endY) * (180 / Math.PI);
-
-        if (angle < 0) {
-            angle = Math.abs(angle);
-        } else {
-            angle = 360 - angle;
-        }
-
-        return angle;
     }
 
 }

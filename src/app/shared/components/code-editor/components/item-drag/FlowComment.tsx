@@ -9,38 +9,35 @@ export const FlowComment = ({ id, isSelected, width, height, left, top, name, on
     const textAreaRef: any = useRef(null);
 
     return (
-        <>
-            <foreignObject
-                id={id}
-                y={top}
-                x={left}
-                width={width}
-                height={height}
-                key={name + id}
-                style={{ pointerEvents: !isEditing ? undefined : 'none', resize: 'both' }}
-                onDoubleClick={() => {
-                    setIsEditing(true);
-                    if (textAreaRef.current) {
-                        textAreaRef.current.focus();
-                    }
+        <foreignObject
+            id={id}
+            y={top}
+            x={left}
+            width={width}
+            height={height}
+            style={{ pointerEvents: !isEditing ? undefined : 'none', resize: 'both', cursor: 'move', zIndex: 2 }}
+            onDoubleClick={() => {
+                setIsEditing(true);
+                if (textAreaRef.current) {
+                    textAreaRef.current.focus();
+                }
+            }}
+        >
+            <textarea
+                value={comment}
+                ref={textAreaRef}
+                onChange={e => setComment(e.target.value)}
+                onBlur={(e) => { setIsEditing(false); onNameChange(comment); }}
+                style={{
+                    backgroundColor: 'var(--main-background-highlighted)',
+                    pointerEvents: isEditing ? undefined : 'none',
+                    border: `var(--main-border-width) solid ${strokeColor}`,
+                    height: '-webkit-fill-available',
+                    width: '-webkit-fill-available',
+                    color: '#fff',
+                    padding: 5,
                 }}
-            >
-                <textarea
-                    value={comment}
-                    ref={textAreaRef}
-                    onChange={e => setComment(e.target.value)}
-                    onBlur={(e) => { setIsEditing(false); onNameChange(comment); }}
-                    style={{
-                        backgroundColor: 'var(--main-background-highlighted)',
-                        pointerEvents: isEditing ? undefined : 'none',
-                        border: `var(--main-border-width) solid ${strokeColor}`,
-                        height: '-webkit-fill-available',
-                        width: '-webkit-fill-available',
-                        color: '#fff',
-                        padding: 5,
-                    }}
-                />
-            </foreignObject>
-        </>
+            />
+        </foreignObject>
     );
 }

@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useHistory } from 'react-router-dom';
+import { Utils } from 'code-easy-components';
 
 import { BottonStatusBar } from '../../shared/components/botton-status-bar/BottonStatusBar';
 import { ToolBarHome } from '../../shared/components/tool-bar/ToolBar';
@@ -7,7 +8,6 @@ import { Button } from '../../shared/components/buttons/Button';
 import { Storage } from '../../shared/services/LocalStorage';
 import { Project } from '../../shared/interfaces/Aplication';
 import { Modal } from '../../shared/components/modal/Modal';
-import { Utils } from '../../shared/services/Utils';
 import { ImportProjects } from './ImportFiles';
 import { CardItem } from './CardItem';
 
