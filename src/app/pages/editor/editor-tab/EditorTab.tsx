@@ -858,11 +858,11 @@ export default class EditorTab extends React.Component {
                     this.editorContext.project.tabs[tabIndex].itens.push(new ItemComponent({
                         id: Utils.getUUID(),
                         itens: [],
-                        description: '',
-                        isSelected: true,
-                        isEditing: true,
-                        nodeExpanded: true,
                         label: newName,
+                        description: '',
+                        isEditing: true,
+                        isSelected: true,
+                        nodeExpanded: true,
                         itemPaiId: inputItemId,
                         type: ComponentType.globalAction,
                         name: Utils.getNormalizedString(newName),
@@ -875,7 +875,7 @@ export default class EditorTab extends React.Component {
 
         this.editorContext.project.tabs.forEach((tab: Tab) => {
             if (tab.configs.isEditing) {
-                if (tab.configs.type === ComponentType.tabRouters) {
+                if (tab.configs.type === ComponentType.tabRoutes) {
 
                     options.push({
                         icon: AssetsService.getIcon(ComponentType.router),

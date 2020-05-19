@@ -14,7 +14,7 @@ export interface ICodeEditorContext {
 export const CodeEditorContext = React.createContext<ICodeEditorContext>({
     currentTab: <></>,
     project: Storage.getProjectById(),
-    editingTab: ComponentType.tabRouters,
+    editingTab: ComponentType.tabRoutes,
 
     updateProjectState: (project: Project) => { },
     toggleResourcesTab: (tab: ComponentType) => { },

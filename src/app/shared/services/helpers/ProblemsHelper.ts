@@ -37,7 +37,7 @@ class ProblemsHelperService {
         // Valida os itens das tabs
         project.tabs.forEach(tab => {
 
-            if (tab.itens.length === 0 && tab.configs.type === ComponentType.tabRouters) {
+            if (tab.itens.length === 0 && tab.configs.type === ComponentType.tabRoutes) {
                 addProblem(`Add at least one route to your app`, 'warning');
             }
 

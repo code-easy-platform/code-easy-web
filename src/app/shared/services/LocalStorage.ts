@@ -30,7 +30,7 @@ const newProject = (name: string, version: string, type: ProjectType, descriptio
                 isExpanded: true,
                 id: `${Utils.getUUID()}`,
                 description: "Routes tab",
-                type: ComponentType.tabRouters,
+                type: ComponentType.tabRoutes,
             }),
             itens: []
         }),
