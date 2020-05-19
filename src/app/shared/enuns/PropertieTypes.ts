@@ -1,5 +1,6 @@
 export enum PropertieTypes {
     description="Description",
+    assigns="Assigns",
     label="Label",
     name="Name",
     type="Type",
@@ -9,6 +10,7 @@ export enum PropertieTypes {
 
 export const PropertieTypesList: PropertieTypes[] = [
     PropertieTypes.description,
+    PropertieTypes.assigns,
     PropertieTypes.label,
     PropertieTypes.name,
     PropertieTypes.type,
