@@ -1,11 +1,11 @@
-import { TreeInterface } from "../../components/tree-manager/shared/models/TreeInterface";
-import { Project } from "../../interfaces/Aplication";
+import { Utils } from "code-easy-components";
 
+import { TreeInterface } from "../../components/tree-manager/shared/models/TreeInterface";
+import { ItemType } from "../../components/code-editor/models/ItemFluxo";
 import icon_warning from './../../../assets/icons/icon-warning.png';
 import icon_error from './../../../assets/icons/icon-error.png';
-import { Utils } from "../Utils";
 import { ComponentType } from "../../enuns/ComponentType";
-import { ItemType } from "../../components/code-editor/models/ItemFluxo";
+import { Project } from "../../interfaces/Aplication";
 
 class ProblemsHelperService {
     /**

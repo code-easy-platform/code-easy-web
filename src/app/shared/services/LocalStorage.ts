@@ -3,7 +3,7 @@ import { TypeValues } from "../components/properties-editor/shared/interfaces";
 import { ItemType } from "../components/code-editor/models/ItemFluxo";
 import { ComponentType } from "../enuns/ComponentType";
 import { ProjectType } from "../enuns/ProjectType";
-import { Utils } from "./Utils";
+import { Utils } from "code-easy-components";
 
 export enum StorageEnum {
     projectsStorage = "PROJECTS_STORAGE",

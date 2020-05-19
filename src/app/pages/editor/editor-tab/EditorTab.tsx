@@ -1,4 +1,5 @@
 import React from 'react';
+import { Utils } from 'code-easy-components';
 
 import { IItem, TypeValues, IProperties } from '../../../shared/components/properties-editor/shared/interfaces';
 import { BreadCampButton } from '../../../shared/components/code-editor/shared/Interfaces/CodeEditorInterfaces';
@@ -18,7 +19,6 @@ import { FlowEditor } from '../../../shared/components/code-editor/CodeEditor';
 import { OutputHelper } from '../../../shared/services/helpers/OutputHelper';
 import { AssetsService } from '../../../shared/services/AssetsService';
 import { ComponentType } from '../../../shared/enuns/ComponentType';
-import { Utils } from '../../../shared/services/Utils';
 
 import icon_trash from './../../../assets/icons/icon-trash-light.png';
 
