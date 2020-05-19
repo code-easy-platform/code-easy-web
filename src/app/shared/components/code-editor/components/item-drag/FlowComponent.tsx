@@ -4,15 +4,15 @@ interface FlowComponentProps {
     isSelected: boolean;
     hasError?: boolean;
     height: number;
+    name?: string;
     width: number;
     left: number;
-    name: string;
     top: number;
     id: string;
     icon: any;
     ref?: any;
 }
-export const FlowComponent: React.FC<FlowComponentProps> = ({ id, isSelected, width, height, left, top, icon, name, hasError = false, ref }) => {
+export const FlowComponent: React.FC<FlowComponentProps> = ({ id, isSelected, width, height, left, top, icon, hasError = false, ref }) => {
 
     const strokeColor: string = isSelected ? "var(--color-botton-bar)" : hasError ? "var(--main-error-color)" : "var(--main-background)";
 
@@ -20,10 +20,10 @@ export const FlowComponent: React.FC<FlowComponentProps> = ({ id, isSelected, wi
         <>
             <rect
                 strokeWidth="var(--main-border-width)"
+                style={{ cursor: 'move', zIndex: 2 }}
                 fill="var(--main-background)"
                 strokeLinejoin="round"
                 stroke={strokeColor}
-                key={name + id}
                 height={height}
                 width={width}
                 ref={ref}
@@ -33,14 +33,12 @@ export const FlowComponent: React.FC<FlowComponentProps> = ({ id, isSelected, wi
             />
             <image
                 style={{ pointerEvents: 'none' }}
-                key={name + "Image_" + id}
                 stroke={strokeColor}
                 xlinkHref={icon}
                 height={height}
                 width={width}
                 x={left}
                 y={top}
-                id={id}
             />
         </>
     );

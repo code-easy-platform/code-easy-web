@@ -26,9 +26,9 @@ export const Lines: React.FC<LinesProps> = ({ itensSucessores, item, onSucessorC
                 key={item.id + "_" + sucessorItem.id}
                 onSucessorChange={onSucessorChange}
                 sucessorIndex={index}
+                color={"gray"}
                 left2={left2}
                 id={item.id}
-                color="gray"
                 top2={top2}
             />;
 

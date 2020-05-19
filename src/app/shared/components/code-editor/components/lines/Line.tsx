@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 
 /** Propriedades aceitas pela linha. */
 interface LineProps {
-    id: string
+    id?: string
     top1: number
     top2?: number
     left1: number
@@ -44,6 +44,7 @@ export const Line: React.FC<LineProps> = (props: LineProps) => {
     }
 
     const onMouseUp = (e: any) => {
+        e.stopPropagation();
         setIsSelected(false);
 
         window.onmouseup = null;
@@ -51,7 +52,7 @@ export const Line: React.FC<LineProps> = (props: LineProps) => {
 
         setPosition({
             polygonTop: top1,
-            polygonLeft: top2 - 10,
+            polygonLeft: left1 - 10,
         });
 
         onSucessorChange(id, e.target.id, sucessorIndex);
@@ -62,7 +63,7 @@ export const Line: React.FC<LineProps> = (props: LineProps) => {
 
         setPosition({
             polygonTop: top1,
-            polygonLeft: top2 - 10,
+            polygonLeft: left1 - 10,
         });
 
         window.onmousemove = mouseMove;
@@ -78,14 +79,13 @@ export const Line: React.FC<LineProps> = (props: LineProps) => {
                 x2={isSelected ? position.polygonLeft : left2}
                 y1={top1}
                 y2={isSelected ? position.polygonTop : top2 - 10}
-                stroke-line-cap="round"
                 strokeWidth={lineWidth}
                 stroke={color || "var(--main-background-highlighted)"}
                 strokeDasharray={lineType === 'normal' ? undefined : "5,5"}
             />
             {
                 !isSelected
-                    ? < path
+                    ? <path
                         id={"path_" + id}
                         key={"path_" + id}
                         onMouseDown={onMouseDown}

@@ -1,6 +1,7 @@
 import React, { useState, useRef, FC, useEffect } from 'react';
 import { DropTargetMonitor, DndProvider } from 'react-dnd';
 import HTML5Backend from 'react-dnd-html5-backend';
+import { Utils } from 'code-easy-components';
 
 import { ICodeEditorProps } from './shared/Interfaces/CodeEditorInterfaces';
 import { EditorPanel } from './components/editor-panel/EditorPanel';
@@ -10,8 +11,8 @@ import { InputCopy } from './components/input-copy/InputCopy';
 import { ItemToDrag } from './components/item-drag/ItemDrag';
 import { ItemType, FlowItem } from './models/ItemFluxo';
 import { Toolbar } from './components/tool-bar/ToolBar';
+import { Utils as InternalUtils } from './shared/Utils';
 import { Lines } from './components/lines/Lines';
-import { Utils } from './shared/Utils';
 
 
 /**
@@ -72,7 +73,7 @@ const CodeEditor: React.FC<ICodeEditorProps> = ({ id, itens = [], toolItens = []
         let newItem = new FlowItem({
             height: item.itemProps.itemType === ItemType.COMMENT ? 100 : 50,
             width: item.itemProps.itemType === ItemType.COMMENT ? 200 : 50,
-            id: Utils.getRandomId().toString(),
+            id: Utils.getUUID().toString(),
             itemType: item.itemProps.itemType,
             name: item.itemProps.title,
             left: targetOffsetX,
@@ -82,7 +83,7 @@ const CodeEditor: React.FC<ICodeEditorProps> = ({ id, itens = [], toolItens = []
         });
 
         /** Espera o retorno para inserir o item, se receber undefined só insere, se for diferente de undefined insere o resultado do event se existir algo */
-        const onDropRes = onDropItem(item.id, (newItem.id || Utils.getRandomId()).toString(), newItem);
+        const onDropRes = onDropItem(item.id, (newItem.id || Utils.getUUID()), newItem);
         if (onDropRes === undefined) {
 
             flowItens.list.push(newItem);
@@ -263,7 +264,7 @@ const CodeEditor: React.FC<ICodeEditorProps> = ({ id, itens = [], toolItens = []
 
                 components.forEach(item => {
 
-                    const newId: string | undefined = Utils.getRandomId().toString();
+                    const newId: string | undefined = Utils.getUUID();
 
                     components.forEach((depende, dependeIndex) => {
                         if (depende.id !== item.id) {
@@ -423,7 +424,7 @@ const CodeEditor: React.FC<ICodeEditorProps> = ({ id, itens = [], toolItens = []
                         });
 
                         // Define se será usado uma nova branch para este item de fluxo.
-                        let isUseNewBranch = Utils.useNewBranch(itensSucessores.length, item.itemType);
+                        let isUseNewBranch = InternalUtils.useNewBranch(itensSucessores.length, item.itemType);
 
                         /* Reinderiza todos os branchs de um item de fluxo. */
                         return <Lines
