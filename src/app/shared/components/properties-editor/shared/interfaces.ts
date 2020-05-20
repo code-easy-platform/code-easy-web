@@ -1,16 +1,16 @@
 
 export enum TypeValues {
-    yesNoSelection='yesNoSelection',
-    expression='expression',
-    bigstring='bigstring',
-    selection='selection',
-    viewOnly='viewOnly',
-    boolean='boolean',
-    addProp='addProp',
-    string='string',
-    number='number',
-    binary='binary',
-    assign='assign',
+    yesNoSelection = 'yesNoSelection',
+    expression = 'expression',
+    bigstring = 'bigstring',
+    selection = 'selection',
+    viewOnly = 'viewOnly',
+    boolean = 'boolean',
+    addProp = 'addProp',
+    string = 'string',
+    number = 'number',
+    binary = 'binary',
+    assign = 'assign',
 }
 
 export interface ISuggestion {
@@ -22,6 +22,7 @@ export interface ISuggestion {
 }
 
 export interface IProperties {
+    openEditor?(e: React.MouseEvent<HTMLButtonElement, MouseEvent>): void;
     suggestions?: ISuggestion[];
     editValueDisabled?: boolean;
     editNameDisabled?: boolean;

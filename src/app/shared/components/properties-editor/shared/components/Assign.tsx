@@ -8,7 +8,7 @@ interface IAssign extends IProperties {
     onKeyDown(e: any): void;
     onBlur(e: any): void;
 }
-export const Assign: React.FC<IAssign> = ({ id, name, value, nameHasError = false, valueHasError = false, onChangeName, onChangeValue, onKeyDown, onBlur, editNameDisabled = false, editValueDisabled = false }) => {
+export const Assign: React.FC<IAssign> = ({ id, name, value, openEditor, nameHasError = false, valueHasError = false, onChangeName, onChangeValue, onKeyDown, onBlur, editNameDisabled = false, editValueDisabled = false }) => {
 
     const css_prop_item_input_name: React.CSSProperties = {
         border: nameHasError ? 'var(--input-border-error)' : 'var(--input-border)',
@@ -30,12 +30,12 @@ export const Assign: React.FC<IAssign> = ({ id, name, value, nameHasError = fals
                 value={name}
                 onBlur={onBlur}
                 onKeyDown={onKeyDown}
-                placeholder='Propertie'
+                openEditor={openEditor}
+                placeholder={'Propertie'}
                 id={'name_prop_id_' + id}
                 disabled={editNameDisabled}
                 key={'name_prop_key_' + id}
                 style={css_prop_item_input_name}
-                openEditor={e => alert('Abre o editor...')}
                 onChange={e => onChangeName(e.target.value)}
             />
             <div style={{ alignItems: 'center' }}>
@@ -45,11 +45,11 @@ export const Assign: React.FC<IAssign> = ({ id, name, value, nameHasError = fals
                     onBlur={onBlur}
                     placeholder={'Value'}
                     onKeyDown={onKeyDown}
+                    openEditor={openEditor}
                     id={'value_prop_id_' + id}
                     key={'value_prop_key_' + id}
                     disabled={editValueDisabled}
                     style={css_prop_item_input_value}
-                    openEditor={e => alert('Abre o editor...')}
                     onChange={e => onChangeValue(e.target.value)}
                 />
             </div>

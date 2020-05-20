@@ -20,7 +20,7 @@ export class Editor extends React.Component<any> {
     public state = {
         currentTab: <EditorTab />,
         project: Storage.getProjectById(this.params.id),
-        editingTab: ComponentType.tabRouters,
+        editingTab: ComponentType.tabRoutes,
 
         updateProjectState: (project: Project) => this.updateProjectState(project),
         toggleResourcesTab: (type: ComponentType) => this.toggleResourcesTab(type),

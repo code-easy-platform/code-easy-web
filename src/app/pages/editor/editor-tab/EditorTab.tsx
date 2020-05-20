@@ -1,13 +1,14 @@
 import React from 'react';
-import { Utils } from 'code-easy-components';
+import { Utils, IconTrash } from 'code-easy-components';
 
 import { IItem, TypeValues, IProperties } from '../../../shared/components/properties-editor/shared/interfaces';
 import { BreadCampButton } from '../../../shared/components/code-editor/shared/Interfaces/CodeEditorInterfaces';
-import { TwoRowsResizable } from '../../../shared/components/resizable-columns/TwoRowsResizable';
 import { CodeEditorContext, ICodeEditorContext } from '../../../shared/services/contexts/CodeEditorContext';
 import { TwoColumnsResizable } from '../../../shared/components/resizable-columns/TwoColumnsResizable';
+import { ParametersLocation, ParametersLocationList } from '../../../shared/enuns/ParametersLocation';
 import { TreeInterface } from '../../../shared/components/tree-manager/shared/models/TreeInterface';
 import { PropertiesEditor } from './../../../shared/components/properties-editor/PropertiesEditor';
+import { TwoRowsResizable } from '../../../shared/components/resizable-columns/TwoRowsResizable';
 import { ContextMenuService } from '../../../shared/components/context-menu/ContextMenuService';
 import { FlowItem, ItemType } from './../../../shared/components/code-editor/models/ItemFluxo';
 import { Tab, ItemComponent, ItemFlowComplete } from '../../../shared/interfaces/Aplication';
@@ -16,11 +17,13 @@ import { TreeManager } from '../../../shared/components/tree-manager/TreeManager
 import { OutputPanel } from '../../../shared/components/output-panel/OutputPanel';
 import { ProblemsHelper } from '../../../shared/services/helpers/ProblemsHelper';
 import { FlowEditor } from '../../../shared/components/code-editor/CodeEditor';
+import { MethodsApi, MethodsApiList } from '../../../shared/enuns/ApiMethods';
 import { OutputHelper } from '../../../shared/services/helpers/OutputHelper';
 import { AssetsService } from '../../../shared/services/AssetsService';
+import { PropertieTypes } from '../../../shared/enuns/PropertieTypes';
 import { ComponentType } from '../../../shared/enuns/ComponentType';
-
-import icon_trash from './../../../assets/icons/icon-trash-light.png';
+import { Modal } from '../../../shared/components/modal/Modal';
+import { DataTypesList, DataTypes } from '../../../shared/enuns/DataType';
 
 
 enum CurrentFocus {
@@ -31,8 +34,9 @@ enum CurrentFocus {
 export default class EditorTab extends React.Component {
     private editorContext: ICodeEditorContext = this.context;
 
-    state: { currentFocus: CurrentFocus } = {
+    state: { currentFocus: CurrentFocus, modalOpen: boolean } = {
         currentFocus: CurrentFocus.tree,
+        modalOpen: false,
     }
 
 
@@ -78,6 +82,7 @@ export default class EditorTab extends React.Component {
                 if (index && (index < 0)) return;
 
 
+                // itemEditing.itens[index].name;
 
                 itemEditing.itens[index].name = item.name;
                 itemEditing.itens[index].properties = item.properties;
@@ -138,6 +143,7 @@ export default class EditorTab extends React.Component {
                             }
                         });
                     }
+
                 });
 
                 mappedItens.push({
@@ -164,122 +170,142 @@ export default class EditorTab extends React.Component {
         switch (itemType) {
             case ItemType.START:
                 return [
-                    { id: Utils.getUUID(), name: 'Label', type: TypeValues.viewOnly, value: name },
+                    { id: Utils.getUUID(), name: 'Label', type: TypeValues.viewOnly, value: name, propertieType: PropertieTypes.label },
                 ];
 
             case ItemType.ACTION:
                 return [
-                    { id: Utils.getUUID(), name: 'Label', type: TypeValues.string, value: name },
-                    { id: Utils.getUUID(), name: 'Action', type: TypeValues.expression, value: '' },
+                    { id: Utils.getUUID(), name: 'Label', type: TypeValues.string, value: name, propertieType: PropertieTypes.label },
+                    { id: Utils.getUUID(), name: 'Action', type: TypeValues.expression, value: '', propertieType: PropertieTypes.any },
                 ];
 
             case ItemType.ASSIGN:
                 return [
-                    { id: Utils.getUUID(), name: 'Label', type: TypeValues.string, value: name },
-                    { id: Utils.getUUID(), name: '', type: TypeValues.assign, value: '' },
+                    { id: Utils.getUUID(), name: 'Label', type: TypeValues.string, value: name, propertieType: PropertieTypes.label },
+                    { id: Utils.getUUID(), name: '', type: TypeValues.assign, value: '', propertieType: PropertieTypes.assigns },
                 ];
 
             case ItemType.COMMENT:
                 return [
-                    { id: Utils.getUUID(), name: 'Label', type: TypeValues.viewOnly, value: name },
-                    { id: Utils.getUUID(), name: 'Comment', type: TypeValues.string, value: name },
+                    { id: Utils.getUUID(), name: 'Label', type: TypeValues.viewOnly, value: name, propertieType: PropertieTypes.label },
+                    { id: Utils.getUUID(), name: 'Comment', type: TypeValues.string, value: name, propertieType: PropertieTypes.any },
                 ];
 
             case ItemType.FOREACH:
                 return [
-                    { id: Utils.getUUID(), name: 'Label', type: TypeValues.string, value: name },
-                    { id: Utils.getUUID(), name: 'SourceList', type: TypeValues.expression, value: name },
+                    { id: Utils.getUUID(), name: 'Label', type: TypeValues.string, value: name, propertieType: PropertieTypes.label },
+                    { id: Utils.getUUID(), name: 'SourceList', type: TypeValues.expression, value: name, propertieType: PropertieTypes.any },
                 ];
 
             case ItemType.IF:
                 return [
-                    { id: Utils.getUUID(), name: 'Label', type: TypeValues.string, value: name },
-                    { id: Utils.getUUID(), name: 'Condiction', type: TypeValues.expression, value: '' },
+                    { id: Utils.getUUID(), name: 'Label', type: TypeValues.string, value: name, propertieType: PropertieTypes.label },
+                    { id: Utils.getUUID(), name: 'Condiction', type: TypeValues.expression, value: '', propertieType: PropertieTypes.any },
                 ];
 
             case ItemType.SWITCH:
                 return [
-                    { id: Utils.getUUID(), name: 'Label', type: TypeValues.string, value: name },
-                    { id: Utils.getUUID(), name: 'Condiction1', type: TypeValues.expression, value: '' },
+                    { id: Utils.getUUID(), name: 'Label', type: TypeValues.string, value: name, propertieType: PropertieTypes.label },
+                    { id: Utils.getUUID(), name: 'Condiction1', type: TypeValues.expression, value: '', propertieType: PropertieTypes.any },
                 ];
 
             case ItemType.END:
                 return [
-                    { id: Utils.getUUID(), name: 'Label', type: TypeValues.viewOnly, value: name },
+                    { id: Utils.getUUID(), name: 'Label', type: TypeValues.viewOnly, value: name, propertieType: PropertieTypes.label },
                 ];
 
             case ComponentType.router:
                 return [
-                    { id: Utils.getUUID(), name: 'Label', value: name, type: TypeValues.string },
-                    { id: Utils.getUUID(), name: 'Description', type: TypeValues.bigstring, value: "" },
-                    { id: Utils.getUUID(), name: 'Url', type: TypeValues.string, value: "/newroute" },
+                    { id: Utils.getUUID(), name: 'Label', value: name, type: TypeValues.string, propertieType: PropertieTypes.label },
+                    { id: Utils.getUUID(), name: 'Description', type: TypeValues.bigstring, value: "", propertieType: PropertieTypes.description },
+                    { id: Utils.getUUID(), name: 'Url', type: TypeValues.string, value: "/newroute", propertieType: PropertieTypes.url },
                     {
-                        id: Utils.getUUID(), name: 'Type', type: TypeValues.selection, value: "post", suggestions: [
-                            {
-                                name: 'get',
-                                value: 'get',
-                                label: 'get',
+                        id: Utils.getUUID(), name: 'Type', type: TypeValues.selection, value: MethodsApi.post, propertieType: PropertieTypes.type, suggestions: MethodsApiList.map(value => {
+                            return {
+                                name: value,
+                                value: value,
+                                label: value,
                                 disabled: false,
-                                description: '',
-                            },
-                            {
-                                name: 'post',
-                                value: 'post',
-                                label: 'post',
+                                description: value,
+                            };
+                        })
+                    },
+                    {
+                        id: Utils.getUUID(), name: 'Parameters in', type: TypeValues.selection, value: ParametersLocation.body, propertieType: PropertieTypes.any, suggestions: ParametersLocationList.map(value => {
+                            return {
+                                name: value,
+                                value: value,
+                                label: value,
                                 disabled: false,
-                                description: '',
-                            },
-                            {
-                                name: 'update',
-                                value: 'update',
-                                label: 'update',
-                                disabled: false,
-                                description: '',
-                            },
-                            {
-                                name: 'delete',
-                                value: 'delete',
-                                label: 'delete',
-                                disabled: false,
-                                description: '',
-                            }
-                        ]
+                                description: value,
+                            };
+                        })
                     },
                 ];
 
             case ComponentType.globalAction:
                 return [
-                    { id: Utils.getUUID(), name: 'Label', value: name, type: TypeValues.string },
-                    { id: Utils.getUUID(), name: 'Description', type: TypeValues.bigstring, value: "" },
+                    { id: Utils.getUUID(), name: 'Label', value: name, type: TypeValues.string, propertieType: PropertieTypes.label },
+                    { id: Utils.getUUID(), name: 'Description', type: TypeValues.bigstring, value: "", propertieType: PropertieTypes.description },
                 ];
 
             case ComponentType.inputVariable:
                 return [
-                    { id: Utils.getUUID(), name: 'Label', value: name, type: TypeValues.string },
-                    { id: Utils.getUUID(), name: 'Description', type: TypeValues.bigstring, value: "" },
-                    { id: Utils.getUUID(), name: 'Data type', type: TypeValues.expression, value: "" },
-                    { id: Utils.getUUID(), name: 'Default value', type: TypeValues.expression, value: "" },
+                    { id: Utils.getUUID(), name: 'Label', value: name, type: TypeValues.string, propertieType: PropertieTypes.label },
+                    { id: Utils.getUUID(), name: 'Description', type: TypeValues.bigstring, value: "", propertieType: PropertieTypes.description },
+                    {
+                        id: Utils.getUUID(), name: 'Data type', type: TypeValues.selection, value: DataTypes.string, propertieType: PropertieTypes.any, suggestions: DataTypesList.map(value => {
+                            return {
+                                name: value,
+                                label: value,
+                                value: value,
+                                disabled: false,
+                                description: value,
+                            }
+                        })
+                    },
+                    { id: Utils.getUUID(), name: 'Default value', type: TypeValues.expression, value: "", propertieType: PropertieTypes.any },
                 ];
 
             case ComponentType.localVariable:
                 return [
-                    { id: Utils.getUUID(), name: 'Label', value: name, type: TypeValues.string },
-                    { id: Utils.getUUID(), name: 'Description', type: TypeValues.bigstring, value: "" },
-                    { id: Utils.getUUID(), name: 'Data type', type: TypeValues.expression, value: "" },
-                    { id: Utils.getUUID(), name: 'Default value', type: TypeValues.expression, value: "" },
+                    { id: Utils.getUUID(), name: 'Label', value: name, type: TypeValues.string, propertieType: PropertieTypes.label },
+                    { id: Utils.getUUID(), name: 'Description', type: TypeValues.bigstring, value: "", propertieType: PropertieTypes.description },
+                    {
+                        id: Utils.getUUID(), name: 'Data type', type: TypeValues.selection, value: DataTypes.string, propertieType: PropertieTypes.any, suggestions: DataTypesList.map(value => {
+                            return {
+                                name: value,
+                                label: value,
+                                value: value,
+                                disabled: false,
+                                description: value,
+                            }
+                        })
+                    },
+                    { id: Utils.getUUID(), name: 'Default value', type: TypeValues.expression, value: "", propertieType: PropertieTypes.any },
                 ];
 
             case ComponentType.outputVariable:
                 return [
-                    { id: Utils.getUUID(), name: 'Label', value: name, type: TypeValues.string },
-                    { id: Utils.getUUID(), name: 'Description', type: TypeValues.bigstring, value: "" },
-                    { id: Utils.getUUID(), name: 'Data type', type: TypeValues.expression, value: "" },
-                    { id: Utils.getUUID(), name: 'Default value', type: TypeValues.expression, value: "" },
+                    { id: Utils.getUUID(), name: 'Label', value: name, type: TypeValues.string, propertieType: PropertieTypes.label },
+                    { id: Utils.getUUID(), name: 'Description', type: TypeValues.bigstring, value: "", propertieType: PropertieTypes.description },
+                    {
+                        id: Utils.getUUID(), name: 'Data type', type: TypeValues.selection, value: DataTypes.string, propertieType: PropertieTypes.any, suggestions: DataTypesList.map(value => {
+                            return {
+                                name: value,
+                                label: value,
+                                value: value,
+                                disabled: false,
+                                description: value,
+                            }
+                        })
+                    },
+                    { id: Utils.getUUID(), name: 'Default value', type: TypeValues.expression, value: "", propertieType: PropertieTypes.any },
                 ];
 
             default:
                 return [
-                    { id: Utils.getUUID(), name: 'Label', type: TypeValues.viewOnly, value: '<tipo de item não encontrado>' },
+                    { id: Utils.getUUID(), name: 'Label', type: TypeValues.viewOnly, value: '<tipo de item não encontrado>', propertieType: PropertieTypes.label },
                 ];
         }
     }
@@ -437,7 +463,7 @@ export default class EditorTab extends React.Component {
             const itemToDelete = data;
 
             options.push({
-                icon: icon_trash,
+                icon: IconTrash,
                 label: 'Delete ' + itemToDelete.itemType,
                 action: () => {
                     let indexTreeToDelete: number | undefined;
@@ -471,6 +497,7 @@ export default class EditorTab extends React.Component {
         this.codeEditorGetToolBoxItens().forEach(item => {
             options.push({
                 label: 'Add ' + item.name,
+                icon: AssetsService.getIcon(item.itemType),
                 action: () => {
 
                     // Encontra a tab certa e adiciona um item de fluxo aos itens
@@ -831,11 +858,11 @@ export default class EditorTab extends React.Component {
                     this.editorContext.project.tabs[tabIndex].itens.push(new ItemComponent({
                         id: Utils.getUUID(),
                         itens: [],
-                        description: '',
-                        isSelected: true,
-                        isEditing: true,
-                        nodeExpanded: true,
                         label: newName,
+                        description: '',
+                        isEditing: true,
+                        isSelected: true,
+                        nodeExpanded: true,
                         itemPaiId: inputItemId,
                         type: ComponentType.globalAction,
                         name: Utils.getNormalizedString(newName),
@@ -848,7 +875,7 @@ export default class EditorTab extends React.Component {
 
         this.editorContext.project.tabs.forEach((tab: Tab) => {
             if (tab.configs.isEditing) {
-                if (tab.configs.type === ComponentType.tabRouters) {
+                if (tab.configs.type === ComponentType.tabRoutes) {
 
                     options.push({
                         icon: AssetsService.getIcon(ComponentType.router),
@@ -969,7 +996,7 @@ export default class EditorTab extends React.Component {
                 action: () => this.treeManagerRemoveItem(itemId),
                 disabled: itemId === undefined,
                 useConfirmation: false,
-                icon: icon_trash,
+                icon: IconTrash,
                 label: 'Delete',
             });
         }
@@ -1001,71 +1028,80 @@ export default class EditorTab extends React.Component {
     render() {
         const flowEditorItens = this.codeEditorGetItensLogica.bind(this)();
         return (
-            <TwoColumnsResizable
-                aligment="right"
-                id="EditorTabCenter"
-                left={
-                    <TwoRowsResizable
-                        id="TwoRowsResizableOutput"
-                        useMinHeight={true}
-                        top={
-                            <FlowEditor
-                                id={"CODE_EDITOR"}
-                                showToolbar={true}
-                                itens={flowEditorItens}
-                                toolItens={this.codeEditorGetToolBoxItens()}
-                                enabledSelection={flowEditorItens.length !== 0}
-                                onDropItem={this.codeEditorOnDropItem.bind(this)}
-                                breadcrumbs={this.codeEditorGetBreadcamps.bind(this)()}
-                                onChangeItens={this.codeEditorOutputFlowItens.bind(this)}
-                                allowedsInDrop={[ComponentType.globalAction, ComponentType.localAction, ComponentType.localVariable, ComponentType.inputVariable, ComponentType.outputVariable]}
-                                onContextMenu={(data, e) => {
-                                    if (e) {
-                                        e.preventDefault();
-                                        ContextMenuService.showMenu(e.clientX, e.clientY, this.codeEditorContextMenu.bind(this)(data, e));
-                                    }
-                                }}
-                            />
-                        }
-                        bottom={
-                            <OutputPanel
-                                problems={ProblemsHelper.getProblems(this.editorContext.project)}
-                                output={OutputHelper.getOutput(this.editorContext.project)}
-                            />
-                        }
-                    />
-                }
-                right={
-                    <div className="flex1 background-panels">
+            <>
+                <TwoColumnsResizable
+                    aligment="right"
+                    id="EditorTabCenter"
+                    left={
                         <TwoRowsResizable
-                            id="EditorTabRightRows"
+                            id="TwoRowsResizableOutput"
+                            useMinHeight={true}
                             top={
-                                <TreeManager
-                                    isUseDrag={true}
-                                    isUseDrop={true}
-                                    onClick={this.treeManagerOnClick.bind(this)}
-                                    onKeyDown={this.treeManagerKeyDowm.bind(this)}
-                                    onExpandNode={this.treeManagerOnNodeExpand.bind(this)}
-                                    onDropItem={this.treeManagerOnDropItem.bind(this)}
-                                    onDoubleClick={this.treeManagerOnDoubleClick.bind(this)}
-                                    onContextMenu={(itemId, e) => {
-                                        e.preventDefault();
-                                        ContextMenuService.showMenu(e.clientX, e.clientY, this.treeManagerContextMenu.bind(this)(itemId));
+                                <FlowEditor
+                                    id={"CODE_EDITOR"}
+                                    showToolbar={true}
+                                    itens={flowEditorItens}
+                                    toolItens={this.codeEditorGetToolBoxItens()}
+                                    enabledSelection={flowEditorItens.length !== 0}
+                                    onDropItem={this.codeEditorOnDropItem.bind(this)}
+                                    breadcrumbs={this.codeEditorGetBreadcamps.bind(this)()}
+                                    onChangeItens={this.codeEditorOutputFlowItens.bind(this)}
+                                    allowedsInDrop={[ComponentType.globalAction, ComponentType.localAction, ComponentType.localVariable, ComponentType.inputVariable, ComponentType.outputVariable]}
+                                    onContextMenu={(data, e) => {
+                                        if (e) {
+                                            e.preventDefault();
+                                            ContextMenuService.showMenu(e.clientX, e.clientY, this.codeEditorContextMenu.bind(this)(data, e));
+                                        }
                                     }}
-                                    itens={this.treeManagerGetTree.bind(this)()}
                                 />
                             }
                             bottom={
-                                <PropertiesEditor
-                                    onChangeInputWidth={width => console.log(width)}
-                                    onChange={this.propertiesEditorOutputItens.bind(this)}
-                                    item={this.propertiesEditorGetSelectedItem.bind(this)(this.state.currentFocus)}
+                                <OutputPanel
+                                    problems={ProblemsHelper.getProblems(this.editorContext.project)}
+                                    output={OutputHelper.getOutput(this.editorContext.project)}
                                 />
                             }
                         />
-                    </div>
-                }
-            />
+                    }
+                    right={
+                        <div className="flex1 background-panels">
+                            <TwoRowsResizable
+                                id="EditorTabRightRows"
+                                top={
+                                    <TreeManager
+                                        isUseDrag={true}
+                                        isUseDrop={true}
+                                        onClick={this.treeManagerOnClick.bind(this)}
+                                        onKeyDown={this.treeManagerKeyDowm.bind(this)}
+                                        onExpandNode={this.treeManagerOnNodeExpand.bind(this)}
+                                        onDropItem={this.treeManagerOnDropItem.bind(this)}
+                                        onDoubleClick={this.treeManagerOnDoubleClick.bind(this)}
+                                        onContextMenu={(itemId, e) => {
+                                            e.preventDefault();
+                                            ContextMenuService.showMenu(e.clientX, e.clientY, this.treeManagerContextMenu.bind(this)(itemId));
+                                        }}
+                                        itens={this.treeManagerGetTree.bind(this)()}
+                                    />
+                                }
+                                bottom={
+                                    <PropertiesEditor
+                                        onChangeInputWidth={width => console.log(width)}
+                                        onChange={this.propertiesEditorOutputItens.bind(this)}
+                                        item={this.propertiesEditorGetSelectedItem.bind(this)(this.state.currentFocus)}
+                                    />
+                                }
+                            />
+                        </div>
+                    }
+                />
+                <Modal
+                    isOpen={this.state.modalOpen}
+                    onClose={value => {
+                        this.setState({ modalOpen: value });
+                        return value;
+                    }}
+                />
+            </>
         );
     }
 

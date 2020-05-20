@@ -11,25 +11,26 @@ export enum ComponentType {
      */
     grouper = "GROUPER",
 
-    outputVariable = "OUTPUT_VARIABLE",
-    inputVariable = "INPUT_VARIABLE",
-    localVariable = "LOCAL_VARIABLE",
+    outputVariable = "Output variable",
+    inputVariable = "Input variable",
+    localVariable = "Local variable",
 
     globalAction = "Global action",
-    localAction = "LOCAL_ACTION",
+    localAction = "Local action",
+    extension = "Extension",
 
     /**
      * Aba do sistema onde é definido as rotas das APIs
     */
-    tabRouters = "TAB_ROUTERS",
+    tabRoutes = "Routes tab",
     /**
      * Aba do sistema onde é definido as actions globais
     */
-    tabActions = "TAB_ACTIONS",
+    tabActions = "Actions tab",
     /**
      * Aba do sistema onde é definido as tabelas ou as estruturas de dados
     */
-    tabDates = "TAB_DATE",
+    tabDates = "Data tab",
 
     /**
      * Tipa um item que será considerado uma rota do sistema

@@ -6,6 +6,7 @@ import icon_warning from './../../../assets/icons/icon-warning.png';
 import icon_error from './../../../assets/icons/icon-error.png';
 import { ComponentType } from "../../enuns/ComponentType";
 import { Project } from "../../interfaces/Aplication";
+import { PropertieTypes } from "../../enuns/PropertieTypes";
 
 class ProblemsHelperService {
     /**
@@ -36,11 +37,16 @@ class ProblemsHelperService {
         // Valida os itens das tabs
         project.tabs.forEach(tab => {
 
-            if (tab.itens.length === 0 && tab.configs.type === ComponentType.tabRouters) {
+            if (tab.itens.length === 0 && tab.configs.type === ComponentType.tabRoutes) {
                 addProblem(`Add at least one route to your app`, 'warning');
             }
 
             tab.itens.forEach(item => {
+
+                const numStarts = item.itens.filter(item_flow => item_flow.itemType === ItemType.START);
+                if (numStarts.length > 1) {
+                    addProblem(`In ${item.label} must have only start flow item`, 'error');
+                }
 
                 if (item.type === ComponentType.globalAction || item.type === ComponentType.localAction || item.type === ComponentType.router) {
                     if (!(item.itens.some(comp => comp.itemType === ItemType.START) && item.itens.some(comp => comp.itemType === ItemType.END))) {
@@ -72,6 +78,27 @@ class ProblemsHelperService {
                             }
                         });
 
+                    }
+
+                    // Valida os assigns
+                    if (flowItem.itemType === ItemType.ASSIGN) {
+                        flowItem.properties.forEach(prop => {
+                            if (prop.propertieType === PropertieTypes.assigns) {
+
+                                if ((prop.name !== '' && prop.value === '') || (prop.name === '' && prop.value !== '')) {
+                                    addProblem(`In ${item.label} a ${flowItem.name} flow item have incorrect values`, 'error');
+                                }
+
+                            }
+                        });
+                    }
+
+                    // Valida os ends
+                    if (flowItem.itemType === ItemType.END) {
+                        const index = item.itens.findIndex(item_flow => item_flow.sucessor.includes(flowItem.id || 'undefined'));
+                        if (index === -1) {
+                            addProblem(`In ${item.label} a ${flowItem.name} flow item is not used`, 'error');
+                        }
                     }
                 });
 

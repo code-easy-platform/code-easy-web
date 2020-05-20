@@ -27,6 +27,10 @@ interface BaseFields {
      * Usado para descrever algum detalhe do registro
      */
     description: string;
+    /**
+     * Campo usado para controlar a onder dos itens
+     */
+    ordem?: number;
 
     // Aqui vai o campo para a lista de proriedades.
 }
@@ -88,6 +92,7 @@ export class ComponentConfigs implements BaseFields {
     public id: string | undefined;
     public label: string;
     public name: string;
+    public ordem?: number;
     public description: string;
     public type: ComponentType;
     public isEditing: boolean;
@@ -108,9 +113,10 @@ export class ComponentConfigs implements BaseFields {
              * Usado para nomear um registro apenas de forma visual
              */
             label: string;
+            ordem?: number;
+            isEditing: boolean;
             description: string,
             type: ComponentType,
-            isEditing: boolean;
             isExpanded?: boolean;
         }
     ) {
@@ -121,6 +127,7 @@ export class ComponentConfigs implements BaseFields {
         this.isEditing = this.fields.isEditing;
         this.isExpanded = this.fields.isExpanded;
         this.description = this.fields.description;
+        this.ordem = this.fields.ordem;
     }
 
 }
@@ -171,6 +178,7 @@ export class ItemComponent implements BaseFields {
     public id: string | undefined;
     public name: string;
     public label: string;
+    public ordem?: number;
     public description: string;
 
     /** Usado para conter os itens de um fluxo */
@@ -203,6 +211,7 @@ export class ItemComponent implements BaseFields {
              * Usado para nomear um registro apenas de forma visual
              */
             label: string;
+            ordem?: number;
             isEditing: boolean;
             isSelected: boolean;
             description: string;
@@ -219,6 +228,7 @@ export class ItemComponent implements BaseFields {
         this.type = this._fields.type;
         this.label = this._fields.label;
         this.itens = this._fields.itens;
+        this.ordem = this._fields.ordem || 0;
         this.itemPaiId = this._fields.itemPaiId;
         this.isEditing = this._fields.isEditing;
         this.properties = this._fields.properties;
