@@ -139,19 +139,28 @@ const CodeEditor: React.FC<ICodeEditorProps> = ({ id, itens = [], toolItens = []
     }
 
     /**
-     * Usado para mudar o "sucessorId" de um elemento.
-     * Sucessor é usado para indicar onde o apontamento deve estar.
-     *
-     * @param branchIndex indica qual a branch do item para liga no item sucessor
+     * Função usada para adicionar, remove e atualizar sucessores dos itens arrastáveis
+     * @param itemId string | undefined Item antecessore(pai)
+     * @param sucessorId string id do item que será usado como sucessor
+     * @param branchIndex number | undefined se vim undefined é adicionado um novo sucessor, se não está atualizando ou removendo
      */
-    const changeSucessor = (itemId: string | undefined, sucessorId: string, branchIndex: number = 0) => {
+    const changeSucessor = (itemId: string | undefined, sucessorId: string, branchIndex: number | undefined) => {
 
-        const itemCurrentIndex = flowItens.list.findIndex((item: FlowItem) => item.id === itemId);
-        if (itemCurrentIndex < 0) return;
+        /** Item em que está sendo feita as mudanças nos sucessores */
+        const itemCurrent = flowItens.list.find((item: FlowItem) => item.id === itemId);
+        if (!itemCurrent) return;
 
-        let itemCurrent: FlowItem = flowItens.list[itemCurrentIndex];
+        // Se tentar ligar um item nele mesmo deve ser excluida a ligação.
+        if (itemId === sucessorId || itemId === undefined) {
+            if (branchIndex === undefined) return;
+            itemCurrent.sucessor.splice(branchIndex, 1);
 
-        /** Se for um comentário, não realiza a mudança */
+            setFlowItens({ list: flowItens.list });
+            onChangeFlow();
+            return;
+        }
+
+        /** Se for um comentário, não realiza o link como sucessor */
         const targetItem = flowItens.list.find(target => target.id === sucessorId);
         if (!targetItem) {
             return;
@@ -161,19 +170,17 @@ const CodeEditor: React.FC<ICodeEditorProps> = ({ id, itens = [], toolItens = []
             }
         }
 
-        // Se tentar ligar um item nele mesmo deve ser perdida a ligação com qualquer elemento anterior desta branch específica.
-        if (itemId === sucessorId || itemId === undefined) {
-            sucessorId = "";
-        }
+        // No caso de vim undefined significa que é um novo branch.
+        // Caso se o item já esteja na lista como sucessor, remove e adiciona novamente.
+        if (branchIndex === undefined && !itemCurrent.sucessor.some(id => id === sucessorId)) {
+            itemCurrent.sucessor.push(sucessorId);
+        } else {
+            const indexToRemove = itemCurrent.sucessor.findIndex(id => id === sucessorId);
+            if (indexToRemove === -1) return;
 
-        // No caso de vim 999999 significa que é um novo branch.
-        if (branchIndex === 999999) {
-            branchIndex = itemCurrent.sucessor.length + 1;
-            itemCurrent.sucessor.push('0');
+            itemCurrent.sucessor.splice(indexToRemove, 1);
+            itemCurrent.sucessor.push(sucessorId);
         }
-
-        // OBS: O update no fluxo principal é feito pela referencia entre variáveis js.
-        itemCurrent.sucessor[branchIndex] = sucessorId;
 
         setFlowItens({ list: flowItens.list });
         onChangeFlow();
@@ -414,14 +421,11 @@ const CodeEditor: React.FC<ICodeEditorProps> = ({ id, itens = [], toolItens = []
                     {/* Reinderiza as linhas dos itens arrastáveis da tela. */}
                     {flowItens.list.map((item: FlowItem, index) => {
 
-                        const itensSucessores: FlowItem[] = flowItens.list.filter((sucessorItem: FlowItem) => {
-
-                            if (sucessorItem.id === undefined) {
-                                return false;
-                            }
-                            return item.sucessor.includes(sucessorItem.id);
-
-                        });
+                        const itensSucessores: FlowItem[] = flowItens
+                            .list.filter((sucessorItem: FlowItem) => (sucessorItem.id !== undefined)
+                                ? item.sucessor.includes(sucessorItem.id)
+                                : false
+                            );
 
                         // Define se será usado uma nova branch para este item de fluxo.
                         let isUseNewBranch = InternalUtils.useNewBranch(itensSucessores.length, item.itemType);

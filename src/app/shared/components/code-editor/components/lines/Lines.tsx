@@ -7,7 +7,7 @@ interface LinesProps {
     item: FlowItem;
     isUseNewBranch: boolean;
     itensSucessores: FlowItem[];
-    onSucessorChange: Function | undefined;
+    onSucessorChange(itemId: string | undefined, sucessorId: string, branchIndex: number | undefined): void;
 };
 export const Lines: React.FC<LinesProps> = ({ itensSucessores, item, onSucessorChange, isUseNewBranch }) => {
     return <>

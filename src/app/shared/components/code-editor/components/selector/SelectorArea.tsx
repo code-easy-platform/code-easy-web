@@ -55,7 +55,7 @@ export const SelectorArea: React.FC<SelectorAreaProps> = ({ parentRef, enabled =
                 window.onmousemove = mouseMove;
                 window.onmouseup = mouseUp;
 
-                /** 
+                /**
                  * Em teoria isso não deveria contecer já que se trata de consts
                  * e em teoria deveria estar sendo feito essas atribuições dentro do setPosition,
                  * funcionou apenas assim.

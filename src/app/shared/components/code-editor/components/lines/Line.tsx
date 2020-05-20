@@ -2,23 +2,24 @@ import React, { useState } from 'react';
 
 /** Propriedades aceitas pela linha. */
 interface LineProps {
-    id?: string
-    top1: number
-    top2?: number
-    left1: number
-    left2?: number
-    color?: string
-    lineWidth?: number
-    sucessorIndex?: number
-    onSucessorChange?: Function
-    lineType?: 'dotted' | 'normal'
+    id: string;
+    top1: number;
+    top2?: number;
+    left1: number;
+    left2?: number;
+    color?: string;
+    lineWidth?: number;
+    sucessorIndex?: number;
+    lineType?: 'dotted' | 'normal';
+    onSucessorChange?(itemId: string | undefined, sucessorId: string, branchIndex: number | undefined): void;
 }
 
-export const Line: React.FC<LineProps> = (props: LineProps) => {
-    const { lineWidth = 1, color = "var(--main-background-highlighted)", left1, left2 = 0 } = props;
-    const onSucessorChange: Function = props.onSucessorChange || (() => { });
-    const { id = "0", sucessorIndex = 999999, lineType = 'normal' } = props;
+export const Line: React.FC<LineProps> = ({ id, onSucessorChange, ...props }) => {
     let { top1 = 0, top2 = 0 } = props;
+    const {
+        lineWidth = 1, color = "var(--main-background-highlighted)", left1, left2 = 0,
+        sucessorIndex, lineType = 'normal',
+    } = props;
 
 
     const polygonTop: number = (top2 - 10);
@@ -55,19 +56,21 @@ export const Line: React.FC<LineProps> = (props: LineProps) => {
             polygonLeft: left1 - 10,
         });
 
-        onSucessorChange(id, e.target.id, sucessorIndex);
+        onSucessorChange &&
+            onSucessorChange(id, e.target.id, sucessorIndex);
+
     }
 
     const onMouseDown = () => {
+        window.onmousemove = mouseMove;
+        window.onmouseup = onMouseUp
+
         setIsSelected(true);
 
         setPosition({
             polygonTop: top1,
             polygonLeft: left1 - 10,
         });
-
-        window.onmousemove = mouseMove;
-        window.onmouseup = onMouseUp
     }
 
     return (
