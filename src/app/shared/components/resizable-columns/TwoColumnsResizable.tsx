@@ -39,7 +39,7 @@ export class TwoColumnsResizable extends Component<IRecipeProps> {
     }
 
     render = () => (
-        <div className="flex1">
+        <div className="flex1 full-width">
             <div className="col-align-left display-block" style={{ width: window.innerWidth - this.state.colX }}>
                 {this.props.left}
             </div>

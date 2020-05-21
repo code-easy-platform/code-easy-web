@@ -1,6 +1,6 @@
 .col-align-left {
   justify-content: space-between;
-  max-width: 85%;
+  /* max-width: 85%; */
   min-width: 50%;
 }
 

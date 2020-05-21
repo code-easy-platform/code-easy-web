@@ -36,7 +36,7 @@ export default class EditorTab extends React.Component {
 
     state: { currentFocus: CurrentFocus, modalOpen: boolean } = {
         currentFocus: CurrentFocus.tree,
-        modalOpen: false,
+        modalOpen: true,
     }
 
 
@@ -82,10 +82,24 @@ export default class EditorTab extends React.Component {
                 if (index && (index < 0)) return;
 
 
-                // itemEditing.itens[index].name;
+                // Pega a antiga action ID
+                const oldActionId = itemEditing.itens[index].properties.find(item_old => item_old.propertieType === PropertieTypes.action)?.value;
+                // Pega a nova action ID
+                const newActionId = item.properties.find(item_new => item_new.propertieType === PropertieTypes.action)?.value;
+
+                // Compara os dois IDs, se mudou apaga todos os parâmetro da action anterior.
+                if (oldActionId && oldActionId !== newActionId) {
+                    // Encontra o promeiro parametro e remove, depois encontra os outros e irá remover eté não restar mais parâmetros
+                    let indexToREmove = item.properties.findIndex(item_old => item_old.propertieType === PropertieTypes.param);
+                    while (indexToREmove >= 0) {
+                        item.properties.splice(indexToREmove, 1);
+                        indexToREmove = item.properties.findIndex(item_old => item_old.propertieType === PropertieTypes.param);
+                    }
+                }
 
                 itemEditing.itens[index].name = item.name;
                 itemEditing.itens[index].properties = item.properties;
+
             }
 
         }
@@ -121,36 +135,64 @@ export default class EditorTab extends React.Component {
 
             const mappedItens: IItem[] = [];
             itensFiltereds.forEach(filteredItem => {
+                let paramsProps: IProperties[] = [];
 
                 filteredItem.properties.forEach(prop => {
-                    if (prop.name === "Action") {
+                    if (prop.propertieType === PropertieTypes.action) {
 
                         /** Tranforma a action atual em tipo de campo selection */
                         prop.type = TypeValues.selection;
                         prop.suggestions = [];
 
+                        // Encontra as action e adiciona como sugestions
                         this.editorContext.project.tabs.forEach(tab => {
                             if (tab.configs.type === ComponentType.tabActions) {
                                 tab.itens.forEach(item => {
-                                    prop.suggestions?.push({
-                                        description: item.description,
-                                        label: item.label,
-                                        value: item.id,
-                                        name: item.name,
-                                        disabled: false,
-                                    });
+                                    if (item.type === ComponentType.globalAction) {
+                                        prop.suggestions?.push({
+                                            description: item.description,
+                                            label: item.label,
+                                            value: item.id,
+                                            name: item.name,
+                                            disabled: false,
+                                        });
+                                    }
                                 });
                             }
                         });
-                    }
 
+                        // Encontra os parametros e adiona como props
+                        this.editorContext.project.tabs.forEach(tab => {
+                            if (tab.configs.type === ComponentType.tabActions) {
+
+                                // Encontra os parâmetros da action selecionada na combo
+                                const params = tab.itens.filter(item => (item.itemPaiId === prop.value) && item.type === ComponentType.inputVariable);
+
+                                // Adiciona cada parâmetro como uma prop da action atual
+                                params.forEach(param => {
+
+                                    // Se a prop/param já estiver no fluxo não acontece nada
+                                    if (!filteredItem.properties.some(propertie => propertie.id === param.id))
+                                        paramsProps.push({
+                                            value: '',
+                                            id: param.id,
+                                            name: param.name,
+                                            type: TypeValues.expression,
+                                            information: param.description,
+                                            propertieType: PropertieTypes.param,
+                                        });
+                                });
+                            }
+                        });
+
+                    }
                 });
 
                 mappedItens.push({
                     isHeader: true,
                     id: filteredItem.id,
                     name: filteredItem.name,
-                    properties: filteredItem.properties,
+                    properties: [...filteredItem.properties, ...paramsProps], // Adiciona os parâmetros da action selecionada como props
                 });
 
             });
@@ -176,7 +218,7 @@ export default class EditorTab extends React.Component {
             case ItemType.ACTION:
                 return [
                     { id: Utils.getUUID(), name: 'Label', type: TypeValues.string, value: name, propertieType: PropertieTypes.label },
-                    { id: Utils.getUUID(), name: 'Action', type: TypeValues.expression, value: '', propertieType: PropertieTypes.any },
+                    { id: Utils.getUUID(), name: 'Action', type: TypeValues.expression, value: '', propertieType: PropertieTypes.action },
                 ];
 
             case ItemType.ASSIGN:
@@ -247,6 +289,14 @@ export default class EditorTab extends React.Component {
                 return [
                     { id: Utils.getUUID(), name: 'Label', value: name, type: TypeValues.string, propertieType: PropertieTypes.label },
                     { id: Utils.getUUID(), name: 'Description', type: TypeValues.bigstring, value: "", propertieType: PropertieTypes.description },
+                    { id: Utils.getUUID(), name: 'Icon', type: TypeValues.binary, value: "Default", propertieType: PropertieTypes.icon },
+                ];
+
+            case ComponentType.localAction:
+                return [
+                    { id: Utils.getUUID(), name: 'Label', value: name, type: TypeValues.string, propertieType: PropertieTypes.label },
+                    { id: Utils.getUUID(), name: 'Description', type: TypeValues.bigstring, value: "", propertieType: PropertieTypes.description },
+                    { id: Utils.getUUID(), name: 'Icon', type: TypeValues.binary, value: "Default", propertieType: PropertieTypes.icon },
                 ];
 
             case ComponentType.inputVariable:
@@ -559,9 +609,9 @@ export default class EditorTab extends React.Component {
                                         item.isSelected = false;
                                     });
                                 });
- 
+     
                                 item.isSelected = true;
- 
+     
                                 this.onChangeState();
                              */
                         }),
@@ -681,6 +731,8 @@ export default class EditorTab extends React.Component {
 
             // Busca todos os itens que tem como pai o elemento corrente
             itens.filter((item) => item.itemPaiId === tree.id).forEach(item => {
+                // const icon:any = item.properties.forEach(prop => prop.propertieType === PropertieTypes.icon)
+
                 tree.childs.push({
                     childs: [],
                     id: item.id,
@@ -691,7 +743,7 @@ export default class EditorTab extends React.Component {
                     isSelected: item.isSelected,
                     description: item.description,
                     nodeExpanded: item.nodeExpanded,
-                    icon: AssetsService.getIcon(item.type),
+                    icon: /* icon.content ||  */AssetsService.getIcon(item.type),
                     hasError: item.itens.some(itemFlow => itemFlow.properties.some(prop => (prop.valueHasError || prop.nameHasError))),
                 });
             });
@@ -1028,14 +1080,16 @@ export default class EditorTab extends React.Component {
     render() {
         const flowEditorItens = this.codeEditorGetItensLogica.bind(this)();
         return (
-            <>
-                <TwoColumnsResizable
-                    aligment="right"
-                    id="EditorTabCenter"
-                    left={
+            <TwoColumnsResizable
+                aligment="right"
+                id="EditorTabCenter"
+                left={
+                    <>
                         <TwoRowsResizable
                             id="TwoRowsResizableOutput"
-                            useMinHeight={true}
+                            useMinMaxHeight={true}
+                            maxBottomHeight="99%"
+                            minBottomHeight="1%"
                             top={
                                 <FlowEditor
                                     id={"CODE_EDITOR"}
@@ -1062,46 +1116,46 @@ export default class EditorTab extends React.Component {
                                 />
                             }
                         />
-                    }
-                    right={
-                        <div className="flex1 background-panels">
-                            <TwoRowsResizable
-                                id="EditorTabRightRows"
-                                top={
-                                    <TreeManager
-                                        isUseDrag={true}
-                                        isUseDrop={true}
-                                        onClick={this.treeManagerOnClick.bind(this)}
-                                        onKeyDown={this.treeManagerKeyDowm.bind(this)}
-                                        onExpandNode={this.treeManagerOnNodeExpand.bind(this)}
-                                        onDropItem={this.treeManagerOnDropItem.bind(this)}
-                                        onDoubleClick={this.treeManagerOnDoubleClick.bind(this)}
-                                        onContextMenu={(itemId, e) => {
-                                            e.preventDefault();
-                                            ContextMenuService.showMenu(e.clientX, e.clientY, this.treeManagerContextMenu.bind(this)(itemId));
-                                        }}
-                                        itens={this.treeManagerGetTree.bind(this)()}
-                                    />
-                                }
-                                bottom={
-                                    <PropertiesEditor
-                                        onChangeInputWidth={width => console.log(width)}
-                                        onChange={this.propertiesEditorOutputItens.bind(this)}
-                                        item={this.propertiesEditorGetSelectedItem.bind(this)(this.state.currentFocus)}
-                                    />
-                                }
-                            />
-                        </div>
-                    }
-                />
-                <Modal
-                    isOpen={this.state.modalOpen}
-                    onClose={value => {
-                        this.setState({ modalOpen: value });
-                        return value;
-                    }}
-                />
-            </>
+                        <Modal
+                            isOpen={true}
+                            onClose={value => {
+                                this.setState({ modalOpen: value });
+                                return value;
+                            }}
+                        />
+                    </>
+                }
+                right={
+                    <div className="flex1 background-panels full-width">
+                        <TwoRowsResizable
+                            id="EditorTabRightRows"
+                            top={
+                                <TreeManager
+                                    isUseDrag={true}
+                                    isUseDrop={true}
+                                    onClick={this.treeManagerOnClick.bind(this)}
+                                    onKeyDown={this.treeManagerKeyDowm.bind(this)}
+                                    onExpandNode={this.treeManagerOnNodeExpand.bind(this)}
+                                    onDropItem={this.treeManagerOnDropItem.bind(this)}
+                                    onDoubleClick={this.treeManagerOnDoubleClick.bind(this)}
+                                    onContextMenu={(itemId, e) => {
+                                        e.preventDefault();
+                                        ContextMenuService.showMenu(e.clientX, e.clientY, this.treeManagerContextMenu.bind(this)(itemId));
+                                    }}
+                                    itens={this.treeManagerGetTree.bind(this)()}
+                                />
+                            }
+                            bottom={
+                                <PropertiesEditor
+                                    onChangeInputWidth={width => console.log(width)}
+                                    onChange={this.propertiesEditorOutputItens.bind(this)}
+                                    item={this.propertiesEditorGetSelectedItem.bind(this)(this.state.currentFocus)}
+                                />
+                            }
+                        />
+                    </div>
+                }
+            />
         );
     }
 

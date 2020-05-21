@@ -1,7 +1,7 @@
 import React from 'react';
 
 interface ExpressionInputProps extends React.DetailedHTMLProps<React.InputHTMLAttributes<HTMLInputElement>, HTMLInputElement> {
-    openEditor?(e: React.MouseEvent<HTMLButtonElement, MouseEvent>): void;
+    openEditor?(e: React.MouseEvent<HTMLInputElement, MouseEvent>): void;
 }
 export const ExpressionInput: React.FC<ExpressionInputProps> = ({ openEditor, ...props }) => {
 
@@ -19,7 +19,7 @@ export const ExpressionInput: React.FC<ExpressionInputProps> = ({ openEditor, ..
     return (
         <div className="flex1" style={{ alignItems: 'center', justifyContent: 'flex-end' }}>
             <input {...props} autoComplete='off' style={{ ...props.style, width: '100%' }} />
-            <button className="full-height background-bars" style={css_picker_editor} disabled={props.disabled} onClick={openEditor} />
+            <input type="button" className="full-height background-bars" style={css_picker_editor} disabled={props.disabled} onClick={openEditor} />
         </div>
     );
 }

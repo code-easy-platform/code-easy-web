@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
+import { Utils } from 'code-easy-components';
 
-import { IItem, IProperties } from '../interfaces';
+import { IItem, IProperties, TypeValues } from '../interfaces';
 import { PropItem } from './PropItem';
 
 interface ListItemProps extends IItem { onChange(data: IItem): void; inputWidth: number; onChangeInputWidth(width: number): void; }
@@ -22,6 +23,19 @@ export const ListItem: React.FC<ListItemProps> = ({ id, name, properties, isHead
         onChange(state);
     }
 
+    const addProp = () => {
+
+        state.properties.push({
+            name: '',
+            value: '',
+            id: Utils.getUUID(),
+            type: TypeValues.assign,
+        });
+
+        setState(state);
+        onChange(state);
+    }
+
     return (
         <>
             <div className="padding-m padding-left-s" style={css_list_item}>{state.name}</div>
@@ -32,18 +46,10 @@ export const ListItem: React.FC<ListItemProps> = ({ id, name, properties, isHead
                     onChangeInputWidth={onChangeInputWidth}
                     inputWidth={inputWidth}
                     key={`${index}`}
+                    onclick={addProp}
                     {...prop}
                 />
             ))}
-            {/* <PropItem
-                onChangeInputWidth={onChangeInputWidth}
-                type={TypeValues.addProp}
-                inputWidth={inputWidth}
-                value="+ Add prop"
-                key={`add_prop`}
-                name="AddProp"
-                id="add_prop"
-            /> */}
         </>
     );
 }
