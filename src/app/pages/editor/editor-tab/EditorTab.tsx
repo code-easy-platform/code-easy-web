@@ -1055,7 +1055,9 @@ export default class EditorTab extends React.Component {
                     <>
                         <TwoRowsResizable
                             id="TwoRowsResizableOutput"
-                            useMinHeight={true}
+                            useMinMaxHeight={true}
+                            maxBottomHeight="99%"
+                            minBottomHeight="1%"
                             top={
                                 <FlowEditor
                                     id={"CODE_EDITOR"}

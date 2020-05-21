@@ -7,6 +7,10 @@
   outline: thin solid var(--color-background-col-click);
 }
 
+.tree-base:hover::-webkit-scrollbar-thumb {
+  background-color: var(--color-scroll-bar-hover);
+}
+
 .tree-item {
   outline: var(--outline-none);
   width: var(--size-fill);

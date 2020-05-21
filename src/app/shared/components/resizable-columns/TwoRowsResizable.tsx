@@ -4,8 +4,10 @@ import './ResizeTemplate.css';
 import { Storage } from '../../services/LocalStorage';
 
 interface IRecipeProps {
-    useMinHeight?: boolean,
+    useMinMaxHeight?: boolean,
     bottom: JSX.Element,
+    maxBottomHeight?: string,
+    minBottomHeight?: string,
     top: JSX.Element,
     id: string,
 }
@@ -43,15 +45,23 @@ export class TwoRowsResizable extends Component<IRecipeProps> {
     }
 
     render() {
-        const useMinHeight = this.props.useMinHeight !== undefined ? this.props.useMinHeight : true
+        const useMinMaxHeight = this.props.useMinMaxHeight !== undefined ? this.props.useMinMaxHeight : true
 
         return (
-            <div className="flex1 display-block full-width">
-                <div className="full-width" style={{ height: (window.innerHeight - this.state.bottomHeight) - 60, minHeight: useMinHeight ? '5%' : undefined, maxHeight: '90%' }}>
-                    {this.props.top}
-                </div>
+            <div className="flex1 display-block full-width full-height">
+                <div className="full-width" style={{
+                    maxHeight: useMinMaxHeight ? this.props.maxBottomHeight || '90%' : undefined,
+                    minHeight: useMinMaxHeight ? this.props.minBottomHeight || '10%' : undefined,
+                    height: (window.innerHeight - this.state.bottomHeight) - 60,
+                }}>{this.props.top}</div>
+
                 <hr className='hr' />
-                <div className="full-width" style={{ height: this.state.bottomHeight, minHeight: useMinHeight ? '10%' : undefined, maxHeight: '95%' }}>
+
+                <div className="full-width" style={{
+                    height: this.state.bottomHeight,
+                    maxHeight: useMinMaxHeight ? this.props.maxBottomHeight || '95%' : undefined,
+                    minHeight: useMinMaxHeight ? this.props.minBottomHeight || '10%' : undefined,
+                }}>
                     <div className="grabber-col-right-resize-y" onMouseDown={this.mouseDown} />
                     <div className="flex1 full-width">
                         {this.props.bottom}
