@@ -5,8 +5,8 @@ export enum DataTypes {
     string = "String",
     float = "Float",
     list = "List",
-    void = "void",
-    any = "any",
+    void = "Void",
+    any = "Any",
 }
 
 export const DataTypesList: DataTypes[] = [

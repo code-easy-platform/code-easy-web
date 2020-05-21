@@ -82,16 +82,20 @@ export default class EditorTab extends React.Component {
                 if (index && (index < 0)) return;
 
 
-                /* item.properties.forEach(prop => {
-                    if (prop.propertieType === PropertieTypes.label) {
-                        item.properties.forEach(prop2 => {
-                            if (prop.propertieType === PropertieTypes.any) {
-                                prop.value = prop2.value;
-                                prop.name = prop2.value;
-                            }
-                        });
+                // Pega a antiga action ID
+                const oldActionId = itemEditing.itens[index].properties.find(item_old => item_old.propertieType === PropertieTypes.action)?.value;
+                // Pega a nova action ID
+                const newActionId = item.properties.find(item_new => item_new.propertieType === PropertieTypes.action)?.value;
+
+                // Compara os dois IDs, se mudou apaga todos os parâmetro da action anterior.
+                if (oldActionId && oldActionId !== newActionId) {
+                    // Encontra o promeiro parametro e remove, depois encontra os outros e irá remover eté não restar mais parâmetros
+                    let indexToREmove = item.properties.findIndex(item_old => item_old.propertieType === PropertieTypes.param);
+                    while (indexToREmove >= 0) {
+                        item.properties.splice(indexToREmove, 1);
+                        indexToREmove = item.properties.findIndex(item_old => item_old.propertieType === PropertieTypes.param);
                     }
-                }); */
+                }
 
                 itemEditing.itens[index].name = item.name;
                 itemEditing.itens[index].properties = item.properties;
@@ -131,36 +135,64 @@ export default class EditorTab extends React.Component {
 
             const mappedItens: IItem[] = [];
             itensFiltereds.forEach(filteredItem => {
+                let paramsProps: IProperties[] = [];
 
                 filteredItem.properties.forEach(prop => {
-                    if (prop.name === "Action") {
+                    if (prop.propertieType === PropertieTypes.action) {
 
                         /** Tranforma a action atual em tipo de campo selection */
                         prop.type = TypeValues.selection;
                         prop.suggestions = [];
 
+                        // Encontra as action e adiciona como sugestions
                         this.editorContext.project.tabs.forEach(tab => {
                             if (tab.configs.type === ComponentType.tabActions) {
                                 tab.itens.forEach(item => {
-                                    prop.suggestions?.push({
-                                        description: item.description,
-                                        label: item.label,
-                                        value: item.id,
-                                        name: item.name,
-                                        disabled: false,
-                                    });
+                                    if (item.type === ComponentType.globalAction) {
+                                        prop.suggestions?.push({
+                                            description: item.description,
+                                            label: item.label,
+                                            value: item.id,
+                                            name: item.name,
+                                            disabled: false,
+                                        });
+                                    }
                                 });
                             }
                         });
-                    }
 
+                        // Encontra os parametros e adiona como props
+                        this.editorContext.project.tabs.forEach(tab => {
+                            if (tab.configs.type === ComponentType.tabActions) {
+
+                                // Encontra os parâmetros da action selecionada na combo
+                                const params = tab.itens.filter(item => (item.itemPaiId === prop.value) && item.type === ComponentType.inputVariable);
+
+                                // Adiciona cada parâmetro como uma prop da action atual
+                                params.forEach(param => {
+
+                                    // Se a prop/param já estiver no fluxo não acontece nada
+                                    if (!filteredItem.properties.some(propertie => propertie.id === param.id))
+                                        paramsProps.push({
+                                            value: '',
+                                            id: param.id,
+                                            name: param.name,
+                                            type: TypeValues.expression,
+                                            information: param.description,
+                                            propertieType: PropertieTypes.param,
+                                        });
+                                });
+                            }
+                        });
+
+                    }
                 });
 
                 mappedItens.push({
                     isHeader: true,
                     id: filteredItem.id,
                     name: filteredItem.name,
-                    properties: filteredItem.properties,
+                    properties: [...filteredItem.properties, ...paramsProps], // Adiciona os parâmetros da action selecionada como props
                 });
 
             });
@@ -186,7 +218,7 @@ export default class EditorTab extends React.Component {
             case ItemType.ACTION:
                 return [
                     { id: Utils.getUUID(), name: 'Label', type: TypeValues.string, value: name, propertieType: PropertieTypes.label },
-                    { id: Utils.getUUID(), name: 'Action', type: TypeValues.expression, value: '', propertieType: PropertieTypes.any },
+                    { id: Utils.getUUID(), name: 'Action', type: TypeValues.expression, value: '', propertieType: PropertieTypes.action },
                 ];
 
             case ItemType.ASSIGN:
@@ -577,9 +609,9 @@ export default class EditorTab extends React.Component {
                                         item.isSelected = false;
                                     });
                                 });
- 
+     
                                 item.isSelected = true;
- 
+     
                                 this.onChangeState();
                              */
                         }),
