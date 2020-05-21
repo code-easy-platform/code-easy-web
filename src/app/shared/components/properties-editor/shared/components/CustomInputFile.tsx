@@ -4,7 +4,7 @@ import { Utils } from 'code-easy-components';
 export const CustomInputFile = (props: React.DetailedHTMLProps<React.InputHTMLAttributes<HTMLInputElement>, HTMLInputElement>) => {
     const input: any = useRef(null);
     const [state, setState] = useState({
-        fileName: ''
+        fileName: undefined
     });
 
     const css_input_file: React.CSSProperties = {
@@ -33,6 +33,17 @@ export const CustomInputFile = (props: React.DetailedHTMLProps<React.InputHTMLAt
             onClick={e => { input.current.click() }}
             onKeyPress={e => { input.current.click() }}
         >{state.fileName || 'Select a file...'}</div>
-        <input key={props.id} id={props.id} type='file' disabled={props.disabled} autoComplete='off' ref={input} onChange={(e: any) => { setState({ fileName: e.target.files[0].name }); onChange(e) }} style={{ display: 'none' }} />
+        <input
+            ref={input}
+            type={'file'}
+            id={props.id}
+            key={props.id}
+            disabled={props.disabled}
+            style={{ display: 'none' }}
+            onChange={(e: any) => {
+                setState({ fileName: e.target.files[0]?.name });
+                onChange(e)
+            }}
+        />
     </>);
 }

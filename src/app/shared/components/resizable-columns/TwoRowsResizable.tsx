@@ -15,9 +15,14 @@ export class TwoRowsResizable extends Component<IRecipeProps> {
     state = { bottomHeight: 400 }
 
     componentDidMount() {
+        window.addEventListener("resize", () => this.setState({}));
         this.setState({
             bottomHeight: Storage.getColumnsResizableSize(this.props.id),
         });
+    }
+
+    componentWillUnmount() {
+        window.removeEventListener("resize", () => this.setState({}));
     }
 
     mouseMove = (event: any) => {
@@ -41,14 +46,14 @@ export class TwoRowsResizable extends Component<IRecipeProps> {
         const useMinHeight = this.props.useMinHeight !== undefined ? this.props.useMinHeight : true
 
         return (
-            <div className="flex1 display-block">
+            <div className="flex1 display-block full-width">
                 <div className="full-width" style={{ height: (window.innerHeight - this.state.bottomHeight) - 60, minHeight: useMinHeight ? '5%' : undefined, maxHeight: '90%' }}>
                     {this.props.top}
                 </div>
                 <hr className='hr' />
                 <div className="full-width" style={{ height: this.state.bottomHeight, minHeight: useMinHeight ? '10%' : undefined, maxHeight: '95%' }}>
                     <div className="grabber-col-right-resize-y" onMouseDown={this.mouseDown} />
-                    <div className="flex1">
+                    <div className="flex1 full-width">
                         {this.props.bottom}
                     </div>
                 </div>

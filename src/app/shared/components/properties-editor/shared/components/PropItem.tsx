@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { IconMoreInfo } from 'code-easy-components';
 
 import { IProperties, TypeValues } from '../interfaces';
@@ -22,7 +22,21 @@ interface PropItemProps extends IProperties {
 }
 export const PropItem: React.FC<PropItemProps> = (props) => { // Extende outra interface
 
-    const { inputWidth, onChange = () => { }, onChangeInputWidth, onclick, valueHasError = false, nameHasError = false } = props;
+    const { inputWidth, onChange = () => { }, onChangeInputWidth, valueHasError = false, nameHasError = false } = props;
+    const containerWidth = useRef<any>(null);
+
+    const [container, setContainer] = useState<{ width: number }>({ width: 200 });
+    useEffect(() => {
+        if (containerWidth.current) {
+            setContainer({ width: containerWidth.current.offsetWidth || 0 });
+        }
+    }, []);
+
+    if (containerWidth.current) {
+        containerWidth.current.addEventListener('resizer', () => {
+            setContainer({ width: containerWidth.current.offsetWidth || 0 });
+        });
+    }
 
     const [state, setState] = useState<IProperties>({
         editValueDisabled: props.editValueDisabled,
@@ -58,6 +72,7 @@ export const PropItem: React.FC<PropItemProps> = (props) => { // Extende outra i
 
     const css_prop_item_label: React.CSSProperties = {
         textDecoration: nameHasError ? `var(--text-underline-error)` : undefined,
+        width: (container.width - inputWidth),
         textOverflow: 'ellipsis',
         display: 'inline-block',
         whiteSpace: 'nowrap',
@@ -80,7 +95,7 @@ export const PropItem: React.FC<PropItemProps> = (props) => { // Extende outra i
     switch (state.type) {
         case TypeValues.viewOnly:
             return (
-                <div key={'prop_item_key_' + state.id} style={css_prop_item} className="padding-s padding-bottom-none">
+                <div ref={containerWidth} key={'prop_item_key_' + state.id} style={css_prop_item} className="padding-s padding-bottom-none">
                     <label htmlFor={'prop_id_' + state.id} className="flex1 " style={css_prop_item_label} info-message={state.information}>
                         {state.name}
                         {(state.information !== "" && state.information !== undefined) && <img className="margin-left-xs" aria-label="teste" width={10} height={10} src={IconMoreInfo} alt="info-icon" />}
@@ -108,7 +123,7 @@ export const PropItem: React.FC<PropItemProps> = (props) => { // Extende outra i
 
         case TypeValues.string:
             return (
-                <div key={'prop_item_key_' + state.id} style={css_prop_item} className="padding-s padding-bottom-none">
+                <div ref={containerWidth} key={'prop_item_key_' + state.id} style={css_prop_item} className="padding-s padding-bottom-none">
                     <label htmlFor={'prop_id_' + state.id} className="flex1 " style={css_prop_item_label} info-message={state.information}>
                         {state.name}
                         {(state.information !== "" && state.information !== undefined) && <img className="margin-left-xs" aria-label="teste" width={10} height={10} src={IconMoreInfo} alt="info-icon" />}
@@ -133,7 +148,7 @@ export const PropItem: React.FC<PropItemProps> = (props) => { // Extende outra i
 
         case TypeValues.expression:
             return (
-                <div key={'prop_item_key_' + state.id} style={css_prop_item} className="padding-s padding-bottom-none">
+                <div ref={containerWidth} key={'prop_item_key_' + state.id} style={css_prop_item} className="padding-s padding-bottom-none">
                     <label htmlFor={'prop_id_' + state.id} className="flex1 " style={css_prop_item_label} info-message={state.information}>
                         {state.name}
                         {(state.information !== "" && state.information !== undefined) && <img className="margin-left-xs" aria-label="teste" width={10} height={10} src={IconMoreInfo} alt="info-icon" />}
@@ -158,7 +173,7 @@ export const PropItem: React.FC<PropItemProps> = (props) => { // Extende outra i
 
         case TypeValues.bigstring:
             return (
-                <div key={'prop_item_key_' + state.id} style={css_prop_item} className="padding-s padding-bottom-none">
+                <div ref={containerWidth} key={'prop_item_key_' + state.id} style={css_prop_item} className="padding-s padding-bottom-none">
                     <label htmlFor={'prop_id_' + state.id} className="flex1 " style={css_prop_item_label} info-message={state.information}>
                         {state.name}
                         {(state.information !== "" && state.information !== undefined) && <img className="margin-left-xs" aria-label="teste" width={10} height={10} src={IconMoreInfo} alt="info-icon" />}
@@ -183,7 +198,7 @@ export const PropItem: React.FC<PropItemProps> = (props) => { // Extende outra i
 
         case TypeValues.number:
             return (
-                <div key={'prop_item_key_' + state.id} style={css_prop_item} className="padding-s padding-bottom-none">
+                <div ref={containerWidth} key={'prop_item_key_' + state.id} style={css_prop_item} className="padding-s padding-bottom-none">
                     <label htmlFor={'prop_id_' + state.id} className="flex1 " style={css_prop_item_label} info-message={state.information}>
                         {state.name}
                         {(state.information !== "" && state.information !== undefined) && <img className="margin-left-xs" aria-label="teste" width={10} height={10} src={IconMoreInfo} alt="info-icon" />}
@@ -209,7 +224,7 @@ export const PropItem: React.FC<PropItemProps> = (props) => { // Extende outra i
 
         case TypeValues.binary:
             return (
-                <div key={'prop_item_key_' + state.id} style={css_prop_item} className="padding-s padding-bottom-none">
+                <div ref={containerWidth} key={'prop_item_key_' + state.id} style={css_prop_item} className="padding-s padding-bottom-none">
                     <label htmlFor={'prop_id_' + state.id} className="flex1 " style={css_prop_item_label} info-message={state.information}>
                         {state.name}
                         {(state.information !== "" && state.information !== undefined) && <img className="margin-left-xs" aria-label="teste" width={10} height={10} src={IconMoreInfo} alt="info-icon" />}
@@ -218,7 +233,32 @@ export const PropItem: React.FC<PropItemProps> = (props) => { // Extende outra i
                     <div style={{ width: inputWidth ? `${inputWidth}px` : '70%', minWidth: minWidth, maxWidth: '90%' }}>
                         <CustomInputFile
                             className="full-width background-bars border-radius outline-none"
-                            onChange={e => setState({ ...state, value: e.target.value })}
+                            onChange={(e) => {
+
+                                if (e.target.files && e.target.files[0]) {
+                                    var fileReader = new FileReader();
+
+                                    let file: any = {
+                                        content: undefined,
+                                        name: e.target.files ? e.target.files.item(0)?.name : undefined,
+                                        size: e.target.files ? e.target.files.item(0)?.size : undefined,
+                                        type: e.target.files ? e.target.files.item(0)?.type : undefined,
+                                        lastModified: e.target.files ? e.target.files.item(0)?.lastModified : undefined,
+                                    }
+
+                                    fileReader.addEventListener("load", (event) => {
+                                        if (event.target) {
+                                            file.content = `${event.target.result}`;
+                                            state.value = file;
+                                            setState(state);
+                                            onChange(state);
+                                        }
+                                    });
+
+                                    fileReader.readAsDataURL(e.target.files[0]);
+
+                                }
+                            }}
                             disabled={state.editValueDisabled}
                             key={'prop_key_' + state.id}
                             style={css_prop_item_input}
@@ -231,7 +271,7 @@ export const PropItem: React.FC<PropItemProps> = (props) => { // Extende outra i
 
         case TypeValues.boolean:
             return (
-                <div key={'prop_key_' + state.id} style={css_prop_item} className="padding-s padding-bottom-none">
+                <div ref={containerWidth} key={'prop_key_' + state.id} style={css_prop_item} className="padding-s padding-bottom-none">
                     <label htmlFor={'prop_id_' + state.id} className="flex1 " style={css_prop_item_label} info-message={state.information}>
                         {state.name}
                         {(state.information !== "" && state.information !== undefined) && <img className="margin-left-xs" aria-label="teste" width={10} height={10} src={IconMoreInfo} alt="info-icon" />}
@@ -270,7 +310,7 @@ export const PropItem: React.FC<PropItemProps> = (props) => { // Extende outra i
 
         case TypeValues.selection:
             return (
-                <div key={'prop_key_' + state.id} style={css_prop_item} className="padding-s padding-bottom-none">
+                <div ref={containerWidth} key={'prop_key_' + state.id} style={css_prop_item} className="padding-s padding-bottom-none">
                     <label htmlFor={'prop_id_' + state.id} className="flex1 " style={css_prop_item_label} info-message={state.information}>
                         {state.name}
                         {(state.information !== "" && state.information !== undefined) && <img className="margin-left-xs" aria-label="teste" width={10} height={10} src={IconMoreInfo} alt="info-icon" />}
@@ -305,7 +345,7 @@ export const PropItem: React.FC<PropItemProps> = (props) => { // Extende outra i
 
         case TypeValues.yesNoSelection:
             return (
-                <div key={'prop_key_' + state.id} style={css_prop_item} className="padding-s padding-bottom-none">
+                <div ref={containerWidth} key={'prop_key_' + state.id} style={css_prop_item} className="padding-s padding-bottom-none">
                     <label htmlFor={'prop_id_' + state.id} className="flex1 " style={css_prop_item_label} info-message={state.information}>
                         {state.name}
                         {(state.information !== "" && state.information !== undefined) && <img className="margin-left-xs" aria-label="teste" width={10} height={10} src={IconMoreInfo} alt="info-icon" />}
@@ -327,15 +367,6 @@ export const PropItem: React.FC<PropItemProps> = (props) => { // Extende outra i
                         <option value={"true"}>Yes</option>
                         <option value={"false"}>No</option>
                     </select>
-                </div>
-            );
-
-
-
-        case TypeValues.addProp:
-            return (
-                <div key={'prop_key_' + state.id} style={css_prop_item} className="padding-s padding-bottom-none">
-                    <input type="button" value={state.value} onClick={onclick} />
                 </div>
             );
 

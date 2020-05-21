@@ -36,7 +36,7 @@ export default class EditorTab extends React.Component {
 
     state: { currentFocus: CurrentFocus, modalOpen: boolean } = {
         currentFocus: CurrentFocus.tree,
-        modalOpen: false,
+        modalOpen: true,
     }
 
 
@@ -82,10 +82,20 @@ export default class EditorTab extends React.Component {
                 if (index && (index < 0)) return;
 
 
-                // itemEditing.itens[index].name;
+                /* item.properties.forEach(prop => {
+                    if (prop.propertieType === PropertieTypes.label) {
+                        item.properties.forEach(prop2 => {
+                            if (prop.propertieType === PropertieTypes.any) {
+                                prop.value = prop2.value;
+                                prop.name = prop2.value;
+                            }
+                        });
+                    }
+                }); */
 
                 itemEditing.itens[index].name = item.name;
                 itemEditing.itens[index].properties = item.properties;
+
             }
 
         }
@@ -247,6 +257,14 @@ export default class EditorTab extends React.Component {
                 return [
                     { id: Utils.getUUID(), name: 'Label', value: name, type: TypeValues.string, propertieType: PropertieTypes.label },
                     { id: Utils.getUUID(), name: 'Description', type: TypeValues.bigstring, value: "", propertieType: PropertieTypes.description },
+                    { id: Utils.getUUID(), name: 'Icon', type: TypeValues.binary, value: "Default", propertieType: PropertieTypes.icon },
+                ];
+
+            case ComponentType.localAction:
+                return [
+                    { id: Utils.getUUID(), name: 'Label', value: name, type: TypeValues.string, propertieType: PropertieTypes.label },
+                    { id: Utils.getUUID(), name: 'Description', type: TypeValues.bigstring, value: "", propertieType: PropertieTypes.description },
+                    { id: Utils.getUUID(), name: 'Icon', type: TypeValues.binary, value: "Default", propertieType: PropertieTypes.icon },
                 ];
 
             case ComponentType.inputVariable:
@@ -681,6 +699,8 @@ export default class EditorTab extends React.Component {
 
             // Busca todos os itens que tem como pai o elemento corrente
             itens.filter((item) => item.itemPaiId === tree.id).forEach(item => {
+                // const icon:any = item.properties.forEach(prop => prop.propertieType === PropertieTypes.icon)
+
                 tree.childs.push({
                     childs: [],
                     id: item.id,
@@ -691,7 +711,7 @@ export default class EditorTab extends React.Component {
                     isSelected: item.isSelected,
                     description: item.description,
                     nodeExpanded: item.nodeExpanded,
-                    icon: AssetsService.getIcon(item.type),
+                    icon: /* icon.content ||  */AssetsService.getIcon(item.type),
                     hasError: item.itens.some(itemFlow => itemFlow.properties.some(prop => (prop.valueHasError || prop.nameHasError))),
                 });
             });
@@ -1028,11 +1048,11 @@ export default class EditorTab extends React.Component {
     render() {
         const flowEditorItens = this.codeEditorGetItensLogica.bind(this)();
         return (
-            <>
-                <TwoColumnsResizable
-                    aligment="right"
-                    id="EditorTabCenter"
-                    left={
+            <TwoColumnsResizable
+                aligment="right"
+                id="EditorTabCenter"
+                left={
+                    <>
                         <TwoRowsResizable
                             id="TwoRowsResizableOutput"
                             useMinHeight={true}
@@ -1062,46 +1082,46 @@ export default class EditorTab extends React.Component {
                                 />
                             }
                         />
-                    }
-                    right={
-                        <div className="flex1 background-panels">
-                            <TwoRowsResizable
-                                id="EditorTabRightRows"
-                                top={
-                                    <TreeManager
-                                        isUseDrag={true}
-                                        isUseDrop={true}
-                                        onClick={this.treeManagerOnClick.bind(this)}
-                                        onKeyDown={this.treeManagerKeyDowm.bind(this)}
-                                        onExpandNode={this.treeManagerOnNodeExpand.bind(this)}
-                                        onDropItem={this.treeManagerOnDropItem.bind(this)}
-                                        onDoubleClick={this.treeManagerOnDoubleClick.bind(this)}
-                                        onContextMenu={(itemId, e) => {
-                                            e.preventDefault();
-                                            ContextMenuService.showMenu(e.clientX, e.clientY, this.treeManagerContextMenu.bind(this)(itemId));
-                                        }}
-                                        itens={this.treeManagerGetTree.bind(this)()}
-                                    />
-                                }
-                                bottom={
-                                    <PropertiesEditor
-                                        onChangeInputWidth={width => console.log(width)}
-                                        onChange={this.propertiesEditorOutputItens.bind(this)}
-                                        item={this.propertiesEditorGetSelectedItem.bind(this)(this.state.currentFocus)}
-                                    />
-                                }
-                            />
-                        </div>
-                    }
-                />
-                <Modal
-                    isOpen={this.state.modalOpen}
-                    onClose={value => {
-                        this.setState({ modalOpen: value });
-                        return value;
-                    }}
-                />
-            </>
+                        <Modal
+                            isOpen={true}
+                            onClose={value => {
+                                this.setState({ modalOpen: value });
+                                return value;
+                            }}
+                        />
+                    </>
+                }
+                right={
+                    <div className="flex1 background-panels full-width">
+                        <TwoRowsResizable
+                            id="EditorTabRightRows"
+                            top={
+                                <TreeManager
+                                    isUseDrag={true}
+                                    isUseDrop={true}
+                                    onClick={this.treeManagerOnClick.bind(this)}
+                                    onKeyDown={this.treeManagerKeyDowm.bind(this)}
+                                    onExpandNode={this.treeManagerOnNodeExpand.bind(this)}
+                                    onDropItem={this.treeManagerOnDropItem.bind(this)}
+                                    onDoubleClick={this.treeManagerOnDoubleClick.bind(this)}
+                                    onContextMenu={(itemId, e) => {
+                                        e.preventDefault();
+                                        ContextMenuService.showMenu(e.clientX, e.clientY, this.treeManagerContextMenu.bind(this)(itemId));
+                                    }}
+                                    itens={this.treeManagerGetTree.bind(this)()}
+                                />
+                            }
+                            bottom={
+                                <PropertiesEditor
+                                    onChangeInputWidth={width => console.log(width)}
+                                    onChange={this.propertiesEditorOutputItens.bind(this)}
+                                    item={this.propertiesEditorGetSelectedItem.bind(this)(this.state.currentFocus)}
+                                />
+                            }
+                        />
+                    </div>
+                }
+            />
         );
     }
 
