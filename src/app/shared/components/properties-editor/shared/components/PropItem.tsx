@@ -139,7 +139,9 @@ export const PropItem: React.FC<PropItemProps> = (props) => { // Extende outra i
                             onChange={e => setState({ ...state, value: e.target.value })}
                             disabled={state.editValueDisabled}
                             onKeyDown={(e) => onkeyPress(e)}
-                            onBlur={_ => onChange(state)}
+                            onBlur={_ => {
+                                onChange(state)
+                            }}
                             key={'prop_key_' + state.id}
                             style={css_prop_item_input}
                             id={'prop_id_' + state.id}
@@ -287,7 +289,10 @@ export const PropItem: React.FC<PropItemProps> = (props) => { // Extende outra i
                         hasError={valueHasError}
                         id={'prop_id_' + state.id}
                         desabled={state.editValueDisabled}
-                        onChange={value => setState({ ...state, value })}
+                        onChange={value => {
+                            setState({ ...state, value });
+                            onChange(state);
+                        }}
                     />
                 </div>
             );

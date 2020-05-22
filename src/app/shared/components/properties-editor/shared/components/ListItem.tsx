@@ -20,7 +20,7 @@ export const ListItem: React.FC<ListItemProps> = ({ id, name, properties, isHead
 
         // O item pelo id para poder editá-lo
         const propIndex = state.properties.findIndex(prop => prop.id === item.id);
-        if (propIndex) return;
+        if (propIndex === -1) return;
 
         state.properties[propIndex] = item;
         state.name = state.properties[0].value;
@@ -51,7 +51,7 @@ export const ListItem: React.FC<ListItemProps> = ({ id, name, properties, isHead
     return (
         <>
             <div className="padding-m padding-left-s" style={css_list_item}>{state.name}</div>
-            <div className="flex-column overflow-auto">
+            <div className="flex-column overflow-auto full-height">
                 {state.properties.filter(prop => prop.group === undefined).map((prop, index) => (
                     <PropItem
                         onChange={item => onChangeItemProp(item)}
@@ -72,8 +72,8 @@ export const ListItem: React.FC<ListItemProps> = ({ id, name, properties, isHead
                                     onChange={item => onChangeItemProp(item)}
                                     onChangeInputWidth={onChangeInputWidth}
                                     inputWidth={inputWidth}
-                                    key={`${index}`}
                                     onclick={addProp}
+                                    key={`${index}`}
                                     {...prop}
                                 />
                             ))}
