@@ -23,6 +23,7 @@ export interface ISuggestion {
 
 export interface IProperties {
     openEditor?(e: React.MouseEvent<HTMLInputElement, MouseEvent>): void;
+    nameSuggestions?: ISuggestion[];
     suggestions?: ISuggestion[];
     editValueDisabled?: boolean;
     editNameDisabled?: boolean;
@@ -32,6 +33,7 @@ export interface IProperties {
     information?: string;
     propertieType?: any;
     type: TypeValues;
+    group?: string;
     name: string;
     value: any;
 }

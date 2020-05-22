@@ -48,6 +48,8 @@ export default class EditorTab extends React.Component {
     /** O editor de propriedades emite a lista de propriedades alteradas */
     private propertiesEditorOutputItens(item: IItem) {
 
+        console.log(item)
+
         if (this.state.currentFocus === CurrentFocus.tree) {
 
             if (item.id !== undefined) {
@@ -176,9 +178,10 @@ export default class EditorTab extends React.Component {
                                         paramsProps.push({
                                             value: '',
                                             id: param.id,
+                                            group: 'Params',
                                             name: param.name,
                                             type: TypeValues.expression,
-                                            information: param.description,
+                                            information: param.description !== '' ? param.description : undefined,
                                             propertieType: PropertieTypes.param,
                                         });
                                 });
@@ -303,6 +306,7 @@ export default class EditorTab extends React.Component {
                 return [
                     { id: Utils.getUUID(), name: 'Label', value: name, type: TypeValues.string, propertieType: PropertieTypes.label },
                     { id: Utils.getUUID(), name: 'Description', type: TypeValues.bigstring, value: "", propertieType: PropertieTypes.description },
+                    { id: Utils.getUUID(), name: 'Required', type: TypeValues.boolean, value: true, propertieType: PropertieTypes.any },
                     {
                         id: Utils.getUUID(), name: 'Data type', type: TypeValues.selection, value: DataTypes.string, propertieType: PropertieTypes.any, suggestions: DataTypesList.map(value => {
                             return {

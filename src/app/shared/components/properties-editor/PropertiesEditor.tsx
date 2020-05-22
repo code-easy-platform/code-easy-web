@@ -30,7 +30,7 @@ export const PropertiesEditor: React.FC<PropertiesEditorProps> = ({ inputsWidth 
 
     const onChangeListItem = (data: IItem) => {
         state.item = data;
-        setState({ ...state });
+        setState(state);
         onChange(state.item || item);
     }
 
@@ -42,15 +42,14 @@ export const PropertiesEditor: React.FC<PropertiesEditorProps> = ({ inputsWidth 
     }
 
     return (
-        <div className="flex1 flex-column overflow-auto">
+        <div className="flex1 flex-column full-width">
             <ListItem
-                onChange={data => onChangeListItem(data)}
                 onChangeInputWidth={changeInputWidth}
+                onChange={onChangeListItem}
                 inputWidth={inputWidth}
                 key={item.id}
                 {...item}
             />
-            <div style={{ minHeight: '30px' }} />
         </div>
     );
 

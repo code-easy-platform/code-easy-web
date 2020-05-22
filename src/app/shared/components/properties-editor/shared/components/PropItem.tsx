@@ -41,12 +41,14 @@ export const PropItem: React.FC<PropItemProps> = (props) => { // Extende outra i
     const [state, setState] = useState<IProperties>({
         editValueDisabled: props.editValueDisabled,
         editNameDisabled: props.editNameDisabled,
+        nameSuggestions: props.nameSuggestions,
         propertieType: props.propertieType,
         valueHasError: props.valueHasError,
         nameHasError: props.nameHasError,
         information: props.information,
         suggestions: props.suggestions,
         openEditor: props.openEditor,
+        group: props.group,
         value: props.value,
         type: props.type,
         name: props.name,
@@ -57,12 +59,14 @@ export const PropItem: React.FC<PropItemProps> = (props) => { // Extende outra i
         setState({
             editValueDisabled: props.editValueDisabled,
             editNameDisabled: props.editNameDisabled,
+            nameSuggestions: props.nameSuggestions,
             propertieType: props.propertieType,
             valueHasError: props.valueHasError,
             nameHasError: props.nameHasError,
             information: props.information,
             suggestions: props.suggestions,
             openEditor: props.openEditor,
+            group: props.group,
             value: props.value,
             type: props.type,
             name: props.name,
@@ -135,7 +139,9 @@ export const PropItem: React.FC<PropItemProps> = (props) => { // Extende outra i
                             onChange={e => setState({ ...state, value: e.target.value })}
                             disabled={state.editValueDisabled}
                             onKeyDown={(e) => onkeyPress(e)}
-                            onBlur={_ => onChange(state)}
+                            onBlur={_ => {
+                                onChange(state)
+                            }}
                             key={'prop_key_' + state.id}
                             style={css_prop_item_input}
                             id={'prop_id_' + state.id}
@@ -156,10 +162,12 @@ export const PropItem: React.FC<PropItemProps> = (props) => { // Extende outra i
                     <Resizer onChange={newWidth => onChangeInputWidth(newWidth)} />
                     <div style={{ width: inputWidth ? `${inputWidth}px` : '70%', minWidth: minWidth, maxWidth: '90%' }}>
                         <ExpressionInput
-                            className="full-width background-bars"
+                            onSelectSuggest={option => setState({ ...state, value: option.value })}
                             onChange={e => setState({ ...state, value: e.target.value })}
+                            className="full-width background-bars"
                             disabled={state.editValueDisabled}
                             onKeyDown={(e) => onkeyPress(e)}
+                            suggestions={state.suggestions}
                             openEditor={state.openEditor}
                             onBlur={_ => onChange(state)}
                             key={'prop_key_' + state.id}
@@ -281,7 +289,10 @@ export const PropItem: React.FC<PropItemProps> = (props) => { // Extende outra i
                         hasError={valueHasError}
                         id={'prop_id_' + state.id}
                         desabled={state.editValueDisabled}
-                        onChange={value => setState({ ...state, value })}
+                        onChange={value => {
+                            setState({ ...state, value });
+                            onChange(state);
+                        }}
                     />
                 </div>
             );
@@ -292,6 +303,7 @@ export const PropItem: React.FC<PropItemProps> = (props) => { // Extende outra i
                     id={state.id}
                     name={state.name}
                     type={state.type}
+                    group={state.group}
                     value={state.value}
                     nameHasError={nameHasError}
                     openEditor={state.openEditor}
@@ -299,8 +311,10 @@ export const PropItem: React.FC<PropItemProps> = (props) => { // Extende outra i
                     onBlur={_ => onChange(state)}
                     key={'assign_key_' + state.id}
                     information={state.information}
+                    suggestions={state.suggestions}
                     onKeyDown={(e) => onkeyPress(e)}
                     propertieType={state.propertieType}
+                    nameSuggestions={state.nameSuggestions}
                     editNameDisabled={state.editNameDisabled}
                     editValueDisabled={state.editValueDisabled}
                     onChangeName={name => setState({ ...state, name })}

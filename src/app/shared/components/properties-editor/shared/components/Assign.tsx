@@ -1,4 +1,5 @@
 import React from 'react';
+
 import { ExpressionInput } from './ExpressionInput';
 import { IProperties } from '../interfaces';
 
@@ -8,7 +9,7 @@ interface IAssign extends IProperties {
     onKeyDown(e: any): void;
     onBlur(e: any): void;
 }
-export const Assign: React.FC<IAssign> = ({ id, name, value, openEditor, nameHasError = false, valueHasError = false, onChangeName, onChangeValue, onKeyDown, onBlur, editNameDisabled = false, editValueDisabled = false }) => {
+export const Assign: React.FC<IAssign> = ({ id, name, value, suggestions, nameSuggestions, openEditor, nameHasError = false, valueHasError = false, onChangeName, onChangeValue, onKeyDown, onBlur, editNameDisabled = false, editValueDisabled = false }) => {
 
     const css_prop_item_input_name: React.CSSProperties = {
         border: nameHasError ? 'var(--input-border-error)' : 'var(--input-border)',
@@ -33,10 +34,12 @@ export const Assign: React.FC<IAssign> = ({ id, name, value, openEditor, nameHas
                 openEditor={openEditor}
                 placeholder={'Propertie'}
                 id={'name_prop_id_' + id}
+                suggestions={nameSuggestions}
                 disabled={editNameDisabled}
                 key={'name_prop_key_' + id}
                 style={css_prop_item_input_name}
                 onChange={e => onChangeName(e.target.value)}
+                onSelectSuggest={option => onChangeName(option.value)}
             />
             <div style={{ alignItems: 'center' }}>
                 <span children='=' style={{ marginRight: -20, marginLeft: 10.5, zIndex: 1 }} />
@@ -46,11 +49,13 @@ export const Assign: React.FC<IAssign> = ({ id, name, value, openEditor, nameHas
                     placeholder={'Value'}
                     onKeyDown={onKeyDown}
                     openEditor={openEditor}
+                    suggestions={suggestions}
                     id={'value_prop_id_' + id}
                     key={'value_prop_key_' + id}
                     disabled={editValueDisabled}
                     style={css_prop_item_input_value}
                     onChange={e => onChangeValue(e.target.value)}
+                    onSelectSuggest={option => onChangeValue(option.value)}
                 />
             </div>
         </div>
