@@ -9,12 +9,14 @@ export const Resizer: React.FC<ResizerProps> = ({ onChange }) => {
 
     const mouseUp = () => {
         window.document.body.style.pointerEvents = 'unset';
+        window.document.body.style.cursor = 'unset';
         window.onmousemove = null;
         window.onmouseup = null;
     }
 
     const mouseDown = () => {
         window.document.body.style.pointerEvents = 'none';
+        window.document.body.style.cursor = 'col-resize';
         window.onmousemove = mouseMove;
         window.onmouseup = mouseUp;
     }
@@ -25,8 +27,8 @@ export const Resizer: React.FC<ResizerProps> = ({ onChange }) => {
             style={{
                 backgroundColor: 'transparent',
                 cursor: 'col-resize',
-                height: '100%',
                 border: 'none',
+                height: 20,
                 zIndex: 1,
                 width: 6,
             }}

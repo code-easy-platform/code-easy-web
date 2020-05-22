@@ -13,10 +13,15 @@ export const ListItem: React.FC<ListItemProps> = ({ id, name, properties, isHead
     }, [id, name, properties, isHeader]);
 
     const css_list_item: React.CSSProperties = {
-        backgroundColor: isHeader ? 'var(--main-background-bars)' : '',
+        backgroundColor: isHeader ? 'var(--main-background-bars)' : ''
     }
 
-    const onChangeItemProp = (item: IProperties, propIndex: number) => {
+    const onChangeItemProp = (item: IProperties) => {
+
+        // O item pelo id para poder editá-lo
+        const propIndex = state.properties.findIndex(prop => prop.id === item.id);
+        if (propIndex) return;
+
         state.properties[propIndex] = item;
         state.name = state.properties[0].value;
 
@@ -36,20 +41,47 @@ export const ListItem: React.FC<ListItemProps> = ({ id, name, properties, isHead
         onChange(state);
     }
 
+    let grups: string[] = [];
+    state.properties.forEach(prop => {
+        if (prop.group && (!grups.some(grup => grup === prop.group))) {
+            grups.push(prop.group);
+        }
+    });
+
     return (
         <>
             <div className="padding-m padding-left-s" style={css_list_item}>{state.name}</div>
-            <hr className="hr" />
-            {state.properties.map((prop, index) => (
-                <PropItem
-                    onChange={item => onChangeItemProp(item, index)}
-                    onChangeInputWidth={onChangeInputWidth}
-                    inputWidth={inputWidth}
-                    key={`${index}`}
-                    onclick={addProp}
-                    {...prop}
-                />
-            ))}
+            <div className="flex-column overflow-auto">
+                {state.properties.filter(prop => prop.group === undefined).map((prop, index) => (
+                    <PropItem
+                        onChange={item => onChangeItemProp(item)}
+                        onChangeInputWidth={onChangeInputWidth}
+                        inputWidth={inputWidth}
+                        onclick={addProp}
+                        key={`${index}`}
+                        {...prop}
+                    />
+                ))}
+                {grups.map(group => {
+                    return <div key={group} className="flex-column">
+                        <hr className="hr hr-white margin-top-m " />
+                        <div className="padding-m padding-left-s"><b>{group}</b></div>
+                        <div className="flex-column">
+                            {state.properties.filter(prop => prop.group === group).map((prop, index) => (
+                                <PropItem
+                                    onChange={item => onChangeItemProp(item)}
+                                    onChangeInputWidth={onChangeInputWidth}
+                                    inputWidth={inputWidth}
+                                    key={`${index}`}
+                                    onclick={addProp}
+                                    {...prop}
+                                />
+                            ))}
+                        </div>
+                    </div>
+                })}
+                <div style={{ minHeight: '60px' }} />
+            </div>
         </>
     );
 }

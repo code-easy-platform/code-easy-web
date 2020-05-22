@@ -178,7 +178,7 @@ export default class EditorTab extends React.Component {
                                             id: param.id,
                                             name: param.name,
                                             type: TypeValues.expression,
-                                            information: param.description,
+                                            information: param.description !== '' ? param.description : undefined,
                                             propertieType: PropertieTypes.param,
                                         });
                                 });
