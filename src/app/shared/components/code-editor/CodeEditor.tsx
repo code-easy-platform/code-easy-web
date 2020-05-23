@@ -175,11 +175,12 @@ const CodeEditor: React.FC<ICodeEditorProps> = ({ id, itens = [], toolItens = []
         if (branchIndex === undefined && !itemCurrent.sucessor.some(id => id === sucessorId)) {
             itemCurrent.sucessor.push(sucessorId);
         } else {
-            const indexToRemove = itemCurrent.sucessor.findIndex(id => id === sucessorId);
-            if (indexToRemove === -1) return;
+            /* const indexToRemove = itemCurrent.sucessor.findIndex(id => id === sucessorId); */
 
-            itemCurrent.sucessor.splice(indexToRemove, 1);
-            itemCurrent.sucessor.push(sucessorId);
+            if (branchIndex !== undefined) {
+                itemCurrent.sucessor[branchIndex] = sucessorId;
+            }
+            //itemCurrent.sucessor.push(sucessorId);
         }
 
         setFlowItens({ list: flowItens.list });

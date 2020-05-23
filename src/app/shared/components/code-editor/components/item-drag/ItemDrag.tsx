@@ -38,7 +38,7 @@ export const ItemToDrag: React.FC<ItemDragProps> = (props: ItemDragProps) => {
         isSelected, onContextMenu, hasError, onMouseUp,
         id, onChangePosition, onMouseDown, onMouseOver,
         width = 0, height = 0, top = 0, left = 0,
-        allowDrag, itemType, icon, onNameChange
+        allowDrag, itemType, icon, onNameChange,
     } = props;
 
     let { title } = props;
@@ -116,6 +116,19 @@ export const ItemToDrag: React.FC<ItemDragProps> = (props: ItemDragProps) => {
         // Ajusta o tamanho do titulo para não ficar muito grande
         title = title.length < 10 ? title : title.slice(0, 15);
 
+        if (itemType === ItemType.COMMENT) {
+            return <g
+                id={id}
+                key={id}
+                onMouseUp={onMouseUp}
+                onMouseDown={mouseDown}
+                onMouseOver={onMouseOver}
+                onContextMenu={contextMenu}
+            >
+                <FlowComment id={id} top={top} left={left} width={width} height={height} isSelected={isSelected} childImage={IconFlowComment} onNameChange={onNameChange} name={title} />
+            </g>
+        }
+
         /** Reinderiza um tipo de tag svg na tela, somente dentro do editor de fluxo. */
         return (
             <g
@@ -127,7 +140,6 @@ export const ItemToDrag: React.FC<ItemDragProps> = (props: ItemDragProps) => {
                 onContextMenu={contextMenu}
             >
                 <text x={(left || 0) + ((width || 0) / 2)} textAnchor="middle" fill="var(--color-white)" y={(top || 0) - 5} id={id}>{title}</text>
-                {itemType === ItemType.COMMENT && <FlowComment id={id} top={top} left={left} width={width} height={height} isSelected={isSelected} childImage={IconFlowComment} onNameChange={onNameChange} />}
                 {itemType === ItemType.ACTION && <FlowComponent id={id} top={top} left={left} width={width} height={height} isSelected={isSelected} hasError={hasError} icon={icon || IconFlowAction} />}
                 {itemType === ItemType.FOREACH && <FlowComponent id={id} top={top} left={left} width={width} height={height} isSelected={isSelected} hasError={hasError} icon={IconFlowForeach} />}
                 {itemType === ItemType.ASSIGN && <FlowComponent id={id} top={top} left={left} width={width} height={height} isSelected={isSelected} hasError={hasError} icon={IconFlowAssign} />}
