@@ -1139,6 +1139,7 @@ export default class EditorTab extends React.Component {
                                     onDropItem={this.codeEditorOnDropItem.bind(this)}
                                     breadcrumbs={this.codeEditorGetBreadcamps.bind(this)()}
                                     onChangeItens={this.codeEditorOutputFlowItens.bind(this)}
+                                    emptyMessage={(this.codeEditorGetBreadcamps.bind(this)().length !== 0) ? "Drag and drop an item here to get started" : undefined}
                                     allowedsInDrop={[ComponentType.globalAction, ComponentType.localAction, ComponentType.localVariable, ComponentType.inputVariable, ComponentType.outputVariable]}
                                     onContextMenu={(data, e) => {
                                         if (e) {
