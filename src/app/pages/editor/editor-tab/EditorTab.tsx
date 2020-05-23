@@ -139,6 +139,27 @@ export default class EditorTab extends React.Component {
             itensFiltereds.forEach(filteredItem => {
                 let paramsProps: IProperties[] = [];
 
+                /**
+                 * Pega as variáveis do item que está sendo editado atualmente para colocar como sugestão nas expressions
+                 * 
+                 * Pode ser usado para sugerir para o assign e outros componentes
+                 */
+                let paramsSuggestion: ItemComponent[] = [];
+                this.editorContext.project.tabs.forEach(tab => {
+                    tab.itens.forEach(tree_item => {
+                        if (tree_item.isEditing) {
+                            paramsSuggestion = tab.itens.filter(tree_itemToParams => (
+                                (tree_itemToParams.itemPaiId === tree_item.id) &&
+                                (
+                                    tree_itemToParams.type === ComponentType.inputVariable ||
+                                    tree_itemToParams.type === ComponentType.localVariable ||
+                                    tree_itemToParams.type === ComponentType.outputVariable
+                                )
+                            ));
+                        }
+                    })
+                });
+
                 filteredItem.properties.forEach(prop => {
                     if (prop.propertieType === PropertieTypes.action) {
 
@@ -174,19 +195,33 @@ export default class EditorTab extends React.Component {
                                 params.forEach(param => {
 
                                     // Se a prop/param já estiver no fluxo não acontece nada
-                                    if (!filteredItem.properties.some(propertie => propertie.id === param.id))
+                                    if (!filteredItem.properties.some(propertie => propertie.id === param.id)) {
                                         paramsProps.push({
                                             value: '',
                                             id: param.id,
                                             group: 'Params',
                                             name: param.name,
                                             type: TypeValues.expression,
-                                            information: param.description !== '' ? param.description : undefined,
                                             propertieType: PropertieTypes.param,
+                                            information: param.description !== '' ? param.description : undefined,
+                                            suggestions: paramsSuggestion.map(suggest => {
+                                                return {
+                                                    disabled: false,
+                                                    name: suggest.name,
+                                                    value: suggest.name,
+                                                    label: suggest.label,
+                                                    description: suggest.description,
+                                                };
+                                            }),
                                         });
+                                    }
+
                                 });
                             }
                         });
+
+                    }
+                    if (prop.propertieType === PropertieTypes.assigns) {
 
                     }
                 });

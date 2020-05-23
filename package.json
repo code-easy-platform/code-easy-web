@@ -10,8 +10,6 @@
     }
   },
   "dependencies": {
-    "@types/marked": "^0.7.4",
-    "@types/react-router-dom": "^5.1.5",
     "code-easy-components": "^0.0.11",
     "cross-env": "^7.0.2",
     "immutability-helper": "^3.0.1",
@@ -25,8 +23,7 @@
     "react-router-dom": "^5.1.2",
     "react-scripts": "^3.2.0",
     "react-switch": "^5.0.1",
-    "typeface-roboto": "^0.0.75",
-    "uuid": "^7.0.3"
+    "typeface-roboto": "^0.0.75"
   },
   "scripts": {
     "start": "cross-env REACT_APP_VERSION=$(node -p 'require(\"./package.json\").version') react-scripts start",
@@ -51,11 +48,12 @@
     ]
   },
   "devDependencies": {
+    "@types/marked": "^0.7.4",
+    "@types/react-router-dom": "^5.1.5",
     "@commitlint/cli": "^8.3.5",
     "@commitlint/config-conventional": "^8.3.4",
     "@types/react": "^16.9.9",
     "@types/react-dom": "^16.9.0",
-    "@types/uuid": "^7.0.2",
     "commitizen": "^4.0.4",
     "cz-conventional-changelog": "3.1.0",
     "husky": "^4.2.5",
