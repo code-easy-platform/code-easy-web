@@ -694,13 +694,6 @@ export default class EditorTab extends React.Component {
             tab.itens.forEach((item, index) => {
                 if (item.id === inputItemId) {
                     indexTabToRemove = indexTab;
-<<<<<<< HEAD
-=======
-
-
-
-
->>>>>>> 5818377b7cfdb9ed303d810c4322ec0bfc1a4249
                     indexItemToRemove = index;
                 }
             });
