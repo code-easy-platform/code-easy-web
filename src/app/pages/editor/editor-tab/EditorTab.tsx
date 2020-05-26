@@ -19,11 +19,11 @@ import { ProblemsHelper } from '../../../shared/services/helpers/ProblemsHelper'
 import { FlowEditor } from '../../../shared/components/code-editor/CodeEditor';
 import { MethodsApi, MethodsApiList } from '../../../shared/enuns/ApiMethods';
 import { OutputHelper } from '../../../shared/services/helpers/OutputHelper';
+import { DataTypesList, DataTypes } from '../../../shared/enuns/DataType';
 import { AssetsService } from '../../../shared/services/AssetsService';
 import { PropertieTypes } from '../../../shared/enuns/PropertieTypes';
 import { ComponentType } from '../../../shared/enuns/ComponentType';
 import { Modal } from '../../../shared/components/modal/Modal';
-import { DataTypesList, DataTypes } from '../../../shared/enuns/DataType';
 
 
 enum CurrentFocus {

@@ -4,15 +4,17 @@ import { IconMoreInfo } from 'code-easy-components';
 import { IProperties, TypeValues } from '../interfaces';
 import { CustomInputFile } from './CustomInputFile';
 import { ExpressionInput } from './ExpressionInput';
-import { DefaultSwitch } from './DefaultSwitch';
+import { DefaultSwitch } from './toggle-swicth/DefaultSwitch';
 import { Resizer } from './Resizer';
 import { Assign } from './Assign';
+import { Tooltip } from './tooltip/Tooltip';
 
 
 const css_prop_item: React.CSSProperties = {
     justifyContent: 'space-between',
     height: 'min-content',
     alignItems: 'center',
+    position: 'relative',
 }
 interface PropItemProps extends IProperties {
     onclick?(e: React.MouseEvent<HTMLInputElement, MouseEvent>): void;
@@ -24,6 +26,7 @@ export const PropItem: React.FC<PropItemProps> = (props) => { // Extende outra i
 
     const { inputWidth, onChange = () => { }, onChangeInputWidth, valueHasError = false, nameHasError = false } = props;
     const containerWidth = useRef<any>(null);
+    const infoIconRef = useRef<any>(null);
 
     const [container, setContainer] = useState<{ width: number }>({ width: 200 });
     useEffect(() => {
@@ -100,10 +103,11 @@ export const PropItem: React.FC<PropItemProps> = (props) => { // Extende outra i
         case TypeValues.viewOnly:
             return (
                 <div ref={containerWidth} key={'prop_item_key_' + state.id} style={css_prop_item} className="padding-s padding-bottom-none">
-                    <label htmlFor={'prop_id_' + state.id} className="flex1 " style={css_prop_item_label} info-message={state.information}>
+                    <label htmlFor={'prop_id_' + state.id} className="flex1 " style={css_prop_item_label}>
                         {state.name}
-                        {(state.information !== "" && state.information !== undefined) && <img className="margin-left-xs" aria-label="teste" width={10} height={10} src={IconMoreInfo} alt="info-icon" />}
+                        {(state.information !== "" && state.information !== undefined) && <img ref={infoIconRef} className="margin-left-xs" width={10} height={10} src={IconMoreInfo} alt="info-icon" />}
                     </label>
+                    <Tooltip elementRef={infoIconRef} description={state.information} />
                     <Resizer onChange={newWidth => onChangeInputWidth(newWidth)} />
                     <div style={{ width: inputWidth ? `${inputWidth}px` : '70%', minWidth: minWidth, maxWidth: '90%' }}>
                         <label
@@ -128,10 +132,11 @@ export const PropItem: React.FC<PropItemProps> = (props) => { // Extende outra i
         case TypeValues.string:
             return (
                 <div ref={containerWidth} key={'prop_item_key_' + state.id} style={css_prop_item} className="padding-s padding-bottom-none">
-                    <label htmlFor={'prop_id_' + state.id} className="flex1 " style={css_prop_item_label} info-message={state.information}>
+                    <label htmlFor={'prop_id_' + state.id} className="flex1 " style={css_prop_item_label}>
                         {state.name}
-                        {(state.information !== "" && state.information !== undefined) && <img className="margin-left-xs" aria-label="teste" width={10} height={10} src={IconMoreInfo} alt="info-icon" />}
+                        {(state.information !== "" && state.information !== undefined) && <img ref={infoIconRef} className="margin-left-xs" width={10} height={10} src={IconMoreInfo} alt="info-icon" />}
                     </label>
+                    <Tooltip elementRef={infoIconRef} description={state.information} />
                     <Resizer onChange={newWidth => onChangeInputWidth(newWidth)} />
                     <div style={{ width: inputWidth ? `${inputWidth}px` : '70%', minWidth: minWidth, maxWidth: '90%' }}>
                         <input
@@ -155,10 +160,11 @@ export const PropItem: React.FC<PropItemProps> = (props) => { // Extende outra i
         case TypeValues.expression:
             return (
                 <div ref={containerWidth} key={'prop_item_key_' + state.id} style={css_prop_item} className="padding-s padding-bottom-none">
-                    <label htmlFor={'prop_id_' + state.id} className="flex1 " style={css_prop_item_label} info-message={state.information}>
+                    <label htmlFor={'prop_id_' + state.id} className="flex1 " style={css_prop_item_label}>
                         {state.name}
-                        {(state.information !== "" && state.information !== undefined) && <img className="margin-left-xs" aria-label="teste" width={10} height={10} src={IconMoreInfo} alt="info-icon" />}
+                        {(state.information !== "" && state.information !== undefined) && <img ref={infoIconRef} className="margin-left-xs" width={10} height={10} src={IconMoreInfo} alt="info-icon" />}
                     </label>
+                    <Tooltip elementRef={infoIconRef} description={state.information} />
                     <Resizer onChange={newWidth => onChangeInputWidth(newWidth)} />
                     <div style={{ width: inputWidth ? `${inputWidth}px` : '70%', minWidth: minWidth, maxWidth: '90%' }}>
                         <ExpressionInput
@@ -182,10 +188,11 @@ export const PropItem: React.FC<PropItemProps> = (props) => { // Extende outra i
         case TypeValues.bigstring:
             return (
                 <div ref={containerWidth} key={'prop_item_key_' + state.id} style={css_prop_item} className="padding-s padding-bottom-none">
-                    <label htmlFor={'prop_id_' + state.id} className="flex1 " style={css_prop_item_label} info-message={state.information}>
+                    <label htmlFor={'prop_id_' + state.id} className="flex1 " style={css_prop_item_label}>
                         {state.name}
-                        {(state.information !== "" && state.information !== undefined) && <img className="margin-left-xs" aria-label="teste" width={10} height={10} src={IconMoreInfo} alt="info-icon" />}
+                        {(state.information !== "" && state.information !== undefined) && <img ref={infoIconRef} className="margin-left-xs" width={10} height={10} src={IconMoreInfo} alt="info-icon" />}
                     </label>
+                    <Tooltip elementRef={infoIconRef} description={state.information} />
                     <Resizer onChange={newWidth => onChangeInputWidth(newWidth)} />
                     <div style={{ width: inputWidth ? `${inputWidth}px` : '70%', minWidth: minWidth, maxWidth: '90%' }}>
                         <textarea
@@ -207,10 +214,11 @@ export const PropItem: React.FC<PropItemProps> = (props) => { // Extende outra i
         case TypeValues.number:
             return (
                 <div ref={containerWidth} key={'prop_item_key_' + state.id} style={css_prop_item} className="padding-s padding-bottom-none">
-                    <label htmlFor={'prop_id_' + state.id} className="flex1 " style={css_prop_item_label} info-message={state.information}>
+                    <label htmlFor={'prop_id_' + state.id} className="flex1 " style={css_prop_item_label}>
                         {state.name}
-                        {(state.information !== "" && state.information !== undefined) && <img className="margin-left-xs" aria-label="teste" width={10} height={10} src={IconMoreInfo} alt="info-icon" />}
+                        {(state.information !== "" && state.information !== undefined) && <img ref={infoIconRef} className="margin-left-xs" width={10} height={10} src={IconMoreInfo} alt="info-icon" />}
                     </label>
+                    <Tooltip elementRef={infoIconRef} description={state.information} />
                     <Resizer onChange={newWidth => onChangeInputWidth(newWidth)} />
                     <div style={{ width: inputWidth ? `${inputWidth}px` : '70%', minWidth: minWidth, maxWidth: '90%' }}>
                         <input
@@ -233,10 +241,11 @@ export const PropItem: React.FC<PropItemProps> = (props) => { // Extende outra i
         case TypeValues.binary:
             return (
                 <div ref={containerWidth} key={'prop_item_key_' + state.id} style={css_prop_item} className="padding-s padding-bottom-none">
-                    <label htmlFor={'prop_id_' + state.id} className="flex1 " style={css_prop_item_label} info-message={state.information}>
+                    <label htmlFor={'prop_id_' + state.id} className="flex1 " style={css_prop_item_label}>
                         {state.name}
-                        {(state.information !== "" && state.information !== undefined) && <img className="margin-left-xs" aria-label="teste" width={10} height={10} src={IconMoreInfo} alt="info-icon" />}
+                        {(state.information !== "" && state.information !== undefined) && <img ref={infoIconRef} className="margin-left-xs" width={10} height={10} src={IconMoreInfo} alt="info-icon" />}
                     </label>
+                    <Tooltip elementRef={infoIconRef} description={state.information} />
                     <Resizer onChange={newWidth => onChangeInputWidth(newWidth)} />
                     <div style={{ width: inputWidth ? `${inputWidth}px` : '70%', minWidth: minWidth, maxWidth: '90%' }}>
                         <CustomInputFile
@@ -280,17 +289,19 @@ export const PropItem: React.FC<PropItemProps> = (props) => { // Extende outra i
         case TypeValues.boolean:
             return (
                 <div ref={containerWidth} key={'prop_key_' + state.id} style={css_prop_item} className="padding-s padding-bottom-none">
-                    <label htmlFor={'prop_id_' + state.id} className="flex1 " style={css_prop_item_label} info-message={state.information}>
+                    <label htmlFor={'prop_id_' + state.id} className="flex1 " style={css_prop_item_label}>
                         {state.name}
-                        {(state.information !== "" && state.information !== undefined) && <img className="margin-left-xs" aria-label="teste" width={10} height={10} src={IconMoreInfo} alt="info-icon" />}
+                        {(state.information !== "" && state.information !== undefined) && <img ref={infoIconRef} className="margin-left-xs" width={10} height={10} src={IconMoreInfo} alt="info-icon" />}
                     </label>
+                    <Tooltip elementRef={infoIconRef} description={state.information} />
                     <DefaultSwitch
                         checked={state.value}
                         hasError={valueHasError}
                         id={'prop_id_' + state.id}
-                        desabled={state.editValueDisabled}
+                        disabled={state.editValueDisabled}
                         onChange={value => {
-                            setState({ ...state, value });
+                            state.value = value;
+                            setState({ ...state, value: value });
                             onChange(state);
                         }}
                     />
@@ -325,10 +336,11 @@ export const PropItem: React.FC<PropItemProps> = (props) => { // Extende outra i
         case TypeValues.selection:
             return (
                 <div ref={containerWidth} key={'prop_key_' + state.id} style={css_prop_item} className="padding-s padding-bottom-none">
-                    <label htmlFor={'prop_id_' + state.id} className="flex1 " style={css_prop_item_label} info-message={state.information}>
+                    <label htmlFor={'prop_id_' + state.id} className="flex1 " style={css_prop_item_label}>
                         {state.name}
-                        {(state.information !== "" && state.information !== undefined) && <img className="margin-left-xs" aria-label="teste" width={10} height={10} src={IconMoreInfo} alt="info-icon" />}
+                        {(state.information !== "" && state.information !== undefined) && <img ref={infoIconRef} className="margin-left-xs" width={10} height={10} src={IconMoreInfo} alt="info-icon" />}
                     </label>
+                    <Tooltip elementRef={infoIconRef} description={state.information} />
                     <Resizer onChange={newWidth => onChangeInputWidth(newWidth)} />
                     <select
                         style={{ ...css_prop_item_input, width: inputWidth ? `${inputWidth}px` : '70%', minWidth: minWidth, maxWidth: '90%' }}
@@ -360,14 +372,19 @@ export const PropItem: React.FC<PropItemProps> = (props) => { // Extende outra i
         case TypeValues.yesNoSelection:
             return (
                 <div ref={containerWidth} key={'prop_key_' + state.id} style={css_prop_item} className="padding-s padding-bottom-none">
-                    <label htmlFor={'prop_id_' + state.id} className="flex1 " style={css_prop_item_label} info-message={state.information}>
+                    <label
+                        htmlFor={'prop_id_' + state.id}
+                        className="flex1 "
+                        style={css_prop_item_label}
+                       
+                    >
                         {state.name}
-                        {(state.information !== "" && state.information !== undefined) && <img className="margin-left-xs" aria-label="teste" width={10} height={10} src={IconMoreInfo} alt="info-icon" />}
+                        {(state.information !== "" && state.information !== undefined) && <img ref={infoIconRef} className="margin-left-xs" width={10} height={10} src={IconMoreInfo} alt="info-icon" />}
                     </label>
+                    <Tooltip elementRef={infoIconRef} description={state.information} />
                     <Resizer onChange={newWidth => onChangeInputWidth(newWidth)} />
                     <select
                         style={{ ...css_prop_item_input, width: inputWidth ? `${inputWidth}px` : '70%', minWidth: minWidth, maxWidth: '90%' }}
-                        onDoubleClick={_ => setState({ ...state, value: (state.value === "true" ? "false" : "true") })}
                         onChange={e => {
                             setState({ ...state, value: e.target.value });
                             onChange({ ...state, value: e.target.value });
@@ -381,7 +398,7 @@ export const PropItem: React.FC<PropItemProps> = (props) => { // Extende outra i
                         <option value={"true"}>Yes</option>
                         <option value={"false"}>No</option>
                     </select>
-                </div>
+                </div >
             );
 
         default:
