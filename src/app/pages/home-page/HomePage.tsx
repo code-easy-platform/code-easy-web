@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useHistory } from 'react-router-dom';
 import { Utils } from 'code-easy-components';
+import dataformat from 'dateformat';
 
 import { BottonStatusBar } from '../../shared/components/botton-status-bar/BottonStatusBar';
 import { ToolBarHome } from '../../shared/components/tool-bar/ToolBar';
@@ -118,6 +119,7 @@ export const HomePage = () => {
                                         id: card.projectConfigs.id || '',
                                         version: card.projectConfigs.version,
                                         description: card.projectConfigs.description,
+                                        lastUpdate: dataformat(new Date(card.projectConfigs.updatedDate), "yyyy-mm-dd hh:mm"),
                                     }}
                                 />
                             })}
@@ -163,6 +165,7 @@ export const HomePage = () => {
                                         id: card.projectConfigs.id || '',
                                         version: card.projectConfigs.version,
                                         description: card.projectConfigs.description,
+                                        lastUpdate: dataformat(new Date(card.projectConfigs.updatedDate), "yyyy-mm-dd hh:mm"),
                                     }}
                                 />
                             })

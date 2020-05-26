@@ -22,6 +22,7 @@ interface CardItemProps {
         name: string;
         version: string;
         type: ProjectType;
+        lastUpdate?: string;
         description: string;
     }
     listMode?: boolean;
@@ -64,9 +65,12 @@ export const CardItem = ({ listMode, ...props }: CardItemProps) => {
                 </>}
                 <div className="flex-column">
                     <div className="padding-s text-ellipsis">{props.item.name}</div>
-                    <div className="padding-s font-size-s" style={{ alignItems: 'center' }}>
+                    <div className="padding-s font-size-s flex-column" style={{ alignItems: 'center' }}>
                         {!listMode && <div className="flex1">{props.item.description}</div>}
-                        <div style={{ whiteSpace: 'nowrap' }}>v. {props.item.version}</div>
+                        <div className="flex-space-between full-width margin-top-s">
+                            <div style={{ whiteSpace: 'nowrap' }}>v. {props.item.version}</div>
+                            <div style={{ whiteSpace: 'nowrap' }}>{props.item.lastUpdate}</div>
+                        </div>
                     </div>
                 </div>
             </div >

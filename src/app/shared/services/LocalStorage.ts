@@ -101,7 +101,7 @@ export class Storage {
         let itemIndex = projects.findIndex(item_project => item_project.projectConfigs.id === project.projectConfigs.id);
 
         if (itemIndex > -1) {
-            project.projectConfigs.updatedDate = new Date();
+            project.projectConfigs.updatedDate = new Date(Date.now());
             projects.splice(itemIndex, 1, project); // Remove elemento antigo e coloca um novo no lugar
         }
 
