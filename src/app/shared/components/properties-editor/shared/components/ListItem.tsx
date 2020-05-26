@@ -12,10 +12,6 @@ export const ListItem: React.FC<ListItemProps> = ({ id, name, properties, isHead
         setState({ id, name, properties, isHeader });
     }, [id, name, properties, isHeader]);
 
-    const css_list_item: React.CSSProperties = {
-        backgroundColor: isHeader ? 'var(--main-background-bars)' : ''
-    }
-
     const onChangeItemProp = (item: IProperties) => {
 
         // O item pelo id para poder editá-lo
@@ -50,8 +46,8 @@ export const ListItem: React.FC<ListItemProps> = ({ id, name, properties, isHead
 
     return (
         <>
-            <div className="padding-m padding-left-s" style={css_list_item}>{state.name}</div>
-            <div className="flex-column overflow-auto full-height">
+            <div className="padding-m padding-left-s" style={{ backgroundColor: isHeader ? 'var(--main-background-bars)' : 'unset' }}>{state.name}</div>
+            <div className="flex-column overflow-auto full-height list-items">
                 {state.properties.filter(prop => prop.group === undefined).map((prop, index) => (
                     <PropItem
                         onChange={item => onChangeItemProp(item)}

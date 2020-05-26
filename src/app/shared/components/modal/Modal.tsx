@@ -23,7 +23,7 @@ export const Modal: React.FC<ModalProps> = ({ children, maxWidth = 500, maxHeigh
     const [clickedPosition, setClickedPosition] = useState({ clickedTop: 0, clickedLeft: 0 });
 
     /** Controla a posição da modal na tela */
-    const [position, setPosition] = useState({ top: (window.innerHeight / 3) - 250, left: (window.innerWidth / 2) - 250 });
+    const [position, setPosition] = useState({ top: (window.innerHeight / 2) - 250, left: (window.innerWidth / 2) - 250 });
 
     /** Controla se a modal está maxinizada ou minimizada */
     const [maximized, setMaximized] = useState(false);
@@ -85,7 +85,7 @@ export const Modal: React.FC<ModalProps> = ({ children, maxWidth = 500, maxHeigh
                     <div tabIndex={0} onKeyDown={keyDown} className="fade-in full-height full-width absolute" style={{ backgroundColor: '#ffffff05' }} onClick={() => closeWithBackdropClick ? close() : () => { }}>
                         <div style={{ top: !maximized ? position.top : 0, left: !maximized ? position.left : 0 }} className={`base-modal background-bars box-shadow-small border-radius flex-column${maximized ? ' full-width full-height' : ' padding-xs'}`}>
                             <div onMouseDown={mouseDown} className={`modal-top-bar flex-row${maximized ? ' margin-left-xs margin-right-xs' : ''}`}>
-                                <div className="flex1">
+                                <div className="flex1 flex-itens-center">
                                     {title}
                                 </div>
                                 <div>

@@ -16,6 +16,9 @@ export interface ICodeEditorProps {
     /** Usado para custumizar o background do painel */
     backgroundType?: 'dotted' | 'checkered' | 'custom';
 
+    /** Mensagem exibida quando o fluxo estiver vazio e o enabledSelection for true */
+    emptyMessage?: string;
+
     /** boolean - Usado para exibir ou não a toolbox com itens de lógica. */
     showToolbar: boolean;
 

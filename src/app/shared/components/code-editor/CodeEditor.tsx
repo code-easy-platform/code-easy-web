@@ -36,7 +36,7 @@ export const FlowEditor: FC<ICodeEditorProps> = (props: ICodeEditorProps) => {
 let backupFlow: string = "";
 
 /** Editor do fluxo. */
-const CodeEditor: React.FC<ICodeEditorProps> = ({ id, itens = [], toolItens = [], onChangeItens = () => { }, onMouseOver, backgroundType, showToolbar = false, onDropItem = () => undefined, allowedsInDrop = [], onContextMenu, onKeyDown, breadcrumbs, enabledSelection = true }) => {
+const CodeEditor: React.FC<ICodeEditorProps> = ({ id, itens = [], emptyMessage, toolItens = [], onChangeItens = () => { }, onMouseOver, backgroundType, showToolbar = false, onDropItem = () => undefined, allowedsInDrop = [], onContextMenu, onKeyDown, breadcrumbs, enabledSelection = true }) => {
 
     /** Referencia o svg onde está todos os itens de fluxo. */
     const editorPanelRef = useRef<any>(null);
@@ -167,6 +167,8 @@ const CodeEditor: React.FC<ICodeEditorProps> = ({ id, itens = [], toolItens = []
         } else {
             if (targetItem.itemType === ItemType.COMMENT) {
                 return;
+            } else if (targetItem.itemType === ItemType.START && itemCurrent.itemType !== ItemType.COMMENT) {
+                return;
             }
         }
 
@@ -180,7 +182,6 @@ const CodeEditor: React.FC<ICodeEditorProps> = ({ id, itens = [], toolItens = []
             if (branchIndex !== undefined) {
                 itemCurrent.sucessor[branchIndex] = sucessorId;
             }
-            //itemCurrent.sucessor.push(sucessorId);
         }
 
         setFlowItens({ list: flowItens.list });
@@ -394,9 +395,8 @@ const CodeEditor: React.FC<ICodeEditorProps> = ({ id, itens = [], toolItens = []
         <div className="full-width" onMouseOver={(e: any) => onMouseOver && onMouseOver(e)}>
             <InputCopy ref={inputCopyRef} />
             <Toolbar itensLogica={toolItens} isShow={((toolItens.length > 0) && showToolbar)} />
-            <main key={id} className='overflow-auto flex1'>
+            <main key={id} className='overflow-auto flex1 display-flex'>
                 <BreandCamps breadcrumbs={breadcrumbs} />
-
                 <EditorPanel
                     id={`${id}_SVG`}
                     ref={editorPanelRef}
@@ -404,10 +404,21 @@ const CodeEditor: React.FC<ICodeEditorProps> = ({ id, itens = [], toolItens = []
                     height={svgSize.svgHeight}
                     onDropItem={onDropFlowItem}
                     allowedsInDrop={allowedsInDrop}
-                    backgroundType={backgroundType}
                     onMouseDown={(e: any) => onMouseDown(e)}
-                    onContextMenu={(e: any) => onContextMenu && onContextMenu(undefined, e)}
+                    backgroundType={enabledSelection ? backgroundType : "custom"}
+                    onContextMenu={(e: any) => (onContextMenu && enabledSelection) && onContextMenu(undefined, e)}
                 >
+
+                    {(!enabledSelection && flowItens.list.length === 0)
+                        && <foreignObject
+                            width={"100%"}
+                            height={"100%"}
+                        >
+                            <div className="full-height full-width flex-itens-center flex-content-center opacity-5">
+                                <header>{emptyMessage || "Double-click on an item in the tree to edit it"}</header>
+                            </div>
+                        </foreignObject>
+                    }
 
                     {/* Reinderiza a área de seleção na tela. */}
                     <SelectorArea
@@ -445,7 +456,7 @@ const CodeEditor: React.FC<ICodeEditorProps> = ({ id, itens = [], toolItens = []
                     {/* Reinderiza os itens arrastáveis na tela! */}
                     {flowItens.list.map((item: FlowItem, index) => (
                         <ItemToDrag
-                            onContextMenu={(data, e) => { e?.stopPropagation(); onContextMenu && onContextMenu(data, e) }}
+                            onContextMenu={(data, e) => { e?.stopPropagation(); (onContextMenu && enabledSelection) && onContextMenu(data, e) }}
                             onNameChange={text => itemNameChange(text, index)}
                             onMouseDown={(e: any) => onMouseDown(e)}
                             onChangePosition={onChangePositionItens}
@@ -455,7 +466,6 @@ const CodeEditor: React.FC<ICodeEditorProps> = ({ id, itens = [], toolItens = []
                             {...item}
                         />
                     ))}
-
                 </EditorPanel>
             </main>
         </div>

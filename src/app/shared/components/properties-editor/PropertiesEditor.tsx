@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 
 import { ListItem } from './shared/components/ListItem';
 import { IItem } from './shared/interfaces';
+import './styles.css';
 
 interface PropertiesEditorProps {
     /** Itens que serão listado para edição */

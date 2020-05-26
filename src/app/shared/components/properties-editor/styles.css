@@ -1,0 +1,6 @@
+.list-items:hover::-webkit-scrollbar-thumb {
+    background-color: var(--color-scroll-bar-hover);
+}
+.list-items:hover::-webkit-scrollbar-thumb:active {
+    background-color: var(--color-scroll-bar-active);
+}

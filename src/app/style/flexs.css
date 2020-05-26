@@ -25,6 +25,9 @@
 .flex-itens-center {
     align-items: center;
 }
+.flex-content-center {
+    justify-content: center;
+}
 .flex-wrap {
     flex-wrap: wrap;
 }

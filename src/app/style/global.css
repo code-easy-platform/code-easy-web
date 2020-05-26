@@ -2,6 +2,7 @@
 @import "./variables.css";
 @import "./paddings.css";
 @import "./margins.css";
+@import "./opacity.css";
 @import "./fonts.css";
 @import "./flexs.css";
 
@@ -109,6 +110,9 @@ input[type="number"] {
 }
 .background-bars {
   background-color: var(--main-background-bars);
+}
+.background-info {
+  background-color: var(--main-background-info);
 }
 .background-panels {
   background-color: var(--main-background-panels);
@@ -296,30 +300,4 @@ input[type="number"] {
 .mini-scroll-bar::-webkit-scrollbar-thumb {
   background-color: var(--main-background-bars);
   width: var(--size-x-scroll-bar-small);
-}
-
-[info-message] {
-  position: relative;
-}
-
-[info-message]::before {
-  background-color: var(--main-background-info);
-  box-shadow: var(--box-shadow-context-menu);
-  font-size: var(--font-size-sm);
-  border-radius: var(--size-1);
-  content: attr(info-message);
-  padding: var(--padding-xs);
-  color: var(--color-white);
-  white-space: break-spaces;
-  pointer-events: none;
-  text-align: center;
-  max-width: 200px;
-  position: fixed;
-  z-index: 5000;
-  display: none;
-  height: auto;
-}
-
-[info-message]:hover::before {
-  display: block;
 }

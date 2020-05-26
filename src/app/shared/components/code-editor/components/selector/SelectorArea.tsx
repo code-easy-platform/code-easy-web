@@ -51,21 +51,23 @@ export const SelectorArea: React.FC<SelectorAreaProps> = ({ parentRef, enabled =
     // Configura o mouse down
     if (parentRef.current) {
         parentRef.current.onmousedown = (e: globalThis.MouseEvent | any) => {
-            if (e.target.id === parentRef.current.id) {
-                window.onmousemove = mouseMove;
-                window.onmouseup = mouseUp;
+            if (enabled) {
+                if (e.target.id === parentRef.current.id) {
+                    window.onmousemove = mouseMove;
+                    window.onmouseup = mouseUp;
 
-                /**
-                 * Em teoria isso não deveria contecer já que se trata de consts
-                 * e em teoria deveria estar sendo feito essas atribuições dentro do setPosition,
-                 * funcionou apenas assim.
-                 * */
-                position.startLeft = e.offsetX;
-                position.startTop = e.offsetY;
-                position.endLeft = e.offsetX;
-                position.endTop = e.offsetY;
+                    /**
+                     * Em teoria isso não deveria contecer já que se trata de consts
+                     * e em teoria deveria estar sendo feito essas atribuições dentro do setPosition,
+                     * funcionou apenas assim.
+                     * */
+                    position.startLeft = e.offsetX;
+                    position.startTop = e.offsetY;
+                    position.endLeft = e.offsetX;
+                    position.endTop = e.offsetY;
 
-                setPosition(position);
+                    setPosition(position);
+                }
             }
         }
     }
