@@ -5,7 +5,6 @@ import { IItem, TypeValues, IProperties } from '../../../shared/components/prope
 import { BreadCampButton } from '../../../shared/components/code-editor/shared/Interfaces/CodeEditorInterfaces';
 import { CodeEditorContext, ICodeEditorContext } from '../../../shared/services/contexts/CodeEditorContext';
 import { TwoColumnsResizable } from '../../../shared/components/resizable-columns/TwoColumnsResizable';
-import { ParametersLocation, ParametersLocationList } from '../../../shared/enuns/ParametersLocation';
 import { TreeInterface } from '../../../shared/components/tree-manager/shared/models/TreeInterface';
 import { PropertiesEditor } from './../../../shared/components/properties-editor/PropertiesEditor';
 import { TwoRowsResizable } from '../../../shared/components/resizable-columns/TwoRowsResizable';
@@ -13,13 +12,12 @@ import { ContextMenuService } from '../../../shared/components/context-menu/Cont
 import { FlowItem, ItemType } from './../../../shared/components/code-editor/models/ItemFluxo';
 import { Tab, ItemComponent, ItemFlowComplete } from '../../../shared/interfaces/Aplication';
 import { IContextItemList } from './../../../shared/components/context-menu/ContextMenu';
+import { DefaultPropsHelper } from '../../../shared/services/helpers/DefaultPropsHelper';
 import { TreeManager } from '../../../shared/components/tree-manager/TreeManager';
 import { OutputPanel } from '../../../shared/components/output-panel/OutputPanel';
 import { ProblemsHelper } from '../../../shared/services/helpers/ProblemsHelper';
 import { FlowEditor } from '../../../shared/components/code-editor/CodeEditor';
-import { MethodsApi, MethodsApiList } from '../../../shared/enuns/ApiMethods';
 import { OutputHelper } from '../../../shared/services/helpers/OutputHelper';
-import { DataTypesList, DataTypes } from '../../../shared/enuns/DataType';
 import { AssetsService } from '../../../shared/services/AssetsService';
 import { PropertieTypes } from '../../../shared/enuns/PropertieTypes';
 import { ComponentType } from '../../../shared/enuns/ComponentType';
@@ -204,6 +202,8 @@ export default class EditorTab extends React.Component {
                                             type: TypeValues.expression,
                                             propertieType: PropertieTypes.param,
                                             information: param.description !== '' ? param.description : undefined,
+                                            openEditor: () => { window.alert("Abre editor..."); this.setState({ modalOpen: true }) },
+                                            valueHasError: param.properties.some(paramProp => ((paramProp.propertieType === PropertieTypes.any && paramProp.value === true))),
                                             suggestions: paramsSuggestion.map(suggest => {
                                                 return {
                                                     disabled: false,
@@ -245,160 +245,6 @@ export default class EditorTab extends React.Component {
         return nullRes;
     }
 
-    /** Devolve uma lista de propriedades para ser adicionado em novos itens de fluxo ou da árvore. */
-    private propertiesEditorGetNewProperties(itemType: ItemType | ComponentType, name: string): IProperties[] {
-        switch (itemType) {
-            case ItemType.START:
-                return [
-                    { id: Utils.getUUID(), name: 'Label', type: TypeValues.viewOnly, value: name, propertieType: PropertieTypes.label },
-                ];
-
-            case ItemType.ACTION:
-                return [
-                    { id: Utils.getUUID(), name: 'Label', type: TypeValues.string, value: name, propertieType: PropertieTypes.label },
-                    { id: Utils.getUUID(), name: 'Action', type: TypeValues.expression, value: '', propertieType: PropertieTypes.action },
-                ];
-
-            case ItemType.ASSIGN:
-                return [
-                    { id: Utils.getUUID(), name: 'Label', type: TypeValues.string, value: name, propertieType: PropertieTypes.label },
-                    { id: Utils.getUUID(), name: '', type: TypeValues.assign, value: '', propertieType: PropertieTypes.assigns },
-                ];
-
-            case ItemType.COMMENT:
-                return [
-                    { id: Utils.getUUID(), name: 'Label', type: TypeValues.viewOnly, value: name, propertieType: PropertieTypes.label },
-                    { id: Utils.getUUID(), name: 'Comment', type: TypeValues.string, value: name, propertieType: PropertieTypes.any },
-                ];
-
-            case ItemType.FOREACH:
-                return [
-                    { id: Utils.getUUID(), name: 'Label', type: TypeValues.string, value: name, propertieType: PropertieTypes.label },
-                    { id: Utils.getUUID(), name: 'SourceList', type: TypeValues.expression, value: name, propertieType: PropertieTypes.any },
-                ];
-
-            case ItemType.IF:
-                return [
-                    { id: Utils.getUUID(), name: 'Label', type: TypeValues.string, value: name, propertieType: PropertieTypes.label },
-                    { id: Utils.getUUID(), name: 'Condiction', type: TypeValues.expression, value: '', propertieType: PropertieTypes.any },
-                ];
-
-            case ItemType.SWITCH:
-                return [
-                    { id: Utils.getUUID(), name: 'Label', type: TypeValues.string, value: name, propertieType: PropertieTypes.label },
-                    { id: Utils.getUUID(), name: 'Condiction1', type: TypeValues.expression, value: '', propertieType: PropertieTypes.any },
-                ];
-
-            case ItemType.END:
-                return [
-                    { id: Utils.getUUID(), name: 'Label', type: TypeValues.viewOnly, value: name, propertieType: PropertieTypes.label },
-                ];
-
-            case ComponentType.router:
-                return [
-                    { id: Utils.getUUID(), name: 'Label', value: name, type: TypeValues.string, propertieType: PropertieTypes.label },
-                    { id: Utils.getUUID(), name: 'Description', type: TypeValues.bigstring, value: "", propertieType: PropertieTypes.description },
-                    { id: Utils.getUUID(), name: 'Url', type: TypeValues.string, value: "/newroute", propertieType: PropertieTypes.url },
-                    {
-                        id: Utils.getUUID(), name: 'Type', type: TypeValues.selection, value: MethodsApi.post, propertieType: PropertieTypes.type, suggestions: MethodsApiList.map(value => {
-                            return {
-                                name: value,
-                                value: value,
-                                label: value,
-                                disabled: false,
-                                description: value,
-                            };
-                        })
-                    },
-                    {
-                        id: Utils.getUUID(), name: 'Parameters in', type: TypeValues.selection, value: ParametersLocation.body, propertieType: PropertieTypes.any, suggestions: ParametersLocationList.map(value => {
-                            return {
-                                name: value,
-                                value: value,
-                                label: value,
-                                disabled: false,
-                                description: value,
-                            };
-                        })
-                    },
-                ];
-
-            case ComponentType.globalAction:
-                return [
-                    { id: Utils.getUUID(), name: 'Label', value: name, type: TypeValues.string, propertieType: PropertieTypes.label },
-                    { id: Utils.getUUID(), name: 'Description', type: TypeValues.bigstring, value: "", propertieType: PropertieTypes.description },
-                    { id: Utils.getUUID(), name: 'Icon', type: TypeValues.binary, value: "Default", propertieType: PropertieTypes.icon },
-                ];
-
-            case ComponentType.localAction:
-                return [
-                    { id: Utils.getUUID(), name: 'Label', value: name, type: TypeValues.string, propertieType: PropertieTypes.label },
-                    { id: Utils.getUUID(), name: 'Description', type: TypeValues.bigstring, value: "", propertieType: PropertieTypes.description },
-                    { id: Utils.getUUID(), name: 'Icon', type: TypeValues.binary, value: "Default", propertieType: PropertieTypes.icon },
-                ];
-
-            case ComponentType.inputVariable:
-                return [
-                    { id: Utils.getUUID(), name: 'Label', value: name, type: TypeValues.string, propertieType: PropertieTypes.label },
-                    { id: Utils.getUUID(), name: 'Description', type: TypeValues.bigstring, value: "", propertieType: PropertieTypes.description },
-                    { id: Utils.getUUID(), name: 'Required', type: TypeValues.boolean, value: true, propertieType: PropertieTypes.any },
-                    {
-                        id: Utils.getUUID(), name: 'Data type', type: TypeValues.selection, value: DataTypes.string, propertieType: PropertieTypes.any, suggestions: DataTypesList.map(value => {
-                            return {
-                                name: value,
-                                label: value,
-                                value: value,
-                                disabled: false,
-                                description: value,
-                            }
-                        })
-                    },
-                    { id: Utils.getUUID(), name: 'Default value', type: TypeValues.expression, value: "", propertieType: PropertieTypes.any },
-                ];
-
-            case ComponentType.localVariable:
-                return [
-                    { id: Utils.getUUID(), name: 'Label', value: name, type: TypeValues.string, propertieType: PropertieTypes.label },
-                    { id: Utils.getUUID(), name: 'Description', type: TypeValues.bigstring, value: "", propertieType: PropertieTypes.description },
-                    {
-                        id: Utils.getUUID(), name: 'Data type', type: TypeValues.selection, value: DataTypes.string, propertieType: PropertieTypes.any, suggestions: DataTypesList.map(value => {
-                            return {
-                                name: value,
-                                label: value,
-                                value: value,
-                                disabled: false,
-                                description: value,
-                            }
-                        })
-                    },
-                    { id: Utils.getUUID(), name: 'Default value', type: TypeValues.expression, value: "", propertieType: PropertieTypes.any },
-                ];
-
-            case ComponentType.outputVariable:
-                return [
-                    { id: Utils.getUUID(), name: 'Label', value: name, type: TypeValues.string, propertieType: PropertieTypes.label },
-                    { id: Utils.getUUID(), name: 'Description', type: TypeValues.bigstring, value: "", propertieType: PropertieTypes.description },
-                    {
-                        id: Utils.getUUID(), name: 'Data type', type: TypeValues.selection, value: DataTypes.string, propertieType: PropertieTypes.any, suggestions: DataTypesList.map(value => {
-                            return {
-                                name: value,
-                                label: value,
-                                value: value,
-                                disabled: false,
-                                description: value,
-                            }
-                        })
-                    },
-                    { id: Utils.getUUID(), name: 'Default value', type: TypeValues.expression, value: "", propertieType: PropertieTypes.any },
-                ];
-
-            default:
-                return [
-                    { id: Utils.getUUID(), name: 'Label', type: TypeValues.viewOnly, value: '<tipo de item não encontrado>', propertieType: PropertieTypes.label },
-                ];
-        }
-    }
-
     //#endregion
 
 
@@ -437,7 +283,7 @@ export default class EditorTab extends React.Component {
                                 }));
                             } else {
                                 newItens.push(new ItemFlowComplete({
-                                    properties: this.propertiesEditorGetNewProperties(updatedItem.itemType, updatedItem.name), // Criar uma função para isso
+                                    properties: DefaultPropsHelper.getNewProps(updatedItem.itemType, updatedItem.name), // Criar uma função para isso
                                     isSelected: updatedItem.isSelected,
                                     sucessor: updatedItem.sucessor,
                                     itemType: updatedItem.itemType,
@@ -599,7 +445,7 @@ export default class EditorTab extends React.Component {
 
                                 // Adiciona a tab com os itens alterados
                                 item_tree.itens.push(new ItemFlowComplete({
-                                    properties: this.propertiesEditorGetNewProperties(item.itemType, item.name), // Criar uma função para isso
+                                    properties: DefaultPropsHelper.getNewProps(item.itemType, item.name), // Criar uma função para isso
                                     itemType: item.itemType,
                                     id: Utils.getUUID(),
                                     isSelected: true,
@@ -838,14 +684,17 @@ export default class EditorTab extends React.Component {
     private treeManagerRemoveItem(inputItemId: string | undefined) {
         this.setState({ currentFocus: CurrentFocus.tree });
 
+        // Se for undefined não faz nada
+        if (!inputItemId) return;
+
         // Pega a lista de itens corrente na árvore
         let indexTabToRemove: number | any;
         let indexItemToRemove: number | any;
         this.editorContext.project.tabs.forEach((tab: Tab, indexTab) => {
             tab.itens.forEach((item, index) => {
                 if (item.id === inputItemId) {
-                    indexItemToRemove = index;
                     indexTabToRemove = indexTab;
+                    indexItemToRemove = index;
                 }
             });
         });
@@ -877,17 +726,17 @@ export default class EditorTab extends React.Component {
                 const newName = Utils.newName('NewParam', this.editorContext.project.tabs[tabIndex].itens.map(item => item.label));
 
                 this.editorContext.project.tabs[tabIndex].itens.push(new ItemComponent({
-                    id: Utils.getUUID(),
                     itens: [],
-                    description: '',
+                    label: newName,
                     type: paramType,
+                    description: '',
                     isSelected: true,
                     isEditing: false,
-                    label: newName,
-                    nodeExpanded: true,
+                    id: Utils.getUUID(),
+                    nodeExpanded: false,
                     itemPaiId: inputItemId,
                     name: Utils.getNormalizedString(newName),
-                    properties: this.propertiesEditorGetNewProperties(paramType, newName),
+                    properties: DefaultPropsHelper.getNewProps(paramType, newName),
                 }));
             }
 
@@ -922,7 +771,7 @@ export default class EditorTab extends React.Component {
                         itemPaiId: inputItemId,
                         type: ComponentType.router,
                         name: Utils.getNormalizedString(newName),
-                        properties: this.propertiesEditorGetNewProperties(ComponentType.router, newName),
+                        properties: DefaultPropsHelper.getNewProps(ComponentType.router, newName),
                     }));
                 }
             }
@@ -957,7 +806,7 @@ export default class EditorTab extends React.Component {
                         itemPaiId: inputItemId,
                         type: ComponentType.globalAction,
                         name: Utils.getNormalizedString(newName),
-                        properties: this.propertiesEditorGetNewProperties(ComponentType.globalAction, newName),
+                        properties: DefaultPropsHelper.getNewProps(ComponentType.globalAction, newName),
                     }));
                 }
             }
@@ -1157,7 +1006,7 @@ export default class EditorTab extends React.Component {
                             }
                         />
                         <Modal
-                            isOpen={true}
+                            isOpen={this.state.modalOpen}
                             onClose={value => {
                                 this.setState({ modalOpen: value });
                                 return value;
