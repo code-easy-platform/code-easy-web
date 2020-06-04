@@ -203,7 +203,6 @@ export default class EditorTab extends React.Component {
                                             propertieType: PropertieTypes.param,
                                             information: param.description !== '' ? param.description : undefined,
                                             openEditor: () => { window.alert("Abre editor..."); this.setState({ modalOpen: true }) },
-                                            valueHasError: param.properties.some(paramProp => ((paramProp.propertieType === PropertieTypes.any && paramProp.value === true))),
                                             suggestions: paramsSuggestion.map(suggest => {
                                                 return {
                                                     disabled: false,
@@ -1000,7 +999,15 @@ export default class EditorTab extends React.Component {
                             }
                             bottom={
                                 <OutputPanel
-                                    problems={ProblemsHelper.getProblems(this.editorContext.project)}
+                                    problems={(() => {
+                                        const res = ProblemsHelper.getProblems(this.editorContext.project);
+
+                                        if (JSON.stringify(res.project) !== JSON.stringify(this.editorContext.project)) {
+                                            this.editorContext.updateProjectState(res.project);
+                                        }
+
+                                        return res.problems;
+                                    })()}
                                     output={OutputHelper.getOutput(this.editorContext.project)}
                                 />
                             }
