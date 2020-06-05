@@ -92,9 +92,9 @@ export default class EditorTab extends React.Component {
                 let indexItemFlow = treeItemEditing.itens.findIndex((oldItem: ItemFlowComplete) => oldItem.id === item.id);
                 if (indexItemFlow && (indexItemFlow < 0)) return;
 
-
                 // Pega a antiga action ID
                 const oldActionId = treeItemEditing.itens[indexItemFlow].properties.find(item_old => item_old.propertieType === PropertieTypes.action)?.value;
+
                 // Pega a nova action ID
                 const newActionId = item.properties.find(item_new => item_new.propertieType === PropertieTypes.action)?.value;
 
@@ -109,23 +109,35 @@ export default class EditorTab extends React.Component {
                 }
 
                 if (treeItemEditing.itens[indexItemFlow].itemType === ItemType.ACTION) {
-                    const oldLabelProp = treeItemEditing.itens[indexItemFlow].properties.find(prop => prop.propertieType === PropertieTypes.label);
-                    const oldValueProp = treeItemEditing.itens[indexItemFlow].properties.find(prop => prop.propertieType === PropertieTypes.value);
 
-                    if ((oldLabelProp && oldValueProp) && oldLabelProp.value === oldValueProp.value) {
-                        // Ainda não fiz porque é preciso fazer uma busca pelo id da action e encontrar o label dela
-                        // item.properties
-                    }
+                    const selectedActionId = item.properties.find(prop => prop.propertieType === PropertieTypes.action)?.value;
+                    let actionSelected: ItemComponent | undefined;
+
+                    this.editorContext.project.tabs.forEach((tab: Tab) => {
+                        actionSelected = tab.itens.find(item => item.id === selectedActionId);
+                    });
+
+                    // Altera o label do componente action de fluxo
+                    item.properties.forEach(prop => {
+                        if (prop.propertieType === PropertieTypes.label && actionSelected) {
+
+                            // Pega prop label da action selecionada
+                            const actionLabelProp = actionSelected.properties.find(propAction => propAction.propertieType === PropertieTypes.label);
+
+                            if (actionLabelProp) {
+                                // Altera o valor da label
+                                prop.value = actionSelected ? actionLabelProp.value || prop.value : prop.value;
+                            }
+                        }
+                    });
+
+                    treeItemEditing.itens[indexItemFlow].name = actionSelected ? actionSelected.name : item.name;
+                    treeItemEditing.itens[indexItemFlow].properties = item.properties;
                 }
 
-                treeItemEditing.itens[indexItemFlow].name = item.name;
-                treeItemEditing.itens[indexItemFlow].properties = item.properties;
-
             }
-
+            this.onChangeState();
         }
-        this.onChangeState();
-
     }
 
     /** Devolve para o editor de propriedades as propriedades do item selecionado no momento. */
@@ -378,8 +390,8 @@ export default class EditorTab extends React.Component {
                     name: item.name,
                     width: item.width,
                     height: item.height,
-                    itemType: item.itemType,
                     sucessor: item.sucessor,
+                    itemType: item.itemType,
                     isSelected: item.isSelected,
                     hasError: item.properties.some(prop => (prop.valueHasError || prop.nameHasError)),
                 }));
