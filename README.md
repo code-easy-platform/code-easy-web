@@ -7,18 +7,18 @@
 </h3>
 <p align="center">
   <img src="https://raw.githubusercontent.com/lucasdevargassouza/code-easy-web/master/projeto/nodejs.svg" height="50" width="50" alt="NodeJs" />
+  <img src="https://raw.githubusercontent.com/lucasdevargassouza/code-easy-web/master/projeto/ReactJs.png" height="50" width="50" alt="React Js" />
 </p>
 
 <br>
 
 # Code easy
 
-> **`Attention`**: This application is not yet 100% functional, that is, many of the expected features are not working yet or have not even been developed
-
-
 Code easy platform is a web platform for developing APIs in nodejs that helps you develop your entire backend much faster than the traditional way.
 
 ## How will it work
+
+> **`Attention`**: This application is not yet 100% functional, that is, many of the expected features are not working yet or have not even been developed
 
 * Enter the platform link.
 * Choose to create a new project.
@@ -41,6 +41,15 @@ Thank you for being interested on making this platform better. We encourage ever
 ## Need help
 
 If you need help with Code easy platform, feel free to open an issue with a description of the problem you're facing.
+
+## Built with
+
+<p align="left">
+  <img src="https://raw.githubusercontent.com/lucasdevargassouza/code-easy-web/master/projeto/nodejs.svg" height="50" width="50" alt="NodeJs" />
+  <img src="https://raw.githubusercontent.com/lucasdevargassouza/code-easy-web/master/projeto/RestAPI.png" height="50" width="50" alt="Rest API" />
+  <img src="https://raw.githubusercontent.com/lucasdevargassouza/code-easy-web/master/projeto/firebase.png" height="50" width="50" alt="Firebase" />
+  <img src="https://raw.githubusercontent.com/lucasdevargassouza/code-easy-web/master/projeto/typescript.png" height="50" width="50" alt="Typescript" />
+</p>
 
 ## License
 
