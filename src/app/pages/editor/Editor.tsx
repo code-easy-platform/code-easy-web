@@ -15,7 +15,7 @@ import './Editor.css';
 
 
 export class Editor extends React.Component<any> {
-    private params: any = this.props.match.params
+    private params: any = this.props.match.params;
 
     public state = {
         currentTab: <EditorTab />,
@@ -27,7 +27,11 @@ export class Editor extends React.Component<any> {
     }
 
     componentDidUpdate() {
-        document.title = this.state.project.projectConfigs.label + ' - Code Easy'
+        document.title = this.state.project.projectConfigs.label + ' - Code Easy';
+
+        if (!this.state.project.projectConfigs.id) {
+
+        }
     }
 
     private onChangeTab = (tab: CurrentTab) => {
@@ -57,7 +61,7 @@ export class Editor extends React.Component<any> {
     /** Usada para atualizar o state global do projeto e para atualizar o localstorage */
     private updateProjectState(project: Project) {
         Storage.setProjectById(project);
-        
+
         this.setState({
             project: project,
         });

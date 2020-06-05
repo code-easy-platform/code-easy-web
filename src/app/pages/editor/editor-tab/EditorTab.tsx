@@ -55,6 +55,16 @@ export default class EditorTab extends React.Component {
                     tab.itens.forEach(itemTree => {
                         if (itemTree.isSelected && itemTree.id === item.id) {
 
+                            // Este block garante que se a label de uma routa muda o seu path será alterado junto.
+                            if (itemTree.type === ComponentType.router) {
+                                const newLabel = item.properties.find(prop => prop.propertieType === PropertieTypes.label)
+                                item.properties.forEach(prop => {
+                                    if (prop.propertieType === PropertieTypes.url) {
+                                        prop.value = `/${Utils.getNormalizedString(newLabel ? newLabel.value : prop.value).toLowerCase()}`;
+                                    }
+                                });
+                            }
+
                             if (itemTree) {
                                 itemTree.label = item.properties[0].value;
                                 itemTree.description = item.properties[1].value;
@@ -68,22 +78,23 @@ export default class EditorTab extends React.Component {
 
         } else if (this.state.currentFocus === CurrentFocus.flow) {
 
-            let itemEditing: ItemComponent | undefined;
+            let treeItemEditing: ItemComponent | undefined;
             this.editorContext.project.tabs.forEach((tab: Tab) => {
                 tab.itens.forEach(item => {
                     if (item.isEditing) {
-                        itemEditing = item;
+                        treeItemEditing = item;
                     }
                 })
             });
 
-            if (itemEditing) {
-                let index = itemEditing.itens.findIndex((oldItem: ItemFlowComplete) => oldItem.id === item.id);
-                if (index && (index < 0)) return;
+            if (treeItemEditing) {
+
+                let indexItemFlow = treeItemEditing.itens.findIndex((oldItem: ItemFlowComplete) => oldItem.id === item.id);
+                if (indexItemFlow && (indexItemFlow < 0)) return;
 
 
                 // Pega a antiga action ID
-                const oldActionId = itemEditing.itens[index].properties.find(item_old => item_old.propertieType === PropertieTypes.action)?.value;
+                const oldActionId = treeItemEditing.itens[indexItemFlow].properties.find(item_old => item_old.propertieType === PropertieTypes.action)?.value;
                 // Pega a nova action ID
                 const newActionId = item.properties.find(item_new => item_new.propertieType === PropertieTypes.action)?.value;
 
@@ -97,8 +108,18 @@ export default class EditorTab extends React.Component {
                     }
                 }
 
-                itemEditing.itens[index].name = item.name;
-                itemEditing.itens[index].properties = item.properties;
+                if (treeItemEditing.itens[indexItemFlow].itemType === ItemType.ACTION) {
+                    const oldLabelProp = treeItemEditing.itens[indexItemFlow].properties.find(prop => prop.propertieType === PropertieTypes.label);
+                    const oldValueProp = treeItemEditing.itens[indexItemFlow].properties.find(prop => prop.propertieType === PropertieTypes.value);
+
+                    if ((oldLabelProp && oldValueProp) && oldLabelProp.value === oldValueProp.value) {
+                        // Ainda não fiz porque é preciso fazer uma busca pelo id da action e encontrar o label dela
+                        // item.properties
+                    }
+                }
+
+                treeItemEditing.itens[indexItemFlow].name = item.name;
+                treeItemEditing.itens[indexItemFlow].properties = item.properties;
 
             }
 
@@ -203,7 +224,6 @@ export default class EditorTab extends React.Component {
                                             propertieType: PropertieTypes.param,
                                             information: param.description !== '' ? param.description : undefined,
                                             openEditor: () => { window.alert("Abre editor..."); this.setState({ modalOpen: true }) },
-                                            valueHasError: param.properties.some(paramProp => ((paramProp.propertieType === PropertieTypes.any && paramProp.value === true))),
                                             suggestions: paramsSuggestion.map(suggest => {
                                                 return {
                                                     disabled: false,
@@ -1000,7 +1020,15 @@ export default class EditorTab extends React.Component {
                             }
                             bottom={
                                 <OutputPanel
-                                    problems={ProblemsHelper.getProblems(this.editorContext.project)}
+                                    problems={(() => {
+                                        const res = ProblemsHelper.getProblems(this.editorContext.project);
+
+                                        if (JSON.stringify(res.project) !== JSON.stringify(this.editorContext.project)) {
+                                            this.editorContext.updateProjectState(res.project);
+                                        }
+
+                                        return res.problems;
+                                    })()}
                                     output={OutputHelper.getOutput(this.editorContext.project)}
                                 />
                             }

@@ -33,25 +33,25 @@ class DefaultPropsService {
             case ItemType.COMMENT:
                 return [
                     { id: Utils.getUUID(), name: 'Label', type: TypeValues.viewOnly, value: name, propertieType: PropertieTypes.label },
-                    { id: Utils.getUUID(), name: 'Comment', type: TypeValues.string, value: name, propertieType: PropertieTypes.any },
+                    { id: Utils.getUUID(), name: 'Comment', type: TypeValues.string, value: name, propertieType: PropertieTypes.comment },
                 ];
 
             case ItemType.FOREACH:
                 return [
                     { id: Utils.getUUID(), name: 'Label', type: TypeValues.string, value: name, propertieType: PropertieTypes.label },
-                    { id: Utils.getUUID(), name: 'SourceList', type: TypeValues.expression, value: name, propertieType: PropertieTypes.any },
+                    { id: Utils.getUUID(), name: 'SourceList', type: TypeValues.expression, value: name, propertieType: PropertieTypes.sourceList },
                 ];
 
             case ItemType.IF:
                 return [
                     { id: Utils.getUUID(), name: 'Label', type: TypeValues.string, value: name, propertieType: PropertieTypes.label },
-                    { id: Utils.getUUID(), name: 'Condiction', type: TypeValues.expression, value: '', propertieType: PropertieTypes.any },
+                    { id: Utils.getUUID(), name: 'Condiction', type: TypeValues.expression, value: '', propertieType: PropertieTypes.condiction },
                 ];
 
             case ItemType.SWITCH:
                 return [
                     { id: Utils.getUUID(), name: 'Label', type: TypeValues.string, value: name, propertieType: PropertieTypes.label },
-                    { id: Utils.getUUID(), name: 'Condiction1', type: TypeValues.expression, value: '', propertieType: PropertieTypes.any },
+                    { id: Utils.getUUID(), name: 'Condiction1', type: TypeValues.expression, value: '', propertieType: PropertieTypes.condiction },
                 ];
 
             case ItemType.END:
@@ -76,7 +76,7 @@ class DefaultPropsService {
                         })
                     },
                     {
-                        id: Utils.getUUID(), name: 'Parameters in', type: TypeValues.selection, value: ParametersLocation.body, propertieType: PropertieTypes.any, suggestions: ParametersLocationList.map(value => {
+                        id: Utils.getUUID(), name: 'Parameters in', type: TypeValues.selection, value: ParametersLocation.body, propertieType: PropertieTypes.parametersIn, suggestions: ParametersLocationList.map(value => {
                             return {
                                 name: value,
                                 value: value,
@@ -106,9 +106,9 @@ class DefaultPropsService {
                 return [
                     { id: Utils.getUUID(), name: 'Label', value: name, type: TypeValues.string, propertieType: PropertieTypes.label },
                     { id: Utils.getUUID(), name: 'Description', type: TypeValues.bigstring, value: "", propertieType: PropertieTypes.description },
-                    { id: Utils.getUUID(), name: 'Required', type: TypeValues.boolean, value: true, propertieType: PropertieTypes.any },
+                    { id: Utils.getUUID(), name: 'Required', type: TypeValues.boolean, value: true, propertieType: PropertieTypes.required },
                     {
-                        id: Utils.getUUID(), name: 'Data type', type: TypeValues.selection, value: DataTypes.string, propertieType: PropertieTypes.any, suggestions: DataTypesList.map(value => {
+                        id: Utils.getUUID(), name: 'Data type', type: TypeValues.selection, value: DataTypes.string, propertieType: PropertieTypes.dataType, suggestions: DataTypesList.map(value => {
                             return {
                                 name: value,
                                 label: value,
@@ -118,7 +118,7 @@ class DefaultPropsService {
                             }
                         })
                     },
-                    { id: Utils.getUUID(), name: 'Default value', type: TypeValues.expression, value: "", propertieType: PropertieTypes.any },
+                    { id: Utils.getUUID(), name: 'Default value', type: TypeValues.expression, value: "", propertieType: PropertieTypes.defaultValue },
                 ];
 
             case ComponentType.localVariable:
@@ -126,7 +126,7 @@ class DefaultPropsService {
                     { id: Utils.getUUID(), name: 'Label', value: name, type: TypeValues.string, propertieType: PropertieTypes.label },
                     { id: Utils.getUUID(), name: 'Description', type: TypeValues.bigstring, value: "", propertieType: PropertieTypes.description },
                     {
-                        id: Utils.getUUID(), name: 'Data type', type: TypeValues.selection, value: DataTypes.string, propertieType: PropertieTypes.any, suggestions: DataTypesList.map(value => {
+                        id: Utils.getUUID(), name: 'Data type', type: TypeValues.selection, value: DataTypes.string, propertieType: PropertieTypes.dataType, suggestions: DataTypesList.map(value => {
                             return {
                                 name: value,
                                 label: value,
@@ -136,7 +136,7 @@ class DefaultPropsService {
                             }
                         })
                     },
-                    { id: Utils.getUUID(), name: 'Default value', type: TypeValues.expression, value: "", propertieType: PropertieTypes.any },
+                    { id: Utils.getUUID(), name: 'Default value', type: TypeValues.expression, value: "", propertieType: PropertieTypes.defaultValue },
                 ];
 
             case ComponentType.outputVariable:
@@ -144,7 +144,7 @@ class DefaultPropsService {
                     { id: Utils.getUUID(), name: 'Label', value: name, type: TypeValues.string, propertieType: PropertieTypes.label },
                     { id: Utils.getUUID(), name: 'Description', type: TypeValues.bigstring, value: "", propertieType: PropertieTypes.description },
                     {
-                        id: Utils.getUUID(), name: 'Data type', type: TypeValues.selection, value: DataTypes.string, propertieType: PropertieTypes.any, suggestions: DataTypesList.map(value => {
+                        id: Utils.getUUID(), name: 'Data type', type: TypeValues.selection, value: DataTypes.string, propertieType: PropertieTypes.dataType, suggestions: DataTypesList.map(value => {
                             return {
                                 name: value,
                                 label: value,
@@ -154,7 +154,7 @@ class DefaultPropsService {
                             }
                         })
                     },
-                    { id: Utils.getUUID(), name: 'Default value', type: TypeValues.expression, value: "", propertieType: PropertieTypes.any },
+                    { id: Utils.getUUID(), name: 'Default value', type: TypeValues.expression, value: "", propertieType: PropertieTypes.defaultValue },
                 ];
 
             default:

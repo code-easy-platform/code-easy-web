@@ -12,7 +12,7 @@ class ProblemsHelperService {
     /**
      * Get all problems in a project
      */
-    public getProblems(project: Project): TreeInterface[] {
+    public getProblems(project: Project): { problems: TreeInterface[]; project: Project } {
         let res: TreeInterface[] = [];
 
         const addProblem = (label: string, type: 'warning' | 'error') => {
@@ -118,7 +118,7 @@ class ProblemsHelperService {
             });
         }
 
-        return res;
+        return { problems: res, project };
     }
 }
 
