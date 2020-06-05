@@ -2,14 +2,17 @@
   <img src="https://raw.githubusercontent.com/lucasdevargassouza/code-easy-web/master/projeto/code-easy.png" height="150" width="150" alt="Code easy platform" />
 </p>
 
+<h2 align="center" style="font-size:28px;font-weight:bold">Code easy platform</h2>
+
 <h3 align="center">
   Easy peasy highly scalable nodejs APIs!
 </h3>
 <p align="center">
   <img src="https://raw.githubusercontent.com/lucasdevargassouza/code-easy-web/master/projeto/nodejs.svg" height="50" width="50" alt="NodeJs" />
-  <img src="https://raw.githubusercontent.com/lucasdevargassouza/code-easy-web/master/projeto/ReactJs.png" height="50" width="50" alt="React Js" />
+  <img src="https://raw.githubusercontent.com/lucasdevargassouza/code-easy-web/master/projeto/RestAPI.png" height="50" width="50" alt="Rest API" />
 </p>
 
+![GitHub](https://raw.githubusercontent.com/lucasdevargassouza/code-easy-web/master/projeto/mit.svg)
 <br>
 
 # Code easy
@@ -45,10 +48,10 @@ If you need help with Code easy platform, feel free to open an issue with a desc
 ## Built with
 
 <p align="left">
-  <img src="https://raw.githubusercontent.com/lucasdevargassouza/code-easy-web/master/projeto/nodejs.svg" height="50" width="50" alt="NodeJs" />
-  <img src="https://raw.githubusercontent.com/lucasdevargassouza/code-easy-web/master/projeto/RestAPI.png" height="50" width="50" alt="Rest API" />
-  <img src="https://raw.githubusercontent.com/lucasdevargassouza/code-easy-web/master/projeto/firebase.png" height="50" width="50" alt="Firebase" />
-  <img src="https://raw.githubusercontent.com/lucasdevargassouza/code-easy-web/master/projeto/typescript.png" height="50" width="50" alt="Typescript" />
+  <img src="https://raw.githubusercontent.com/lucasdevargassouza/code-easy-web/master/projeto/ReactJs.png" height="30" width="30" alt="React Js" />
+  <img src="https://raw.githubusercontent.com/lucasdevargassouza/code-easy-web/master/projeto/typescript.png" height="30" width="30" alt="Typescript" />
+  <img src="https://raw.githubusercontent.com/lucasdevargassouza/code-easy-web/master/projeto/nodejs.svg" height="30" width="30" alt="NodeJs" />
+  <img src="https://raw.githubusercontent.com/lucasdevargassouza/code-easy-web/master/projeto/firebase.png" height="30" width="30" alt="Firebase" />
 </p>
 
 ## License
