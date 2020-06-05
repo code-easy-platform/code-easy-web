@@ -987,6 +987,8 @@ export default class EditorTab extends React.Component {
 
     render() {
         const flowEditorItens = this.codeEditorGetItensLogica.bind(this)();
+        const treeManagerItens = this.treeManagerGetTree.bind(this)();
+
         return (
             <TwoColumnsResizable
                 aligment="right"
@@ -1050,16 +1052,18 @@ export default class EditorTab extends React.Component {
                                 <TreeManager
                                     isUseDrag={true}
                                     isUseDrop={true}
+                                    itens={treeManagerItens}
                                     onClick={this.treeManagerOnClick.bind(this)}
                                     onKeyDown={this.treeManagerKeyDowm.bind(this)}
-                                    onExpandNode={this.treeManagerOnNodeExpand.bind(this)}
+                                    emptyMessage={"Right click here to add features"}
                                     onDropItem={this.treeManagerOnDropItem.bind(this)}
+                                    onExpandNode={this.treeManagerOnNodeExpand.bind(this)}
                                     onDoubleClick={this.treeManagerOnDoubleClick.bind(this)}
+                                    showEmptyMessage={treeManagerItens[0].childs.length < 1}
                                     onContextMenu={(itemId, e) => {
                                         e.preventDefault();
                                         ContextMenuService.showMenu(e.clientX, e.clientY, this.treeManagerContextMenu.bind(this)(itemId));
                                     }}
-                                    itens={this.treeManagerGetTree.bind(this)()}
                                 />
                             }
                             bottom={
