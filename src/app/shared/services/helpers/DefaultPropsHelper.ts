@@ -27,7 +27,7 @@ class DefaultPropsService {
             case ItemType.ASSIGN:
                 return [
                     { id: Utils.getUUID(), name: 'Label', type: TypeValues.string, value: name, propertieType: PropertieTypes.label },
-                    { id: Utils.getUUID(), name: '', type: TypeValues.assign, value: '', propertieType: PropertieTypes.assigns },
+                    { id: Utils.getUUID(), name: '', type: TypeValues.assign, value: '', group: 'Assigments', propertieType: PropertieTypes.assigns },
                 ];
 
             case ItemType.COMMENT:

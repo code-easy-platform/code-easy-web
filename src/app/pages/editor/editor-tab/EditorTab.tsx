@@ -92,23 +92,24 @@ export default class EditorTab extends React.Component {
                 let indexItemFlow = treeItemEditing.itens.findIndex((oldItem: ItemFlowComplete) => oldItem.id === item.id);
                 if (indexItemFlow && (indexItemFlow < 0)) return;
 
-                // Pega a antiga action ID
-                const oldActionId = treeItemEditing.itens[indexItemFlow].properties.find(item_old => item_old.propertieType === PropertieTypes.action)?.value;
-
-                // Pega a nova action ID
-                const newActionId = item.properties.find(item_new => item_new.propertieType === PropertieTypes.action)?.value;
-
-                // Compara os dois IDs, se mudou apaga todos os parâmetro da action anterior.
-                if (oldActionId && oldActionId !== newActionId) {
-                    // Encontra o promeiro parametro e remove, depois encontra os outros e irá remover eté não restar mais parâmetros
-                    let indexToREmove = item.properties.findIndex(item_old => item_old.propertieType === PropertieTypes.param);
-                    while (indexToREmove >= 0) {
-                        item.properties.splice(indexToREmove, 1);
-                        indexToREmove = item.properties.findIndex(item_old => item_old.propertieType === PropertieTypes.param);
-                    }
-                }
 
                 if (treeItemEditing.itens[indexItemFlow].itemType === ItemType.ACTION) {
+
+                    // Pega a antiga action ID
+                    const oldActionId = treeItemEditing.itens[indexItemFlow].properties.find(item_old => item_old.propertieType === PropertieTypes.action)?.value;
+
+                    // Pega a nova action ID
+                    const newActionId = item.properties.find(item_new => item_new.propertieType === PropertieTypes.action)?.value;
+
+                    // Compara os dois IDs, se mudou apaga todos os parâmetro da action anterior.
+                    if (oldActionId && oldActionId !== newActionId) {
+                        // Encontra o promeiro parametro e remove, depois encontra os outros e irá remover eté não restar mais parâmetros
+                        let indexToREmove = item.properties.findIndex(item_old => item_old.propertieType === PropertieTypes.param);
+                        while (indexToREmove >= 0) {
+                            item.properties.splice(indexToREmove, 1);
+                            indexToREmove = item.properties.findIndex(item_old => item_old.propertieType === PropertieTypes.param);
+                        }
+                    }
 
                     const selectedActionId = item.properties.find(prop => prop.propertieType === PropertieTypes.action)?.value;
                     let actionSelected: ItemComponent | undefined;
@@ -132,8 +133,10 @@ export default class EditorTab extends React.Component {
                     });
 
                     treeItemEditing.itens[indexItemFlow].name = actionSelected ? actionSelected.name : item.name;
-                    treeItemEditing.itens[indexItemFlow].properties = item.properties;
+
+                } else if (treeItemEditing.itens[indexItemFlow].itemType === ItemType.ASSIGN) {
                 }
+                treeItemEditing.itens[indexItemFlow].properties = item.properties;
 
             }
             this.onChangeState();
@@ -163,7 +166,7 @@ export default class EditorTab extends React.Component {
             };
 
         } else if (currentFocus === CurrentFocus.flow) { // Mapeia os itens de fluxo
-            const itensLogica: ItemComponent[] = this.codeEditorGetItensLogica('ItemFlowComplete');
+            const itensLogica: ItemFlowComplete[] = this.codeEditorGetItensLogica('ItemFlowComplete');
             const itensFiltereds = itensLogica.filter(flowItem => flowItem.isSelected);
 
             const mappedItens: IItem[] = [];
@@ -191,6 +194,7 @@ export default class EditorTab extends React.Component {
                     })
                 });
 
+                // Adicionar sugestões nos assigns
                 filteredItem.properties.forEach(prop => {
                     if (prop.propertieType === PropertieTypes.action) {
 
@@ -254,9 +258,36 @@ export default class EditorTab extends React.Component {
 
                     }
                     if (prop.propertieType === PropertieTypes.assigns) {
-
+                        // Adicionar código aqui para mapear sugestões e mais no assing 
                     }
                 });
+
+                if (filteredItem.itemType === ItemType.ASSIGN) {
+                    let emptyAssigments = filteredItem.properties.filter(prop => (prop.name === '' && prop.value === ''));
+
+                    if (emptyAssigments.length === 0) {
+
+                        // Está adicionando itens nos assigments
+                        filteredItem.properties.push({
+                            name: '',
+                            value: '',
+                            id: Utils.getUUID(),
+                            group: 'Assigments',
+                            type: TypeValues.assign,
+                        });
+
+                    } else if (emptyAssigments.length > 1) {
+
+                        // Está removendo itens dos assigments
+                        emptyAssigments.forEach((empAssig, index) => {
+                            let indexToRemove = filteredItem.properties.findIndex(prop => prop.id === empAssig.id);
+                            if (index < (emptyAssigments.length - 1)) {
+                                filteredItem.properties.splice(indexToRemove, 1);
+                            }
+                        });
+
+                    }
+                }
 
                 mappedItens.push({
                     isHeader: true,
@@ -272,6 +303,7 @@ export default class EditorTab extends React.Component {
             } else {
                 return nullRes;
             }
+
         }
 
         return nullRes;
@@ -1003,15 +1035,15 @@ export default class EditorTab extends React.Component {
 
         return (
             <TwoColumnsResizable
-                aligment="right"
-                id="EditorTabCenter"
+                aligment={"right"}
+                id={"EditorTabCenter"}
                 left={
                     <>
                         <TwoRowsResizable
-                            id="TwoRowsResizableOutput"
+                            id={"TwoRowsResizableOutput"}
                             useMinMaxHeight={true}
-                            maxBottomHeight="99%"
-                            minBottomHeight="1%"
+                            maxBottomHeight={"99%"}
+                            minBottomHeight={"1%"}
                             top={
                                 <FlowEditor
                                     id={"CODE_EDITOR"}
@@ -1034,15 +1066,7 @@ export default class EditorTab extends React.Component {
                             }
                             bottom={
                                 <OutputPanel
-                                    problems={(() => {
-                                        const res = ProblemsHelper.getProblems(this.editorContext.project);
-
-                                        if (JSON.stringify(res.project) !== JSON.stringify(this.editorContext.project)) {
-                                            this.editorContext.updateProjectState(res.project);
-                                        }
-
-                                        return res.problems;
-                                    })()}
+                                    problems={ProblemsHelper.getProblems(this.editorContext.project).problems}
                                     output={OutputHelper.getOutput(this.editorContext.project)}
                                 />
                             }

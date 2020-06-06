@@ -61,7 +61,7 @@ export const ListItem: React.FC<ListItemProps> = ({ id, name, properties, isHead
                 {grups.map(group => {
                     return <div key={group} className="flex-column">
                         <hr className="hr hr-white margin-top-m " />
-                        <div className="padding-m padding-left-s"><b>{group}</b></div>
+                        <div className="padding-m padding-left-s">{group.toUpperCase()}</div>
                         <div className="flex-column">
                             {state.properties.filter(prop => prop.group === group).map((prop, index) => (
                                 <PropItem

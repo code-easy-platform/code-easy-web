@@ -12,6 +12,7 @@ import { CurrentTab } from '../../shared/enuns/CurrentTab';
 import PluginsTab from './plugins-tab/PluginsTab';
 import EditorTab from './editor-tab/EditorTab';
 import './Editor.css';
+import { ProblemsHelper } from '../../shared/services/helpers/ProblemsHelper';
 
 
 export class Editor extends React.Component<any> {
@@ -60,11 +61,15 @@ export class Editor extends React.Component<any> {
 
     /** Usada para atualizar o state global do projeto e para atualizar o localstorage */
     private updateProjectState(project: Project) {
+
+        // Valida o projeto e encontra os problemas
+        project = ProblemsHelper.getProblems(project).project;
+
+        // Salva a nova versão do projeto no local storage
         Storage.setProjectById(project);
 
-        this.setState({
-            project: project,
-        });
+        // Atualiza o state do projeto para refletir as alterações na tela
+        this.setState({ project: project });
     }
 
     render() {
