@@ -185,11 +185,11 @@
     /*-----------*/
 
     /** Sizes **/
-    --size-xs: var(--size-1);
-    --size-s: var(--size-2);
-    --size-m: var(--size-4);
-    --size-g: var(--size-6);
-    --size-xg: var(--size-8);
+    --size-xs: 4px;
+    --size-s: 8px;
+    --size-m: 16px;
+    --size-g: 24px;
+    --size-xg: 32px;
     /*-----------*/
 
     /** Margins **/

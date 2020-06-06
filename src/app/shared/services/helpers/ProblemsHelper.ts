@@ -55,50 +55,62 @@ class ProblemsHelperService {
                 }
 
                 item.itens.forEach(flowItem => {
+                    flowItem.hasError = false;
+
+                    // Se for diferente de END e COMMENT valida se tem sucessores
                     if ((flowItem.itemType !== ItemType.END && flowItem.itemType !== ItemType.COMMENT) && flowItem.sucessor.length === 0) {
                         addProblem(`In ${item.label} a flow item is missing a connector`, 'error');
+                        flowItem.hasError = true;
                     }
 
                     // Valida se action está com o campo action vazio.
                     if (flowItem.itemType === ItemType.ACTION) {
 
                         flowItem.properties.forEach(prop => {
-                            if (prop.name === "Action" && prop.value === "") {
+                            prop.valueHasError = false;
+
+                            if (prop.propertieType === PropertieTypes.action && prop.value === "") {
                                 addProblem(`In ${item.label} the flow item ${flowItem.name} must have a valid value in the ${prop.name} field.`, 'error');
+                                prop.valueHasError = true;
                             }
-                            if (prop.name === "Action" && prop.value !== "") {
+                            if (prop.propertieType === PropertieTypes.action && prop.value !== "") {
 
                                 const tabActions = project.tabs.find(tab => tab.configs.type === ComponentType.tabActions);
                                 if (!tabActions) return;
 
                                 if (!tabActions.itens.some(item => item.id === prop.value)) {
                                     addProblem(`In ${item.label} the flow item ${flowItem.name} must have a valid value in the ${prop.name} field.`, 'error');
+                                    prop.valueHasError = true;
                                 }
 
                             }
                         });
 
-                    }
+                    } else if (flowItem.itemType === ItemType.ASSIGN) {
 
-                    // Valida os assigns
-                    if (flowItem.itemType === ItemType.ASSIGN) {
+                        // Valida os assigns
                         flowItem.properties.forEach(prop => {
+                            prop.valueHasError = false;
+
                             if (prop.propertieType === PropertieTypes.assigns) {
 
                                 if ((prop.name !== '' && prop.value === '') || (prop.name === '' && prop.value !== '')) {
                                     addProblem(`In ${item.label} a ${flowItem.name} flow item have incorrect values`, 'error');
+                                    prop.valueHasError = true;
                                 }
 
                             }
                         });
-                    }
 
-                    // Valida os ends
-                    if (flowItem.itemType === ItemType.END) {
+                    } else if (flowItem.itemType === ItemType.END) {
+
+                        // Valida os ends
                         const index = item.itens.findIndex(item_flow => item_flow.sucessor.includes(flowItem.id || 'undefined'));
                         if (index === -1) {
                             addProblem(`In ${item.label} a ${flowItem.name} flow item is not used`, 'error');
+                            flowItem.hasError = true;
                         }
+
                     }
                 });
 
