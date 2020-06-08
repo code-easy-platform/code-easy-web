@@ -191,6 +191,9 @@ input[type="number"] {
 .overflow-scroll {
   overflow: scroll;
 }
+.overflow-contrast:hover::-webkit-scrollbar-thumb {
+  background-color: var(--color-scroll-bar-hover);
+}
 
 .outline-none {
   outline: var(--outline-none);
