@@ -5,12 +5,12 @@ import { IItem, IProperties, TypeValues } from '../interfaces';
 import { PropItem } from './PropItem';
 
 interface ListItemProps extends IItem { onChange(data: IItem): void; inputWidth: number; onChangeInputWidth(width: number): void; }
-export const ListItem: React.FC<ListItemProps> = ({ id, name, properties, isHeader, onChange, inputWidth, onChangeInputWidth }) => {
+export const ListItem: React.FC<ListItemProps> = ({ id, name, subname, properties, isHeader, onChange, inputWidth, onChangeInputWidth }) => {
 
-    const [state, setState] = useState<IItem>({ id, name, properties, isHeader });
+    const [state, setState] = useState<IItem>({ id, name, properties, isHeader, subname });
     useEffect(() => {
-        setState({ id, name, properties, isHeader });
-    }, [id, name, properties, isHeader]);
+        setState({ id, name, properties, isHeader, subname });
+    }, [id, name, subname, properties, isHeader]);
 
     const onChangeItemProp = (item: IProperties) => {
 
@@ -46,7 +46,10 @@ export const ListItem: React.FC<ListItemProps> = ({ id, name, properties, isHead
 
     return (
         <>
-            <div className="padding-m padding-left-s" style={{ backgroundColor: isHeader ? 'var(--main-background-bars)' : 'unset' }}>{state.name}</div>
+            <div className="padding-m padding-left-s flex-column font-size-m" style={{ backgroundColor: isHeader ? 'var(--main-background-bars)' : 'unset' }}>
+                <div>{state.name}</div>
+                <div className="font-size-s margin-top-s">{state.subname}</div>
+            </div>
             <div className="flex-column overflow-auto full-height list-items">
                 {state.properties.filter(prop => prop.group === undefined).map((prop, index) => (
                     <PropItem

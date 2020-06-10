@@ -23,6 +23,7 @@ export const Assign: React.FC<IAssign> = ({ id, name, value, suggestions, nameSu
         borderTopRightRadius: 0,
         borderTopLeftRadius: 0,
         paddingLeft: 30,
+        borderTop: 0,
     }
 
     return (

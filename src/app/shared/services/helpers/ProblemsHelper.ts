@@ -94,15 +94,16 @@ class ProblemsHelperService {
                                     const paramCurrent = toValidateTab.itens.find(tabItem => tabItem.id === prop.id);
                                     if (paramCurrent) {
                                         paramCurrent.properties.forEach(paramProp => {
-                                            if (paramProp.propertieType === PropertieTypes.required) {
+
+                                            if (paramProp.propertieType === PropertieTypes.required && (paramProp.value === true && prop.value === "")) {
 
                                                 // Adiciona o erro no painel de problemas
                                                 addProblem(`In ${item.label} the flow item ${flowItem.name} must be set a required "${prop.name}" param.`, 'error');
 
                                                 // Configura se o registro terá erro ou não
                                                 prop.valueHasError = (paramProp.value === true && prop.value === "");
-
                                             }
+
                                         });
                                     }
 
