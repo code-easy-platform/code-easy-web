@@ -11,7 +11,7 @@ import { ComponentType } from "../../enuns/ComponentType";
 class DefaultPropsService {
 
     /** Devolve uma lista de propriedades para ser adicionado em novos itens de fluxo ou da árvore. */
-    public getNewProps(itemType: ItemType | ComponentType, name: string): IProperties[] {
+    public getNewProps(itemType: ItemType | ComponentType, name: string, inARouter: boolean = false): IProperties[] {
         switch (itemType) {
             case ItemType.START:
                 return [
@@ -65,7 +65,7 @@ class DefaultPropsService {
                     { id: Utils.getUUID(), name: 'Description', type: TypeValues.bigstring, value: "", propertieType: PropertieTypes.description },
                     { id: Utils.getUUID(), name: 'Url', type: TypeValues.string, value: "/newroute", propertieType: PropertieTypes.url },
                     {
-                        id: Utils.getUUID(), name: 'Type', type: TypeValues.selection, value: MethodsApi.post, propertieType: PropertieTypes.type, suggestions: MethodsApiList.map(value => {
+                        id: Utils.getUUID(), name: 'Method http', type: TypeValues.selection, value: MethodsApi.post, propertieType: PropertieTypes.type, suggestions: MethodsApiList.map(value => {
                             return {
                                 name: value,
                                 value: value,
@@ -74,18 +74,7 @@ class DefaultPropsService {
                                 description: value,
                             };
                         })
-                    },
-                    {
-                        id: Utils.getUUID(), name: 'Parameters in', type: TypeValues.selection, value: ParametersLocation.body, propertieType: PropertieTypes.parametersIn, suggestions: ParametersLocationList.map(value => {
-                            return {
-                                name: value,
-                                value: value,
-                                label: value,
-                                disabled: false,
-                                description: value,
-                            };
-                        })
-                    },
+                    }
                 ];
 
             case ComponentType.globalAction:
@@ -106,6 +95,20 @@ class DefaultPropsService {
                 return [
                     { id: Utils.getUUID(), name: 'Label', value: name, type: TypeValues.string, propertieType: PropertieTypes.label },
                     { id: Utils.getUUID(), name: 'Description', type: TypeValues.bigstring, value: "", propertieType: PropertieTypes.description },
+                    ...(inARouter
+                        ? [{
+                            id: Utils.getUUID(), name: 'Parameter in', type: TypeValues.selection, value: ParametersLocation.body, propertieType: PropertieTypes.parametersIn, suggestions: ParametersLocationList.map(value => {
+                                return {
+                                    name: value,
+                                    value: value,
+                                    label: value,
+                                    disabled: false,
+                                    description: value,
+                                };
+                            })
+                        }]
+                        : []
+                    ),
                     { id: Utils.getUUID(), name: 'Required', type: TypeValues.boolean, value: true, propertieType: PropertieTypes.required },
                     {
                         id: Utils.getUUID(), name: 'Data type', type: TypeValues.selection, value: DataTypes.string, propertieType: PropertieTypes.dataType, suggestions: DataTypesList.map(value => {

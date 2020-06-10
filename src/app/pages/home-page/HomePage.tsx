@@ -101,7 +101,7 @@ export const HomePage = () => {
                         </div>
                     </div>
                     <hr className="hr" />
-                    <div className="flex1 padding-s padding-top-m flex-column">
+                    <div className="flex1 padding-s padding-top-m flex-column overflow-auto overflow-contrast">
                         <div>Recents</div>
                         <div className="flex1 padding-top-s padding-top-m flex-column">
                             {projects.sort((a, b) => Utils.compareDate(b.projectConfigs.updatedDate, a.projectConfigs.updatedDate)).map(card => {
