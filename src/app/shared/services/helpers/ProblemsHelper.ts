@@ -63,16 +63,18 @@ class ProblemsHelperService {
                         flowItem.hasError = true;
                     }
 
-                    // Valida se action está com o campo action vazio.
+                    // Valida as props da action
                     if (flowItem.itemType === ItemType.ACTION) {
 
                         flowItem.properties.forEach(prop => {
                             prop.valueHasError = false;
 
+                            // Valida se action está com o campo action vazio.
                             if (prop.propertieType === PropertieTypes.action && prop.value === "") {
                                 addProblem(`In ${item.label} the flow item ${flowItem.name} must have a valid value in the ${prop.name} field.`, 'error');
                                 prop.valueHasError = true;
                             }
+
                             if (prop.propertieType === PropertieTypes.action && prop.value !== "") {
 
                                 const tabActions = project.tabs.find(tab => tab.configs.type === ComponentType.tabActions);
@@ -84,6 +86,29 @@ class ProblemsHelperService {
                                 }
 
                             }
+
+                            if (prop.propertieType === PropertieTypes.param) {
+                                project.tabs.forEach(toValidateTab => {
+
+                                    // Pode ser usado o prop id para achar o parâmetro(componente de árvore) porque esse id é o mesmo usado na hroa de montar os parâmetros da action. 
+                                    const paramCurrent = toValidateTab.itens.find(tabItem => tabItem.id === prop.id);
+                                    if (paramCurrent) {
+                                        paramCurrent.properties.forEach(paramProp => {
+                                            if (paramProp.propertieType === PropertieTypes.required) {
+
+                                                // Adiciona o erro no painel de problemas
+                                                addProblem(`In ${item.label} the flow item ${flowItem.name} must be set a required "${prop.name}" param.`, 'error');
+
+                                                // Configura se o registro terá erro ou não
+                                                prop.valueHasError = (paramProp.value === true && prop.value === "");
+
+                                            }
+                                        });
+                                    }
+
+                                });
+                            }
+
                         });
 
                     } else if (flowItem.itemType === ItemType.ASSIGN) {

@@ -751,9 +751,10 @@ export default class EditorTab extends React.Component {
         // Se for undefined não faz nada
         if (!inputItemId) return;
 
-        // Pega a lista de itens corrente na árvore
         let indexTabToRemove: number | any;
         let indexItemToRemove: number | any;
+        
+        // Pega a lista de itens corrente na árvore
         this.editorContext.project.tabs.forEach((tab: Tab, indexTab) => {
             tab.itens.forEach((item, index) => {
                 if (item.id === inputItemId) {
@@ -764,7 +765,18 @@ export default class EditorTab extends React.Component {
         });
 
         if (indexItemToRemove !== undefined && indexItemToRemove !== undefined) {
-            this.editorContext.project.tabs[indexTabToRemove].itens.splice(indexItemToRemove, 1);
+
+            // Remove o item e retorna ele mesmo para que possa ser removido os seus dependentes
+            const deletedItem = this.editorContext.project.tabs[indexTabToRemove].itens.splice(indexItemToRemove, 1)[0];
+
+            // Busca para o caso de ter um dependente
+            let indexToRemove = this.editorContext.project.tabs[indexTabToRemove].itens.findIndex(item => item.itemPaiId === deletedItem.id);
+            while (indexToRemove > -1) {
+                //Remove o item dependente
+                this.editorContext.project.tabs[indexTabToRemove].itens.splice(indexToRemove, 1);
+                //Busca para o caso de ter outro item dependente
+                indexToRemove = this.editorContext.project.tabs[indexTabToRemove].itens.findIndex(item => item.itemPaiId === deletedItem.id);
+            }
         }
 
         this.onChangeState();
@@ -778,10 +790,12 @@ export default class EditorTab extends React.Component {
 
         const addParam = (inputItemId: string | undefined, paramType: ComponentType.inputVariable | ComponentType.localVariable | ComponentType.outputVariable) => {
             let tabIndex: number | undefined;
+            let itemPai: ItemComponent | undefined;
             this.editorContext.project.tabs.forEach((tab: Tab, indexTab) => {
                 tab.itens.forEach(item => {
                     if (item.id === inputItemId) {
-                        tabIndex = indexTab
+                        tabIndex = indexTab;
+                        itemPai = item;
                     }
                 });
             });
@@ -800,7 +814,7 @@ export default class EditorTab extends React.Component {
                     nodeExpanded: false,
                     itemPaiId: inputItemId,
                     name: Utils.getNormalizedString(newName),
-                    properties: DefaultPropsHelper.getNewProps(paramType, newName),
+                    properties: DefaultPropsHelper.getNewProps(paramType, newName, itemPai?.type === ComponentType.router),
                 }));
             }
 
@@ -825,7 +839,10 @@ export default class EditorTab extends React.Component {
                     const newName = Utils.newName('NewRouter', this.editorContext.project.tabs[tabIndex].itens.map(item => item.label));
 
                     this.editorContext.project.tabs[tabIndex].itens.push(new ItemComponent({
-                        itens: [],
+                        itens: [
+                            new ItemFlowComplete({ id: '1', name: "START", itemType: ItemType.START, left: 188, top: 128, isSelected: false, sucessor: ['2'], properties: DefaultPropsHelper.getNewProps(ItemType.START, "START") }),
+                            new ItemFlowComplete({ id: '2', name: "END", itemType: ItemType.END, left: 188, top: 384, isSelected: false, sucessor: [], properties: DefaultPropsHelper.getNewProps(ItemType.END, "END") })
+                        ],
                         label: newName,
                         isEditing: true,
                         description: '',
@@ -861,7 +878,6 @@ export default class EditorTab extends React.Component {
 
                     this.editorContext.project.tabs[tabIndex].itens.push(new ItemComponent({
                         id: Utils.getUUID(),
-                        itens: [],
                         label: newName,
                         description: '',
                         isEditing: true,
@@ -871,6 +887,10 @@ export default class EditorTab extends React.Component {
                         type: ComponentType.globalAction,
                         name: Utils.getNormalizedString(newName),
                         properties: DefaultPropsHelper.getNewProps(ComponentType.globalAction, newName),
+                        itens: [
+                            new ItemFlowComplete({ id: '1', name: "START", itemType: ItemType.START, left: 188, top: 128, isSelected: false, sucessor: ['2'], properties: DefaultPropsHelper.getNewProps(ItemType.START, "START") }),
+                            new ItemFlowComplete({ id: '2', name: "END", itemType: ItemType.END, left: 188, top: 384, isSelected: false, sucessor: [], properties: DefaultPropsHelper.getNewProps(ItemType.END, "END") })
+                        ],
                     }));
                 }
             }
