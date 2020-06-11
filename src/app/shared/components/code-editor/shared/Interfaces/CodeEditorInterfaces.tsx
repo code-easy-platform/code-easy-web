@@ -37,6 +37,9 @@ export interface ICodeEditorProps {
     /** Se "true" desabilita a área de seleção na tela. */
     enabledSelection?: boolean;
 
+    /** Ajustar à grade enquanto arrasta */
+    snapGridWhileDragging?: boolean;
+
     /** Function - Usada para emitir através do output o fluxo atualidado, acontece a cada mudança de estado dos itens de fluxo. */
     onChangeItens(itens: FlowItem[]): any;
 

@@ -1,10 +1,11 @@
-import React from 'react';
-import { useDrag } from 'react-dnd';
+import React, { useEffect } from 'react';
 import { IconFlowAction, IconFlowAssign, IconFlowComment, IconFlowEnd, IconFlowForeach, IconFlowIf, IconFlowStart, IconFlowSwitch } from 'code-easy-components';
+import { getEmptyImage } from 'react-dnd-html5-backend';
+import { useDrag } from 'react-dnd';
 
 import { ItemType } from '../../models/ItemFluxo';
 import { FlowComponent } from './FlowComponent';
-import { FlowComment } from './FlowComment';
+import { CustomDragLayer } from './CustomDragLayer';
 
 /** Usado para definir o tipo de input de parâmetros no item drag. */
 export interface ItemDragProps {
@@ -34,21 +35,30 @@ export interface ItemDragProps {
 
 /** Usado para representar os itens de lógica no fluxo do editor e na toolbar. */
 export const ItemToDrag: React.FC<ItemDragProps> = (props: ItemDragProps) => {
+
+    /** Armazena a posição onde o iten item do fluxo foi clicado. */
+    let cliquedLocationFlowItem = {
+        top: 0,
+        left: 0,
+    };
+
     const {
         isSelected, onContextMenu, hasError, onMouseUp,
         id, onChangePosition, onMouseDown, onMouseOver,
         width = 0, height = 0, top = 0, left = 0,
-        allowDrag, itemType, icon, onNameChange,
+        allowDrag, itemType, icon,
     } = props;
 
     let { title } = props;
 
-
     /** Permite que uym elemento seja arrastado e adicionado dentro do editor de fluxo. */
-    const [, dragRef] = useDrag({
+    const [{ isDragging }, dragRef, preview] = useDrag({
         item: { type: itemType || 'undefined', itemProps: { id, left, top, title, itemType, sucessor: [0] } },
         collect: monitor => ({ isDragging: monitor.isDragging() }),
     });
+
+    /** Faz com que o item que está sendo arrastado tenha um preview custumizado */
+    useEffect(() => { preview(getEmptyImage(), { captureDraggingState: true }) }, [preview]);
 
     /**
      * Ajuda a evitar que bugs aconteçam por estar uma fun declarada
@@ -65,18 +75,25 @@ export const ItemToDrag: React.FC<ItemDragProps> = (props: ItemDragProps) => {
     /** Quando um item estiver selecionado e for arrastado na tale esta fun vai fazer isso acontecer. */
     const mouseMove = (e: MouseEvent) => {
         e.stopPropagation();
-        const top = e.offsetY - ((height || 0) / 2);
-        const left = e.offsetX - ((width || 0) / 2);
+
+        const top = e.offsetY - cliquedLocationFlowItem.top;
+        const left = e.offsetX - cliquedLocationFlowItem.left;
 
         if (onChangePosition) {
             onChangePosition(top, left, e as any);
         }
+
     }
 
     /** Declara a fun no ref da svg para que o item atual possa ser arrastado na tela. */
     const mouseDown = (e: React.MouseEvent<SVGGElement, MouseEvent>) => {
         e.stopPropagation();
         if (onMouseDown) onMouseDown(e);
+
+        cliquedLocationFlowItem = {
+            top: e.nativeEvent.offsetY - top,
+            left: e.nativeEvent.offsetX - left,
+        };
 
         window.onmousemove = mouseMove;
         window.onmouseup = mouseUp;
@@ -90,6 +107,29 @@ export const ItemToDrag: React.FC<ItemDragProps> = (props: ItemDragProps) => {
         }
     }
 
+    const getIcon = (type: ItemType | undefined) => {
+        switch (type) {
+            case ItemType.COMMENT:
+                return IconFlowComment;
+            case ItemType.FOREACH:
+                return IconFlowForeach;
+            case ItemType.SWITCH:
+                return IconFlowSwitch;
+            case ItemType.ASSIGN:
+                return IconFlowAssign;
+            case ItemType.ACTION:
+                return IconFlowAction;
+            case ItemType.START:
+                return IconFlowStart;
+            case ItemType.END:
+                return IconFlowEnd;
+            case ItemType.IF:
+                return IconFlowIf;
+            default:
+                return;
+        }
+    };
+
     /** Com base se é permitido ou não usar o "drag and drop" ele reinderiza o item na tela. */
     if (allowDrag) {
         const style: React.CSSProperties = {
@@ -100,34 +140,14 @@ export const ItemToDrag: React.FC<ItemDragProps> = (props: ItemDragProps) => {
             fontSize: 10,
             width: 30,
         };
-
         return <>
-            {itemType === ItemType.COMMENT && <img id={id} className="toolbar-item" title="COMMENT" style={style} ref={dragRef} src={IconFlowComment} alt="COMMENT" />}
-            {itemType === ItemType.FOREACH && <img id={id} className="toolbar-item" title="FOREACH" style={style} ref={dragRef} src={IconFlowForeach} alt="FOREACH" />}
-            {itemType === ItemType.SWITCH && <img id={id} className="toolbar-item" title="SWITCH" style={style} ref={dragRef} src={IconFlowSwitch} alt="SWITCH" />}
-            {itemType === ItemType.ASSIGN && <img id={id} className="toolbar-item" title="ASSIGN" style={style} ref={dragRef} src={IconFlowAssign} alt="ASSIGN" />}
-            {itemType === ItemType.ACTION && <img id={id} className="toolbar-item" title="ACTION" style={style} ref={dragRef} src={IconFlowAction} alt="ACTION" />}
-            {itemType === ItemType.START && <img id={id} className="toolbar-item" title="START" style={style} ref={dragRef} src={IconFlowStart} alt="START" />}
-            {itemType === ItemType.END && <img id={id} className="toolbar-item" title="END" style={style} ref={dragRef} src={IconFlowEnd} alt="END" />}
-            {itemType === ItemType.IF && <img id={id} className="toolbar-item" title="IF" style={style} ref={dragRef} src={IconFlowIf} alt="IF" />}
+            <img ref={dragRef} id={id} className="toolbar-item" style={style} src={getIcon(itemType as any)} title={title} alt={title} />
+            {isDragging && <CustomDragLayer />}
         </>;
     } else {
 
         // Ajusta o tamanho do titulo para não ficar muito grande
         title = title.length < 10 ? title : title.slice(0, 15);
-
-        if (itemType === ItemType.COMMENT) {
-            return <g
-                id={id}
-                key={id}
-                onMouseUp={onMouseUp}
-                onMouseDown={mouseDown}
-                onMouseOver={onMouseOver}
-                onContextMenu={contextMenu}
-            >
-                <FlowComment id={id} top={top} left={left} width={width} height={height} isSelected={isSelected} childImage={IconFlowComment} onNameChange={onNameChange} name={title} />
-            </g>
-        }
 
         /** Reinderiza um tipo de tag svg na tela, somente dentro do editor de fluxo. */
         return (
@@ -140,13 +160,7 @@ export const ItemToDrag: React.FC<ItemDragProps> = (props: ItemDragProps) => {
                 onContextMenu={contextMenu}
             >
                 <text x={(left || 0) + ((width || 0) / 2)} textAnchor="middle" fill="var(--color-white)" y={(top || 0) - 5} id={id}>{title}</text>
-                {itemType === ItemType.ACTION && <FlowComponent id={id} top={top} left={left} width={width} height={height} isSelected={isSelected} hasError={hasError} icon={icon || IconFlowAction} />}
-                {itemType === ItemType.FOREACH && <FlowComponent id={id} top={top} left={left} width={width} height={height} isSelected={isSelected} hasError={hasError} icon={IconFlowForeach} />}
-                {itemType === ItemType.ASSIGN && <FlowComponent id={id} top={top} left={left} width={width} height={height} isSelected={isSelected} hasError={hasError} icon={IconFlowAssign} />}
-                {itemType === ItemType.SWITCH && <FlowComponent id={id} top={top} left={left} width={width} height={height} isSelected={isSelected} hasError={hasError} icon={IconFlowSwitch} />}
-                {itemType === ItemType.START && <FlowComponent id={id} top={top} left={left} width={width} height={height} isSelected={isSelected} hasError={hasError} icon={IconFlowStart} />}
-                {itemType === ItemType.END && <FlowComponent id={id} top={top} left={left} width={width} height={height} isSelected={isSelected} hasError={hasError} icon={IconFlowEnd} />}
-                {itemType === ItemType.IF && <FlowComponent id={id} top={top} left={left} width={width} height={height} isSelected={isSelected} hasError={hasError} icon={IconFlowIf} />}
+                <FlowComponent id={id} top={top} left={left} width={width} height={height} isSelected={isSelected} hasError={hasError} icon={icon || getIcon(itemType)} />
             </g>
         );
     }
