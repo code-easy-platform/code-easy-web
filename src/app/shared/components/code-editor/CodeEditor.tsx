@@ -36,7 +36,7 @@ export const FlowEditor: FC<ICodeEditorProps> = (props: ICodeEditorProps) => {
 let backupFlow: string = "";
 
 /** Editor do fluxo. */
-const CodeEditor: React.FC<ICodeEditorProps> = ({ id, itens = [], emptyMessage, toolItens = [], onChangeItens = () => { }, onMouseOver, backgroundType, showToolbar = false, onDropItem = () => undefined, allowedsInDrop = [], onContextMenu, onKeyDown, breadcrumbs, enabledSelection = true }) => {
+const CodeEditor: React.FC<ICodeEditorProps> = ({ id, itens = [], emptyMessage, snapGridWhileDragging = true, toolItens = [], onChangeItens = () => { }, onMouseOver, backgroundType, showToolbar = false, onDropItem = () => undefined, allowedsInDrop = [], onContextMenu, onKeyDown, breadcrumbs, enabledSelection = true }) => {
 
     /** Referencia o svg onde está todos os itens de fluxo. */
     const editorPanelRef = useRef<any>(null);
@@ -71,8 +71,6 @@ const CodeEditor: React.FC<ICodeEditorProps> = ({ id, itens = [], emptyMessage, 
         const targetOffsetX: number = ((draggedOffSet.x) + (targetSize.left - targetSize.left - targetSize.left) - 25);
 
         let newItem = new FlowItem({
-            height: item.itemProps.itemType === ItemType.COMMENT ? 100 : 50,
-            width: item.itemProps.itemType === ItemType.COMMENT ? 200 : 50,
             id: Utils.getUUID().toString(),
             itemType: item.itemProps.itemType,
             name: item.itemProps.title,
@@ -112,20 +110,27 @@ const CodeEditor: React.FC<ICodeEditorProps> = ({ id, itens = [], emptyMessage, 
      */
     const onChangePositionItens = (mousePositionTop: number, mousePositionLeft: number, e?: any) => {
 
-        let components = flowItens.list.filter((item: FlowItem) => item.isSelected);
+        if (snapGridWhileDragging) {
+            mousePositionTop = Math.round(mousePositionTop / 15) * 15;
+            mousePositionLeft = Math.round(mousePositionLeft / 15) * 15;
+        }
+
+        let components = flowItens.list.filter((item: FlowItem) => item.isSelected).sort((a, b) => ((a.top + b.top) - (a.left + b.left)));
+
 
         if (e && e.ctrlKey) {
+
             components.forEach(comp => {
+
                 const oldTop = comp.top;
                 const oldLeft = comp.left;
-                const distanceTop = oldTop - mousePositionTop;
-                const distanceLeft = oldLeft - mousePositionLeft;
 
-                comp.top = (oldTop + (mousePositionTop - oldTop) - distanceTop);
-                comp.left = (oldLeft + (mousePositionLeft - oldLeft) - distanceLeft);
+                comp.top = mousePositionTop + (mousePositionTop > oldTop ? mousePositionTop - oldTop : oldTop - mousePositionTop);
+                comp.left = mousePositionLeft + (mousePositionLeft > oldLeft ? mousePositionLeft - oldLeft : oldLeft - mousePositionLeft);
+
             });
-        }
-        else {
+
+        } else {
             components.forEach(comp => {
                 const oldLeft = comp.left;
                 const oldTop = comp.top;
@@ -395,7 +400,7 @@ const CodeEditor: React.FC<ICodeEditorProps> = ({ id, itens = [], emptyMessage, 
         <div className="full-width" onMouseOver={(e: any) => onMouseOver && onMouseOver(e)}>
             <InputCopy ref={inputCopyRef} />
             <Toolbar itensLogica={toolItens} isShow={((toolItens.length > 0) && showToolbar)} />
-            <main key={id} className='overflow-auto flex1 display-flex'>
+            <main key={id} className='overflow-auto flex1'>
                 <BreandCamps breadcrumbs={breadcrumbs} />
                 <EditorPanel
                     id={`${id}_SVG`}
@@ -461,6 +466,7 @@ const CodeEditor: React.FC<ICodeEditorProps> = ({ id, itens = [], emptyMessage, 
                             onMouseDown={(e: any) => onMouseDown(e)}
                             onChangePosition={onChangePositionItens}
                             onMouseUp={(e: any) => onChangeFlow()}
+                            parentElementRef={editorPanelRef}
                             title={item.name}
                             key={item.id}
                             {...item}
