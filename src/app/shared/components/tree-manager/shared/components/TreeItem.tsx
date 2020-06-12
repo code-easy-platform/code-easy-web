@@ -1,12 +1,11 @@
-import React, { FC, useRef } from 'react';
-import { useDrag, useDrop, DropTargetMonitor, DragPreviewImage } from 'react-dnd';
+import React, { FC, useRef, useEffect } from 'react';
+import { useDrag, useDrop, DropTargetMonitor } from 'react-dnd';
+import { getEmptyImage } from 'react-dnd-html5-backend';
+import { IconExpandedFolder, IconCollapsedFolder } from 'code-easy-components';
 
-import img_tree_item_preview from './TreeItemPreview.svg';
 import { TreeInterface } from '../models/TreeInterface';
+import { CustomDragLayer } from './CustomDragLayer';
 import { Icon } from './icon/icon';
-
-import icon_collepsed from './../../shared/icons/icon-collapsed.png';
-import icon_expanded from './../../shared/icons/icon-expanded.png';
 
 
 interface ItemTreeProps {
@@ -67,6 +66,10 @@ export const TreeItem: FC<ItemTreeProps> = ({ itemTree, paddingLeft, onExpandNod
     });
     dragRef(itemRef); /** Agrupa as referências do drop com as da ref. */
 
+    /** Faz com que o item que está sendo arrastado tenha um preview custumizado */
+    useEffect(() => { preview(getEmptyImage(), { captureDraggingState: true }) }, [preview]);
+
+
     /** Usado para que seja possível o drop de itens no editor. */
     const [{ isDraggingOver }, dropRef] = useDrop({
         accept: itemTree?.canDropList || [],
@@ -90,7 +93,19 @@ export const TreeItem: FC<ItemTreeProps> = ({ itemTree, paddingLeft, onExpandNod
             onDoubleClick={isDisabled ? undefined : (e => { onDoubleClick && onDoubleClick(itemTree.id, itemTree, e) })}
             className={`tree-item outline-none${(!isDisabled) ? '' : ' disabled'}${isDisabled ? '' : (itemTree.isEditing ? ' editing' : '')}${isDisabled ? '' : (itemTree.isSelected ? ' selected' : '')}`}
         >
-            <DragPreviewImage connect={preview} src={img_tree_item_preview} />
+            {isDragging &&
+                // Usada para mostrar o preview com titulo do item que está sendo arrastado
+                <CustomDragLayer>
+                    <Icon
+                        icon={icon}
+                        iconSize={iconSize}
+                        show={icon !== undefined}
+                        iconName={itemTree.label}
+                        onClick={(useCustomIconToExpand && isAllowedToggleNodeExpand) ? ((e: any) => onExpandNode(itemTree.id, e)) : undefined}
+                    />
+                    {itemTree.label}
+                </CustomDragLayer>
+            }
             <div
                 key={itemTree.id}
                 style={{ padding: icon !== undefined ? undefined : 5, paddingLeft: `${paddingLeft + (itemTree.childs.length === 0 ? 25 : 0)}px`, color: hasError ? 'var(--main-error-color)' : '' }}
@@ -99,15 +114,15 @@ export const TreeItem: FC<ItemTreeProps> = ({ itemTree, paddingLeft, onExpandNod
                 <Icon
                     iconSize={15}
                     show={(itemTree.childs.length > 0) && showExpandIcon}
-                    icon={itemTree.nodeExpanded ? icon_expanded : icon_collepsed}
+                    icon={itemTree.nodeExpanded ? IconCollapsedFolder : IconExpandedFolder}
                     iconName={itemTree.nodeExpanded ? "btn-collapse-folder" : "btn-expand-folder"}
                     onClick={isAllowedToggleNodeExpand ? ((e: any) => onExpandNode(itemTree.id, e)) : undefined}
                 />
                 <Icon
                     icon={icon}
-                    iconName="Aux icon"
                     iconSize={iconSize}
                     show={icon !== undefined}
+                    iconName={itemTree.label}
                     onClick={(useCustomIconToExpand && isAllowedToggleNodeExpand) ? ((e: any) => onExpandNode(itemTree.id, e)) : undefined}
                 />
                 {itemTree.label}
