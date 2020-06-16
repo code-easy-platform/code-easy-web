@@ -721,8 +721,9 @@ export default class EditorTab extends React.Component {
                 tree.childs.push({
                     childs: [],
                     id: item.id,
-                    type: item.type,
+                    iconSize: 15,
                     canDropList: [],
+                    type: item.type,
                     label: item.label,
                     isEditing: item.isEditing,
                     isSelected: item.isSelected,
@@ -747,11 +748,11 @@ export default class EditorTab extends React.Component {
             return item.itemPaiId === undefined
         }).forEach(item => {
             const icon: any = item.properties.find(prop => prop.propertieType === PropertieTypes.icon);
-            console.log(icon);
 
             tree.push({
                 childs: [],
                 id: item.id,
+                iconSize: 15,
                 type: item.type,
                 label: item.label,
                 isEditing: item.isEditing,
@@ -769,18 +770,21 @@ export default class EditorTab extends React.Component {
             itemTree.childs = loadChilds(itemTree);
         });
 
-        return [{
-            childs: tree,
-            id: undefined,
-            isSelected: false,
-            nodeExpanded: true,
-            isDisabledDrag: true,
-            showExpandIcon: false,
-            isDisabledSelect: true,
-            type: ComponentType.grouper,
-            icon: AssetsService.getIcon(ComponentType.grouper),
-            label: this.editorContext.project.tabs.find(item => item.configs.isEditing)?.configs.label || '',
-        }];
+        return [
+            {
+                childs: tree,
+                iconSize: 15,
+                id: undefined,
+                isSelected: false,
+                nodeExpanded: true,
+                isDisabledDrag: true,
+                showExpandIcon: false,
+                isDisabledSelect: true,
+                type: ComponentType.grouper,
+                icon: AssetsService.getIcon(ComponentType.grouper),
+                label: this.editorContext.project.tabs.find(item => item.configs.isEditing)?.configs.label || '',
+            }
+        ];
     }
 
     /** Remove itens da árvore */
@@ -1092,7 +1096,7 @@ export default class EditorTab extends React.Component {
         return options;
     }
 
-    private treeManagerKeyDowm(e: React.FocusEvent<HTMLDivElement> | any) {
+    private treeManagerOnKeyDowm(e: React.FocusEvent<HTMLDivElement> | any) {
         if (e.key === 'Delete') {
             let itens: ItemComponent[] = [];
             this.editorContext.project.tabs.forEach((tab: Tab) => {
@@ -1174,7 +1178,7 @@ export default class EditorTab extends React.Component {
                                     isUseDrop={true}
                                     itens={treeManagerItens}
                                     onClick={this.treeManagerOnClick.bind(this)}
-                                    onKeyDown={this.treeManagerKeyDowm.bind(this)}
+                                    onKeyDown={this.treeManagerOnKeyDowm.bind(this)}
                                     emptyMessage={"Right click here to add features"}
                                     onDropItem={this.treeManagerOnDropItem.bind(this)}
                                     onExpandNode={this.treeManagerOnNodeExpand.bind(this)}

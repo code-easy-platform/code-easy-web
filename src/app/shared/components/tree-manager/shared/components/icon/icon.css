@@ -1,11 +1,11 @@
 .default {
-  background-size: var(--size-3) var(--size-3);
-  padding-right: var(--size-1-5);
-  padding-left: var(--size-1-5);
   background-repeat: no-repeat;
   background-position: center;
+  background-size: 12px 12px;
   justify-content: center;
-  height: var(--size-3);
-  width: var(--size-3);
   align-self: center;
+  padding-right: 6px;
+  padding-left: 6px;
+  height: 12px;
+  width: 12px;
 }

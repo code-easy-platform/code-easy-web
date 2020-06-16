@@ -18,8 +18,12 @@ interface ItemTreeProps {
     onExpandNode(itemTreeId: string | undefined, event: React.MouseEvent<HTMLDivElement, MouseEvent>): void | undefined;
     onContextMenu?(itemTreeId: string | undefined, e: React.MouseEvent<HTMLDivElement, MouseEvent>): void | undefined;
     onDoubleClick?(itemTreeId: string | undefined, item: TreeInterface, e: React.MouseEvent<HTMLDivElement, MouseEvent>): void | undefined;
+    style: {
+        activeItemBackgroundColor?: string,
+        hasErrorItemBackgroundColor?: string,
+    }
 }
-export const TreeItem: FC<ItemTreeProps> = ({ itemTree, paddingLeft, onExpandNode, onContextMenu, onDoubleClick, onDropItem, isUseDrag, isUseDrop, onClick }) => {
+export const TreeItem: FC<ItemTreeProps> = ({ itemTree, paddingLeft, style, onExpandNode, onContextMenu, onDoubleClick, onDropItem, isUseDrag, isUseDrop, onClick }) => {
 
     const {
         icon,
@@ -79,7 +83,7 @@ export const TreeItem: FC<ItemTreeProps> = ({ itemTree, paddingLeft, onExpandNod
     });
     dropRef(itemRef); /** Agrupa as referências do drop com as da ref. */
 
-    return (
+    return (<>
         <div
             tabIndex={0}
             ref={itemRef}
@@ -91,25 +95,12 @@ export const TreeItem: FC<ItemTreeProps> = ({ itemTree, paddingLeft, onExpandNod
             onFocus={isDisabled ? undefined : ((e: any) => onClick(itemTree.id, e))}
             onClick={isDisabled ? undefined : ((e: any) => onClick(itemTree.id, e))}
             onDoubleClick={isDisabled ? undefined : (e => { onDoubleClick && onDoubleClick(itemTree.id, itemTree, e) })}
-            className={`tree-item outline-none${(!isDisabled) ? '' : ' disabled'}${isDisabled ? '' : (itemTree.isEditing ? ' editing' : '')}${isDisabled ? '' : (itemTree.isSelected ? ' selected' : '')}`}
+            className={`tree-item${(!isDisabled) ? '' : ' disabled'}${isDisabled ? '' : (itemTree.isEditing ? ' editing' : '')}${isDisabled ? '' : (itemTree.isSelected ? ' selected' : '')}`}
         >
-            {isDragging &&
-                // Usada para mostrar o preview com titulo do item que está sendo arrastado
-                <CustomDragLayer>
-                    <Icon
-                        icon={icon}
-                        iconSize={iconSize}
-                        show={icon !== undefined}
-                        iconName={itemTree.label}
-                        onClick={(useCustomIconToExpand && isAllowedToggleNodeExpand) ? ((e: any) => onExpandNode(itemTree.id, e)) : undefined}
-                    />
-                    {itemTree.label}
-                </CustomDragLayer>
-            }
             <div
                 key={itemTree.id}
-                style={{ padding: icon !== undefined ? undefined : 5, paddingLeft: `${paddingLeft + (itemTree.childs.length === 0 ? 25 : 0)}px`, color: hasError ? 'var(--main-error-color)' : '' }}
-                className={`flex-itens-center item${isDragging ? ' dragging' : ''}${(isDraggingOver && isUseDrop && !isDisabledDrop) ? ' dragging-over' : ''}`}
+                style={{ padding: icon !== undefined ? undefined : 5, paddingLeft: `${paddingLeft + (itemTree.childs.length === 0 ? 25 : 0)}px`, color: hasError ? style.hasErrorItemBackgroundColor : '' }}
+                className={`item${isDragging ? ' dragging' : ''}${(isDraggingOver && isUseDrop && !isDisabledDrop) ? ' dragging-over' : ''}`}
             >
                 <Icon
                     iconSize={15}
@@ -120,7 +111,7 @@ export const TreeItem: FC<ItemTreeProps> = ({ itemTree, paddingLeft, onExpandNod
                 />
                 <Icon
                     icon={icon}
-                    iconSize={iconSize}
+                    iconSize={iconSize+5}
                     show={icon !== undefined}
                     iconName={itemTree.label}
                     onClick={(useCustomIconToExpand && isAllowedToggleNodeExpand) ? ((e: any) => onExpandNode(itemTree.id, e)) : undefined}
@@ -128,5 +119,18 @@ export const TreeItem: FC<ItemTreeProps> = ({ itemTree, paddingLeft, onExpandNod
                 {itemTree.label}
             </div>
         </div>
-    );
+        {isDragging &&
+            // Usada para mostrar o preview com titulo do item que está sendo arrastado
+            <CustomDragLayer>
+                <Icon
+                    icon={icon}
+                    iconSize={iconSize}
+                    show={icon !== undefined}
+                    iconName={itemTree.label}
+                    onClick={(useCustomIconToExpand && isAllowedToggleNodeExpand) ? ((e: any) => onExpandNode(itemTree.id, e)) : undefined}
+                />
+                {itemTree.label}
+            </CustomDragLayer>
+        }
+    </>);
 }

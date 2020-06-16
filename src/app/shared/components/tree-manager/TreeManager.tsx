@@ -19,8 +19,13 @@ interface TreeManagerProps {
     onClick?(itemTreeId: string, item: TreeInterface, e: React.MouseEvent<HTMLDivElement, MouseEvent>): void | undefined;
     onExpandNode?(itemTreeId: string, item: TreeInterface, e: React.MouseEvent<HTMLDivElement, MouseEvent>): void | undefined;
     onDoubleClick?(itemTreeId: string, item: TreeInterface, e: React.MouseEvent<HTMLDivElement, MouseEvent>): void | undefined;
+    style?: {
+        editingItemBackgroundColor?: string,
+        activeItemBackgroundColor?: string,
+        hasErrorItemBackgroundColor?: string,
+    }
 }
-export const TreeManager: FC<TreeManagerProps> = ({ itens, emptyMessage, showEmptyMessage, onClick, onFocus, onKeyDown, onContextMenu, onDoubleClick, onExpandNode = () => { }, onDropItem = () => { }, isUseDrag = false, isUseDrop = false }) => {
+export const TreeManager: FC<TreeManagerProps> = ({ itens, emptyMessage, style, showEmptyMessage, onClick, onFocus, onKeyDown, onContextMenu, onDoubleClick, onExpandNode = () => { }, onDropItem = () => { }, isUseDrag = false, isUseDrop = false }) => {
 
     const [clickedId, setClickedId] = useState("");
     useEffect(() => {
@@ -39,6 +44,23 @@ export const TreeManager: FC<TreeManagerProps> = ({ itens, emptyMessage, showEmp
 
     }
 
+    // Estilização padrão
+    if (style) {
+        if (!style.hasErrorItemBackgroundColor) style.hasErrorItemBackgroundColor = '#ff0000';
+        if (!style.activeItemBackgroundColor) style.activeItemBackgroundColor = '#1f724340';
+        if (!style.editingItemBackgroundColor) style.editingItemBackgroundColor = '#1f724320';
+
+        document.documentElement.style.setProperty('--selected-item-color', `${style.activeItemBackgroundColor}`);
+        document.documentElement.style.setProperty('--editing-item-color', `${style.editingItemBackgroundColor}`);
+
+    } else {
+        style = {
+            hasErrorItemBackgroundColor: '#ff0000',
+            activeItemBackgroundColor: '#1f724340',
+            editingItemBackgroundColor: '#1f724320',
+        }
+    }
+
     return (
         <DndProvider backend={HTML5Backend}>
             <div
@@ -54,6 +76,7 @@ export const TreeManager: FC<TreeManagerProps> = ({ itens, emptyMessage, showEmp
                             item={item}
                             paddingLeft={5}
                             onClick={click}
+                            style={style as any}
                             isUseDrag={isUseDrag}
                             isUseDrop={isUseDrop}
                             onDropItem={onDropItem}
@@ -64,8 +87,8 @@ export const TreeManager: FC<TreeManagerProps> = ({ itens, emptyMessage, showEmp
                         />
                     ))
                 }
-                <div onContextMenu={e => onContextMenu && onContextMenu(undefined, e)} className="flex1" style={{ paddingBottom: showEmptyMessage ? undefined : 100 }}>
-                    {((emptyMessage && itens.length === 0) || showEmptyMessage) && <div className="flex1 flex-itens-center opacity-3 padding-horizontal-g flex-content-center">{emptyMessage}</div>}
+                <div onContextMenu={e => onContextMenu && onContextMenu(undefined, e)} className="empty-message" style={{ paddingBottom: showEmptyMessage ? undefined : 100 }}>
+                    {((emptyMessage && itens.length === 0) || showEmptyMessage) && <div className="message">{emptyMessage}</div>}
                 </div>
             </div>
         </DndProvider>
