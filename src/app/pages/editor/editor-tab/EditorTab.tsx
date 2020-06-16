@@ -56,8 +56,8 @@ export default class EditorTab extends React.Component {
                         if (itemTree.isSelected && itemTree.id === item.id) {
 
                             // Este block garante que se a label de uma routa muda o seu path será alterado junto.
-                            if (itemTree.type === ComponentType.router) {
-                                const newLabel = item.properties.find(prop => prop.propertieType === PropertieTypes.label)
+                            if (itemTree.type === ComponentType.routerConsume || itemTree.type === ComponentType.routerExpose) {
+                                const newLabel = item.properties.find(prop => prop.propertieType === PropertieTypes.label);
                                 item.properties.forEach(prop => {
                                     if (prop.propertieType === PropertieTypes.url) {
                                         prop.value = `/${Utils.getNormalizedString(newLabel ? newLabel.value : prop.value).toLowerCase()}`;
@@ -66,14 +66,23 @@ export default class EditorTab extends React.Component {
                             }
 
                             if (itemTree) {
-                                itemTree.label = item.properties[0].value;
-                                itemTree.description = item.properties[1].value;
-                                itemTree.name = Utils.getNormalizedString(item.properties[0].value);
+                                const nameProp = item.properties.find(prop => prop.propertieType === PropertieTypes.name);
+                                const labelProp = item.properties.find(prop => prop.propertieType === PropertieTypes.label);
+                                const descriptionProp = item.properties.find(prop => prop.propertieType === PropertieTypes.description);
+
+                                if (labelProp) itemTree.label = labelProp.value;
+                                if (descriptionProp) itemTree.description = descriptionProp.value;
+                                if (nameProp) itemTree.name = Utils.getNormalizedString(nameProp.value);
+
+                                // Atualizas as props
+                                itemTree.properties = item.properties;
+
                             }
 
                         }
                     });
                 });
+                this.onChangeState();
             }
 
         } else if (this.state.currentFocus === CurrentFocus.flow) {
@@ -139,6 +148,7 @@ export default class EditorTab extends React.Component {
                 treeItemEditing.itens[indexItemFlow].properties = item.properties;
 
             }
+
             this.onChangeState();
         }
     }
@@ -271,8 +281,8 @@ export default class EditorTab extends React.Component {
                         filteredItem.properties.push({
                             name: '',
                             value: '',
-                            id: Utils.getUUID(),
                             group: 'Assigments',
+                            id: Utils.getUUID(),
                             type: TypeValues.assign,
                         });
 
@@ -342,6 +352,7 @@ export default class EditorTab extends React.Component {
                                     width: updatedItem.width,
                                     left: updatedItem.left,
                                     name: updatedItem.name,
+                                    icon: updatedItem.icon,
                                     top: updatedItem.top,
                                     id: updatedItem.id,
                                 }));
@@ -383,6 +394,25 @@ export default class EditorTab extends React.Component {
 
         if (newItem.itemType.toString() === ComponentType.globalAction.toString() || newItem.itemType.toString() === ComponentType.localAction.toString()) {
             newItem.itemType = ItemType.ACTION;
+
+            //TODO: Não está chegando o old id corretamente
+
+            // Pega as antigas propriedades do item dropado para adicionar na atual
+            /* this.editorContext.project.tabs.forEach((tab: Tab) => {
+                tab.itens.forEach(item => {
+                    if (item.isEditing) {
+
+
+                        const oldItem = item.itens.find(flowItem => flowItem.id === oldItemId);
+                        if (oldItem) {
+
+                            newItem.icon = oldItem.icon;
+
+                        }
+                    }
+                });
+            }); */
+
         } else if (
             newItem.itemType.toString() === ComponentType.outputVariable.toString() ||
             newItem.itemType.toString() === ComponentType.inputVariable.toString() ||
@@ -415,6 +445,9 @@ export default class EditorTab extends React.Component {
             // Se for o simples para o editor de fluxos, faz um map dos itens.
             let flowItens: FlowItem[] = [];
             itemEditing.itens.forEach(item => {
+
+                const icon = item.properties.find(prop => prop.propertieType === PropertieTypes.icon);
+
                 flowItens.push(new FlowItem({
                     id: item.id,
                     top: item.top,
@@ -424,6 +457,7 @@ export default class EditorTab extends React.Component {
                     height: item.height,
                     sucessor: item.sucessor,
                     itemType: item.itemType,
+                    icon: icon?.value?.content,
                     isSelected: item.isSelected,
                     hasError: item.properties.some(prop => (prop.valueHasError || prop.nameHasError)),
                 }));
@@ -649,8 +683,8 @@ export default class EditorTab extends React.Component {
         this.editorContext.project.tabs.forEach((tab: Tab) => {
             tab.itens.forEach(item => {
 
-                /** Valida para que seja editado somente se for actions ou routers */
-                if (item.type === ComponentType.globalAction || item.type === ComponentType.localAction || item.type === ComponentType.router) {
+                /** Valida para que seja editado somente se for actions ou rotas expostas */
+                if (item.type === ComponentType.globalAction || item.type === ComponentType.localAction || item.type === ComponentType.routerExpose) {
                     if (item.id === itemTreeId) {
                         item.isEditing = true;
                     } else {
@@ -680,7 +714,9 @@ export default class EditorTab extends React.Component {
 
             // Busca todos os itens que tem como pai o elemento corrente
             itens.filter((item) => item.itemPaiId === tree.id).forEach(item => {
-                // const icon:any = item.properties.forEach(prop => prop.propertieType === PropertieTypes.icon)
+                const icon: any = item.properties.find(prop => prop.propertieType === PropertieTypes.icon);
+
+                console.log(icon)
 
                 tree.childs.push({
                     childs: [],
@@ -692,7 +728,7 @@ export default class EditorTab extends React.Component {
                     isSelected: item.isSelected,
                     description: item.description,
                     nodeExpanded: item.nodeExpanded,
-                    icon: /* icon.content ||  */AssetsService.getIcon(item.type),
+                    icon: icon?.value?.content || AssetsService.getIcon(item.type),
                     hasError: item.itens.some(itemFlow => itemFlow.properties.some(prop => (prop.valueHasError || prop.nameHasError))),
                 });
             });
@@ -710,6 +746,9 @@ export default class EditorTab extends React.Component {
         itens.filter(item => {
             return item.itemPaiId === undefined
         }).forEach(item => {
+            const icon: any = item.properties.find(prop => prop.propertieType === PropertieTypes.icon);
+            console.log(icon);
+
             tree.push({
                 childs: [],
                 id: item.id,
@@ -719,7 +758,7 @@ export default class EditorTab extends React.Component {
                 isSelected: item.isSelected,
                 description: item.description,
                 nodeExpanded: item.nodeExpanded,
-                icon: AssetsService.getIcon(item.type),
+                icon: icon?.value?.content || AssetsService.getIcon(item.type),
                 canDropList: [ComponentType.inputVariable, ComponentType.localVariable, ComponentType.outputVariable],
                 hasError: item.itens.some(itemFlow => itemFlow.properties.some(prop => (prop.valueHasError || prop.nameHasError))),
             });
@@ -753,7 +792,7 @@ export default class EditorTab extends React.Component {
 
         let indexTabToRemove: number | any;
         let indexItemToRemove: number | any;
-        
+
         // Pega a lista de itens corrente na árvore
         this.editorContext.project.tabs.forEach((tab: Tab, indexTab) => {
             tab.itens.forEach((item, index) => {
@@ -814,14 +853,14 @@ export default class EditorTab extends React.Component {
                     nodeExpanded: false,
                     itemPaiId: inputItemId,
                     name: Utils.getNormalizedString(newName),
-                    properties: DefaultPropsHelper.getNewProps(paramType, newName, itemPai?.type === ComponentType.router),
+                    properties: DefaultPropsHelper.getNewProps(paramType, newName, (itemPai?.type === ComponentType.routerConsume || itemPai?.type === ComponentType.routerExpose)),
                 }));
             }
 
             this.onChangeState();
         }
 
-        const addRoute = (inputItemId: string | undefined) => {
+        const addRoute = (inputItemId: string | undefined, routerType: ComponentType.routerConsume | ComponentType.routerExpose) => {
             if (inputItemId === undefined) {
                 let tabIndex: number | undefined;
                 this.editorContext.project.tabs.forEach((tab: Tab, indexTab) => {
@@ -839,20 +878,24 @@ export default class EditorTab extends React.Component {
                     const newName = Utils.newName('NewRouter', this.editorContext.project.tabs[tabIndex].itens.map(item => item.label));
 
                     this.editorContext.project.tabs[tabIndex].itens.push(new ItemComponent({
-                        itens: [
-                            new ItemFlowComplete({ id: '1', name: "START", itemType: ItemType.START, left: 188, top: 128, isSelected: false, sucessor: ['2'], properties: DefaultPropsHelper.getNewProps(ItemType.START, "START") }),
-                            new ItemFlowComplete({ id: '2', name: "END", itemType: ItemType.END, left: 188, top: 384, isSelected: false, sucessor: [], properties: DefaultPropsHelper.getNewProps(ItemType.END, "END") })
-                        ],
+                        itens: (
+                            routerType === ComponentType.routerExpose
+                                ? [
+                                    new ItemFlowComplete({ id: '1', name: "START", itemType: ItemType.START, left: 188, top: 128, isSelected: false, sucessor: ['2'], properties: DefaultPropsHelper.getNewProps(ItemType.START, "START") }),
+                                    new ItemFlowComplete({ id: '2', name: "END", itemType: ItemType.END, left: 188, top: 384, isSelected: false, sucessor: [], properties: DefaultPropsHelper.getNewProps(ItemType.END, "END") })
+                                ]
+                                : []
+                        ),
                         label: newName,
-                        isEditing: true,
                         description: '',
+                        type: routerType,
                         isSelected: true,
                         nodeExpanded: true,
                         id: Utils.getUUID(),
                         itemPaiId: inputItemId,
-                        type: ComponentType.router,
                         name: Utils.getNormalizedString(newName),
-                        properties: DefaultPropsHelper.getNewProps(ComponentType.router, newName),
+                        isEditing: routerType === ComponentType.routerExpose,
+                        properties: DefaultPropsHelper.getNewProps(routerType, newName),
                     }));
                 }
             }
@@ -902,10 +945,17 @@ export default class EditorTab extends React.Component {
                 if (tab.configs.type === ComponentType.tabRoutes) {
 
                     options.push({
-                        icon: AssetsService.getIcon(ComponentType.router),
-                        action: () => addRoute(itemId),
+                        icon: AssetsService.getIcon(ComponentType.routerExpose),
+                        action: () => addRoute(itemId, ComponentType.routerExpose),
                         disabled: itemId !== undefined,
-                        label: 'Add new route'
+                        label: 'Expose a new router'
+                    });
+
+                    options.push({
+                        icon: AssetsService.getIcon(ComponentType.routerConsume),
+                        action: () => addRoute(itemId, ComponentType.routerConsume),
+                        disabled: itemId !== undefined,
+                        label: 'Consume a new router'
                     });
 
                 } else if (tab.configs.type === ComponentType.tabActions) {
@@ -976,7 +1026,7 @@ export default class EditorTab extends React.Component {
                                 });
                                 break;
 
-                            case ComponentType.router:
+                            case ComponentType.routerExpose:
                                 options.push({
                                     action: () => { },
                                     label: '-',
@@ -999,6 +1049,20 @@ export default class EditorTab extends React.Component {
                                     icon: AssetsService.getIcon(ComponentType.localVariable),
                                     disabled: itemId === undefined,
                                     label: 'Add local variable'
+                                });
+                                break;
+
+                            case ComponentType.routerConsume:
+                                options.push({
+                                    action: () => { },
+                                    label: '-',
+                                });
+
+                                options.push({
+                                    action: () => addParam(itemId, ComponentType.inputVariable),
+                                    icon: AssetsService.getIcon(ComponentType.inputVariable),
+                                    disabled: itemId === undefined,
+                                    label: 'Add input param'
                                 });
                                 break;
 

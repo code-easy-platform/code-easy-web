@@ -136,10 +136,12 @@ export class ItemFlowComplete extends FlowItem {
     public itemType: ItemType = ItemType.START;
     public properties: IProperties[] = [];
     public isSelected: boolean = false;
+    public hasError: boolean = false;
     public sucessor: string[] = [];
     public id: string | undefined;
-    public select = () => { };
+    public icon: any = undefined;
     public height: number = 50;
+    public select = () => { };
     public width: number = 50;
     public name: string = "";
     public left: number = 0;
@@ -152,14 +154,17 @@ export class ItemFlowComplete extends FlowItem {
             isSelected: boolean,
             sucessor: string[],
             itemType: ItemType,
+            hasError?: boolean,
             height?: number,
             width?: number,
             name: string,
             left: number,
             top: number,
+            icon?: any,
         },
     ) {
         super(props);
+        this.hasError = props.hasError || false;
         this.isSelected = props.isSelected;
         this.properties = props.properties;
         this.height = props.height || 50;
@@ -167,6 +172,7 @@ export class ItemFlowComplete extends FlowItem {
         this.sucessor = props.sucessor;
         this.itemType = props.itemType;
         this.name = props.name;
+        this.icon = props.icon;
         this.left = props.left;
         this.top = props.top;
         this.id = props.id;

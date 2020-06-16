@@ -12,10 +12,10 @@
   <img src="https://raw.githubusercontent.com/lucasdevargassouza/code-easy-web/master/projeto/RestAPI.png" height="50" width="50" alt="Rest API" />
 </p>
 
-![GitHub](https://raw.githubusercontent.com/lucasdevargassouza/code-easy-web/master/projeto/mit.svg)
-<br>
-
 # Code easy
+
+![GitHub](https://raw.githubusercontent.com/lucasdevargassouza/code-easy-web/master/projeto/mit.svg)
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/98c22045d3924f2fbf045b5da3ef7efa)](https://app.codacy.com/gh/code-easy-platform/code-easy-web?utm_source=github.com&utm_medium=referral&utm_content=code-easy-platform/code-easy-web&utm_campaign=Badge_Grade_Dashboard)
 
 Code easy platform is a web platform for developing APIs in nodejs that helps you develop your entire backend much faster than the traditional way.
 

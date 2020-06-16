@@ -11,7 +11,7 @@
   },
   "dependencies": {
     "@types/dateformat": "^3.0.1",
-    "code-easy-components": "^0.0.12",
+    "code-easy-components": "^0.0.13",
     "cross-env": "^7.0.2",
     "dateformat": "^3.0.3",
     "immutability-helper": "^3.0.1",

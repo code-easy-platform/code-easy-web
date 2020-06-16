@@ -46,7 +46,11 @@ export enum ComponentType {
     */
     tabDates = "Data tab",
     /**
-     * Tipa um item que será considerado uma rota de API
+     * Tipa um item que será considerado um metodo que consome API
+     */
+    routerConsume = "Router consume",
+    /**
+     * Tipa um item que será considerado um metodo que expõem um metodo de API
      * */
-    router = "Router",
+    routerExpose = "Router expose",
 }

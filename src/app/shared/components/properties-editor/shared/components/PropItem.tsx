@@ -211,6 +211,25 @@ export const PropItem: React.FC<PropItemProps> = (props) => { // Extende outra i
                 </div>
             );
 
+        case TypeValues.fullBigString:
+            return (
+                <div ref={containerWidth} key={'prop_item_key_' + state.id} style={css_prop_item} className="padding-s padding-bottom-none">
+                    <textarea
+                        className="full-width background-bars"
+                        style={{ ...css_prop_item_input, height: '100px', resize: 'vertical' }}
+                        onChange={e => setState({ ...state, value: e.target.value })}
+                        disabled={state.editValueDisabled}
+                        onKeyDown={(e) => onkeyPress(e)}
+                        onBlur={_ => onChange(state)}
+                        key={'prop_key_' + state.id}
+                        id={'prop_id_' + state.id}
+                        placeholder={state.name}
+                        autoComplete={'off'}
+                        value={state.value}
+                    />
+                </div>
+            );
+
         case TypeValues.number:
             return (
                 <div ref={containerWidth} key={'prop_item_key_' + state.id} style={css_prop_item} className="padding-s padding-bottom-none">
@@ -376,7 +395,7 @@ export const PropItem: React.FC<PropItemProps> = (props) => { // Extende outra i
                         htmlFor={'prop_id_' + state.id}
                         className="flex1 "
                         style={css_prop_item_label}
-                       
+
                     >
                         {state.name}
                         {(state.information !== "" && state.information !== undefined) && <img ref={infoIconRef} className="margin-left-xs" width={10} height={10} src={IconMoreInfo} alt="info-icon" />}

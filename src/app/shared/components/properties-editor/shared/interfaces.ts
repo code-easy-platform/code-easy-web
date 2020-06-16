@@ -1,6 +1,7 @@
 
 export enum TypeValues {
     yesNoSelection = 'yesNoSelection',
+    fullBigString = 'fullBigString',
     expression = 'expression',
     bigstring = 'bigstring',
     selection = 'selection',
@@ -34,7 +35,7 @@ export interface IProperties {
     propertieType?: any;
     type: TypeValues;
     group?: string;
-    name: string;
+    name?: string;
     value: any;
 }
 
