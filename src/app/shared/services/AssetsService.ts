@@ -1,7 +1,7 @@
 import {
-    IconRouter, IconAction, IconInputParam, IconLocalParam, IconFolder, IconOutpuParam,
+    IconAction, IconInputParam, IconLocalParam, IconFolder, IconOutpuParam,
     IconFlowAction, IconFlowAssign, IconFlowComment, IconFlowEnd, IconFlowForeach,
-    IconFlowIf, IconFlowStart, IconFlowSwitch
+    IconFlowIf, IconFlowStart, IconFlowSwitch, IconRouterConsume, IconRouterExpose
 } from 'code-easy-components';
 
 import { ItemType } from "../components/code-editor/models/ItemFluxo";
@@ -35,8 +35,11 @@ class Assets {
             case ItemType.SWITCH:
                 return IconFlowSwitch;
 
-            case ComponentType.router:
-                return IconRouter;
+            case ComponentType.routerConsume:
+                return IconRouterConsume;
+
+            case ComponentType.routerExpose:
+                return IconRouterExpose;
 
             case ComponentType.globalAction:
                 return IconAction;

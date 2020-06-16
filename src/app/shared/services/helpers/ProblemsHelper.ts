@@ -48,7 +48,7 @@ class ProblemsHelperService {
                     addProblem(`In ${item.label} must have only start flow item`, 'error');
                 }
 
-                if (item.type === ComponentType.globalAction || item.type === ComponentType.localAction || item.type === ComponentType.router) {
+                if (item.type === ComponentType.globalAction || item.type === ComponentType.localAction || item.type === ComponentType.routerConsume) {
                     if (!(item.itens.some(comp => comp.itemType === ItemType.START) && item.itens.some(comp => comp.itemType === ItemType.END))) {
                         addProblem(`A ${item.type} must be have a "start" and an "end" item in "${item.label}"`, 'error');
                     }

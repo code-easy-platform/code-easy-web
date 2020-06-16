@@ -58,7 +58,7 @@ class DefaultPropsService {
                     { id: Utils.getUUID(), name: 'Label', type: TypeValues.viewOnly, value: name, propertieType: PropertieTypes.label },
                 ];
 
-            case ComponentType.router:
+            case ComponentType.routerExpose:
                 return [
                     { id: Utils.getUUID(), name: 'Label', value: name, type: TypeValues.string, propertieType: PropertieTypes.label },
                     { id: Utils.getUUID(), name: 'Description', type: TypeValues.bigstring, value: "", propertieType: PropertieTypes.description },
@@ -74,6 +74,24 @@ class DefaultPropsService {
                             };
                         })
                     }
+                ];
+
+            case ComponentType.routerConsume:
+                return [
+                    { id: Utils.getUUID(), name: 'Label', value: name, type: TypeValues.string, propertieType: PropertieTypes.label },
+                    { id: Utils.getUUID(), name: 'Description', type: TypeValues.bigstring, value: "", propertieType: PropertieTypes.description },
+                    {
+                        id: Utils.getUUID(), name: 'Method http', type: TypeValues.selection, value: MethodsApi.post, propertieType: PropertieTypes.type, suggestions: MethodsApiList.map(value => {
+                            return {
+                                name: value,
+                                value: value,
+                                label: value,
+                                disabled: false,
+                                description: value,
+                            };
+                        })
+                    },
+                    { id: Utils.getUUID(), name: 'Url', type: TypeValues.string, value: "https://www.yourdomain.com/api/v1/hello", propertieType: PropertieTypes.url },
                 ];
 
             case ComponentType.globalAction:
