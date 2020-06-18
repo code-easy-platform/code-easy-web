@@ -1,5 +1,5 @@
-import React from 'react'
-import { XYCoord, useDragLayer } from 'react-dnd';
+import React from 'react';
+import { useDragLayer, XYCoord } from 'react-dnd';
 
 export const CustomDragLayer: React.FC = ({ children }) => {
 
@@ -22,14 +22,14 @@ export const CustomDragLayer: React.FC = ({ children }) => {
             borderRadius: 50,
             alignItems: 'center',            
             height: 'min-content',
-            backgroundColor: 'var(--color-primary)',
+            backgroundColor: 'var(--selected-item-color)',
             transform: `translate(${currentOffset.x}px, ${currentOffset.y}px)`,
             WebkitTransform: `translate(${currentOffset.x}px, ${currentOffset.y}px)`,
         };
     };
 
     return (
-        <div style={{ pointerEvents: 'none', position: 'fixed', height: '100%', zIndex: 10000, width: '100%', left: 0, top: 0 }}>
+        <div style={{ pointerEvents: 'none', position: 'fixed', zIndex: 10000, left: 0, top: 0 }}>
             <div style={getItemStyles(initialOffset, currentOffset)}>
                 {children}
             </div>

@@ -172,6 +172,7 @@ export default class EditorTab extends React.Component {
                 id: res.id,
                 isHeader: true,
                 name: res.label,
+                subname: res.type,
                 properties: res.properties,
             };
 
@@ -303,6 +304,7 @@ export default class EditorTab extends React.Component {
                     isHeader: true,
                     id: filteredItem.id,
                     name: filteredItem.name,
+                    subname: filteredItem.itemType,
                     properties: [...filteredItem.properties, ...paramsProps], // Adiciona os parâmetros da action selecionada como props
                 });
 
@@ -710,6 +712,24 @@ export default class EditorTab extends React.Component {
             }
         });
 
+        const cannotPerformDoubleClick = (type: ComponentType) => {
+            switch (type) {
+                case ComponentType.inputVariable:
+                    return true;
+                case ComponentType.grouper:
+                    return true;
+                case ComponentType.localVariable:
+                    return true;
+                case ComponentType.outputVariable:
+                    return true;
+                case ComponentType.routerConsume:
+                    return true;
+
+                default:
+                    return false;
+            }
+        }
+
         const loadChilds = (tree: TreeInterface): TreeInterface[] => {
 
             // Busca todos os itens que tem como pai o elemento corrente
@@ -721,13 +741,15 @@ export default class EditorTab extends React.Component {
                 tree.childs.push({
                     childs: [],
                     id: item.id,
-                    type: item.type,
+                    iconSize: 15,
                     canDropList: [],
+                    type: item.type,
                     label: item.label,
                     isEditing: item.isEditing,
                     isSelected: item.isSelected,
                     description: item.description,
                     nodeExpanded: item.nodeExpanded,
+                    isDisabledDoubleClick: cannotPerformDoubleClick(item.type),
                     icon: icon?.value?.content || AssetsService.getIcon(item.type),
                     hasError: item.itens.some(itemFlow => itemFlow.properties.some(prop => (prop.valueHasError || prop.nameHasError))),
                 });
@@ -747,17 +769,18 @@ export default class EditorTab extends React.Component {
             return item.itemPaiId === undefined
         }).forEach(item => {
             const icon: any = item.properties.find(prop => prop.propertieType === PropertieTypes.icon);
-            console.log(icon);
 
             tree.push({
                 childs: [],
                 id: item.id,
+                iconSize: 15,
                 type: item.type,
                 label: item.label,
                 isEditing: item.isEditing,
                 isSelected: item.isSelected,
                 description: item.description,
                 nodeExpanded: item.nodeExpanded,
+                isDisabledDoubleClick: cannotPerformDoubleClick(item.type),
                 icon: icon?.value?.content || AssetsService.getIcon(item.type),
                 canDropList: [ComponentType.inputVariable, ComponentType.localVariable, ComponentType.outputVariable],
                 hasError: item.itens.some(itemFlow => itemFlow.properties.some(prop => (prop.valueHasError || prop.nameHasError))),
@@ -769,18 +792,21 @@ export default class EditorTab extends React.Component {
             itemTree.childs = loadChilds(itemTree);
         });
 
-        return [{
-            childs: tree,
-            id: undefined,
-            isSelected: false,
-            nodeExpanded: true,
-            isDisabledDrag: true,
-            showExpandIcon: false,
-            isDisabledSelect: true,
-            type: ComponentType.grouper,
-            icon: AssetsService.getIcon(ComponentType.grouper),
-            label: this.editorContext.project.tabs.find(item => item.configs.isEditing)?.configs.label || '',
-        }];
+        return [
+            {
+                childs: tree,
+                iconSize: 15,
+                id: undefined,
+                isSelected: false,
+                nodeExpanded: true,
+                isDisabledDrag: true,
+                showExpandIcon: false,
+                isDisabledSelect: true,
+                type: ComponentType.grouper,
+                icon: AssetsService.getIcon(ComponentType.grouper),
+                label: this.editorContext.project.tabs.find(item => item.configs.isEditing)?.configs.label || '',
+            }
+        ];
     }
 
     /** Remove itens da árvore */
@@ -867,11 +893,13 @@ export default class EditorTab extends React.Component {
                     if (tab.configs.isEditing) {
                         tabIndex = indexTab;
                     }
-                    // Garante não existirá duas tabs sendo editadas ao mesmo tempo.
-                    tab.itens.forEach(item => {
-                        item.isEditing = false;
-                        item.isSelected = false;
-                    });
+                    if (routerType === ComponentType.routerExpose) {
+                        // Garante não existirá duas tabs sendo editadas ao mesmo tempo.
+                        tab.itens.forEach(item => {
+                            item.isEditing = false;
+                            item.isSelected = false;
+                        });
+                    }
                 });
 
                 if (tabIndex !== undefined) {
@@ -1092,7 +1120,7 @@ export default class EditorTab extends React.Component {
         return options;
     }
 
-    private treeManagerKeyDowm(e: React.FocusEvent<HTMLDivElement> | any) {
+    private treeManagerOnKeyDowm(e: React.FocusEvent<HTMLDivElement> | any) {
         if (e.key === 'Delete') {
             let itens: ItemComponent[] = [];
             this.editorContext.project.tabs.forEach((tab: Tab) => {
@@ -1172,9 +1200,9 @@ export default class EditorTab extends React.Component {
                                 <TreeManager
                                     isUseDrag={true}
                                     isUseDrop={true}
-                                    itens={treeManagerItens}
+                                    items={treeManagerItens}
                                     onClick={this.treeManagerOnClick.bind(this)}
-                                    onKeyDown={this.treeManagerKeyDowm.bind(this)}
+                                    onKeyDown={this.treeManagerOnKeyDowm.bind(this)}
                                     emptyMessage={"Right click here to add features"}
                                     onDropItem={this.treeManagerOnDropItem.bind(this)}
                                     onExpandNode={this.treeManagerOnNodeExpand.bind(this)}

@@ -13,8 +13,12 @@ interface TreeProps {
     onClick(itemTreeId: string | undefined, item: TreeInterface, e: React.MouseEvent<HTMLDivElement, MouseEvent>): void | undefined;
     onExpandNode?(itemTreeId: string | undefined, item: TreeInterface, e: React.MouseEvent<HTMLDivElement, MouseEvent>): void | undefined;
     onDoubleClick?(itemTreeId: string | undefined, item: TreeInterface, e: React.MouseEvent<HTMLDivElement, MouseEvent>): void | undefined;
+    style: {
+        activeItemBackgroundColor?: string,
+        hasErrorItemBackgroundColor?: string,
+    }
 }
-export const Tree: FC<TreeProps> = ({ item, paddingLeft = 0, onClick, onContextMenu, onDoubleClick, onExpandNode, onDropItem, itemIdSelected, isUseDrag, isUseDrop }) => {
+export const Tree: FC<TreeProps> = ({ item, paddingLeft = 0, onClick, style, onContextMenu, onDoubleClick, onExpandNode, onDropItem, itemIdSelected, isUseDrag, isUseDrop }) => {
 
     const [state, setState] = useState<TreeInterface>(item);
 
@@ -34,6 +38,7 @@ export const Tree: FC<TreeProps> = ({ item, paddingLeft = 0, onClick, onContextM
 
     return (<>
         <TreeItem
+            style={style}
             itemTree={state}
             onDropItem={onDrop}
             isUseDrag={isUseDrag}
@@ -55,6 +60,7 @@ export const Tree: FC<TreeProps> = ({ item, paddingLeft = 0, onClick, onContextM
                 return (<Tree
                     key={index}
                     item={item}
+                    style={style}
                     onClick={onClick}
                     isUseDrag={isUseDrag}
                     isUseDrop={isUseDrop}

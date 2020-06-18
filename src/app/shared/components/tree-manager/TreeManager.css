@@ -1,34 +1,92 @@
+:root {
+  --selected-item-color: #1f724340;
+  --editing-item-color: #1f724320;
+}
+
+/* Estiliza a base da árvore*/
 .tree-base {
   flex-direction: column;
   overflow: auto;
   flex: 1;
 }
 .tree-base:focus {
-  outline: thin solid var(--color-background-col-click);
+  outline: none;
 }
-
+.tree-base::-webkit-scrollbar {
+  width: 10px;
+}
+.tree-base::-webkit-scrollbar-thumb {
+  background-color: #ffffff10;
+}
 .tree-base:hover::-webkit-scrollbar-thumb {
-  background-color: var(--color-scroll-bar-hover);
+  background-color: #ffffff40;
+}
+.tree-base::-webkit-scrollbar-thumb:hover {
+  background-color: #ffffff50;
+}
+.tree-base::-webkit-scrollbar-thumb:active {
+  background-color: #ffffff70;
+}
+.tree-base::-webkit-scrollbar-corner {
+  background-color: transparent;
 }
 
+/* Estiliza a linha gerada para cada item renderizado */
 .tree-item {
-  outline: var(--outline-none);
-  width: var(--size-fill);
   min-width: max-content;
   height: min-content;
   cursor: pointer;
+  outline: none;
+  width: 100%;
 }
-
-.item {
-  padding-right: 10px;
-}
-
 .tree-item:focus {
-  background-color: #3c3c3c3b;
+  background-color: #ffffff05;
+  outline: none;
 }
 .tree-item:hover {
-  background-color: #3c3c3c3b;
+  background-color: #ffffff05;
 }
 .tree-item:active {
-  background-color: var(--color-background-col-click);
+  background-color: #ffffff10;
+}
+.tree-item.disabled {
+  background-color: unset;
+  opacity: 0.5;
+}
+.tree-item.disabled:hover {
+  background-color: unset;
+  opacity: 0.5;
+}
+.tree-item.selected {
+  background-color: var(--selected-item-color);
+}
+.tree-item.editing {
+  background-color: var(--editing-item-color);
+}
+/* Estiliza o item renderizado */
+.item {
+  align-items: center;
+  padding-right: 10px;
+}
+.item.dragging {
+  border-radius: 50px;
+  width: fit-content;
+}
+.item.dragging-over {
+  background-color: #ffffff10;
+  border-radius: 50px;
+  width: fit-content;
+}
+
+/* Estiliza a mensagem vazia */
+.empty-message {
+  flex: 1;
+}
+.empty-message .message {
+  justify-content: center;
+  align-items: center;
+  padding-right: 4px;
+  padding-left: 4px;
+  opacity: 0.3;
+  flex: 1;
 }

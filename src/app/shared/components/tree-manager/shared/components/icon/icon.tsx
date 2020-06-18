@@ -16,18 +16,20 @@ interface IconProps {
     onClick?(e: React.MouseEvent<HTMLImageElement, MouseEvent>): void;
     onDoubleClick?(e: React.MouseEvent<HTMLImageElement, MouseEvent>): void;
 }
-export const Icon: React.FC<IconProps> = ({ onClick, onDoubleClick, icon, iconName, show, iconSize = 25 }) => (
-    (show !== undefined)
-        ? (show !== false)
-            ? <img
-                src={icon}
-                width={iconSize}
-                height={iconSize}
-                onClick={onClick}
-                className="margin-xs"
-                alt={"TreeItem" + iconName}
-                onDoubleClick={onDoubleClick}
-            />
-            : <></>
-        : <></>
-);
+export const Icon: React.FC<IconProps> = ({ onClick, onDoubleClick, icon, iconName, show, iconSize = 25 }) => {
+
+    if (show === undefined) return null;
+    if (show === false) return null;
+
+    return (
+        <img
+            src={icon}
+            width={iconSize}
+            height={iconSize}
+            onClick={onClick}
+            alt={"TreeItem" + iconName}
+            onDoubleClick={onDoubleClick}
+            style={{ margin: 4, marginRight: 10 }}
+        />
+    );
+}

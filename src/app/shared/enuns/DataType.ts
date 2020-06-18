@@ -7,7 +7,7 @@ export enum DataTypes {
     list = "List",
     void = "Void",
     any = "Any",
-}
+};
 
 export const DataTypesList: DataTypes[] = [
     DataTypes.boolean,
@@ -17,4 +17,4 @@ export const DataTypesList: DataTypes[] = [
     DataTypes.void,
     DataTypes.list,
     DataTypes.any,
-]
+];

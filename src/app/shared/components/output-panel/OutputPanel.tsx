@@ -25,7 +25,7 @@ export const OutputPanel: React.FC<OutputPanelProps> = ({ notification, output, 
         <div className="flex1 background-panels flex-column">
             <div className="background-bars">
                 <TabGroup className="flex-justfy-start">
-                    <TabButton onClick={() => setCurrtab(OutputTab.problems)} isSelected={currTab === OutputTab.problems} id="problems" content="Problems" style={{ height: 'var(--size-xs)' }} />
+                    <TabButton id="problems" onClick={() => setCurrtab(OutputTab.problems)} isSelected={currTab === OutputTab.problems} content={"Problems"} style={{ height: 'var(--size-xs)' }} />
                     <TabButton onClick={() => setCurrtab(OutputTab.output)} isSelected={currTab === OutputTab.output} id="output" content="Output" style={{ height: 'var(--size-xs)' }} />
                     <TabButton onClick={() => setCurrtab(OutputTab.notifications)} isSelected={currTab === OutputTab.notifications} id="notifications" content="Notifications" style={{ height: 'var(--size-xs)' }} />
                     <div className="full-width" />
@@ -39,7 +39,7 @@ export const OutputPanel: React.FC<OutputPanelProps> = ({ notification, output, 
                     <TreeManager
                         onContextMenu={() => { }}
                         onDoubleClick={() => { }}
-                        itens={problems || []}
+                        items={problems || []}
                         onClick={() => { }}
                     />
                 </>}
@@ -47,13 +47,13 @@ export const OutputPanel: React.FC<OutputPanelProps> = ({ notification, output, 
                     <TreeManager
                         onContextMenu={() => { }}
                         onDoubleClick={() => { }}
-                        itens={output || []}
+                        items={output || []}
                         onClick={() => { }}
                     />
                 </>}
                 {currTab === OutputTab.notifications && <>
                     <TreeManager
-                        itens={notification || [{
+                        items={notification || [{
                             label: "No notifications have been detected",
                             isDisabledSelect: true,
                             nodeExpanded: false,
