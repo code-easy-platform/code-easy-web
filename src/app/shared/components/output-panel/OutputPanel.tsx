@@ -39,7 +39,7 @@ export const OutputPanel: React.FC<OutputPanelProps> = ({ notification, output, 
                     <TreeManager
                         onContextMenu={() => { }}
                         onDoubleClick={() => { }}
-                        itens={problems || []}
+                        items={problems || []}
                         onClick={() => { }}
                     />
                 </>}
@@ -47,13 +47,13 @@ export const OutputPanel: React.FC<OutputPanelProps> = ({ notification, output, 
                     <TreeManager
                         onContextMenu={() => { }}
                         onDoubleClick={() => { }}
-                        itens={output || []}
+                        items={output || []}
                         onClick={() => { }}
                     />
                 </>}
                 {currTab === OutputTab.notifications && <>
                     <TreeManager
-                        itens={notification || [{
+                        items={notification || [{
                             label: "No notifications have been detected",
                             isDisabledSelect: true,
                             nodeExpanded: false,

@@ -2,30 +2,11 @@ import React, { FC, useState, useEffect } from 'react';
 import { DndProvider } from 'react-dnd';
 import HTML5Backend from 'react-dnd-html5-backend';
 
-import { TreeInterface } from './shared/models/TreeInterface';
+import { TreeInterface, TreeManagerProps } from './shared/models';
 import { Tree } from './shared/components/Tree';
 import './TreeManager.css';
 
-interface TreeManagerProps {
-    isUseDrop?: boolean;
-    isUseDrag?: boolean;
-    emptyMessage?: string;
-    itens: TreeInterface[];
-    showEmptyMessage?: boolean;
-    onFocus?(e: React.FocusEvent<HTMLDivElement>): void;
-    onKeyDown?(e: React.FocusEvent<HTMLDivElement>): void;
-    onDropItem?(targetItemId: string, dropppedItemId: string, droppedItemProps: any): void;
-    onContextMenu?(itemTreeId: string | undefined, e: React.MouseEvent<HTMLDivElement, MouseEvent>): void | undefined;
-    onClick?(itemTreeId: string, item: TreeInterface, e: React.MouseEvent<HTMLDivElement, MouseEvent>): void | undefined;
-    onExpandNode?(itemTreeId: string, item: TreeInterface, e: React.MouseEvent<HTMLDivElement, MouseEvent>): void | undefined;
-    onDoubleClick?(itemTreeId: string, item: TreeInterface, e: React.MouseEvent<HTMLDivElement, MouseEvent>): void | undefined;
-    style?: {
-        editingItemBackgroundColor?: string,
-        activeItemBackgroundColor?: string,
-        hasErrorItemBackgroundColor?: string,
-    }
-}
-export const TreeManager: FC<TreeManagerProps> = ({ itens, emptyMessage, style, showEmptyMessage, onClick, onFocus, onKeyDown, onContextMenu, onDoubleClick, onExpandNode = () => { }, onDropItem = () => { }, isUseDrag = false, isUseDrop = false }) => {
+export const TreeManager: FC<TreeManagerProps> = ({ items, emptyMessage, style, showEmptyMessage, onClick, onFocus, onKeyDown, onContextMenu, onDoubleClick, onExpandNode = () => { }, onDropItem = () => { }, isUseDrag = false, isUseDrop = false }) => {
 
     const [clickedId, setClickedId] = useState("");
     useEffect(() => {
@@ -38,8 +19,16 @@ export const TreeManager: FC<TreeManagerProps> = ({ itens, emptyMessage, style, 
             setClickedId(id);
         }
 
-        if (!item.isDisabled) {
+        if (!item.isDisabled && !item.isDisabledClick) {
             onClick && onClick(id, item, e);
+        }
+
+    }
+
+    const doubleclick = (id: string, item: TreeInterface, e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
+
+        if (!item.isDisabled && !item.isDisabledDoubleClick) {
+            onDoubleClick && onDoubleClick(id, item, e);
         }
 
     }
@@ -69,8 +58,8 @@ export const TreeManager: FC<TreeManagerProps> = ({ itens, emptyMessage, style, 
                 className="tree-base"
                 onKeyDown={(e: any) => onKeyDown && onKeyDown(e)}
             >
-                {itens.length > 0 &&
-                    itens.map((item, index) => (
+                {items.length > 0 &&
+                    items.map((item, index) => (
                         <Tree
                             key={index}
                             item={item}
@@ -82,13 +71,13 @@ export const TreeManager: FC<TreeManagerProps> = ({ itens, emptyMessage, style, 
                             onDropItem={onDropItem}
                             itemIdSelected={clickedId}
                             onExpandNode={onExpandNode}
+                            onDoubleClick={doubleclick}
                             onContextMenu={onContextMenu}
-                            onDoubleClick={onDoubleClick}
                         />
                     ))
                 }
                 <div onContextMenu={e => onContextMenu && onContextMenu(undefined, e)} className="empty-message" style={{ paddingBottom: showEmptyMessage ? undefined : 100 }}>
-                    {((emptyMessage && itens.length === 0) || showEmptyMessage) && <div className="message">{emptyMessage}</div>}
+                    {((emptyMessage && items.length === 0) || showEmptyMessage) && <div className="message">{emptyMessage}</div>}
                 </div>
             </div>
         </DndProvider>
