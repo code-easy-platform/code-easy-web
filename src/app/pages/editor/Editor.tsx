@@ -7,7 +7,7 @@ import { ToolBar } from '../../shared/components/tool-bar/ToolBar';
 import { ComponentType } from '../../shared/enuns/ComponentType';
 import { PropertiesTab } from './properties-tab/PropertiesTab';
 import { Project } from '../../shared/interfaces/Aplication';
-import { Storage } from '../../shared/services/LocalStorage';
+import { ProjectsStorage } from '../../shared/services/ProjectsStorage';
 import { CurrentTab } from '../../shared/enuns/CurrentTab';
 import PluginsTab from './plugins-tab/PluginsTab';
 import EditorTab from './editor-tab/EditorTab';
@@ -20,7 +20,7 @@ export class Editor extends React.Component<any> {
 
     public state = {
         currentTab: <EditorTab />,
-        project: Storage.getProjectById(this.params.id),
+        project: ProjectsStorage.getProjectById(this.params.id),
         editingTab: ComponentType.tabRoutes,
 
         updateProjectState: (project: Project) => this.updateProjectState(project),
@@ -66,7 +66,7 @@ export class Editor extends React.Component<any> {
         project = ProblemsHelper.getProblems(project).project;
 
         // Salva a nova versão do projeto no local storage
-        Storage.setProjectById(project);
+        ProjectsStorage.setProjectById(project);
 
         // Atualiza o state do projeto para refletir as alterações na tela
         this.setState({ project: project });

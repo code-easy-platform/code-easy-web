@@ -2,7 +2,7 @@ import React, { useState, useContext } from 'react';
 
 import { CodeEditorContext } from '../../services/contexts/CodeEditorContext';
 import { TabButton, TabGroup } from '../tab-button/TabButton';
-import { Storage } from '../../services/LocalStorage';
+import { ProjectsStorage } from '../../services/ProjectsStorage';
 import { CurrentTab } from '../../enuns/CurrentTab';
 import { Tab } from '../../interfaces/Aplication';
 import './ToolBar.css';
@@ -64,7 +64,7 @@ export const ToolBar = (props: any) => {
                     onClick={() => {
                         // eslint-disable-next-line no-restricted-globals
                         if (confirm('Realy want delete?')) {
-                            Storage.removeProjectById(codeEditorContext.project.projectConfigs.id);
+                            ProjectsStorage.removeProjectById(codeEditorContext.project.projectConfigs.id);
                             window.location.reload();
                         }
                     }}

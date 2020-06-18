@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 
-import { Storage } from './../../shared/services/LocalStorage';
+import { ProjectsStorage } from '../../shared/services/ProjectsStorage';
 import { Project } from '../../shared/interfaces/Aplication';
 import { Modal } from '../../shared/components/modal/Modal';
 import { CardItem } from './CardItem';
@@ -54,7 +54,7 @@ export const ImportProjects = ({ open, close }: { open: boolean, close: Function
     }
 
     const importProjects = () => {
-        Storage.setProjects(projects);
+        ProjectsStorage.setProjects(projects);
         window.alert("Projects imported successfully...")
         close();
     }

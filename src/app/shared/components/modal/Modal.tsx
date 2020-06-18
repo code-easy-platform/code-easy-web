@@ -24,7 +24,7 @@ export const Modal: React.FC<ModalProps> = ({ children, maxWidth = 800, maxHeigh
 
     /** Controla a posição da modal na tela */
     const [position, setPosition] = useState({ top: (window.innerHeight / 2) - 250, left: (window.innerWidth / 2) - 250 });
-    const [width, setWidth] = useState(400);
+    const [width, setWidth] = useState(600);
     const [height, setHeight] = useState(400);
 
     /** Controla se a modal está maxinizada ou minimizada */
@@ -102,7 +102,7 @@ export const Modal: React.FC<ModalProps> = ({ children, maxWidth = 800, maxHeigh
         mouseMove: (e: MouseEvent) => {
             const newWidth = (position.left - e.x) + width;
 
-            if (newWidth >= maxWidth || newWidth <= 400) return;
+            if (newWidth >= maxWidth || newWidth <= 600) return;
 
             setPosition({ ...position, left: e.x });
             setWidth(newWidth);
@@ -160,7 +160,7 @@ export const Modal: React.FC<ModalProps> = ({ children, maxWidth = 800, maxHeigh
                         <div
                             style={{
                                 width: width, height: height,
-                                minWidth: maximized ? '100%' : 400,
+                                minWidth: maximized ? '100%' : 600,
                                 top: !maximized ? position.top : 0,
                                 minHeight: maximized ? '100%' : 300,
                                 left: !maximized ? position.left : 0,
