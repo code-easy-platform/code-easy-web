@@ -181,9 +181,10 @@ export const HomePage = () => {
                 onClose={() => { setOpenConfig(false); return true }}
                 onCancel={() => setOpenConfig(false)}
                 allowBackdropClick={false}
+                title={"Configurações"}
                 isOpen={openConfig}
                 children={<>
-
+                
                 </>}
             />
             <ImportProjects

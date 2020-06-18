@@ -18,12 +18,14 @@ interface ModalProps {
     isOpen: boolean;
     title?: string;
 }
-export const Modal: React.FC<ModalProps> = ({ children, maxWidth = 500, maxHeight = 400, title = '', onMaximize, onMinimize, onClose, isOpen, onCancel, onSave, allowBackdropClick = true, closeWithBackdropClick = false }) => {
+export const Modal: React.FC<ModalProps> = ({ children, maxWidth = 800, maxHeight = 700, title = '', onMaximize, onMinimize, onClose, isOpen, onCancel, onSave, allowBackdropClick = true, closeWithBackdropClick = false }) => {
 
     const [clickedPosition, setClickedPosition] = useState({ clickedTop: 0, clickedLeft: 0 });
 
     /** Controla a posição da modal na tela */
     const [position, setPosition] = useState({ top: (window.innerHeight / 2) - 250, left: (window.innerWidth / 2) - 250 });
+    const [width, setWidth] = useState(400);
+    const [height, setHeight] = useState(400);
 
     /** Controla se a modal está maxinizada ou minimizada */
     const [maximized, setMaximized] = useState(false);
@@ -42,32 +44,6 @@ export const Modal: React.FC<ModalProps> = ({ children, maxWidth = 500, maxHeigh
         }
     }
 
-    const close = () => {
-        setClosed(onClose ? onClose(true) : true);
-    }
-
-    const mouseMove = (e: MouseEvent) => {
-        let newLeft = e.x - clickedPosition.clickedLeft;
-        let newTop = e.y - clickedPosition.clickedTop;
-
-        setPosition({ left: newLeft, top: newTop });
-    }
-
-    const mouseUp = () => {
-        setClickedPosition({ clickedLeft: 0, clickedTop: 0 });
-        window.onmousemove = null;
-        window.onmouseup = null;
-    }
-
-    const mouseDown = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
-        clickedPosition.clickedLeft = e.nativeEvent.offsetX;
-        clickedPosition.clickedTop = e.nativeEvent.offsetY;
-
-        setClickedPosition(clickedPosition);
-        window.onmousemove = mouseMove;
-        window.onmouseup = mouseUp;
-    }
-
     const keyDown = (e: React.KeyboardEvent<HTMLDivElement>) => {
         if (e.keyCode === 27) {
             if ((position.left < 0 || position.left > window.innerWidth) || (position.top < 0 || position.top > window.innerHeight)) {
@@ -77,35 +53,152 @@ export const Modal: React.FC<ModalProps> = ({ children, maxWidth = 500, maxHeigh
         }
     }
 
+    const close = () => {
+        setClosed(onClose ? onClose(true) : true);
+    }
+
+    const modalMove = {
+        mouseMove: (e: MouseEvent) => {
+            let newLeft = e.x - clickedPosition.clickedLeft;
+            let newTop = e.y - clickedPosition.clickedTop;
+
+            if (maximized) {
+                toggleMaximize();
+            }
+
+            setPosition({ left: newLeft, top: newTop });
+        },
+        mouseUp: () => {
+            setClickedPosition({ clickedLeft: 0, clickedTop: 0 });
+            window.onmousemove = null;
+            window.onmouseup = null;
+        },
+        mouseDown: (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
+            clickedPosition.clickedLeft = e.nativeEvent.offsetX;
+            clickedPosition.clickedTop = e.nativeEvent.offsetY;
+
+            setClickedPosition(clickedPosition);
+            window.onmousemove = modalMove.mouseMove;
+            window.onmouseup = modalMove.mouseUp;
+        }
+    }
+
+    const resizeLeft = {
+        mouseMove: (e: MouseEvent) => {
+            const newWidth = e.x - position.left;
+            setWidth(newWidth);
+        },
+        mouseUp: () => {
+            window.onmousemove = null;
+            window.onmouseup = null;
+        },
+        mouseDown: () => {
+            window.onmousemove = resizeLeft.mouseMove;
+            window.onmouseup = resizeLeft.mouseUp;
+        }
+    }
+
+    const resizeRight = {
+        mouseMove: (e: MouseEvent) => {
+            const newWidth = (position.left - e.x) + width;
+
+            if (newWidth >= maxWidth || newWidth <= 400) return;
+
+            setPosition({ ...position, left: e.x });
+            setWidth(newWidth);
+        },
+        mouseUp: () => {
+            window.onmousemove = null;
+            window.onmouseup = null;
+        },
+        mouseDown: () => {
+            window.onmousemove = resizeRight.mouseMove;
+            window.onmouseup = resizeRight.mouseUp;
+        }
+    }
+
+    const resizeBottom = {
+        mouseMove: (e: MouseEvent) => {
+            const newHeight = e.y - position.top;
+            setHeight(newHeight);
+        },
+        mouseUp: () => {
+            window.onmousemove = null;
+            window.onmouseup = null;
+        },
+        mouseDown: () => {
+            window.onmousemove = resizeBottom.mouseMove;
+            window.onmouseup = resizeBottom.mouseUp;
+        }
+    }
+
+    const resizeTop = {
+        mouseMove: (e: MouseEvent) => {
+            const newHeight = (position.top - e.y) + height;
+
+            if (newHeight >= maxHeight || newHeight <= 300) return;
+
+            setPosition({ ...position, top: e.y });
+            setHeight(newHeight);
+        },
+        mouseUp: () => {
+            window.onmousemove = null;
+            window.onmouseup = null;
+        },
+        mouseDown: () => {
+            window.onmousemove = resizeTop.mouseMove;
+            window.onmouseup = resizeTop.mouseUp;
+        }
+    }
+
     return (
         closed
             ? <></>
             : <>
                 {!allowBackdropClick &&
                     <div tabIndex={0} onKeyDown={keyDown} className="fade-in full-height full-width absolute" style={{ backgroundColor: '#ffffff05' }} onClick={() => closeWithBackdropClick ? close() : () => { }}>
-                        <div style={{ top: !maximized ? position.top : 0, left: !maximized ? position.left : 0 }} className={`base-modal background-bars box-shadow-small border-radius flex-column${maximized ? ' full-width full-height' : ' padding-xs'}`}>
-                            <div onMouseDown={mouseDown} className={`modal-top-bar flex-row${maximized ? ' margin-left-xs margin-right-xs' : ''}`}>
-                                <div className="flex1 flex-itens-center">
-                                    {title}
+                        <div
+                            style={{
+                                width: width, height: height,
+                                minWidth: maximized ? '100%' : 400,
+                                top: !maximized ? position.top : 0,
+                                minHeight: maximized ? '100%' : 300,
+                                left: !maximized ? position.left : 0,
+                                maxWidth: maximized ? '100%' : maxWidth,
+                                maxHeight: maximized ? '100%' : maxHeight,
+                                transitionDuration: maximized ? '.1s' : undefined,
+                            }}
+                            className={`base-modal background-bars box-shadow-small flex-column${maximized ? ' full-width full-height' : ''}`}
+                        >
+                            <div className="full-width padding-bottom-xs" style={{ cursor: 'row-resize' }} onMouseDown={resizeTop.mouseDown} />
+                            <div className="flex1">
+                                <div className="padding-left-xs" style={{ cursor: 'col-resize' }} onMouseDown={resizeRight.mouseDown} />
+                                <div className="flex1 flex-column">
+
+                                    <div onMouseDown={modalMove.mouseDown} onDoubleClick={toggleMaximize} className={`modal-top-bar flex-row${maximized ? ' margin-left-xs margin-right-xs' : ''}`}>
+                                        <div className="flex1 flex-itens-center padding-horizontal-s opacity-9">{title}</div>
+                                        <div>
+                                            <button onClick={toggleMaximize} onMouseDown={e => e.stopPropagation()} className="btn border-radius-soft outline-none modal-btn">
+                                                <img height={30} width={30} src={icon_maximizar} alt="Toggle maximize modal" />
+                                            </button>
+                                            <button onClick={close} onMouseDown={e => e.stopPropagation()} className="btn border-radius-soft outline-none modal-btn" title="Close(Esc)">
+                                                <img height={30} width={30} src={icon_close} alt="Close modal" />
+                                            </button>
+                                        </div>
+                                    </div>
+                                    <div className="full-width padding-bottom-xs" />
+
+                                    <div className={`modal-top-content background flex-column padding-s flex1${maximized ? ' margin-left-xs margin-right-xs' : ''}`}>{children}</div>
+
+                                    <div className={`modal-top-footer padding-top-xs flex-row modal-top-footer${maximized ? ' margin-left-xs margin-right-xs' : ''}`}>
+                                        <button onClick={onCancel} className="btn padding-s padding-left-m padding-right-m margin-right-s outline-none border-radius-soft">Cancel</button>
+                                        <button onClick={onSave} style={{ backgroundColor: 'var(--color-primary)' }} className="btn padding-s padding-left-m padding-right-m outline-none border-radius-soft">Save</button>
+                                    </div>
+
                                 </div>
-                                <div>
-                                    <button onClick={toggleMaximize} onMouseDown={e => e.stopPropagation()} className="btn border-radius outline-none modal-btn">
-                                        <img height={30} width={30} src={icon_maximizar} alt="Toggle maximize modal" />
-                                    </button>
-                                    <button onClick={close} onMouseDown={e => e.stopPropagation()} className="btn border-radius outline-none modal-btn" title="Close(Esc)">
-                                        <img height={30} width={30} src={icon_close} alt="Close modal" />
-                                    </button>
-                                </div>
+                                <div className="padding-left-xs" style={{ cursor: 'col-resize' }} onMouseDown={resizeLeft.mouseDown} />
                             </div>
-                            <div style={{
-                                maxHeight: maximized ? undefined : maxHeight, maxWidth: maximized ? undefined : maxWidth
-                            }} className={`modal-top-content background border-radius flex-column padding-s margin-top-xs margin-bottom-xs flex1${maximized ? ' margin-left-xs margin-right-xs' : ''}`}>
-                                {children}
-                            </div>
-                            <div className={`modal-top-footer flex-row modal-top-footer${maximized ? ' margin-left-xs margin-right-xs' : ''}`}>
-                                <button onClick={onCancel} className="btn padding-s padding-left-m padding-right-m margin-right-s border-radius outline-none">Cancel</button>
-                                <button onClick={onSave} style={{ backgroundColor: 'var(--color-primary)' }} className="btn padding-s padding-left-m padding-right-m border-radius outline-none">Save</button>
-                            </div>
+                            <div className="full-width padding-bottom-xs" style={{ cursor: 'row-resize' }} onMouseDown={resizeBottom.mouseDown} />
                         </div>
                     </div>
                 }

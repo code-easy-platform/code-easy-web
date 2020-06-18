@@ -129,6 +129,9 @@ input[type="number"] {
 .border-radius {
   border-radius: var(--size-1);
 }
+.border-radius-soft {
+  border-radius: var(--size-0-5);
+}
 
 .border-default {
   border: thin solid var(--main-background-highlighted);
