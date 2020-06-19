@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 
-import { ProjectsStorage } from '../../shared/services/ProjectsStorage';
+import { ProjectsStorage } from '../../shared/services/storage/ProjectsStorage';
 import { Project } from '../../shared/interfaces/Aplication';
 import { Modal } from '../../shared/components/modal/Modal';
 import { CardItem } from './CardItem';

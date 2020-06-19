@@ -1,11 +1,8 @@
-import { Project, Tab, ComponentConfigs } from "../interfaces/Aplication";
-import { ComponentType } from "../enuns/ComponentType";
-import { ProjectType } from "../enuns/ProjectType";
+import { Project, Tab, ComponentConfigs } from "./../../interfaces/Aplication";
+import { ComponentType } from "./../../enuns/ComponentType";
+import { ProjectType } from "./../../enuns/ProjectType";
 import { Utils } from "code-easy-components";
-
-export enum StorageEnum {
-    projectsStorage = "PROJECTS_STORAGE",
-}
+import { StorageEnum } from "./StorageEnum";
 
 const newProject = (name: string, version: string, type: ProjectType, description: string) => new Project({
     projectConfigs: {

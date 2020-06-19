@@ -7,7 +7,7 @@ import { ToolBar } from '../../shared/components/tool-bar/ToolBar';
 import { ComponentType } from '../../shared/enuns/ComponentType';
 import { PropertiesTab } from './properties-tab/PropertiesTab';
 import { Project } from '../../shared/interfaces/Aplication';
-import { ProjectsStorage } from '../../shared/services/ProjectsStorage';
+import { ProjectsStorage } from '../../shared/services/storage/ProjectsStorage';
 import { CurrentTab } from '../../shared/enuns/CurrentTab';
 import PluginsTab from './plugins-tab/PluginsTab';
 import EditorTab from './editor-tab/EditorTab';

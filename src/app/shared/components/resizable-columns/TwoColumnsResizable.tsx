@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { ProjectsStorage } from '../../services/ProjectsStorage';
+import { ProjectsStorage } from '../../services/storage/ProjectsStorage';
 
 interface IRecipeProps {
     id: string,

@@ -2,7 +2,7 @@ import React from 'react';
 
 import { Project } from '../../interfaces/Aplication';
 import { ComponentType } from '../../enuns/ComponentType';
-import { ProjectsStorage } from '../ProjectsStorage';
+import { ProjectsStorage } from './../storage/ProjectsStorage';
 
 export interface ICodeEditorContext {
     project: Project,

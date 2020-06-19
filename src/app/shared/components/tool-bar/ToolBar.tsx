@@ -2,7 +2,7 @@ import React, { useState, useContext } from 'react';
 
 import { CodeEditorContext } from '../../services/contexts/CodeEditorContext';
 import { TabButton, TabGroup } from '../tab-button/TabButton';
-import { ProjectsStorage } from '../../services/ProjectsStorage';
+import { ProjectsStorage } from '../../services/storage/ProjectsStorage';
 import { CurrentTab } from '../../enuns/CurrentTab';
 import { Tab } from '../../interfaces/Aplication';
 import './ToolBar.css';

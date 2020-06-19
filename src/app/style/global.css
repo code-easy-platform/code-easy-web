@@ -96,6 +96,21 @@ input[type="number"] {
   -moz-appearance: textfield;
 }
 
+input[type="checkbox"] {
+  all: unset;
+  background-color: var(--main-background-bars);
+  margin-right: var(--margin-s);
+  border-radius: var(--size-1);
+  border: var(--input-border);
+  padding: var(--size-0-5);
+  height: var(--size-m);
+  width: var(--size-m);
+  cursor: pointer;
+}
+input[type="checkbox"]:checked {
+  background-color: var(--color-primary);
+}
+
 .text-ellipsis {
   text-overflow: ellipsis;
   display: inline-block;

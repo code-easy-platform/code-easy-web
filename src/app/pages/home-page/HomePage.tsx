@@ -4,21 +4,21 @@ import { Utils } from 'code-easy-components';
 import dataformat from 'dateformat';
 
 import { BottonStatusBar } from '../../shared/components/botton-status-bar/BottonStatusBar';
+import { ProjectsStorage } from '../../shared/services/storage/ProjectsStorage';
 import { ToolBarHome } from '../../shared/components/tool-bar/ToolBar';
 import { Button } from '../../shared/components/buttons/Button';
-import { ProjectsStorage } from '../../shared/services/ProjectsStorage';
 import { Project } from '../../shared/interfaces/Aplication';
-import { Modal } from '../../shared/components/modal/Modal';
 import { ImportProjects } from './ImportFiles';
 import { CardItem } from './CardItem';
 
 import icon_open_github from './../../assets/icons/icon-open-github.png';
-import icon_download from './../../assets/icons/icon-download.png';
-import icon_import from './../../assets/icons/icon-import.png';
 // import icon_plugins from './../../assets/icons/icon-plugins.png';
-import icon_config from './../../assets/icons/icon-config.png';
+import icon_download from './../../assets/icons/icon-download.png';
 // import icon_accont from './../../assets/icons/icon-accont.png';
+import icon_import from './../../assets/icons/icon-import.png';
+import icon_config from './../../assets/icons/icon-config.png';
 import { ProjectType } from '../../shared/enuns/ProjectType';
+import { IdeConfigs } from './Configs';
 // import icon_tips from './../../assets/icons/icon-tips.png';
 // import icon_help from './../../assets/icons/icon-help.png';
 
@@ -177,16 +177,7 @@ export const HomePage = () => {
 
             <hr className="hr" />
             <BottonStatusBar />
-            <Modal
-                onClose={() => { setOpenConfig(false); return true }}
-                onCancel={() => setOpenConfig(false)}
-                allowBackdropClick={false}
-                title={"Configurações"}
-                isOpen={openConfig}
-                children={<>
-                
-                </>}
-            />
+            <IdeConfigs open={openConfig} close={() => setOpenConfig(false)} />
             <ImportProjects
                 open={openImportProjects}
                 close={() => {
