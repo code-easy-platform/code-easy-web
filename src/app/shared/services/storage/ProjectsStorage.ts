@@ -1,11 +1,8 @@
-import { Project, Tab, ComponentConfigs } from "../interfaces/Aplication";
-import { ComponentType } from "../enuns/ComponentType";
-import { ProjectType } from "../enuns/ProjectType";
+import { Project, Tab, ComponentConfigs } from "./../../interfaces/Aplication";
+import { ComponentType } from "./../../enuns/ComponentType";
+import { ProjectType } from "./../../enuns/ProjectType";
 import { Utils } from "code-easy-components";
-
-export enum StorageEnum {
-    projectsStorage = "PROJECTS_STORAGE",
-}
+import { StorageEnum } from "./StorageEnum";
 
 const newProject = (name: string, version: string, type: ProjectType, description: string) => new Project({
     projectConfigs: {
@@ -17,7 +14,7 @@ const newProject = (name: string, version: string, type: ProjectType, descriptio
         createdDate: new Date(),
         updatedDate: new Date(),
         description: description,
-        autor: Storage.getAuthorName(),
+        autor: ProjectsStorage.getAuthorName(),
         name: Utils.getNormalizedString(name.toLowerCase()),
         currentPlatformVersion: `${process.env.REACT_APP_VERSION}`,
     },
@@ -61,7 +58,7 @@ const newProject = (name: string, version: string, type: ProjectType, descriptio
     ]
 });
 
-export class Storage {
+export class ProjectsStorage {
 
     public static getNewProject(name: string, version: string, type: ProjectType, description: string) {
         return newProject(name, version, type, description);
@@ -80,7 +77,7 @@ export class Storage {
         if (res !== null && res !== "" && res !== undefined)
             projects = JSON.parse(res);
         else {
-            Storage.setProjects([]);
+            ProjectsStorage.setProjects([]);
             projects = [];
         }
 
@@ -96,7 +93,7 @@ export class Storage {
     /** Atualiza no localstorage a lista de projetos */
     public static setProjectById(project: Project) {
 
-        let projects: Project[] = [...Storage.getProjects()];
+        let projects: Project[] = [...ProjectsStorage.getProjects()];
 
         let itemIndex = projects.findIndex(item_project => item_project.projectConfigs.id === project.projectConfigs.id);
 
@@ -105,12 +102,12 @@ export class Storage {
             projects.splice(itemIndex, 1, project); // Remove elemento antigo e coloca um novo no lugar
         }
 
-        Storage.setProjects(projects);
+        ProjectsStorage.setProjects(projects);
     }
 
     /** Pego o projeto que está sendo editado no momento */
     public static getProjectById(id?: string): Project {
-        const projects = Storage.getProjects();
+        const projects = ProjectsStorage.getProjects();
 
         let project = projects.find(proj => proj.projectConfigs.id === id);
 
@@ -124,7 +121,7 @@ export class Storage {
     /** Remove o item do local storage */
     public static removeProjectById(id?: string): Project[] {
 
-        let projects = Storage.getProjects();
+        let projects = ProjectsStorage.getProjects();
         if (!id) return projects;
 
         const itemIndex = projects.findIndex(project => project.projectConfigs.id === id);
@@ -133,19 +130,19 @@ export class Storage {
             projects.splice(itemIndex, 1); // Remove item
         }
 
-        Storage.setProjects(projects);
+        ProjectsStorage.setProjects(projects);
         return projects;
     }
 
     /** Reseta o projeto que está sendo editado no momento */
     public static resetProject(): Project {
-        return new Project(Storage.getProjectById());
+        return new Project(ProjectsStorage.getProjectById());
     }
 
     public static getColumnsResizableSize(id: string): number {
         let props = localStorage.getItem(id);
         if (!props) {
-            props = Storage.setColumnsResizableSize(id, 300).toString();
+            props = ProjectsStorage.setColumnsResizableSize(id, 300).toString();
         }
         return parseInt(props);
     }

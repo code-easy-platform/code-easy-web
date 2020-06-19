@@ -2,7 +2,7 @@ import React from 'react';
 
 import { Project } from '../../interfaces/Aplication';
 import { ComponentType } from '../../enuns/ComponentType';
-import { Storage } from '../LocalStorage';
+import { ProjectsStorage } from './../storage/ProjectsStorage';
 
 export interface ICodeEditorContext {
     project: Project,
@@ -13,7 +13,7 @@ export interface ICodeEditorContext {
 }
 export const CodeEditorContext = React.createContext<ICodeEditorContext>({
     currentTab: <></>,
-    project: Storage.getProjectById(),
+    project: ProjectsStorage.getProjectById(),
     editingTab: ComponentType.tabRoutes,
 
     updateProjectState: (project: Project) => { },

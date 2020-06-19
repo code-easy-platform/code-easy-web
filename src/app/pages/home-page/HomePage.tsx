@@ -4,27 +4,27 @@ import { Utils } from 'code-easy-components';
 import dataformat from 'dateformat';
 
 import { BottonStatusBar } from '../../shared/components/botton-status-bar/BottonStatusBar';
+import { ProjectsStorage } from '../../shared/services/storage/ProjectsStorage';
 import { ToolBarHome } from '../../shared/components/tool-bar/ToolBar';
 import { Button } from '../../shared/components/buttons/Button';
-import { Storage } from '../../shared/services/LocalStorage';
 import { Project } from '../../shared/interfaces/Aplication';
-import { Modal } from '../../shared/components/modal/Modal';
 import { ImportProjects } from './ImportFiles';
 import { CardItem } from './CardItem';
 
 import icon_open_github from './../../assets/icons/icon-open-github.png';
-import icon_download from './../../assets/icons/icon-download.png';
-import icon_import from './../../assets/icons/icon-import.png';
 // import icon_plugins from './../../assets/icons/icon-plugins.png';
-import icon_config from './../../assets/icons/icon-config.png';
+import icon_download from './../../assets/icons/icon-download.png';
 // import icon_accont from './../../assets/icons/icon-accont.png';
+import icon_import from './../../assets/icons/icon-import.png';
+import icon_config from './../../assets/icons/icon-config.png';
 import { ProjectType } from '../../shared/enuns/ProjectType';
+import { IdeConfigs } from './Configs';
 // import icon_tips from './../../assets/icons/icon-tips.png';
 // import icon_help from './../../assets/icons/icon-help.png';
 
 export const HomePage = () => {
 
-    const [projects, setProjects] = useState<Project[]>(Storage.getProjects() || []);
+    const [projects, setProjects] = useState<Project[]>(ProjectsStorage.getProjects() || []);
     const [openImportProjects, setOpenImportProjects] = useState(false);
     const [openConfig, setOpenConfig] = useState(false);
     const [isAdding, setIsAdding] = useState(false);
@@ -32,7 +32,7 @@ export const HomePage = () => {
     const history = useHistory();
 
     useEffect(() => {
-        Storage.setProjects(projects);
+        ProjectsStorage.setProjects(projects);
     }, [projects]);
 
     document.title = "Projects - Code easy";
@@ -40,12 +40,12 @@ export const HomePage = () => {
     const addNewProject = (item: any) => {
         setIsAdding(false);
 
-        projects.push(Storage.getNewProject(item.name, item.version, item.type, item.description));
+        projects.push(ProjectsStorage.getNewProject(item.name, item.version, item.type, item.description));
 
         projects.sort((a, b) => a.projectConfigs.label.localeCompare(b.projectConfigs.label));
 
         setProjects(projects);
-        Storage.setProjects(projects);
+        ProjectsStorage.setProjects(projects);
     }
 
     return (
@@ -108,9 +108,9 @@ export const HomePage = () => {
                                 return <CardItem
                                     listMode
                                     key={card.projectConfigs.id}
-                                    onDelete={() => setProjects(Storage.removeProjectById(card.projectConfigs.id))}
+                                    onDelete={() => setProjects(ProjectsStorage.removeProjectById(card.projectConfigs.id))}
                                     onClick={() => {
-                                        Storage.setProjectById(card);
+                                        ProjectsStorage.setProjectById(card);
                                         history.push(`/editor/${card.projectConfigs.id}`);
                                     }}
                                     item={{
@@ -154,9 +154,9 @@ export const HomePage = () => {
                             .map(card => {
                                 return <CardItem
                                     key={card.projectConfigs.id}
-                                    onDelete={() => setProjects(Storage.removeProjectById(card.projectConfigs.id))}
+                                    onDelete={() => setProjects(ProjectsStorage.removeProjectById(card.projectConfigs.id))}
                                     onClick={() => {
-                                        Storage.setProjectById(card);
+                                        ProjectsStorage.setProjectById(card);
                                         history.push(`/editor/${card.projectConfigs.id}`);
                                     }}
                                     item={{
@@ -177,19 +177,11 @@ export const HomePage = () => {
 
             <hr className="hr" />
             <BottonStatusBar />
-            <Modal
-                onClose={() => { setOpenConfig(false); return true }}
-                onCancel={() => setOpenConfig(false)}
-                allowBackdropClick={false}
-                isOpen={openConfig}
-                children={<>
-
-                </>}
-            />
+            <IdeConfigs open={openConfig} close={() => setOpenConfig(false)} />
             <ImportProjects
                 open={openImportProjects}
                 close={() => {
-                    setProjects(Storage.getProjects());
+                    setProjects(ProjectsStorage.getProjects());
                     setOpenImportProjects(false);
                 }}
             />

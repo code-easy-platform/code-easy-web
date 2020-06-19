@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Storage } from '../../services/LocalStorage';
+import { ProjectsStorage } from '../../services/storage/ProjectsStorage';
 
 interface IRecipeProps {
     id: string,
@@ -13,7 +13,7 @@ export class TwoColumnsResizable extends Component<IRecipeProps> {
     state = { colX: 300 }
 
     componentDidMount() {
-        this.setState({ colX: Storage.getColumnsResizableSize(this.props.id) });
+        this.setState({ colX: ProjectsStorage.getColumnsResizableSize(this.props.id) });
         window.addEventListener("resize", () => this.setState({}));
     }
 
@@ -29,7 +29,7 @@ export class TwoColumnsResizable extends Component<IRecipeProps> {
         window.onmouseup = null;
         window.onmousemove = null;
         window.document.body.style.pointerEvents = 'unset';
-        Storage.setColumnsResizableSize(this.props.id, this.state.colX);
+        ProjectsStorage.setColumnsResizableSize(this.props.id, this.state.colX);
     }
 
     mouseDown = () => {

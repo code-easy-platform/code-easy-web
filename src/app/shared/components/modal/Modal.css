@@ -1,6 +1,6 @@
 .base-modal {
     min-height: 300px;
-    min-width: 400px;
+    min-width: 600px;
     position: fixed;
     z-index: 2;
 }
@@ -11,9 +11,11 @@
 }
 
 .modal-btn {
+    border-radius: unset;
     padding: unset;
     margin: unset;
-    border-radius: unset;
+    height: 30px;
+    width: 30px;
 }
 
 .modal-top-footer {

@@ -13,6 +13,7 @@ import { FlowItem, ItemType } from './../../../shared/components/code-editor/mod
 import { Tab, ItemComponent, ItemFlowComplete } from '../../../shared/interfaces/Aplication';
 import { IContextItemList } from './../../../shared/components/context-menu/ContextMenu';
 import { DefaultPropsHelper } from '../../../shared/services/helpers/DefaultPropsHelper';
+import { IdeConfigStorage } from '../../../shared/services/storage/IdeConfigStorage';
 import { TreeManager } from '../../../shared/components/tree-manager/TreeManager';
 import { OutputPanel } from '../../../shared/components/output-panel/OutputPanel';
 import { ProblemsHelper } from '../../../shared/services/helpers/ProblemsHelper';
@@ -31,6 +32,7 @@ enum CurrentFocus {
 
 export default class EditorTab extends React.Component {
     private editorContext: ICodeEditorContext = this.context;
+    private ideConfigs = new IdeConfigStorage();
 
     state: { currentFocus: CurrentFocus, modalOpen: boolean } = {
         currentFocus: CurrentFocus.tree,
@@ -1166,6 +1168,8 @@ export default class EditorTab extends React.Component {
                                     onDropItem={this.codeEditorOnDropItem.bind(this)}
                                     breadcrumbs={this.codeEditorGetBreadcamps.bind(this)()}
                                     onChangeItens={this.codeEditorOutputFlowItens.bind(this)}
+                                    backgroundType={this.ideConfigs.getConfigs().flowBackgroundType}
+                                    snapGridWhileDragging={this.ideConfigs.getConfigs().snapGridWhileDragging}
                                     emptyMessage={(this.codeEditorGetBreadcamps.bind(this)().length !== 0) ? "Drag and drop an item here to get started" : undefined}
                                     allowedsInDrop={[ComponentType.globalAction, ComponentType.localAction, ComponentType.localVariable, ComponentType.inputVariable, ComponentType.outputVariable]}
                                     onContextMenu={(data, e) => {
