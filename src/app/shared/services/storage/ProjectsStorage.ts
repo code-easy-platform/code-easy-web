@@ -1,4 +1,4 @@
-import { Project, Tab, ComponentConfigs, OpenWindow } from "./../../interfaces/Aplication";
+import { Project, Tab, ComponentConfigs, OpenWindow, CurrentFocus } from "./../../interfaces/Aplication";
 import { ComponentType } from "./../../enuns/ComponentType";
 import { ProjectType } from "./../../enuns/ProjectType";
 import { Utils } from "code-easy-components";
@@ -6,6 +6,7 @@ import { StorageEnum } from "./StorageEnum";
 
 const newProject = (name: string, version: string, type: ProjectType, description: string) => new Project({
     openWindows: [],
+    currentComponentFocus: CurrentFocus.tree,
     projectConfigs: {
         id: `${Utils.getUUID()}`,
         type: type,
