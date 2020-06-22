@@ -1,14 +1,13 @@
 import React, { useContext } from 'react';
 
 import { CodeEditorContext } from '../../../shared/services/contexts/CodeEditorContext';
-import './PropertiesTab.css';
 
 export const PropertiesTab = () => {
     const codeEditorContext = useContext(CodeEditorContext);
 
     return (
-        <div className='background-panels flex1 flex-column tab-properties'>
-            <div className='tab-properties-container flex-column'>
+        <div className='flex1 flex-content-center'>
+            <div className='flex-column'>
                 <header className='main-header'>Propriedades do projeto</header>
                 <hr className='hr hr-white divider' />
 
@@ -28,11 +27,11 @@ export const PropertiesTab = () => {
 
                 <div className='flex-column margin-top-m'>
                     <label htmlFor='project-description'>Description</label>
-                    <input
+                    <textarea
                         value={codeEditorContext.project.projectConfigs.description}
                         id='project-description'
                         className='input-medium'
-                        type='text'
+                        style={{ resize: 'vertical', minHeight: 50, maxHeight: 100 }}
                         onChange={(e) => {
                             codeEditorContext.project.projectConfigs.description = e.target.value;
                             codeEditorContext.updateProjectState(codeEditorContext.project);

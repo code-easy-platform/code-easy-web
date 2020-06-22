@@ -5,7 +5,7 @@ import dataformat from 'dateformat';
 
 import { BottonStatusBar } from '../../shared/components/botton-status-bar/BottonStatusBar';
 import { ProjectsStorage } from '../../shared/services/storage/ProjectsStorage';
-import { ToolBarHome } from '../../shared/components/tool-bar/ToolBar';
+import { TabButton } from '../../shared/components/tab-button/TabButton';
 import { Button } from '../../shared/components/buttons/Button';
 import { Project } from '../../shared/interfaces/Aplication';
 import { ImportProjects } from './ImportFiles';
@@ -50,7 +50,18 @@ export const HomePage = () => {
 
     return (
         <div className="main-page fade-in">
-            <ToolBarHome />
+            <div className="tool-bar background-bars">
+                <div>
+                    <TabButton
+                        id="tabMenu"
+                        title="Menu"
+                        to="/projects"
+                        style={{ outline: 'none' }}
+                        className=" btn btn-open-menu-tab"
+                    />
+                    <hr className="hr hr-vertical" />
+                </div>
+            </div>
             <hr className="hr" />
 
             <div className="flex1" style={{ height: "calc(100vh - 60px)" }}>

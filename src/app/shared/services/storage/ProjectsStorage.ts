@@ -1,10 +1,11 @@
-import { Project, Tab, ComponentConfigs } from "./../../interfaces/Aplication";
+import { Project, Tab, ComponentConfigs, OpenWindow } from "./../../interfaces/Aplication";
 import { ComponentType } from "./../../enuns/ComponentType";
 import { ProjectType } from "./../../enuns/ProjectType";
 import { Utils } from "code-easy-components";
 import { StorageEnum } from "./StorageEnum";
 
 const newProject = (name: string, version: string, type: ProjectType, description: string) => new Project({
+    openWindows: [],
     projectConfigs: {
         id: `${Utils.getUUID()}`,
         type: type,
@@ -150,6 +151,83 @@ export class ProjectsStorage {
     public static setColumnsResizableSize(id: string, size: number): number {
         localStorage.setItem(id, size.toString());
         return size;
+    }
+
+    public static selectWindowById(project: Project, windowId: string): Project {
+
+        project.openWindows.forEach(windowTab => {
+            if (windowTab.id === windowId) {
+                windowTab.isSelected = true;
+
+                project.tabs.forEach(tab => {
+                    tab.itens.forEach(item => {
+
+                        if (item.id === windowId) {
+                            item.isEditing = true;
+                        } else {
+                            item.isEditing = false;
+                        }
+
+                    });
+                });
+
+            } else {
+                windowTab.isSelected = false;
+            }
+        });
+
+        return project;
+    }
+
+    public static removeWindowById(project: Project, windowId: string): Project {
+
+        const indexToRemove = project.openWindows.findIndex(windowTab => windowTab.id === windowId);
+        if (indexToRemove === -1) return project;
+
+        project.openWindows.splice(indexToRemove, 1);
+
+        project.tabs.forEach(tab => {
+            tab.itens.forEach(item => {
+                if (item.id === windowId) {
+                    item.isEditing = false;
+                }
+            });
+        });
+
+        return project;
+    }
+
+    public static updateWindowTabs(project: Project): Project {
+
+        const addWindowTab = (winTab: OpenWindow) => {
+
+            if (!project.openWindows.some(windowTab => windowTab.id === winTab.id)) {
+                project.openWindows.push(winTab);
+            }
+
+            project.openWindows.forEach(windowTab => {
+                if (windowTab.id === winTab.id) {
+                    windowTab.isSelected = true;
+                } else {
+                    windowTab.isSelected = false;
+                }
+            });
+
+        }
+
+        project.tabs.forEach(tab => {
+            tab.itens.forEach(item => {
+                if (item.isEditing && item.id) {
+                    addWindowTab({
+                        id: item.id,
+                        title: item.label,
+                        isSelected: item.isSelected,
+                    });
+                }
+            })
+        });
+
+        return project;
     }
 
 }

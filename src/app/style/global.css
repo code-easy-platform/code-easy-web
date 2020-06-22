@@ -7,8 +7,9 @@
 @import "./flexs.css";
 
 * {
-  -webkit-user-select: none;
+  font-family: var(--font-family-normal);
   -moz-user-select: -moz-none;
+  -webkit-user-select: none;
   -ms-user-select: none;
   user-select: none;
   outline: none;
@@ -35,7 +36,6 @@ html,
 body,
 #root,
 .App {
-  font-family: var(--font-family-vs-code);
   background-color: var(--main-background);
   height: var(--size-window-vh-fill);
   width: var(--size-window-vw-fill);
@@ -249,7 +249,6 @@ input[type="checkbox"]:checked {
   border: var(--size-none) solid var(--color-white);
   color: var(--font-color-input-propertie-editor);
   background-color: var(--color-transparent);
-  font-family: var(--font-family-vs-code);
   width: fit-content;
   cursor: pointer;
   padding: var(--size-1-5);

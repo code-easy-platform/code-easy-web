@@ -1,12 +1,13 @@
 import React, { CSSProperties } from 'react';
+import { Link } from 'react-router-dom';
 
 import './TabButton.css';
-import { Link } from 'react-router-dom';
 
 interface TabGroupProps {
     className?: string;
+    style?: CSSProperties;
 }
-export const TabGroup: React.FC<TabGroupProps> = ({ className, children }) => <div className={"tab-group flex-space-between font-size-m full-width " + className}>{children}</div>;
+export const TabGroup: React.FC<TabGroupProps> = ({ className, children, style }) => <div className={"tab-group flex-space-between font-size-m full-width " + className} style={style}>{children}</div>;
 
 
 interface ITabButtonProps {

@@ -1,0 +1,54 @@
+.window-tabs-manager {
+    overflow-y: hidden;
+    overflow-x: auto;
+    flex: 1;
+}
+.window-tabs-manager::-webkit-scrollbar {
+    height: var(--size-none);
+    width: var(--size-none);
+}
+
+.window-tabs-manager .window-tab-item {
+    background-color: transparent;
+    justify-content: center;
+    align-items: center;
+    outline: none;
+    border: none;
+}
+
+.window-tabs-manager .window-tab-item:hover {
+    cursor: pointer;
+}
+
+.window-tabs-manager .window-tab-item:active {
+    color: var(--color-white);
+    opacity: 0.5;
+}
+
+.window-tabs-manager .window-tab-item:hover .btn-close {
+    opacity: 0.7;
+}
+
+.window-tabs-manager .window-tab-item .btn-close {
+    background-color: transparent;
+    margin-right: var(--size-xs);
+    text-transform: uppercase;
+    height: var(--size-g);
+    width: var(--size-g);
+    outline: none;
+    padding: unset;
+    opacity: 0;
+}
+
+.window-tabs-manager .window-tab-item.window-tab-selected {
+    background-color: var(--main-background-panels);
+}
+
+.window-tabs-manager .window-tab-item.window-tab-selected .btn-close {
+    background-color: transparent;
+    opacity: 0.7;
+}
+.window-tabs-manager .window-tab-item:hover .btn-close:hover,
+.window-tabs-manager .window-tab-item.window-tab-selected .btn-close:hover {
+    opacity: 1;
+}

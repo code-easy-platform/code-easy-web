@@ -31,7 +31,11 @@ export const IdeConfigs: React.FC<{ open: boolean, close(): void }> = ({ open, c
             onSave={save}
             isOpen={open}
             children={<>
-                <div className="margin-top-s padding-m box-shadow-small background-panels border-radius flex-column">
+                <div className="margin-top-s flex-column">
+                    <header className="main-header">Flow editor</header>
+
+                    <br />
+
                     <div className="flex-column">
                         <label htmlFor="select">Background type</label>
                         <select id={"select"} onChange={handleBackground} value={configs.flowBackgroundType} className="margin-top-s" style={{ maxWidth: 200 }}>
@@ -40,10 +44,12 @@ export const IdeConfigs: React.FC<{ open: boolean, close(): void }> = ({ open, c
                             <option value={FlowBackgroundType.none}>None</option>
                         </select>
                     </div>
+
                     <div className="margin-top-s">
                         <input id="snapGrid" type="checkbox" className="padding-xs margin-right-s" checked={configs.snapGridWhileDragging} onChange={handleSnapGrid} />
-                        <label htmlFor="snapGrid" >Snap grid while dragging</label>
+                        <label htmlFor="snapGrid">Snap grid while dragging</label>
                     </div>
+
                 </div>
             </>}
         />

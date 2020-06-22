@@ -36,7 +36,7 @@ export default class EditorTab extends React.Component {
 
     state: { currentFocus: CurrentFocus, modalOpen: boolean } = {
         currentFocus: CurrentFocus.tree,
-        modalOpen: true,
+        modalOpen: false,
     }
 
 
@@ -1155,8 +1155,8 @@ export default class EditorTab extends React.Component {
                     <>
                         <TwoRowsResizable
                             id={"TwoRowsResizableOutput"}
-                            useMinMaxHeight={true}
                             maxBottomHeight={"99%"}
+                            useMinMaxHeight={true}
                             minBottomHeight={"1%"}
                             top={
                                 <FlowEditor
