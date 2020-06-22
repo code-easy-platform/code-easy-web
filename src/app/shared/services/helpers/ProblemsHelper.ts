@@ -1,12 +1,10 @@
-import { Utils } from "code-easy-components";
+import { Utils, IconWarning, IconError } from "code-easy-components";
 
 import { TreeInterface } from "../../components/tree-manager/shared/models/TreeInterface";
 import { ItemType } from "../../components/code-editor/models/ItemFluxo";
-import icon_warning from './../../../assets/icons/icon-warning.png';
-import icon_error from './../../../assets/icons/icon-error.png';
+import { PropertieTypes } from "../../enuns/PropertieTypes";
 import { ComponentType } from "../../enuns/ComponentType";
 import { Project } from "../../interfaces/Aplication";
-import { PropertieTypes } from "../../enuns/PropertieTypes";
 
 class ProblemsHelperService {
     /**
@@ -17,7 +15,7 @@ class ProblemsHelperService {
 
         const addProblem = (label: string, type: 'warning' | 'error') => {
             res.push({
-                icon: type === 'warning' ? icon_warning : icon_error,
+                icon: type === 'warning' ? IconWarning : IconError,
                 isDisabledSelect: true,
                 nodeExpanded: false,
                 isSelected: false,

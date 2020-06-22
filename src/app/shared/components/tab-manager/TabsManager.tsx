@@ -1,6 +1,6 @@
 import React, { Fragment } from 'react';
+import { IconClose } from 'code-easy-components';
 
-import icon_close from './../../../assets/icons/btn-close.svg';
 import { OpenWindow } from '../../interfaces/Aplication';
 import './TabsManager.css';
 
@@ -45,7 +45,7 @@ export const TabsManager: React.FC<TabsManagerProps> = ({ tabs, onChange, onCont
                             onContextMenu={e => { e.preventDefault(); onContextWindowTab && onContextWindowTab(id); }}
                         >
                             <div className="padding-m">{title}</div>
-                            <img onClick={e => closeTab(e, id)} className="btn btn-close" src={icon_close} alt="btn-close" />
+                            <img onClick={e => closeTab(e, id)} className="btn btn-close" src={IconClose} alt="btn-close" />
                         </div>
                         {index === tabs.length && <hr className="hr hr-vertical opacity-5" />}
                     </Fragment>

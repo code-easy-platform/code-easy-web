@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 
-import icon_star from './../../assets/icons/icon-star.png';
 import { ProjectTypeList, ProjectType } from '../../shared/enuns/ProjectType';
 import { ContextMenuService } from '../../shared/components/context-menu/ContextMenuService';
+import { IconStar } from 'code-easy-components';
 
 interface CardItemProps {
     onDelete?(id: string): void;
@@ -59,7 +59,7 @@ export const CardItem = ({ listMode, ...props }: CardItemProps) => {
             >
                 {!listMode && <>
                     <div className="flex1 padding-m" style={{ alignSelf: 'center' }}>
-                        <img height="50" src={props.item.icon || icon_star} alt="Placeholder" />
+                        <img height="50" src={props.item.icon || IconStar} alt="Placeholder" />
                     </div>
                     <hr className="hr margin-bottom-s margin-top-s" style={{ backgroundColor: 'var(--main-background-highlighted)' }} />
                 </>}
