@@ -15,12 +15,12 @@ export const ProjectTypeList: { name: string, type: ProjectType }[] = [
         name: 'Api',
         type: ProjectType.api
     },
-    {
+    /* {
         name: 'Web',
         type: ProjectType.web
     },
     {
         name: 'Mobile',
         type: ProjectType.mobile
-    },
+    }, */
 ];

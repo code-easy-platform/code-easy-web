@@ -117,7 +117,7 @@
     --box-shadow-context-menu: var(--size-none) var(--size-none) var(--size-0-5) var(--size-none) var(--color-black);
 
     /* Fontes */
-    --font-family-normal: Verdana, Geneva, Tahoma, sans-serif;
+    --font-family-normal: Roboto, Verdana, Geneva, Tahoma, sans-serif;
     --font-family-editor: Consolas, "Courier New", monospace;
     --font-family-vs-code: "Droid Sans Mono", "monospace", monospace, "Droid Sans Fallback";
 

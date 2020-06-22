@@ -57,17 +57,27 @@ export interface ProjectConfigs extends BaseFields {
 
 export class Project {
     public projectConfigs: ProjectConfigs;
+    public openWindows: OpenWindow[];
     public tabs: Tab[];
 
     constructor(
         private fields: {
             projectConfigs: ProjectConfigs;
+            openWindows: OpenWindow[];
             tabs: Tab[];
         }
     ) {
         this.projectConfigs = this.fields.projectConfigs;
+        this.openWindows = this.fields.openWindows;
         this.tabs = this.fields.tabs;
     }
+}
+
+export interface OpenWindow {
+    id: string,
+    title: string,
+    className?: string,
+    isSelected?: boolean,
 }
 
 export class Tab {

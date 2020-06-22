@@ -65,6 +65,9 @@ export class Editor extends React.Component<any> {
         // Valida o projeto e encontra os problemas
         project = ProblemsHelper.getProblems(project).project;
 
+        // WindowsTabsManager
+        project = ProjectsStorage.updateWindowTabs(project);
+
         // Salva a nova versão do projeto no local storage
         ProjectsStorage.setProjectById(project);
 
@@ -76,7 +79,7 @@ export class Editor extends React.Component<any> {
         return (
             <CodeEditorContext.Provider value={this.state}>
                 <div className="main-page fade-in">
-                    <ToolBar onChangeTab={this.onChangeTab} />
+                    <ToolBar />
                     <hr className="hr" />
 
                     <div style={{ height: "calc(100vh - 60px)" }}>
