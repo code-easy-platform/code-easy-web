@@ -32,6 +32,7 @@ export const ToolBar: React.FC = () => {
                     onClick={() => setIsOpenModalProps(true)}
                 />
             </div>
+            <hr className="hr hr-vertical" />
             <TabsManager
                 tabs={codeEditorContext.project.openWindows || []}
                 onChange={windowId => {

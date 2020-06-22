@@ -37,7 +37,6 @@ export const TabsManager: React.FC<TabsManagerProps> = ({ tabs, onChange, onCont
             {tabs.map(({ id, title, className = "", isSelected = false }, index) => {
                 return (
                     <Fragment key={index}>
-                        <hr className="hr hr-vertical opacity-5" />
                         <div
                             tabIndex={0}
                             onMouseDown={e => onClick(e, id)}
@@ -47,7 +46,7 @@ export const TabsManager: React.FC<TabsManagerProps> = ({ tabs, onChange, onCont
                             <div className="padding-m">{title}</div>
                             <img onClick={e => closeTab(e, id)} className="btn btn-close" src={IconClose} alt="btn-close" />
                         </div>
-                        {index === tabs.length && <hr className="hr hr-vertical opacity-5" />}
+                        <hr className="hr hr-vertical opacity-5" />
                     </Fragment>
                 );
             })}

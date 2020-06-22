@@ -1,9 +1,12 @@
 import React, { useContext } from 'react';
+import { useHistory } from 'react-router-dom';
 
 import { CodeEditorContext } from '../../../shared/services/contexts/CodeEditorContext';
+import { ProjectsStorage } from '../../../shared/services/storage/ProjectsStorage';
 
 export const PropertiesTab = () => {
     const codeEditorContext = useContext(CodeEditorContext);
+    const history = useHistory();
 
     return (
         <div className='flex1 flex-content-center'>
@@ -67,10 +70,18 @@ export const PropertiesTab = () => {
                     />
                 </div>
 
-                {/* <div className='flex-column margin-top-m'>
-                    <label htmlFor='project-folder'>Folder</label>
-                    <input value={codeEditorContext.project.projectConfigs.label} id='project-folder' className='input-medium' type='text' />
-                </div> */}
+                <div className='flex-column margin-top-m'>
+                    <button
+                        className='btn border-radius'
+                        style={{ border: '1px solid var(--main-error-color)' }}
+                        onClick={() => {
+                            if (window.confirm('Really want to delete the project?')) {
+                                ProjectsStorage.removeProjectById(codeEditorContext.project.projectConfigs.id);
+                                history.replace('/');
+                            }
+                        }}
+                    >Delete project</button>
+                </div>
 
             </div>
         </div>
