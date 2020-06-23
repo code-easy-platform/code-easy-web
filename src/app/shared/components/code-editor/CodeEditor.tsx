@@ -472,6 +472,16 @@ const CodeEditor: React.FC<ICodeEditorProps> = ({ id, itens = [], emptyMessage, 
                             {...item}
                         />
                     ))}
+
+                    {/* Reinderiza a área de seleção na tela. */}
+                    <SelectorArea
+                        parentRef={editorPanelRef}
+                        enabled={enabledSelection}
+                        onCoordsChange={coords => {
+                            flowItens.list.forEach((item: FlowItem) => item.select(coords));
+                            setFlowItens({ list: flowItens.list });
+                        }}
+                    />
                 </EditorPanel>
             </main>
         </div>

@@ -9,7 +9,7 @@
 }
 
 .window-tabs-manager .window-tab-item {
-    background-color: transparent;
+    background-color: #00000010;
     justify-content: center;
     align-items: center;
     outline: none;

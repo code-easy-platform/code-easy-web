@@ -6,6 +6,7 @@ import { ItemType } from '../../models/ItemFluxo';
 
 type EditorPanelProps = Omit<{
     allowedsInDrop?: string[];
+    onChangeZoom?(zoom: number): void;
     backgroundType?: 'dotted' | 'checkered' | 'custom';
     onDropItem?(item: any, monitor: DropTargetMonitor): void;
 }, keyof React.SVGProps<SVGSVGElement>> & React.SVGProps<SVGSVGElement>;
@@ -18,25 +19,20 @@ type EditorPanelProps = Omit<{
  * @param onDropItem - **Function** - Função executada quando um elemento for dropado no painel
  * @param backgroundType - **'dotted'** | **'checkered'** | **'custom'** - Parâmetro que controla o estilo do background do painel
  */
-export const EditorPanel = React.forwardRef(({ allowedsInDrop, onDropItem, backgroundType = 'dotted', ...props }: EditorPanelProps, ref: any) => {
+export const EditorPanel = React.forwardRef(({ allowedsInDrop, onDropItem, onChangeZoom, backgroundType = 'dotted', ...props }: EditorPanelProps, ref: any) => {
 
-    /*
-        const [scale, setScale] = React.useState(0);
-        const wheel = (e: React.WheelEvent<SVGSVGElement>) => {
-            e.preventDefault();
-
-            if (e.altKey) {
-                if (e.deltaY > 0) {
-                    console.log('Subindo');
-                    setScale(scale - 2);
-                } else {
-                    console.log('Descendo');
-                    setScale(scale + 2);
-                }
+    const [zoom, setZoom] = React.useState(1);
+    const wheel = (e: React.WheelEvent<SVGSVGElement>) => {
+        if (e.altKey) {
+            if (e.deltaY > 0) {
+                setZoom(zoom - 0.1);
+            } else {
+                setZoom(zoom + 0.1);
             }
-
+            onChangeZoom && onChangeZoom(zoom);
         }
-    */
+    }
+
 
     // Este bloco serve para configurar o estilo do background do painel
     let background;
@@ -64,7 +60,7 @@ export const EditorPanel = React.forwardRef(({ allowedsInDrop, onDropItem, backg
             {...props}
             ref={ref}
             tabIndex={0}
-            //onWheel={wheel}
+            onWheel={wheel}
             preserveAspectRatio="none"
             style={{
                 outline: 'none',
@@ -72,7 +68,6 @@ export const EditorPanel = React.forwardRef(({ allowedsInDrop, onDropItem, backg
                 minHeight: '100%',
                 backgroundSize: '15px 15px',
                 backgroundImage: background,
-                // transform: scale === 0 ? undefined : `scale(${scale / 100},${scale / 100})`,
             }}
         />
     );

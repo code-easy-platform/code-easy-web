@@ -14,20 +14,33 @@ interface FlowComponentProps {
 }
 export const FlowComponent: React.FC<FlowComponentProps> = ({ id, isSelected, width, height, left, top, icon, hasError = false, ref }) => {
 
-    const strokeColor: string = isSelected ? "var(--color-botton-bar)" : hasError ? "var(--main-error-color)" : "var(--main-background)";
+    const strokeColor: string = isSelected ? "var(--color-botton-bar)" : hasError ? "var(--main-error-color)" : "transparent";
 
     return (
         <>
             <rect
                 strokeWidth="var(--main-border-width)"
                 style={{ cursor: 'move', zIndex: 2 }}
-                fill="var(--main-background)"
                 strokeLinejoin="round"
                 stroke={strokeColor}
+                fill="transparent"
                 height={height}
                 width={width}
                 ref={ref}
                 x={left}
+                y={top}
+                id={id}
+            />
+            <rect
+                strokeWidth="var(--main-border-width)"
+                style={{ cursor: 'move', zIndex: 2 }}
+                fill="var(--main-background)"
+                strokeLinejoin="round"
+                height={height}
+                width={width}
+                x={left}
+                rx={50}
+                ry={50}
                 y={top}
                 id={id}
             />

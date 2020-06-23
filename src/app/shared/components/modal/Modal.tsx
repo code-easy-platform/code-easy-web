@@ -1,9 +1,7 @@
 import React, { useState, useEffect } from 'react';
+import { IconClose, IconMaximize } from 'code-easy-components';
 
 import './Modal.css';
-
-import icon_maximizar from './../../../assets/icons/btn-maximizar.svg';
-import icon_close from './../../../assets/icons/btn-close.svg';
 
 interface ModalProps {
     onCancel?(e: React.MouseEvent<HTMLButtonElement, MouseEvent>): void;
@@ -183,7 +181,7 @@ export const Modal: React.FC<ModalProps> = ({ children, maxWidth = 800, maxHeigh
             <div
                 tabIndex={0}
                 onKeyDown={keyDown}
-                style={{ backgroundColor: '#ffffff05' }}
+                style={{ backgroundColor: '#ffffff10' }}
                 className={"fade-in full-height full-width absolute"}
                 onClick={() => closeWithBackdropClick ? close() : undefined}
             />
@@ -214,10 +212,10 @@ export const Modal: React.FC<ModalProps> = ({ children, maxWidth = 800, maxHeigh
                 <div className="flex1 flex-itens-center padding-horizontal-s opacity-9">{title}</div>
                 <div>
                     <button onClick={toggleMaximize} onMouseDown={e => e.stopPropagation()} className="btn border-radius-soft outline-none modal-btn">
-                        <img height={30} width={30} src={icon_maximizar} alt="Toggle maximize modal" />
+                        <img height={30} width={30} src={IconMaximize} alt="Toggle maximize modal" />
                     </button>
                     <button onClick={close} onMouseDown={e => e.stopPropagation()} className="btn border-radius-soft outline-none modal-btn" title="Close(Esc)">
-                        <img height={30} width={30} src={icon_close} alt="Close modal" />
+                        <img height={30} width={30} src={IconClose} alt="Close modal" />
                     </button>
                 </div>
             </div>

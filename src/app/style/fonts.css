@@ -1,15 +1,19 @@
 .font-size-xs {
     font-size: var(--font-size-xs);
 }
+
 .font-size-s {
     font-size: var(--font-size-s);
 }
+
 .font-size-m {
     font-size: var(--font-size-m);
 }
+
 .font-size-g {
     font-size: var(--font-size-g);
 }
+
 .font-size-xg {
     font-size: var(--font-size-xg);
 }

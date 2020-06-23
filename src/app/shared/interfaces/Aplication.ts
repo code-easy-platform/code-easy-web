@@ -4,6 +4,11 @@ import { ComponentType } from "../enuns/ComponentType";
 import { ProjectType } from "../enuns/ProjectType";
 
 
+export enum CurrentFocus {
+    tree = "tree",
+    flow = "flow"
+}
+
 interface BaseFields {
     /**
      * Usado como identificador do registro
@@ -56,17 +61,20 @@ export interface ProjectConfigs extends BaseFields {
 }
 
 export class Project {
+    public currentComponentFocus: CurrentFocus;
     public projectConfigs: ProjectConfigs;
     public openWindows: OpenWindow[];
     public tabs: Tab[];
 
     constructor(
         private fields: {
+            currentComponentFocus: CurrentFocus;
             projectConfigs: ProjectConfigs;
             openWindows: OpenWindow[];
             tabs: Tab[];
         }
     ) {
+        this.currentComponentFocus = this.fields.currentComponentFocus;
         this.projectConfigs = this.fields.projectConfigs;
         this.openWindows = this.fields.openWindows;
         this.tabs = this.fields.tabs;

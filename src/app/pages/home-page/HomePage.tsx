@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useHistory } from 'react-router-dom';
-import { Utils } from 'code-easy-components';
+import { Utils, IconOpenGithub, IconDownload, IconImport, IconConfig } from 'code-easy-components';
 import dataformat from 'dateformat';
 
 import { BottonStatusBar } from '../../shared/components/botton-status-bar/BottonStatusBar';
@@ -8,19 +8,11 @@ import { ProjectsStorage } from '../../shared/services/storage/ProjectsStorage';
 import { TabButton } from '../../shared/components/tab-button/TabButton';
 import { Button } from '../../shared/components/buttons/Button';
 import { Project } from '../../shared/interfaces/Aplication';
+import { ProjectType } from '../../shared/enuns/ProjectType';
 import { ImportProjects } from './ImportFiles';
+import { IdeConfigs } from './Configs';
 import { CardItem } from './CardItem';
 
-import icon_open_github from './../../assets/icons/icon-open-github.png';
-// import icon_plugins from './../../assets/icons/icon-plugins.png';
-import icon_download from './../../assets/icons/icon-download.png';
-// import icon_accont from './../../assets/icons/icon-accont.png';
-import icon_import from './../../assets/icons/icon-import.png';
-import icon_config from './../../assets/icons/icon-config.png';
-import { ProjectType } from '../../shared/enuns/ProjectType';
-import { IdeConfigs } from './Configs';
-// import icon_tips from './../../assets/icons/icon-tips.png';
-// import icon_help from './../../assets/icons/icon-help.png';
 
 export const HomePage = () => {
 
@@ -69,7 +61,7 @@ export const HomePage = () => {
                     <div className="flex-space-between">
                         <div>
                             <Button
-                                icon={icon_config}
+                                icon={IconConfig}
                                 onClick={e => setOpenConfig(true)}
                                 style={{ height: 'var(--tool-bar-height)', padding: '10px' }}
                             />
@@ -84,13 +76,13 @@ export const HomePage = () => {
                         </div>
                         <div>
                             <Button
-                                icon={icon_import}
+                                icon={IconImport}
                                 title={"Import a list of projects from your files"}
                                 style={{ height: 'var(--tool-bar-height)', padding: '10px' }}
                                 onClick={() => setOpenImportProjects(true)}
                             />
                             <Button
-                                icon={icon_download}
+                                icon={IconDownload}
                                 title={"Download your projects"}
                                 style={{ height: 'var(--tool-bar-height)', padding: '10px' }}
                                 onClick={() => Utils.downloadFile('MyProjects', 'json', JSON.stringify(projects))}
@@ -105,7 +97,7 @@ export const HomePage = () => {
                                     /> */}
                             <Button
                                 title="Open on github"
-                                icon={icon_open_github}
+                                icon={IconOpenGithub}
                                 style={{ height: 'var(--tool-bar-height)', padding: '10px' }}
                                 onClick={() => window.open('https://github.com/code-easy-platform')}
                             />
