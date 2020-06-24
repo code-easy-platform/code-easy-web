@@ -1,11 +1,9 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { IconFlowAction, IconFlowAssign, IconFlowComment, IconFlowEnd, IconFlowForeach, IconFlowIf, IconFlowStart, IconFlowSwitch } from 'code-easy-components';
-import { getEmptyImage } from 'react-dnd-html5-backend';
 import { useDrag } from 'react-dnd';
 
 import { ItemType } from '../../models/ItemFluxo';
 import { FlowComponent } from './FlowComponent';
-import { CustomDragLayer } from './CustomDragLayer';
 
 /** Usado para definir o tipo de input de parâmetros no item drag. */
 export interface ItemDragProps {
@@ -30,35 +28,23 @@ export interface ItemDragProps {
     onMouseOver?(e?: React.MouseEvent<SVGGElement, MouseEvent>): void;
     onMouseDown?(e?: React.MouseEvent<SVGGElement, MouseEvent>): void;
     onContextMenu?(data?: any, e?: React.MouseEvent<SVGGElement, MouseEvent>): void;
-    onChangePosition?(top: number, left: number, e?: React.MouseEvent<SVGGElement, MouseEvent>): void;
+    onChangePosition?(top: number, left: number, itemId: string | undefined, e?: React.MouseEvent<SVGGElement, MouseEvent>): void;
 }
 
 /** Usado para representar os itens de lógica no fluxo do editor e na toolbar. */
-export const ItemToDrag: React.FC<ItemDragProps> = (props: ItemDragProps) => {
-
-    /** Armazena a posição onde o iten item do fluxo foi clicado. */
-    let cliquedLocationFlowItem = {
-        top: 0,
-        left: 0,
-    };
+export const ItemToDrag: React.FC<ItemDragProps> = ({ title, ...props }: ItemDragProps) => {
 
     const {
-        isSelected, onContextMenu, hasError, onMouseUp,
-        id, onChangePosition, onMouseDown, onMouseOver,
-        width = 0, height = 0, top = 0, left = 0,
-        allowDrag, itemType, icon,
+        height = 0, top = 0, left = 0, allowDrag, itemType, icon,
+        onChangePosition, onMouseDown, onMouseOver, width = 0,
+        isSelected, onContextMenu, hasError, onMouseUp, id,
     } = props;
 
-    let { title } = props;
-
     /** Permite que uym elemento seja arrastado e adicionado dentro do editor de fluxo. */
-    const [{ isDragging }, dragRef, preview] = useDrag({
+    const [, dragRef] = useDrag({
         item: { type: itemType || 'undefined', itemProps: { id, left, top, title, itemType, sucessor: [0] } },
         collect: monitor => ({ isDragging: monitor.isDragging() }),
     });
-
-    /** Faz com que o item que está sendo arrastado tenha um preview custumizado */
-    useEffect(() => { preview(getEmptyImage(), { captureDraggingState: true }) }, [preview]);
 
     /**
      * Ajuda a evitar que bugs aconteçam por estar uma fun declarada
@@ -72,6 +58,9 @@ export const ItemToDrag: React.FC<ItemDragProps> = (props: ItemDragProps) => {
         window.onmouseup = null;
     }
 
+    /** Armazena a posição onde o iten item do fluxo foi clicado. */
+    let cliquedLocationFlowItem = { top: 0, left: 0 };
+
     /** Quando um item estiver selecionado e for arrastado na tale esta fun vai fazer isso acontecer. */
     const mouseMove = (e: MouseEvent) => {
         e.stopPropagation();
@@ -79,7 +68,7 @@ export const ItemToDrag: React.FC<ItemDragProps> = (props: ItemDragProps) => {
         const top = e.offsetY - cliquedLocationFlowItem.top;
         const left = e.offsetX - cliquedLocationFlowItem.left;
 
-        onChangePosition && onChangePosition(top, left, e as any);
+        onChangePosition && onChangePosition(top, left, id, e as any);
 
     }
 
@@ -130,18 +119,22 @@ export const ItemToDrag: React.FC<ItemDragProps> = (props: ItemDragProps) => {
 
     /** Com base se é permitido ou não usar o "drag and drop" ele reinderiza o item na tela. */
     if (allowDrag) {
-        const style: React.CSSProperties = {
-            justifyContent: "center",
-            alignItems: "center",
-            cursor: "move",
-            margin: "5px",
-            fontSize: 10,
-            width: 30,
-        };
-        return <>
-            <img ref={dragRef} id={id} className="toolbar-item" style={style} src={getIcon(itemType as any)} title={title} alt={title} />
-            {isDragging && <CustomDragLayer />}
-        </>;
+        return <img
+            src={getIcon(itemType as any)}
+            className={"toolbar-item"}
+            ref={dragRef}
+            title={title}
+            alt={title}
+            id={id}
+            style={{
+                justifyContent: "center",
+                alignItems: "center",
+                cursor: "move",
+                fontSize: 10,
+                margin: 5,
+                width: 30,
+            }}
+        />;
     } else {
 
         // Ajusta o tamanho do titulo para não ficar muito grande
@@ -157,8 +150,26 @@ export const ItemToDrag: React.FC<ItemDragProps> = (props: ItemDragProps) => {
                 onMouseOver={onMouseOver}
                 onContextMenu={contextMenu}
             >
-                {itemType !== ItemType.COMMENT && <text x={(left || 0) + ((width || 0) / 2)} textAnchor="middle" fontSize="small" fill="var(--color-white)" y={(top || 0) - 5} id={id}>{title}</text>}
-                <FlowComponent id={id} top={top} left={left} width={width} height={height} isSelected={isSelected} hasError={hasError} icon={icon || getIcon(itemType)} />
+                {itemType !== ItemType.COMMENT &&
+                    <text
+                        fill={"var(--color-white)"}
+                        x={left + (width / 2)}
+                        textAnchor={"middle"}
+                        fontSize={"small"}
+                        y={top - 5}
+                        id={id}
+                    >{title}</text>
+                }
+                <FlowComponent
+                    id={id}
+                    top={top}
+                    left={left}
+                    width={width}
+                    height={height}
+                    hasError={hasError}
+                    isSelected={isSelected}
+                    icon={icon || getIcon(itemType)}
+                />
             </g>
         );
     }

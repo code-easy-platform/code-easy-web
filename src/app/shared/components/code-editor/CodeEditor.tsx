@@ -62,7 +62,11 @@ const CodeEditor: React.FC<ICodeEditorProps> = ({ id, itens = [], emptyMessage, 
         }
     }
 
+    /** Essa função é executada sempre um item(aceito como item soltável) é sortado no painel */
     const onDropFlowItem = (item: any, monitor: DropTargetMonitor) => {
+
+        // Deseleciona qualquer outro item que esteja selecionado no fluxo.
+        flowItens.list.forEach((item: FlowItem) => item.isSelected = false);
 
         const target: any = editorPanelRef.current;
         const targetSize: any = target.getBoundingClientRect();
@@ -108,37 +112,32 @@ const CodeEditor: React.FC<ICodeEditorProps> = ({ id, itens = [], emptyMessage, 
      * @param mousePositionLeft Posição do mouse com relação a esquerda(left) do quadro do editor
      * @param event Evento de mouse move
      */
-    const onChangePositionItens = (mousePositionTop: number, mousePositionLeft: number, e?: any) => {
+    const onChangePositionItens = (mousePositionTop: number, mousePositionLeft: number, itemId: string | undefined, e?: any) => {
 
+        let selectedItens = flowItens.list.filter((item: FlowItem) => item.isSelected).sort((a, b) => ((a.top + b.top) - (a.left + b.left)));
+        const targetItem = selectedItens.find(selectedItem => selectedItem.id === itemId);
+        if (!targetItem) return;
+
+        // Valida se o usuário optou pela ajuda no encaixe na grid
         if (snapGridWhileDragging) {
             mousePositionTop = Math.round(mousePositionTop / 15) * 15;
             mousePositionLeft = Math.round(mousePositionLeft / 15) * 15;
+
+            // Valida se realmente houve alguma mudança
+            if (targetItem.top === mousePositionTop && targetItem.left === mousePositionLeft) return;
         }
 
-        let components = flowItens.list.filter((item: FlowItem) => item.isSelected).sort((a, b) => ((a.top + b.top) - (a.left + b.left)));
-
-
-        if (e && e.ctrlKey) {
-
-            components.forEach(comp => {
-
-                const oldTop = comp.top;
-                const oldLeft = comp.left;
-
-                comp.top = mousePositionTop + (mousePositionTop > oldTop ? mousePositionTop - oldTop : oldTop - mousePositionTop);
-                comp.left = mousePositionLeft + (mousePositionLeft > oldLeft ? mousePositionLeft - oldLeft : oldLeft - mousePositionLeft);
-
-            });
-
-        } else {
-            components.forEach(comp => {
-                const oldLeft = comp.left;
-                const oldTop = comp.top;
-
-                comp.left = oldLeft + (mousePositionLeft - oldLeft);
-                comp.top = oldTop + (mousePositionTop - oldTop);
-            })
+        /** Evita esses valores sejam alterados pela referência entre as variáveis */
+        const old = {
+            left: targetItem.left,
+            top: targetItem.top,
         }
+
+        // Muda a posição de todos os itens que estão selecionados
+        selectedItens.forEach(comp => {
+            comp.top += (mousePositionTop - old.top);
+            comp.left += (mousePositionLeft - old.left);
+        });
 
         setFlowItens({ list: flowItens.list });
     }
@@ -367,29 +366,30 @@ const CodeEditor: React.FC<ICodeEditorProps> = ({ id, itens = [], emptyMessage, 
 
         if (e.ctrlKey) {
             flowItens.list.forEach((item: FlowItem) => {
-
                 if (item.id === e.currentTarget.id) {
                     item.isSelected = !item.isSelected;
                 }
-
             });
         } else {
-            flowItens.list.forEach((item: FlowItem) => {
+            const flowItemSelecteds = flowItens.list.filter(item => item.isSelected);
+            const keepMultiselect = flowItemSelecteds.length > 1 && flowItemSelecteds.some(item => item.id === e.currentTarget.id);
 
-                if (item.id === e.currentTarget.id) {
-                    item.isSelected = true;
-                } else {
-                    item.isSelected = false;
-                }
-
-            });
-
+            if (!keepMultiselect) {
+                flowItens.list.forEach((item: FlowItem) => {
+                    if (item.id === e.currentTarget.id) {
+                        item.isSelected = true;
+                    } else {
+                        item.isSelected = false;
+                    }
+                });
+            }
         }
 
         setFlowItens({ list: flowItens.list });
         onChangeFlow();
     }
 
+    /** Para inputs que estão no meio do fluxo */
     const itemNameChange = (text: string, index: number) => {
         flowItens.list[index].name = text;
         setFlowItens({ list: flowItens.list });
@@ -415,10 +415,7 @@ const CodeEditor: React.FC<ICodeEditorProps> = ({ id, itens = [], emptyMessage, 
                 >
 
                     {(!enabledSelection && flowItens.list.length === 0)
-                        && <foreignObject
-                            width={"100%"}
-                            height={"100%"}
-                        >
+                        && <foreignObject width={"100%"} height={"100%"}>
                             <div className="full-height full-width flex-itens-center flex-content-center opacity-5">
                                 <header>{emptyMessage || "Double-click on an item in the tree to edit it"}</header>
                             </div>
@@ -440,20 +437,17 @@ const CodeEditor: React.FC<ICodeEditorProps> = ({ id, itens = [], emptyMessage, 
 
                         const itensSucessores: FlowItem[] = flowItens
                             .list.filter((sucessorItem: FlowItem) => (sucessorItem.id !== undefined)
-                                ? item.sucessor.includes(sucessorItem.id)
+                                ? item.sucessor.some(sucessorItemId => sucessorItem.id === sucessorItemId)
                                 : false
                             );
-
-                        // Define se será usado uma nova branch para este item de fluxo.
-                        let isUseNewBranch = InternalUtils.useNewBranch(itensSucessores.length, item.itemType);
 
                         /* Reinderiza todos os branchs de um item de fluxo. */
                         return <Lines
                             key={index}
                             item={item}
-                            isUseNewBranch={isUseNewBranch}
                             itensSucessores={itensSucessores}
                             onSucessorChange={changeSucessor}
+                            isUseNewBranch={InternalUtils.useNewBranch(itensSucessores.length, item.itemType)}
                         />;
 
                     })}
@@ -463,10 +457,10 @@ const CodeEditor: React.FC<ICodeEditorProps> = ({ id, itens = [], emptyMessage, 
                         <ItemToDrag
                             onContextMenu={(data, e) => { e?.stopPropagation(); (onContextMenu && enabledSelection) && onContextMenu(data, e) }}
                             onNameChange={text => itemNameChange(text, index)}
-                            onMouseDown={(e: any) => onMouseDown(e)}
                             onChangePosition={onChangePositionItens}
-                            onMouseUp={(e: any) => onChangeFlow()}
                             parentElementRef={editorPanelRef}
+                            onMouseUp={() => onChangeFlow()}
+                            onMouseDown={onMouseDown}
                             title={item.name}
                             key={item.id}
                             {...item}

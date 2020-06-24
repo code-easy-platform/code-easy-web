@@ -13,11 +13,18 @@ export const Lines: React.FC<LinesProps> = ({ itensSucessores, item, onSucessorC
     return <>
         {itensSucessores.map((sucessorItem: FlowItem, index: number) => {
 
-            const left2 = sucessorItem ? sucessorItem.left + sucessorItem.width / 2 : item.left + (item.width / 2);
+            /** Para o item final do fluxo não deve criar uma linha */
+            if (item.itemType === ItemType.END) return null;
+
+            /** Se for undefined não cria a linha */
+            if (item.id === undefined) return null;
+
+            /** Tem a posição do item de destino da seta */
+            const left2 = sucessorItem ? sucessorItem.left + (sucessorItem.width / 2) : item.left + (item.width / 2);
             const top2 = sucessorItem ? sucessorItem.top + (sucessorItem.height / 2) : item.top + (item.height / 2);
 
-            if (item.itemType === ItemType.END) return <></>;
-            if (item.id === undefined) return <></>; // Se for undefined não cria a linha
+            /** Valida se a linha deve estar curvada para facilitar a visualização */
+            const isCurved = sucessorItem.sucessor.some(id => id === item.id);
 
             return <Line
                 lineType={item.itemType === ItemType.COMMENT ? 'dotted' : 'normal'}
@@ -26,6 +33,7 @@ export const Lines: React.FC<LinesProps> = ({ itensSucessores, item, onSucessorC
                 key={item.id + "_" + sucessorItem.id}
                 onSucessorChange={onSucessorChange}
                 sucessorIndex={index}
+                isCurved={isCurved}
                 color={"gray"}
                 left2={left2}
                 id={item.id}
@@ -39,7 +47,7 @@ export const Lines: React.FC<LinesProps> = ({ itensSucessores, item, onSucessorC
             <Line
                 left1={(item.left || 0) + ((item.width || 0) / 2)}
                 top1={(item.top || 0) + (item.height || 0) / 2}
-                color="var(--toolbar-item-background-active)"
+                color={"gray"}
                 left2={item.left + (item.width / 2)}
                 top2={item.top + (item.height + 20)}
                 onSucessorChange={onSucessorChange}
