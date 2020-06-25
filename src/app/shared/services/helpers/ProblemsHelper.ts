@@ -32,27 +32,27 @@ class ProblemsHelperService {
             addProblem('Project version field is not valid', 'error');
         }
 
-        // Valida os itens das tabs
+        // Valida os items das tabs
         project.tabs.forEach(tab => {
 
-            if (tab.itens.length === 0 && tab.configs.type === ComponentType.tabRoutes) {
+            if (tab.items.length === 0 && tab.configs.type === ComponentType.tabRoutes) {
                 addProblem(`Add at least one route to your app`, 'warning');
             }
 
-            tab.itens.forEach(item => {
+            tab.items.forEach(item => {
 
-                const numStarts = item.itens.filter(item_flow => item_flow.itemType === ItemType.START);
+                const numStarts = item.items.filter(item_flow => item_flow.itemType === ItemType.START);
                 if (numStarts.length > 1) {
                     addProblem(`In ${item.label} must have only start flow item`, 'error');
                 }
 
                 if (item.type === ComponentType.globalAction || item.type === ComponentType.localAction || item.type === ComponentType.routerConsume) {
-                    if (!(item.itens.some(comp => comp.itemType === ItemType.START) && item.itens.some(comp => comp.itemType === ItemType.END))) {
+                    if (!(item.items.some(comp => comp.itemType === ItemType.START) && item.items.some(comp => comp.itemType === ItemType.END))) {
                         addProblem(`A ${item.type} must be have a "start" and an "end" item in "${item.label}"`, 'error');
                     }
                 }
 
-                item.itens.forEach(flowItem => {
+                item.items.forEach(flowItem => {
                     flowItem.hasError = false;
 
                     // Se for diferente de END e COMMENT valida se tem sucessores
@@ -78,7 +78,7 @@ class ProblemsHelperService {
                                 const tabActions = project.tabs.find(tab => tab.configs.type === ComponentType.tabActions);
                                 if (!tabActions) return;
 
-                                if (!tabActions.itens.some(item => item.id === prop.value)) {
+                                if (!tabActions.items.some(item => item.id === prop.value)) {
                                     addProblem(`In ${item.label} the flow item ${flowItem.name} must have a valid value in the ${prop.name} field.`, 'error');
                                     prop.valueHasError = true;
                                 }
@@ -89,7 +89,7 @@ class ProblemsHelperService {
                                 project.tabs.forEach(toValidateTab => {
 
                                     // Pode ser usado o prop id para achar o parâmetro(componente de árvore) porque esse id é o mesmo usado na hroa de montar os parâmetros da action. 
-                                    const paramCurrent = toValidateTab.itens.find(tabItem => tabItem.id === prop.id);
+                                    const paramCurrent = toValidateTab.items.find(tabItem => tabItem.id === prop.id);
                                     if (paramCurrent) {
                                         paramCurrent.properties.forEach(paramProp => {
 
@@ -129,7 +129,7 @@ class ProblemsHelperService {
                     } else if (flowItem.itemType === ItemType.END) {
 
                         // Valida os ends
-                        const index = item.itens.findIndex(item_flow => item_flow.connections.some(connection => connection.connectionId === flowItem.id || 'undefined'));
+                        const index = item.items.findIndex(item_flow => item_flow.connections.some(connection => connection.connectionId === flowItem.id || 'undefined'));
                         if (index === -1) {
                             addProblem(`In ${item.label} a ${flowItem.name} flow item is not used`, 'error');
                             flowItem.hasError = true;

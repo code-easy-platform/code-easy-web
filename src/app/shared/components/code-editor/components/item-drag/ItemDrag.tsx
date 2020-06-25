@@ -33,7 +33,7 @@ export interface ItemDragProps {
     onChangePosition?(top: number, left: number, itemId: string | undefined, e?: React.MouseEvent<SVGGElement, MouseEvent>): void;
 }
 
-/** Usado para representar os itens de lógica no fluxo do editor e na toolbar. */
+/** Usado para representar os items de lógica no fluxo do editor e na toolbar. */
 export const ItemToDrag: React.FC<ItemDragProps> = ({ title, ...props }: ItemDragProps) => {
 
     const {

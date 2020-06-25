@@ -4,7 +4,7 @@
  */
 export enum ComponentType {
     /**
-     * Usado em itens que tem apenas a função de agrupar itens
+     * Usado em items que tem apenas a função de agrupar items
      * 
      * ex: "pastas";
      */

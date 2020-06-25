@@ -10,7 +10,7 @@ import { ComponentType } from "../../enuns/ComponentType";
 
 class DefaultPropsService {
 
-    /** Devolve uma lista de propriedades para ser adicionado em novos itens de fluxo ou da árvore. */
+    /** Devolve uma lista de propriedades para ser adicionado em novos items de fluxo ou da árvore. */
     public getNewProps(itemType: ItemType | ComponentType, name: string, inARouter: boolean = false): IProperties[] {
         switch (itemType) {
             case ItemType.START:

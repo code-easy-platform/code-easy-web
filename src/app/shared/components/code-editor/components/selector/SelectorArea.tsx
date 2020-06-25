@@ -6,7 +6,7 @@ interface SelectorAreaProps {
     parentRef: React.MutableRefObject<any>;
     onCoordsChange?(coords: Coords): void;
 }
-/** Reinderiza a área de seleção na tela, para que seja possível selecionar diversos itens de uma vez. */
+/** Reinderiza a área de seleção na tela, para que seja possível selecionar diversos items de uma vez. */
 export const SelectorArea: React.FC<SelectorAreaProps> = ({ parentRef, enabled = true, onCoordsChange = (coords: { startY: number, startX: number, endY: number, endX: number }) => { } }) => {
 
     const [show, setShow] = useState(false);

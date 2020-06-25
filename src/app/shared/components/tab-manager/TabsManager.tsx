@@ -1,7 +1,7 @@
 import React, { Fragment } from 'react';
 import { IconClose } from 'code-easy-components';
 
-import { OpenWindow } from '../../interfaces/Aplication';
+import { OpenWindow } from '../../interfaces/OpenedWindow';
 import './TabsManager.css';
 
 interface TabsManagerProps {

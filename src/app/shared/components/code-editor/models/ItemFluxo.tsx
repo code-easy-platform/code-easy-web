@@ -22,7 +22,7 @@ export interface ItemFluxo {
     icon: any;
 }
 
-/** Tipos de itens existentes na toolbar. */
+/** Tipos de items existentes na toolbar. */
 export enum ItemType {
     COMMENT = "COMMENT",
     FOREACH = "FOREACH",

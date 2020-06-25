@@ -12,10 +12,10 @@ type EditorPanelProps = Omit<{
 }, keyof React.SVGProps<SVGSVGElement>> & React.SVGProps<SVGSVGElement>;
 
 /**
- * Base para os itens de fluxo.
+ * Base para os items de fluxo.
  * È composto de um svg normal com o hook de drop do dnd.
  *
- * @param allowedsInDrop - **string[]** - Usado para adicionar mais itens suportados no drop
+ * @param allowedsInDrop - **string[]** - Usado para adicionar mais items suportados no drop
  * @param onDropItem - **Function** - Função executada quando um elemento for dropado no painel
  * @param backgroundType - **'dotted'** | **'checkered'** | **'custom'** - Parâmetro que controla o estilo do background do painel
  */
@@ -44,10 +44,10 @@ export const EditorPanel = React.forwardRef(({ allowedsInDrop, onDropItem, onCha
         background = props.style?.backgroundImage;
     }
 
-    /** Define quais itens são aceitos no drop do start. */
+    /** Define quais items são aceitos no drop do start. */
     const acceptedInDrop: ItemType[] = [ItemType.START, ItemType.ACTION, ItemType.IF, ItemType.FOREACH, ItemType.SWITCH, ItemType.ASSIGN, ItemType.END, ItemType.COMMENT];
 
-    /** Usado para que seja possível o drop de itens no editor. */
+    /** Usado para que seja possível o drop de items no editor. */
     const [, dropRef] = useDrop({
         accept: [...acceptedInDrop, ...allowedsInDrop || []], // Especifica quem pode ser dropado na editor
         drop: onDropItem,

@@ -18,11 +18,11 @@ import { Lines } from './components/lines/Lines';
 /**
  * Editor de lógica de programação através de fluxo simples.
  *
- * @param itens FlowItem[] - Usado para exibir os itens na tela do editor.
- * @param toolItens FlowItem[] - Usado para exibir os itens na toolbox do editor.
- * @param onChangeItens Function - Usada para emitir através do output o fluxo atualidado, acontece a cada mudança de estado dos itens de fluxo.
+ * @param items FlowItem[] - Usado para exibir os items na tela do editor.
+ * @param toolItems FlowItem[] - Usado para exibir os items na toolbox do editor.
+ * @param onChangeItems Function - Usada para emitir através do output o fluxo atualidado, acontece a cada mudança de estado dos items de fluxo.
  * @param onDropItem Function - Usada para emitir através do output o item que foi dropado no fluxo.
- * @param isShowToolbar boolean - Usado para exibir ou não a toolbox cons itens de lógica.
+ * @param isShowToolbar boolean - Usado para exibir ou não a toolbox cons items de lógica.
  */
 export const FlowEditor: FC<ICodeEditorProps> = (props: ICodeEditorProps) => {
     return (
@@ -32,33 +32,33 @@ export const FlowEditor: FC<ICodeEditorProps> = (props: ICodeEditorProps) => {
     );
 }
 
-/** Usada para validar houve mudanças no estados dos itens e impedir a realização outputs desnecessários. */
+/** Usada para validar houve mudanças no estados dos items e impedir a realização outputs desnecessários. */
 let backupFlow: string = "";
 
 /** Editor do fluxo. */
-const CodeEditor: React.FC<ICodeEditorProps> = ({ id, itens = [], disableOpacity = 0.3, emptyMessage, snapGridWhileDragging = true, toolItens = [], onChangeItens = () => { }, onMouseOver, backgroundType, showToolbar = false, onDropItem = () => undefined, allowedsInDrop = [], onContextMenu, onKeyDown, breadcrumbs, enabledSelection = true }) => {
+const CodeEditor: React.FC<ICodeEditorProps> = ({ id, items = [], disableOpacity = 0.3, emptyMessage, snapGridWhileDragging = true, toolItems = [], onChangeItems = () => { }, onMouseOver, backgroundType, showToolbar = false, onDropItem = () => undefined, allowedsInDrop = [], onContextMenu, onKeyDown, breadcrumbs, enabledSelection = true }) => {
 
-    /** Referencia o svg onde está todos os itens de fluxo. */
+    /** Referencia o svg onde está todos os items de fluxo. */
     const editorPanelRef = useRef<any>(null);
     const inputCopyRef = useRef<any>(null);
 
     /** Controla o estado do editor inteiro. */
-    const [flowItens, setFlowItens] = useState<{ list: FlowItem[] }>({ list: [] });
-    useEffect(() => setFlowItens({ list: itens }), [itens]);
+    const [flowItems, setFlowItems] = useState<{ list: FlowItem[] }>({ list: [] });
+    useEffect(() => setFlowItems({ list: items }), [items]);
 
     const [svgSize, setSvgSize] = useState({ svgHeight: 0, svgWidth: 0 });
     useEffect(() => {
         setSvgSize({
-            svgHeight: flowItens.list.length > 0 ? flowItens.list.sort((a, b) => b.top - a.top)[0].top + 300 : 0,
-            svgWidth: flowItens.list.length > 0 ? flowItens.list.sort((a, b) => b.left - a.left)[0].left + 200 : 0,
+            svgHeight: flowItems.list.length > 0 ? flowItems.list.sort((a, b) => b.top - a.top)[0].top + 300 : 0,
+            svgWidth: flowItems.list.length > 0 ? flowItems.list.sort((a, b) => b.left - a.left)[0].left + 200 : 0,
         });
-    }, [flowItens]);
+    }, [flowItems]);
 
-    /** Usada para emitir os itens para fora do componente. */
+    /** Usada para emitir os items para fora do componente. */
     const onChangeFlow = () => {
-        if (backupFlow !== JSON.stringify(flowItens)) {
-            backupFlow = JSON.stringify(flowItens); // Salva para fazer as comparações posteriores.
-            onChangeItens(flowItens.list);
+        if (backupFlow !== JSON.stringify(flowItems)) {
+            backupFlow = JSON.stringify(flowItems); // Salva para fazer as comparações posteriores.
+            onChangeItems(flowItems.list);
         }
     }
 
@@ -66,7 +66,7 @@ const CodeEditor: React.FC<ICodeEditorProps> = ({ id, itens = [], disableOpacity
     const onDropFlowItem = (item: any, monitor: DropTargetMonitor) => {
 
         // Deseleciona qualquer outro item que esteja selecionado no fluxo.
-        flowItens.list.forEach((item: FlowItem) => item.isSelected = false);
+        flowItems.list.forEach((item: FlowItem) => item.isSelected = false);
 
         const target: any = editorPanelRef.current;
         const targetSize: any = target.getBoundingClientRect();
@@ -88,16 +88,16 @@ const CodeEditor: React.FC<ICodeEditorProps> = ({ id, itens = [], disableOpacity
         const onDropRes = onDropItem(item.id, (newItem.id || Utils.getUUID()), newItem);
         if (onDropRes === undefined) {
 
-            flowItens.list.push(newItem);
-            setFlowItens({ list: flowItens.list });
+            flowItems.list.push(newItem);
+            setFlowItems({ list: flowItems.list });
 
             editorPanelRef.current.focus();
             onChangeFlow();
 
         } else if (onDropRes) {
 
-            flowItens.list.push(onDropRes)
-            setFlowItens({ list: flowItens.list });
+            flowItems.list.push(onDropRes)
+            setFlowItems({ list: flowItems.list });
 
             editorPanelRef.current.focus();
             onChangeFlow();
@@ -112,10 +112,10 @@ const CodeEditor: React.FC<ICodeEditorProps> = ({ id, itens = [], disableOpacity
      * @param mousePositionLeft Posição do mouse com relação a esquerda(left) do quadro do editor
      * @param event Evento de mouse move
      */
-    const onChangePositionItens = (mousePositionTop: number, mousePositionLeft: number, itemId: string | undefined, e?: any) => {
+    const onChangePositionItems = (mousePositionTop: number, mousePositionLeft: number, itemId: string | undefined, e?: any) => {
 
-        let selectedItens = flowItens.list.filter((item: FlowItem) => item.isSelected).sort((a, b) => ((a.top + b.top) - (a.left + b.left)));
-        const targetItem = selectedItens.find(selectedItem => selectedItem.id === itemId);
+        let selectedItems = flowItems.list.filter((item: FlowItem) => item.isSelected).sort((a, b) => ((a.top + b.top) - (a.left + b.left)));
+        const targetItem = selectedItems.find(selectedItem => selectedItem.id === itemId);
         if (!targetItem) return;
 
         // Valida se o usuário optou pela ajuda no encaixe na grid
@@ -134,8 +134,8 @@ const CodeEditor: React.FC<ICodeEditorProps> = ({ id, itens = [], disableOpacity
             top: targetItem.top,
         }
 
-        // Muda a posição de todos os itens que estão selecionados
-        selectedItens.forEach(comp => {
+        // Muda a posição de todos os items que estão selecionados
+        selectedItems.forEach(comp => {
             const oldCompLeft = comp.left;
             const oldCompTop = comp.top;
 
@@ -151,11 +151,11 @@ const CodeEditor: React.FC<ICodeEditorProps> = ({ id, itens = [], disableOpacity
             }
         });
 
-        setFlowItens({ list: flowItens.list });
+        setFlowItems({ list: flowItems.list });
     }
 
     /**
-     * Função usada para adicionar, remove e atualizar sucessores dos itens arrastáveis
+     * Função usada para adicionar, remove e atualizar sucessores dos items arrastáveis
      * @param itemId string | undefined Item antecessore(pai)
      * @param sucessorId string id do item que será usado como sucessor
      * @param branchIndex number | undefined se vim undefined é adicionado um novo sucessor, se não está atualizando ou removendo
@@ -163,7 +163,7 @@ const CodeEditor: React.FC<ICodeEditorProps> = ({ id, itens = [], disableOpacity
     const changeSucessor = (itemId: string | undefined, sucessorId: string, branchIndex: number | undefined) => {
 
         /** Item em que está sendo feita as mudanças nos sucessores */
-        const itemCurrent = flowItens.list.find((item: FlowItem) => item.id === itemId);
+        const itemCurrent = flowItems.list.find((item: FlowItem) => item.id === itemId);
         if (!itemCurrent) return;
 
         // Se tentar ligar um item nele mesmo deve ser excluida a ligação.
@@ -172,13 +172,13 @@ const CodeEditor: React.FC<ICodeEditorProps> = ({ id, itens = [], disableOpacity
 
             itemCurrent.connections.splice(branchIndex, 1);
 
-            setFlowItens({ list: flowItens.list });
+            setFlowItems({ list: flowItems.list });
             onChangeFlow();
             return;
         }
 
         /** Se for um comentário, não realiza o link como sucessor */
-        const targetItem = flowItens.list.find(target => target.id === sucessorId);
+        const targetItem = flowItems.list.find(target => target.id === sucessorId);
         if (!targetItem) {
             return;
         } else {
@@ -201,7 +201,7 @@ const CodeEditor: React.FC<ICodeEditorProps> = ({ id, itens = [], disableOpacity
             }
         }
 
-        setFlowItens({ list: flowItens.list });
+        setFlowItems({ list: flowItems.list });
         onChangeFlow();
     }
 
@@ -229,9 +229,9 @@ const CodeEditor: React.FC<ICodeEditorProps> = ({ id, itens = [], disableOpacity
             if (event.key === 'ArrowRight') { positionChangeByKey("ArrowRight"); event.preventDefault(); };
         }
 
-        /** Copia os itens de fluxo selecionados */
+        /** Copia os items de fluxo selecionados */
         const copySelecteds = () => {
-            const components = flowItens.list.filter((item: FlowItem) => item.isSelected);
+            const components = flowItems.list.filter((item: FlowItem) => item.isSelected);
 
             inputCopyRef.current.value = JSON.stringify(components);
             inputCopyRef.current.focus()
@@ -241,14 +241,14 @@ const CodeEditor: React.FC<ICodeEditorProps> = ({ id, itens = [], disableOpacity
 
         }
 
-        /** Cola os itens de fluxo na área de transferência */
+        /** Cola os items de fluxo na área de transferência */
         const pasteSelecteds = () => {
 
             const findNewPosition = (num: number, type: 'top' | 'left'): number => {
 
                 let index: number = 0;
                 if (type === 'left') {
-                    index = flowItens.list.findIndex((item: FlowItem) => {
+                    index = flowItems.list.findIndex((item: FlowItem) => {
 
                         const isEquals = (item.left === num); // Posição exata já é usada?
                         if (isEquals) return true;
@@ -263,7 +263,7 @@ const CodeEditor: React.FC<ICodeEditorProps> = ({ id, itens = [], disableOpacity
                     });
                 }
                 else if (type === 'top') {
-                    index = flowItens.list.findIndex((item: FlowItem) => {
+                    index = flowItems.list.findIndex((item: FlowItem) => {
 
                         const isEquals = (item.top === num); // Posição exata já é usada?
                         if (isEquals) return true;
@@ -316,11 +316,11 @@ const CodeEditor: React.FC<ICodeEditorProps> = ({ id, itens = [], disableOpacity
                     else item.top = newTop;
                     /* --- */
 
-                    flowItens.list.push(new FlowItem(item));
+                    flowItems.list.push(new FlowItem(item));
 
                 });
 
-                setFlowItens({ list: flowItens.list });
+                setFlowItems({ list: flowItems.list });
                 onChangeFlow();
             } catch (e) { }
 
@@ -328,7 +328,7 @@ const CodeEditor: React.FC<ICodeEditorProps> = ({ id, itens = [], disableOpacity
 
         /** Move o componente pelas setas do teclado. */
         const positionChangeByKey = (direction: string) => {
-            let filteredList: FlowItem[] = flowItens.list.filter((item: FlowItem) => item.isSelected === true);
+            let filteredList: FlowItem[] = flowItems.list.filter((item: FlowItem) => item.isSelected === true);
             if (filteredList.length === 0) return;
 
             if (direction === 'ArrowUp') {
@@ -341,17 +341,17 @@ const CodeEditor: React.FC<ICodeEditorProps> = ({ id, itens = [], disableOpacity
                 filteredList.forEach((item: FlowItem) => { item.left = item.left + 5; });
             }
 
-            setFlowItens({ list: flowItens.list });
+            setFlowItems({ list: flowItems.list });
             onChangeFlow();
         }
 
-        /** Seleciona todos os itens da tela */
+        /** Seleciona todos os items da tela */
         const selectAll = () => {
-            flowItens.list.forEach((item: FlowItem) => {
+            flowItems.list.forEach((item: FlowItem) => {
                 item.isSelected = true;
             });
 
-            setFlowItens({ list: flowItens.list });
+            setFlowItems({ list: flowItems.list });
             onChangeFlow();
         }
 
@@ -359,18 +359,18 @@ const CodeEditor: React.FC<ICodeEditorProps> = ({ id, itens = [], disableOpacity
         const onRemoveItem = () => {
 
             /** Index do item selecionado que está sendo removido */
-            const itemCurrentIndex = flowItens.list.findIndex((item: FlowItem) => item.isSelected);
+            const itemCurrentIndex = flowItems.list.findIndex((item: FlowItem) => item.isSelected);
             if (itemCurrentIndex === -1) return;
 
             /** Index do item antecessor ao item que será removido */
-            const itemAntecessorIndex = flowItens.list.findIndex((item: FlowItem) => item.connections.some(connection => connection.connectionId === flowItens.list[itemCurrentIndex].id));
-            if (itemAntecessorIndex !== -1) { flowItens.list[itemAntecessorIndex].connections[0].connectionId = '0'; }
+            const itemAntecessorIndex = flowItems.list.findIndex((item: FlowItem) => item.connections.some(connection => connection.connectionId === flowItems.list[itemCurrentIndex].id));
+            if (itemAntecessorIndex !== -1) { flowItems.list[itemAntecessorIndex].connections[0].connectionId = '0'; }
 
-            flowItens.list.splice(itemCurrentIndex, 1);
+            flowItems.list.splice(itemCurrentIndex, 1);
 
-            setFlowItens({ list: flowItens.list });
+            setFlowItems({ list: flowItems.list });
 
-            onRemoveItem(); // Remove mais itens se estiverem selecionado.
+            onRemoveItem(); // Remove mais items se estiverem selecionado.
 
             onChangeFlow();
         }
@@ -381,17 +381,17 @@ const CodeEditor: React.FC<ICodeEditorProps> = ({ id, itens = [], disableOpacity
     const onMouseDown = (e: React.MouseEvent<SVGSVGElement, MouseEvent>) => {
 
         if (e.ctrlKey) {
-            flowItens.list.forEach((item: FlowItem) => {
+            flowItems.list.forEach((item: FlowItem) => {
                 if (item.id === e.currentTarget.id) {
                     item.isSelected = !item.isSelected;
                 }
             });
         } else {
-            const flowItemSelecteds = flowItens.list.filter(item => item.isSelected);
+            const flowItemSelecteds = flowItems.list.filter(item => item.isSelected);
             const keepMultiselect = flowItemSelecteds.length > 1 && flowItemSelecteds.some(item => item.id === e.currentTarget.id);
 
             if (!keepMultiselect) {
-                flowItens.list.forEach((item: FlowItem) => {
+                flowItems.list.forEach((item: FlowItem) => {
                     if (item.id === e.currentTarget.id) {
                         item.isSelected = true;
                     } else {
@@ -401,21 +401,21 @@ const CodeEditor: React.FC<ICodeEditorProps> = ({ id, itens = [], disableOpacity
             }
         }
 
-        setFlowItens({ list: flowItens.list });
+        setFlowItems({ list: flowItems.list });
         onChangeFlow();
     }
 
     /** Para inputs que estão no meio do fluxo */
     const itemNameChange = (text: string, index: number) => {
-        flowItens.list[index].name = text;
-        setFlowItens({ list: flowItens.list });
+        flowItems.list[index].name = text;
+        setFlowItems({ list: flowItems.list });
         onChangeFlow();
     }
 
     return (
         <div className="full-width" onMouseOver={(e: any) => onMouseOver && onMouseOver(e)}>
             <InputCopy ref={inputCopyRef} />
-            <Toolbar itensLogica={toolItens} isShow={((toolItens.length > 0) && showToolbar)} />
+            <Toolbar itemsLogica={toolItems} isShow={((toolItems.length > 0) && showToolbar)} />
             <main key={id} className='overflow-auto flex1'>
                 <BreandCamps breadcrumbs={breadcrumbs} />
                 <EditorPanel
@@ -430,9 +430,9 @@ const CodeEditor: React.FC<ICodeEditorProps> = ({ id, itens = [], disableOpacity
                     onContextMenu={(e: any) => (onContextMenu && enabledSelection) && onContextMenu(undefined, e)}
                 >
 
-                    {(!enabledSelection && flowItens.list.length === 0)
+                    {(!enabledSelection && flowItems.list.length === 0)
                         && <foreignObject width={"100%"} height={"100%"}>
-                            <div className="full-height full-width flex-itens-center flex-content-center opacity-5">
+                            <div className="full-height full-width flex-items-center flex-content-center opacity-5">
                                 <header>{emptyMessage || "Double-click on an item in the tree to edit it"}</header>
                             </div>
                         </foreignObject>
@@ -443,15 +443,15 @@ const CodeEditor: React.FC<ICodeEditorProps> = ({ id, itens = [], disableOpacity
                         parentRef={editorPanelRef}
                         enabled={enabledSelection}
                         onCoordsChange={coords => {
-                            flowItens.list.forEach((item: FlowItem) => item.select(coords));
-                            setFlowItens({ list: flowItens.list });
+                            flowItems.list.forEach((item: FlowItem) => item.select(coords));
+                            setFlowItems({ list: flowItems.list });
                         }}
                     />
 
-                    {/* Reinderiza as linhas dos itens arrastáveis da tela. */}
-                    {flowItens.list.map((item: FlowItem, index) => {
+                    {/* Reinderiza as linhas dos items arrastáveis da tela. */}
+                    {flowItems.list.map((item: FlowItem, index) => {
 
-                        const itemsConnections: FlowItem[] = flowItens
+                        const itemsConnections: FlowItem[] = flowItems
                             .list.filter((sucessorItem: FlowItem) => (sucessorItem.id !== undefined)
                                 ? item.connections.some(connection => sucessorItem.id === connection.connectionId)
                                 : false
@@ -469,12 +469,12 @@ const CodeEditor: React.FC<ICodeEditorProps> = ({ id, itens = [], disableOpacity
 
                     })}
 
-                    {/* Reinderiza os itens arrastáveis na tela! */}
-                    {flowItens.list.map((item: FlowItem, index) => (
+                    {/* Reinderiza os items arrastáveis na tela! */}
+                    {flowItems.list.map((item: FlowItem, index) => (
                         <ItemToDrag
                             onContextMenu={(data, e) => { e?.stopPropagation(); (onContextMenu && enabledSelection) && onContextMenu(data, e) }}
                             onNameChange={text => itemNameChange(text, index)}
-                            onChangePosition={onChangePositionItens}
+                            onChangePosition={onChangePositionItems}
                             parentElementRef={editorPanelRef}
                             onMouseUp={() => onChangeFlow()}
                             disableOpacity={disableOpacity}
@@ -491,8 +491,8 @@ const CodeEditor: React.FC<ICodeEditorProps> = ({ id, itens = [], disableOpacity
                         parentRef={editorPanelRef}
                         enabled={enabledSelection}
                         onCoordsChange={coords => {
-                            flowItens.list.forEach((item: FlowItem) => item.select(coords));
-                            setFlowItens({ list: flowItens.list });
+                            flowItems.list.forEach((item: FlowItem) => item.select(coords));
+                            setFlowItems({ list: flowItems.list });
                         }}
                     />
                 </EditorPanel>

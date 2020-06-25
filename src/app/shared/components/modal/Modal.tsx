@@ -209,7 +209,7 @@ export const Modal: React.FC<ModalProps> = ({ children, maxWidth = 800, maxHeigh
             className={`base-modal padding-xs background-bars box-shadow-small flex-column${maximized ? ' full-width full-height' : ''}`}
         >
             <div onMouseDown={risizers.modalMove.mouseDown} onDoubleClick={toggleMaximize} className={`modal-top-bar margin-bottom-xs flex-row`}>
-                <div className="flex1 flex-itens-center padding-horizontal-s opacity-9">{title}</div>
+                <div className="flex1 flex-items-center padding-horizontal-s opacity-9">{title}</div>
                 <div>
                     <button onClick={toggleMaximize} onMouseDown={e => e.stopPropagation()} className="btn border-radius-soft outline-none modal-btn">
                         <img height={30} width={30} src={IconMaximize} alt="Toggle maximize modal" />

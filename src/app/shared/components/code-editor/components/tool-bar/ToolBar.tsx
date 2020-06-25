@@ -4,12 +4,12 @@ import { ItemFluxo, FlowItem } from '../../models/ItemFluxo';
 import { ItemToDrag } from '../item-drag/ItemDrag';
 import './Toolbar.css';
 
-export const Toolbar = ({ itensLogica, isShow }: { itensLogica: FlowItem[], isShow: boolean }) => {
+export const Toolbar = ({ itemsLogica, isShow }: { itemsLogica: FlowItem[], isShow: boolean }) => {
 
     return (
         isShow
             ? <div className="mini-scroll-bar toolbar">
-                {itensLogica.map((item: ItemFluxo) => {
+                {itemsLogica.map((item: ItemFluxo) => {
                     return <ItemToDrag
                         isSelected={item.isSelected}
                         itemType={item.itemType}
