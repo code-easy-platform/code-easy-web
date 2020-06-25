@@ -66,6 +66,7 @@ export class ProjectsStorage {
         return newProject(name, version, type, description);
     }
 
+    /** Retornará o nome do usuário logado, ainda não há possíbilidade de logar-se. */
     public static getAuthorName() {
         return "(Sem nome)";
     }
@@ -215,6 +216,12 @@ export class ProjectsStorage {
                 }
             });
 
+        }
+
+        let indexToRemove = project.openWindows.findIndex(windowTab => !project.tabs.some(tab => tab.itens.some(item => item.id === windowTab.id)));
+        while (indexToRemove >= 0) {
+            project.openWindows.splice(indexToRemove, 1);
+            indexToRemove = project.openWindows.findIndex(windowTab => !project.tabs.some(tab => tab.itens.some(item => item.id === windowTab.id)));
         }
 
         project.tabs.forEach(tab => {
