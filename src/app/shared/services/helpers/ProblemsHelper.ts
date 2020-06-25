@@ -56,7 +56,7 @@ class ProblemsHelperService {
                     flowItem.hasError = false;
 
                     // Se for diferente de END e COMMENT valida se tem sucessores
-                    if ((flowItem.itemType !== ItemType.END && flowItem.itemType !== ItemType.COMMENT) && flowItem.sucessor.length === 0) {
+                    if ((flowItem.itemType !== ItemType.END && flowItem.itemType !== ItemType.COMMENT) && flowItem.connections.length === 0) {
                         addProblem(`In ${item.label} a flow item is missing a connector`, 'error');
                         flowItem.hasError = true;
                     }
@@ -129,7 +129,7 @@ class ProblemsHelperService {
                     } else if (flowItem.itemType === ItemType.END) {
 
                         // Valida os ends
-                        const index = item.itens.findIndex(item_flow => item_flow.sucessor.includes(flowItem.id || 'undefined'));
+                        const index = item.itens.findIndex(item_flow => item_flow.connections.some(connection => connection.connectionId === flowItem.id || 'undefined'));
                         if (index === -1) {
                             addProblem(`In ${item.label} a ${flowItem.name} flow item is not used`, 'error');
                             flowItem.hasError = true;

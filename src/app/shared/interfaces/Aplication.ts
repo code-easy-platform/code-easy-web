@@ -1,4 +1,4 @@
-import { FlowItem, ItemType } from "../components/code-editor/models/ItemFluxo";
+import { FlowItem, ItemType, IConnections } from "../components/code-editor/models/ItemFluxo";
 import { IProperties } from "../components/properties-editor/shared/interfaces";
 import { ComponentType } from "../enuns/ComponentType";
 import { ProjectType } from "../enuns/ProjectType";
@@ -152,10 +152,10 @@ export class ComponentConfigs implements BaseFields {
 
 export class ItemFlowComplete extends FlowItem {
     public itemType: ItemType = ItemType.START;
+    public connections: IConnections[] = [];
     public properties: IProperties[] = [];
     public isSelected: boolean = false;
     public hasError: boolean = false;
-    public sucessor: string[] = [];
     public id: string | undefined;
     public icon: any = undefined;
     public height: number = 50;
@@ -167,10 +167,10 @@ export class ItemFlowComplete extends FlowItem {
 
     constructor(
         props: {
+            connections: IConnections[],
             properties: IProperties[],
             id: string | undefined,
             isSelected: boolean,
-            sucessor: string[],
             itemType: ItemType,
             hasError?: boolean,
             height?: number,
@@ -183,11 +183,11 @@ export class ItemFlowComplete extends FlowItem {
     ) {
         super(props);
         this.hasError = props.hasError || false;
+        this.connections = props.connections;
         this.isSelected = props.isSelected;
         this.properties = props.properties;
         this.height = props.height || 50;
         this.width = props.width || 50;
-        this.sucessor = props.sucessor;
         this.itemType = props.itemType;
         this.name = props.name;
         this.icon = props.icon;

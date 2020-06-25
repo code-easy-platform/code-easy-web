@@ -47,8 +47,8 @@ export const FlowEditorController: React.FC = () => {
                             if (index >= 0) {
                                 newItens.push(new ItemFlowComplete({
                                     properties: item.itens[index].properties,
+                                    connections: updatedItem.connections,
                                     isSelected: updatedItem.isSelected,
-                                    sucessor: updatedItem.sucessor,
                                     itemType: updatedItem.itemType,
                                     height: updatedItem.height,
                                     width: updatedItem.width,
@@ -61,8 +61,8 @@ export const FlowEditorController: React.FC = () => {
                             } else {
                                 newItens.push(new ItemFlowComplete({
                                     properties: DefaultPropsHelper.getNewProps(updatedItem.itemType, updatedItem.name), // Criar uma função para isso
+                                    connections: updatedItem.connections,
                                     isSelected: updatedItem.isSelected,
-                                    sucessor: updatedItem.sucessor,
                                     itemType: updatedItem.itemType,
                                     height: updatedItem.height,
                                     width: updatedItem.width,
@@ -207,7 +207,7 @@ export const FlowEditorController: React.FC = () => {
                                     id: Utils.getUUID(),
                                     isSelected: true,
                                     name: item.name,
-                                    sucessor: [],
+                                    connections: [],
                                     height: 50,
                                     left: left,
                                     width: 50,
@@ -299,10 +299,10 @@ export const FlowEditorController: React.FC = () => {
                     name: item.name,
                     width: item.width,
                     height: item.height,
-                    sucessor: item.sucessor,
                     itemType: item.itemType,
                     icon: icon?.value?.content,
                     isSelected: item.isSelected,
+                    connections: item.connections,
                     hasError: item.properties.some(prop => (prop.valueHasError || prop.nameHasError)),
                 }));
 

@@ -12,8 +12,10 @@
     background-color: #00000010;
     justify-content: center;
     align-items: center;
+    max-width: 200px;
     outline: none;
     border: none;
+    opacity: 0.6;
 }
 
 .window-tabs-manager .window-tab-item:hover {
@@ -42,6 +44,7 @@
 
 .window-tabs-manager .window-tab-item.window-tab-selected {
     background-color: var(--main-background-panels);
+    opacity: 1;
 }
 
 .window-tabs-manager .window-tab-item.window-tab-selected .btn-close {

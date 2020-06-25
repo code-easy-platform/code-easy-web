@@ -20,7 +20,9 @@ export interface ItemDragProps {
     allowDrag?: boolean;
     isSelected: boolean;
     itemType?: ItemType;
+    isDisabled?: boolean;
     parentElementRef?: any;
+    disableOpacity?: number;
     hideSourceOnDrag?: boolean;
 
     onNameChange?(text: string): void;
@@ -35,9 +37,9 @@ export interface ItemDragProps {
 export const ItemToDrag: React.FC<ItemDragProps> = ({ title, ...props }: ItemDragProps) => {
 
     const {
+        onChangePosition, onMouseDown, onMouseOver, width = 0, disableOpacity,
+        isSelected, isDisabled, onContextMenu, hasError, onMouseUp, id,
         height = 0, top = 0, left = 0, allowDrag, itemType, icon,
-        onChangePosition, onMouseDown, onMouseOver, width = 0,
-        isSelected, onContextMenu, hasError, onMouseUp, id,
     } = props;
 
     /** Permite que uym elemento seja arrastado e adicionado dentro do editor de fluxo. */
@@ -149,6 +151,7 @@ export const ItemToDrag: React.FC<ItemDragProps> = ({ title, ...props }: ItemDra
                 onMouseDown={mouseDown}
                 onMouseOver={onMouseOver}
                 onContextMenu={contextMenu}
+                style={{ opacity: isDisabled ? disableOpacity : 1 }}
             >
                 {itemType !== ItemType.COMMENT &&
                     <text
@@ -167,6 +170,7 @@ export const ItemToDrag: React.FC<ItemDragProps> = ({ title, ...props }: ItemDra
                     width={width}
                     height={height}
                     hasError={hasError}
+                    isDisabled={isDisabled}
                     isSelected={isSelected}
                     icon={icon || getIcon(itemType)}
                 />

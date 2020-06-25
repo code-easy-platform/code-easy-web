@@ -43,7 +43,7 @@ export const TabsManager: React.FC<TabsManagerProps> = ({ tabs, onChange, onCont
                             className={"window-tab-item " + (isSelected ? "window-tab-selected " : "") + className}
                             onContextMenu={e => { e.preventDefault(); onContextWindowTab && onContextWindowTab(id); }}
                         >
-                            <div className="padding-m">{title}</div>
+                            <div className="padding-m text-ellipsis">{title}</div>
                             <img onClick={e => closeTab(e, id)} className="btn btn-close" src={IconClose} alt="btn-close" />
                         </div>
                         <hr className="hr hr-vertical opacity-5" />
