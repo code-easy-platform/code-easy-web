@@ -233,8 +233,8 @@ export const TreeManagerController: React.FC = () => {
                         itens: (
                             routerType === ComponentType.routerExpose
                                 ? [
-                                    new ItemFlowComplete({ id: '1', name: "START", itemType: ItemType.START, left: 188, top: 128, isSelected: false, sucessor: ['2'], properties: DefaultPropsHelper.getNewProps(ItemType.START, "START") }),
-                                    new ItemFlowComplete({ id: '2', name: "END", itemType: ItemType.END, left: 188, top: 384, isSelected: false, sucessor: [], properties: DefaultPropsHelper.getNewProps(ItemType.END, "END") })
+                                    new ItemFlowComplete({ id: '1', name: "START", itemType: ItemType.START, left: 188, top: 128, isSelected: false, connections: [{ connectionId: '2' }], properties: DefaultPropsHelper.getNewProps(ItemType.START, "START") }),
+                                    new ItemFlowComplete({ id: '2', name: "END", itemType: ItemType.END, left: 188, top: 384, isSelected: false, connections: [], properties: DefaultPropsHelper.getNewProps(ItemType.END, "END") })
                                 ]
                                 : []
                         ),
@@ -283,8 +283,8 @@ export const TreeManagerController: React.FC = () => {
                         name: Utils.getNormalizedString(newName),
                         properties: DefaultPropsHelper.getNewProps(ComponentType.globalAction, newName),
                         itens: [
-                            new ItemFlowComplete({ id: '1', name: "START", itemType: ItemType.START, left: 188, top: 128, isSelected: false, sucessor: ['2'], properties: DefaultPropsHelper.getNewProps(ItemType.START, "START") }),
-                            new ItemFlowComplete({ id: '2', name: "END", itemType: ItemType.END, left: 188, top: 384, isSelected: false, sucessor: [], properties: DefaultPropsHelper.getNewProps(ItemType.END, "END") })
+                            new ItemFlowComplete({ id: '1', name: "START", itemType: ItemType.START, left: 188, top: 128, isSelected: false, connections: [{ connectionId: '2' }], properties: DefaultPropsHelper.getNewProps(ItemType.START, "START") }),
+                            new ItemFlowComplete({ id: '2', name: "END", itemType: ItemType.END, left: 188, top: 384, isSelected: false, connections: [], properties: DefaultPropsHelper.getNewProps(ItemType.END, "END") })
                         ],
                     }));
                 }

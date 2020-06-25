@@ -36,7 +36,7 @@ export const FlowEditor: FC<ICodeEditorProps> = (props: ICodeEditorProps) => {
 let backupFlow: string = "";
 
 /** Editor do fluxo. */
-const CodeEditor: React.FC<ICodeEditorProps> = ({ id, itens = [], emptyMessage, snapGridWhileDragging = true, toolItens = [], onChangeItens = () => { }, onMouseOver, backgroundType, showToolbar = false, onDropItem = () => undefined, allowedsInDrop = [], onContextMenu, onKeyDown, breadcrumbs, enabledSelection = true }) => {
+const CodeEditor: React.FC<ICodeEditorProps> = ({ id, itens = [], disableOpacity = 0.3, emptyMessage, snapGridWhileDragging = true, toolItens = [], onChangeItens = () => { }, onMouseOver, backgroundType, showToolbar = false, onDropItem = () => undefined, allowedsInDrop = [], onContextMenu, onKeyDown, breadcrumbs, enabledSelection = true }) => {
 
     /** Referencia o svg onde está todos os itens de fluxo. */
     const editorPanelRef = useRef<any>(null);
@@ -81,7 +81,7 @@ const CodeEditor: React.FC<ICodeEditorProps> = ({ id, itens = [], emptyMessage, 
             left: Math.round(targetOffsetX / 15) * 15,
             top: Math.round(targetOffsetY / 15) * 15,
             isSelected: true,
-            sucessor: [],
+            connections: [],
         });
 
         /** Espera o retorno para inserir o item, se receber undefined só insere, se for diferente de undefined insere o resultado do event se existir algo */
@@ -127,6 +127,7 @@ const CodeEditor: React.FC<ICodeEditorProps> = ({ id, itens = [], emptyMessage, 
             if (targetItem.top === mousePositionTop && targetItem.left === mousePositionLeft) return;
         }
 
+
         /** Evita esses valores sejam alterados pela referência entre as variáveis */
         const old = {
             left: targetItem.left,
@@ -135,8 +136,19 @@ const CodeEditor: React.FC<ICodeEditorProps> = ({ id, itens = [], emptyMessage, 
 
         // Muda a posição de todos os itens que estão selecionados
         selectedItens.forEach(comp => {
-            comp.top += (mousePositionTop - old.top);
+            const oldCompLeft = comp.left;
+            const oldCompTop = comp.top;
+
             comp.left += (mousePositionLeft - old.left);
+            comp.top += (mousePositionTop - old.top);
+
+            // Garante que um item não seja arrastado para posições negativas
+            if (comp.top < 0) {
+                comp.top = oldCompTop;
+            }
+            if (comp.left < 0) {
+                comp.left = oldCompLeft;
+            }
         });
 
         setFlowItens({ list: flowItens.list });
@@ -157,7 +169,8 @@ const CodeEditor: React.FC<ICodeEditorProps> = ({ id, itens = [], emptyMessage, 
         // Se tentar ligar um item nele mesmo deve ser excluida a ligação.
         if (itemId === sucessorId || itemId === undefined) {
             if (branchIndex === undefined) return;
-            itemCurrent.sucessor.splice(branchIndex, 1);
+
+            itemCurrent.connections.splice(branchIndex, 1);
 
             setFlowItens({ list: flowItens.list });
             onChangeFlow();
@@ -178,13 +191,13 @@ const CodeEditor: React.FC<ICodeEditorProps> = ({ id, itens = [], emptyMessage, 
 
         // No caso de vim undefined significa que é um novo branch.
         // Caso se o item já esteja na lista como sucessor, remove e adiciona novamente.
-        if (branchIndex === undefined && !itemCurrent.sucessor.some(id => id === sucessorId)) {
-            itemCurrent.sucessor.push(sucessorId);
+        if (branchIndex === undefined && !itemCurrent.connections.some(connection => id === connection.connectionId)) {
+            itemCurrent.connections.push({ connectionId: sucessorId });
         } else {
             /* const indexToRemove = itemCurrent.sucessor.findIndex(id => id === sucessorId); */
 
             if (branchIndex !== undefined) {
-                itemCurrent.sucessor[branchIndex] = sucessorId;
+                itemCurrent.connections[branchIndex].connectionId = sucessorId;
             }
         }
 
@@ -281,9 +294,9 @@ const CodeEditor: React.FC<ICodeEditorProps> = ({ id, itens = [], emptyMessage, 
 
                     components.forEach((depende, dependeIndex) => {
                         if (depende.id !== item.id) {
-                            depende.sucessor.forEach((sucessorId, index) => {
-                                if (sucessorId === item.id) {
-                                    components2[dependeIndex].sucessor[index] = newId;
+                            depende.connections.forEach((connection, index) => {
+                                if (connection.connectionId === item.id) {
+                                    components2[dependeIndex].connections[index].connectionId = newId;
                                     // sucessorIndex = index;
                                 }
                             });
@@ -344,11 +357,14 @@ const CodeEditor: React.FC<ICodeEditorProps> = ({ id, itens = [], emptyMessage, 
 
         /** Remove o item que estiver selecionado no fluxo. */
         const onRemoveItem = () => {
+
+            /** Index do item selecionado que está sendo removido */
             const itemCurrentIndex = flowItens.list.findIndex((item: FlowItem) => item.isSelected);
             if (itemCurrentIndex === -1) return;
 
-            const itemAntecessorIndex = flowItens.list.findIndex((item: FlowItem) => item.sucessor[0] === flowItens.list[itemCurrentIndex].id);
-            if (itemAntecessorIndex !== -1) { flowItens.list[itemAntecessorIndex].sucessor[0] = '0'; }
+            /** Index do item antecessor ao item que será removido */
+            const itemAntecessorIndex = flowItens.list.findIndex((item: FlowItem) => item.connections.some(connection => connection.connectionId === flowItens.list[itemCurrentIndex].id));
+            if (itemAntecessorIndex !== -1) { flowItens.list[itemAntecessorIndex].connections[0].connectionId = '0'; }
 
             flowItens.list.splice(itemCurrentIndex, 1);
 
@@ -435,9 +451,9 @@ const CodeEditor: React.FC<ICodeEditorProps> = ({ id, itens = [], emptyMessage, 
                     {/* Reinderiza as linhas dos itens arrastáveis da tela. */}
                     {flowItens.list.map((item: FlowItem, index) => {
 
-                        const itensSucessores: FlowItem[] = flowItens
+                        const itemsConnections: FlowItem[] = flowItens
                             .list.filter((sucessorItem: FlowItem) => (sucessorItem.id !== undefined)
-                                ? item.sucessor.some(sucessorItemId => sucessorItem.id === sucessorItemId)
+                                ? item.connections.some(connection => sucessorItem.id === connection.connectionId)
                                 : false
                             );
 
@@ -445,9 +461,10 @@ const CodeEditor: React.FC<ICodeEditorProps> = ({ id, itens = [], emptyMessage, 
                         return <Lines
                             key={index}
                             item={item}
-                            itensSucessores={itensSucessores}
+                            disableOpacity={disableOpacity}
                             onSucessorChange={changeSucessor}
-                            isUseNewBranch={InternalUtils.useNewBranch(itensSucessores.length, item.itemType)}
+                            itemsConnections={itemsConnections}
+                            isUseNewBranch={InternalUtils.useNewBranch(itemsConnections.length, item.itemType)}
                         />;
 
                     })}
@@ -460,6 +477,8 @@ const CodeEditor: React.FC<ICodeEditorProps> = ({ id, itens = [], emptyMessage, 
                             onChangePosition={onChangePositionItens}
                             parentElementRef={editorPanelRef}
                             onMouseUp={() => onChangeFlow()}
+                            disableOpacity={disableOpacity}
+                            isDisabled={item.isDisabled}
                             onMouseDown={onMouseDown}
                             title={item.name}
                             key={item.id}

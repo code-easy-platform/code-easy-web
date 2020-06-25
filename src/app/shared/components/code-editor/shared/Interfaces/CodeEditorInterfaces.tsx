@@ -40,6 +40,9 @@ export interface ICodeEditorProps {
     /** Ajustar à grade enquanto arrasta */
     snapGridWhileDragging?: boolean;
 
+    /** Used when a flow item is disabled */
+    disableOpacity?: number;
+
     /** Function - Usada para emitir através do output o fluxo atualidado, acontece a cada mudança de estado dos itens de fluxo. */
     onChangeItens(itens: FlowItem[]): any;
 

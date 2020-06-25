@@ -1,6 +1,7 @@
 import React from 'react';
 
 interface FlowComponentProps {
+    isDisabled?: boolean;
     isSelected: boolean;
     hasError?: boolean;
     height: number;
@@ -12,15 +13,15 @@ interface FlowComponentProps {
     icon: any;
     ref?: any;
 }
-export const FlowComponent: React.FC<FlowComponentProps> = ({ id, isSelected, width, height, left, top, icon, hasError = false, ref }) => {
+export const FlowComponent: React.FC<FlowComponentProps> = ({ id, isSelected, isDisabled, width, height, left, top, icon, hasError = false, ref }) => {
 
     const strokeColor: string = isSelected ? "var(--color-botton-bar)" : hasError ? "var(--main-error-color)" : "transparent";
 
     return (
-        <g>
+        <>
             <rect
                 strokeWidth="var(--main-border-width)"
-                style={{ cursor: 'move', zIndex: 2 }}
+                style={{ pointerEvents: 'none' }}
                 strokeLinejoin="round"
                 stroke={strokeColor}
                 fill="transparent"
@@ -32,7 +33,7 @@ export const FlowComponent: React.FC<FlowComponentProps> = ({ id, isSelected, wi
                 id={id}
             />
             <rect
-                style={{ cursor: 'move', zIndex: 2, pointerEvents: 'none' }}
+                style={{ cursor: 'move', zIndex: 2 }}
                 strokeWidth="var(--main-border-width)"
                 fill="var(--main-background)"
                 strokeLinejoin="round"
@@ -45,7 +46,7 @@ export const FlowComponent: React.FC<FlowComponentProps> = ({ id, isSelected, wi
                 id={id}
             />
             <image
-                style={{ pointerEvents: 'none' }}
+                style={{ pointerEvents: 'none', filter: 'gray' }}
                 stroke={strokeColor}
                 xlinkHref={icon}
                 height={height}
@@ -53,6 +54,6 @@ export const FlowComponent: React.FC<FlowComponentProps> = ({ id, isSelected, wi
                 x={left}
                 y={top}
             />
-        </g>
+        </>
     );
 }

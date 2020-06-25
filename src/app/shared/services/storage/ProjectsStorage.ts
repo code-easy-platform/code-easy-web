@@ -209,6 +209,7 @@ export class ProjectsStorage {
             project.openWindows.forEach(windowTab => {
                 if (windowTab.id === winTab.id) {
                     windowTab.isSelected = true;
+                    windowTab.title = winTab.title;
                 } else {
                     windowTab.isSelected = false;
                 }
