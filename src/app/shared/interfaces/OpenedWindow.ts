@@ -3,4 +3,5 @@ export interface OpenWindow {
     title: string,
     className?: string,
     isSelected?: boolean,
+    description: string,
 }

@@ -109,6 +109,7 @@ export class ItemFlowComplete implements IItemFlowComplete {
         this.properties = properties;
     }
 
+                // Reinstancia a classe para revalidar as propriedade e mais
     /**
      * Atualiza as propriedades do assign:
      * * Validaçoes de erros

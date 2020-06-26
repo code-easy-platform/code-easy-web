@@ -34,11 +34,12 @@ export const TabsManager: React.FC<TabsManagerProps> = ({ tabs, onChange, onCont
 
     return (
         <div className="window-tabs-manager" onWheel={onWeel}>
-            {tabs.map(({ id, title, className = "", isSelected = false }, index) => {
+            {tabs.map(({ id, title, className = "", isSelected = false, description }, index) => {
                 return (
                     <Fragment key={index}>
                         <div
                             tabIndex={0}
+                            title={description}
                             onMouseDown={e => onClick(e, id)}
                             className={"window-tab-item " + (isSelected ? "window-tab-selected " : "") + className}
                             onContextMenu={e => { e.preventDefault(); onContextWindowTab && onContextWindowTab(id); }}
