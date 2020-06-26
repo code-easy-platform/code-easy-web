@@ -1,13 +1,14 @@
 import React, { useContext } from 'react';
 import { IconTrash, Utils } from 'code-easy-components';
 
-import { BreadCampButton } from '../../../shared/components/code-editor/shared/Interfaces/CodeEditorInterfaces';
 import { ContextMenuService } from '../../../shared/components/context-menu/ContextMenuService';
-import { FlowItem, ItemType } from '../../../shared/components/code-editor/models/ItemFluxo';
+import { IBreadCampButton } from '../../../shared/components/code-editor/shared/Interfaces';
 import { DefaultPropsHelper } from '../../../shared/services/helpers/DefaultPropsHelper';
+import { ItemType } from '../../../shared/components/code-editor/shared/enums/ItemType';
 import { CodeEditorContext } from '../../../shared/services/contexts/CodeEditorContext';
 import { IContextItemList } from '../../../shared/components/context-menu/ContextMenu';
 import { IdeConfigStorage } from '../../../shared/services/storage/IdeConfigStorage';
+import { FlowItem } from '../../../shared/components/code-editor/models/ItemFluxo';
 import { ItemFlowComplete } from '../../../shared/interfaces/ItemFlowComponent';
 import { FlowEditor } from '../../../shared/components/code-editor/CodeEditor';
 import { ItemComponent } from '../../../shared/interfaces/ItemComponent';
@@ -230,9 +231,9 @@ export const FlowEditorController: React.FC = () => {
     }
 
     /** Monta o breadcamps que será exibido no top do editor de fluxos. */
-    const codeEditorGetBreadcamps = (): BreadCampButton[] => {
+    const codeEditorGetBreadcamps = (): IBreadCampButton[] => {
 
-        let breadcamps: BreadCampButton[] = [];
+        let breadcamps: IBreadCampButton[] = [];
 
         editorContext.project.tabs.forEach((tab: Tab) => {
             tab.items.forEach(item => {

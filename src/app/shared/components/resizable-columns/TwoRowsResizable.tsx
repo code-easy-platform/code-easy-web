@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 
-import './ResizeTemplate.css';
 import { ProjectsStorage } from '../../services/storage/ProjectsStorage';
+import './ResizeTemplate.css';
 
 interface IRecipeProps {
     useMinMaxHeight?: boolean,
@@ -18,9 +18,7 @@ export class TwoRowsResizable extends Component<IRecipeProps> {
 
     componentDidMount() {
         window.addEventListener("resize", () => this.setState({}));
-        this.setState({
-            bottomHeight: ProjectsStorage.getColumnsResizableSize(this.props.id),
-        });
+        this.setState({ bottomHeight: ProjectsStorage.getColumnsResizableSize(this.props.id) });
     }
 
     componentWillUnmount() {
@@ -63,9 +61,7 @@ export class TwoRowsResizable extends Component<IRecipeProps> {
                     minHeight: useMinMaxHeight ? this.props.minBottomHeight || '10%' : undefined,
                 }}>
                     <div className="grabber-col-right-resize-y" onMouseDown={this.mouseDown} />
-                    <div className="flex1 full-width">
-                        {this.props.bottom}
-                    </div>
+                    <div className="flex1 full-width">{this.props.bottom}</div>
                 </div>
             </div>
         );

@@ -1,7 +1,7 @@
 import { Utils, IconWarning, IconError } from "code-easy-components";
 
 import { TreeInterface } from "../../components/tree-manager/shared/models/TreeInterface";
-import { ItemType } from "../../components/code-editor/models/ItemFluxo";
+import { ItemType } from "../../components/code-editor/shared/enums/ItemType";
 import { PropertieTypes } from "../../enuns/PropertieTypes";
 import { ComponentType } from "../../enuns/ComponentType";
 import { Project } from "../../interfaces/Aplication";

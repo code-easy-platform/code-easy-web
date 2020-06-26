@@ -9,10 +9,11 @@ import { SelectorArea } from './components/selector/SelectorArea';
 import { BreandCamps } from './components/breadcamps/BreandCamps';
 import { InputCopy } from './components/input-copy/InputCopy';
 import { ItemToDrag } from './components/item-drag/ItemDrag';
-import { ItemType, FlowItem } from './models/ItemFluxo';
 import { Toolbar } from './components/tool-bar/ToolBar';
 import { Utils as InternalUtils } from './shared/Utils';
+import { ItemType } from './shared/enums/ItemType';
 import { Lines } from './components/lines/Lines';
+import { FlowItem } from './models/ItemFluxo';
 
 
 /**

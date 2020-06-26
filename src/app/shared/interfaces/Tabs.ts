@@ -11,13 +11,6 @@ export class Tab {
         }
     ) {
         this.configs = this._fields.configs;
-        this.items = this._fields.items;
-    }
-
-    toStatic() {
-        return {
-            items: this.items.map(item => item.toStatic()),
-            configs: this.configs,
-        };
+        this.items = this._fields.items.map(item => new ItemComponent(item));
     }
 }

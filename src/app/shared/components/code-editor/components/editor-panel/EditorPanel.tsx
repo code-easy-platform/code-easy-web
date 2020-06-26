@@ -1,7 +1,7 @@
 import React from 'react';
 import { useDrop, DropTargetMonitor } from 'react-dnd';
 
-import { ItemType } from '../../models/ItemFluxo';
+import { ItemType } from '../../shared/enums/ItemType';
 
 
 type EditorPanelProps = Omit<{
@@ -71,4 +71,5 @@ export const EditorPanel = React.forwardRef(({ allowedsInDrop, onDropItem, onCha
             }}
         />
     );
+
 });

@@ -4,7 +4,7 @@ import {
     IconFlowIf, IconFlowStart, IconFlowSwitch, IconRouterConsume, IconRouterExpose
 } from 'code-easy-components';
 
-import { ItemType } from "../components/code-editor/models/ItemFluxo";
+import { ItemType } from '../components/code-editor/shared/enums/ItemType';
 import { ComponentType } from "../enuns/ComponentType";
 
 

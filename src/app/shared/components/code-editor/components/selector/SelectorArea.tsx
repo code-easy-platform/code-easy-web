@@ -1,10 +1,11 @@
 import React, { useState } from 'react';
-import { Coords } from '../../shared/Interfaces/CodeEditorInterfaces';
+
+import { ICoords } from '../../shared/Interfaces';
 
 interface SelectorAreaProps {
     enabled?: boolean;
     parentRef: React.MutableRefObject<any>;
-    onCoordsChange?(coords: Coords): void;
+    onCoordsChange?(coords: ICoords): void;
 }
 /** Reinderiza a área de seleção na tela, para que seja possível selecionar diversos items de uma vez. */
 export const SelectorArea: React.FC<SelectorAreaProps> = ({ parentRef, enabled = true, onCoordsChange = (coords: { startY: number, startX: number, endY: number, endX: number }) => { } }) => {

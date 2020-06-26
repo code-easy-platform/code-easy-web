@@ -9,7 +9,6 @@ import { StorageEnum } from "./StorageEnum";
 import { Tab } from "../../interfaces/Tabs";
 
 const newProject = (name: string, version: string, type: ProjectType, description: string) => new Project({
-    openWindows: [],
     currentComponentFocus: CurrentFocus.tree,
     projectConfigs: {
         id: `${Utils.getUUID()}`,
@@ -81,9 +80,18 @@ export class ProjectsStorage {
 
         let res = localStorage.getItem(StorageEnum.projectsStorage);
 
-        if (res !== null && res !== "" && res !== undefined)
-            projects = JSON.parse(res);
-        else {
+        if (res !== null && res !== "" && res !== undefined) {
+            const listString: string[] | undefined = JSON.parse(res);
+
+            if (listString) {
+                projects = listString.map(projectString => Project.stringToProject(projectString));
+
+            } else {
+                ProjectsStorage.setProjects([]);
+                projects = [];
+            }
+
+        } else {
             ProjectsStorage.setProjects([]);
             projects = [];
         }
@@ -93,7 +101,9 @@ export class ProjectsStorage {
 
     /** Salva no localstorage uma lista de projetos */
     public static setProjects(projects: Project[]): Project[] {
-        localStorage.setItem(StorageEnum.projectsStorage, JSON.stringify(projects));
+        const listString = projects.map(project => Project.projectToString(project));
+
+        localStorage.setItem(StorageEnum.projectsStorage, JSON.stringify(listString));
         return projects;
     }
 

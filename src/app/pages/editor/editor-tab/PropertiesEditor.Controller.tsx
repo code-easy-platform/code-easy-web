@@ -3,8 +3,8 @@ import { Utils } from 'code-easy-components';
 
 import { IItem, IProperties, TypeValues } from '../../../shared/components/properties-editor/shared/interfaces';
 import { PropertiesEditor } from '../../../shared/components/properties-editor/PropertiesEditor';
+import { ItemType } from '../../../shared/components/code-editor/shared/enums/ItemType';
 import { CodeEditorContext } from '../../../shared/services/contexts/CodeEditorContext';
-import { ItemType } from '../../../shared/components/code-editor/models/ItemFluxo';
 import { ItemFlowComplete } from '../../../shared/interfaces/ItemFlowComponent';
 import { ItemComponent } from '../../../shared/interfaces/ItemComponent';
 import { PropertieTypes } from '../../../shared/enuns/PropertieTypes';

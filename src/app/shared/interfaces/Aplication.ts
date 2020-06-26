@@ -1,5 +1,7 @@
+import { ItemFlowComplete } from "./ItemFlowComponent";
 import { CurrentFocus } from "../enuns/CurrentFocus";
 import { ProjectType } from "../enuns/ProjectType";
+import { ItemComponent } from "./ItemComponent";
 import { OpenWindow } from "./OpenedWindow";
 import { BaseFields } from "./BaseFields";
 import { Tab } from "./Tabs";
@@ -36,30 +38,97 @@ export class Project implements IProject {
     public openWindows: OpenWindow[];
     public tabs: Tab[];
 
-    constructor(
-        private fields: {
-            currentComponentFocus: CurrentFocus;
-            projectConfigs: IProjectConfigs;
-            openWindows: OpenWindow[];
-            tabs: Tab[];
-        }
-    ) {
+    constructor(private fields: {
+        currentComponentFocus: CurrentFocus;
+        projectConfigs: IProjectConfigs;
+        openWindows?: OpenWindow[];
+        tabs: Tab[];
+    }) {
         this.currentComponentFocus = this.fields.currentComponentFocus;
+        this.tabs = this.fields.tabs.map(tab => new Tab(tab));
         this.projectConfigs = this.fields.projectConfigs;
-        this.openWindows = this.fields.openWindows;
-        this.tabs = this.fields.tabs;
+        this.openWindows = this.fields.openWindows || [];
     }
 
     /** Transforma a classe do projeto em uma string para possibilitar ser salvo mais facilmente no local storage. */
-    public toString(): string {
-
+    public static projectToString(project: Project): string {
         const res = {
-            currentComponentFocus: this.currentComponentFocus,
-            tabs: this.tabs.map(tab => tab.toStatic()),
-            projectConfigs: this.projectConfigs,
-            openWindows: this.openWindows,
+            currentComponentFocus: project.currentComponentFocus,
+            projectConfigs: project.projectConfigs,
+            openWindows: project.openWindows,
+            tabs: project.tabs.map(tab => ({
+                configs: tab.configs,
+                items: tab.items.map(itemTree => ({
+                    nodeExpanded: itemTree.nodeExpanded,
+                    description: itemTree.description,
+                    properties: itemTree.properties,
+                    isSelected: itemTree.isSelected,
+                    isEditing: itemTree.isEditing,
+                    itemPaiId: itemTree.itemPaiId,
+                    ordem: itemTree.ordem,
+                    label: itemTree.label,
+                    type: itemTree.type,
+                    name: itemTree.name,
+                    id: itemTree.id,
+                    items: itemTree.items.map(flowItem => ({
+                        connections: flowItem.connections,
+                        properties: flowItem.properties,
+                        isSelected: flowItem.isSelected,
+                        itemType: flowItem.itemType,
+                        hasError: flowItem.hasError,
+                        height: flowItem.height,
+                        width: flowItem.width,
+                        icon: flowItem.icon,
+                        left: flowItem.left,
+                        name: flowItem.name,
+                        top: flowItem.top,
+                        id: flowItem.id,
+                    })),
+                })),
+            })),
         };
-
         return JSON.stringify(res);
     }
+
+    public static stringToProject(value: string): Project {
+        const json = JSON.parse(value);
+
+        return new Project({
+            currentComponentFocus: json.currentComponentFocus,
+            projectConfigs: json.projectConfigs,
+            openWindows: json.openWindows,
+            tabs: json.tabs.map((tab: any) => new Tab({
+                configs: tab.configs,
+                items: tab.items.map((item: any) => new ItemComponent({
+                    nodeExpanded: item.nodeExpanded,
+                    description: item.description,
+                    isSelected: item.isSelected,
+                    properties: item.properties,
+                    isEditing: item.isEditing,
+                    itemPaiId: item.itemPaiId,
+                    label: item.label,
+                    ordem: item.ordem,
+                    name: item.name,
+                    type: item.type,
+                    id: item.id,
+                    items: item.items.map((itemFlow: any) => new ItemFlowComplete({
+                        connections: itemFlow.connections,
+                        properties: itemFlow.properties,
+                        isSelected: itemFlow.isSelected,
+                        itemType: itemFlow.itemType,
+                        hasError: itemFlow.hasError,
+                        height: itemFlow.height,
+                        width: itemFlow.width,
+                        left: itemFlow.left,
+                        name: itemFlow.name,
+                        icon: itemFlow.icon,
+                        top: itemFlow.top,
+                        id: itemFlow.id,
+                    })),
+                }))
+            }))
+        });
+
+    }
+
 }

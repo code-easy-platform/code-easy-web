@@ -1,8 +1,10 @@
+import { Utils } from "code-easy-components";
+
 import { IProperties } from "../components/properties-editor/shared/interfaces";
+import { DefaultPropsHelper } from '../services/helpers/DefaultPropsHelper';
 import { ComponentType } from "../enuns/ComponentType";
 import { ItemFlowComplete } from "./ItemFlowComponent";
 import { BaseFields } from "./BaseFields";
-import { DefaultPropsHelper } from '../services/helpers/DefaultPropsHelper';
 
 
 /**
@@ -93,7 +95,7 @@ export class ItemComponent implements IItemComponent {
 
     constructor(
         private _fields: {
-            id: string;
+            id: string | undefined;
             /**
             * Usado para identificar um registro dentro do sistema.
             * 
@@ -101,7 +103,7 @@ export class ItemComponent implements IItemComponent {
             *  * Não pode ter caracteres especiais
             *  * Não pode ser vazio
             */
-            name: string;
+            name?: string;
             /**
              * Usado para nomear um registro apenas de forma visual
              */
@@ -113,29 +115,29 @@ export class ItemComponent implements IItemComponent {
             type: ComponentType;
             nodeExpanded: boolean;
             /** Usado para lista todas as propriedades de um item */
-            properties: IProperties[];
+            properties?: IProperties[];
             items: ItemFlowComplete[];
             itemPaiId: string | undefined;
         }
     ) {
         this.id = this._fields.id;
-        this.name = this._fields.name;
         this.type = this._fields.type;
         this.label = this._fields.label;
-        this.items = this._fields.items;
         this.ordem = this._fields.ordem || 0;
         this.itemPaiId = this._fields.itemPaiId;
         this.isEditing = this._fields.isEditing;
-        this.properties = this._fields.properties;
         this.isSelected = this._fields.isSelected;
         this.description = this._fields.description;
         this.nodeExpanded = this._fields.nodeExpanded;
+        this.properties = this._fields.properties || [];
+        this.name = Utils.getNormalizedString(this._fields.name || '');
+        this.items = this._fields.items.map(item => new ItemFlowComplete(item));
 
-        this.updateProperties(this._fields.properties, this._fields.type);
+        this._updateProperties(this._fields.properties || [], this._fields.type);
     }
 
-    private updateProperties(properties: IProperties[], type: ComponentType) {
-        const originalProperties = DefaultPropsHelper.getNewProps(type, '');
+    private _updateProperties(properties: IProperties[], type: ComponentType) {
+        const originalProperties = DefaultPropsHelper.getNewProps(type, this.label, (this.type === ComponentType.routerConsume || this.type === ComponentType.routerExpose));
 
         originalProperties.forEach(originalProp => {
             if (!properties.some(prop => prop.propertieType === originalProp.propertieType)) {
@@ -144,23 +146,6 @@ export class ItemComponent implements IItemComponent {
         });
 
         this.properties = properties;
-    }
-
-    public toStatic() {
-        return {
-            items: this.items.map(item => item.toStatic()),
-            nodeExpanded: this.nodeExpanded,
-            description: this.description,
-            isSelected: this.isSelected,
-            properties: this.properties,
-            itemPaiId: this.itemPaiId,
-            isEditing: this.isEditing,
-            label: this.label,
-            ordem: this.ordem,
-            name: this.name,
-            type: this.type,
-            id: this.id,
-        };
     }
 
 }

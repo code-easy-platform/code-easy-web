@@ -3,10 +3,9 @@ import { IconTrash, Utils } from 'code-easy-components';
 
 import { TreeInterface } from '../../../shared/components/tree-manager/shared/models/TreeInterface';
 import { ContextMenuService } from '../../../shared/components/context-menu/ContextMenuService';
-import { DefaultPropsHelper } from '../../../shared/services/helpers/DefaultPropsHelper';
+import { ItemType } from '../../../shared/components/code-editor/shared/enums/ItemType';
 import { CodeEditorContext } from '../../../shared/services/contexts/CodeEditorContext';
 import { IContextItemList } from '../../../shared/components/context-menu/ContextMenu';
-import { ItemType } from '../../../shared/components/code-editor/models/ItemFluxo';
 import { TreeManager } from '../../../shared/components/tree-manager/TreeManager';
 import { ItemFlowComplete } from '../../../shared/interfaces/ItemFlowComponent';
 import { ItemComponent } from '../../../shared/interfaces/ItemComponent';
@@ -182,12 +181,10 @@ export const TreeManagerController: React.FC = () => {
 
         const addParam = (inputItemId: string | undefined, paramType: ComponentType.inputVariable | ComponentType.localVariable | ComponentType.outputVariable) => {
             let tabIndex: number | undefined;
-            let itemPai: ItemComponent | undefined;
             editorContext.project.tabs.forEach((tab: Tab, indexTab) => {
                 tab.items.forEach(item => {
                     if (item.id === inputItemId) {
                         tabIndex = indexTab;
-                        itemPai = item;
                     }
                 });
             });
@@ -197,6 +194,7 @@ export const TreeManagerController: React.FC = () => {
 
                 editorContext.project.tabs[tabIndex].items.push(new ItemComponent({
                     items: [],
+                    name: newName,
                     label: newName,
                     type: paramType,
                     description: '',
@@ -205,8 +203,6 @@ export const TreeManagerController: React.FC = () => {
                     id: Utils.getUUID(),
                     nodeExpanded: false,
                     itemPaiId: inputItemId,
-                    name: Utils.getNormalizedString(newName),
-                    properties: DefaultPropsHelper.getNewProps(paramType, newName, (itemPai?.type === ComponentType.routerConsume || itemPai?.type === ComponentType.routerExpose)),
                 }));
             }
 
@@ -236,8 +232,8 @@ export const TreeManagerController: React.FC = () => {
                         items: (
                             routerType === ComponentType.routerExpose
                                 ? [
-                                    new ItemFlowComplete({ id: '1', name: "START", itemType: ItemType.START, left: 188, top: 128, isSelected: false, connections: [{ connectionId: '2' }], properties: DefaultPropsHelper.getNewProps(ItemType.START, "START") }),
-                                    new ItemFlowComplete({ id: '2', name: "END", itemType: ItemType.END, left: 188, top: 384, isSelected: false, connections: [], properties: DefaultPropsHelper.getNewProps(ItemType.END, "END") })
+                                    new ItemFlowComplete({ id: '1', name: "START", itemType: ItemType.START, left: 188, top: 128, isSelected: false, connections: [{ connectionId: '2' }], properties: [] }),
+                                    new ItemFlowComplete({ id: '2', name: "END", itemType: ItemType.END, left: 188, top: 384, isSelected: false, connections: [], properties: [] })
                                 ]
                                 : []
                         ),
@@ -248,9 +244,7 @@ export const TreeManagerController: React.FC = () => {
                         nodeExpanded: true,
                         id: Utils.getUUID(),
                         itemPaiId: inputItemId,
-                        name: Utils.getNormalizedString(newName),
                         isEditing: routerType === ComponentType.routerExpose,
-                        properties: DefaultPropsHelper.getNewProps(routerType, newName),
                     }));
                 }
             }
@@ -283,11 +277,9 @@ export const TreeManagerController: React.FC = () => {
                         nodeExpanded: true,
                         itemPaiId: inputItemId,
                         type: ComponentType.globalAction,
-                        name: Utils.getNormalizedString(newName),
-                        properties: DefaultPropsHelper.getNewProps(ComponentType.globalAction, newName),
                         items: [
-                            new ItemFlowComplete({ id: '1', name: "START", itemType: ItemType.START, left: 188, top: 128, isSelected: false, connections: [{ connectionId: '2' }], properties: DefaultPropsHelper.getNewProps(ItemType.START, "START") }),
-                            new ItemFlowComplete({ id: '2', name: "END", itemType: ItemType.END, left: 188, top: 384, isSelected: false, connections: [], properties: DefaultPropsHelper.getNewProps(ItemType.END, "END") })
+                            new ItemFlowComplete({ id: '1', name: "START", itemType: ItemType.START, left: 188, top: 128, isSelected: false, connections: [{ connectionId: '2' }], properties: [] }),
+                            new ItemFlowComplete({ id: '2', name: "END", itemType: ItemType.END, left: 188, top: 384, isSelected: false, connections: [], properties: [] })
                         ],
                     }));
                 }

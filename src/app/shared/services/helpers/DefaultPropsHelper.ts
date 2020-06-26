@@ -2,7 +2,7 @@ import { Utils } from "code-easy-components";
 
 import { IProperties, TypeValues } from "../../components/properties-editor/shared/interfaces";
 import { ParametersLocationList, ParametersLocation } from "../../enuns/ParametersLocation";
-import { ItemType } from "../../components/code-editor/models/ItemFluxo";
+import { ItemType } from "../../components/code-editor/shared/enums/ItemType";
 import { MethodsApi, MethodsApiList } from "../../enuns/ApiMethods";
 import { DataTypes, DataTypesList } from "../../enuns/DataType";
 import { PropertieTypes } from "../../enuns/PropertieTypes";

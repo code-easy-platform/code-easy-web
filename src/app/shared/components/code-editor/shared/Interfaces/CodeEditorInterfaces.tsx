@@ -1,13 +1,7 @@
 import { FlowItem } from "../../models/ItemFluxo";
+import { IBreadCampButton } from './BreadCampButton';
 
-/** Usado para mapear um quadrado de coordenadas */
-export interface Coords { startY: number, startX: number, endY: number, endX: number };
-
-export interface BreadCampButton { label: string; disabled?: boolean; onClick(e: any): void; }
-
-/**
- * Propriedades aceitas pelo editor.
- */
+/** Propriedades aceitas pelo editor. */
 export interface ICodeEditorProps {
 
     /** Identifier of the component in react and html native elements */
@@ -32,7 +26,7 @@ export interface ICodeEditorProps {
     allowedsInDrop?: string[];
 
     /** BreadCampButton[] - Usado para identifica qual o caminho da action que está aberta */
-    breadcrumbs?: BreadCampButton[];
+    breadcrumbs?: IBreadCampButton[];
 
     /** Se "true" desabilita a área de seleção na tela. */
     enabledSelection?: boolean;

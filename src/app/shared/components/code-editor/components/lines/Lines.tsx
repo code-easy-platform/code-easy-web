@@ -1,16 +1,17 @@
 import React from 'react';
 
-import { FlowItem, ItemType } from '../../models/ItemFluxo';
+import { ItemType } from '../../shared/enums/ItemType';
+import { FlowItem } from '../../models/ItemFluxo';
 import { Line } from './Line';
 
-interface LinesProps {
+interface ILinesProps {
     item: FlowItem;
     disableOpacity: number;
     isUseNewBranch: boolean;
     itemsConnections: FlowItem[];
     onSucessorChange(itemId: string | undefined, sucessorId: string, branchIndex: number | undefined): void;
 };
-export const Lines: React.FC<LinesProps> = ({ itemsConnections, item, onSucessorChange, isUseNewBranch, disableOpacity }) => {
+export const Lines: React.FC<ILinesProps> = ({ itemsConnections, item, onSucessorChange, isUseNewBranch, disableOpacity }) => {
     return <>
         {itemsConnections.map((itemConnection: FlowItem, index: number) => {
 

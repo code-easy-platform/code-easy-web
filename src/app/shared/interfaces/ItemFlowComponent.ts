@@ -1,9 +1,9 @@
-import { ItemType, IConnections, ItemFluxo } from "../components/code-editor/models/ItemFluxo";
+import { IFlowItem, ICoords, IConnections } from "../components/code-editor/shared/Interfaces";
 import { IProperties } from "../components/properties-editor/shared/interfaces";
-import { Coords } from "../components/code-editor/shared/Interfaces/CodeEditorInterfaces";
+import { ItemType } from "../components/code-editor/shared/enums/ItemType";
 
-interface IItemFlowComplete extends ItemFluxo {
-    select(coords: Coords): any;
+interface IItemFlowComplete extends IFlowItem {
+    select(coords: ICoords): any;
     connections: IConnections[];
     properties: IProperties[];
     id: string | undefined;
@@ -62,24 +62,6 @@ export class ItemFlowComplete implements IItemFlowComplete {
         this.left = props.left;
         this.top = props.top;
         this.id = props.id;
-    }
-
-    public toStatic(): IItemFlowComplete {
-        return {
-            connections: this.connections,
-            properties: this.properties,
-            isSelected: this.isSelected,
-            itemType: this.itemType,
-            hasError: this.hasError,
-            select: this.select,
-            height: this.height,
-            width: this.width,
-            icon: this.icon,
-            name: this.name,
-            left: this.left,
-            top: this.top,
-            id: this.id,
-        };
     }
 
 }

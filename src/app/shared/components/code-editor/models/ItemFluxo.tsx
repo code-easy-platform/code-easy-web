@@ -1,41 +1,9 @@
-import { Coords } from "../shared/Interfaces/CodeEditorInterfaces";
+import { IConnections, ICoords, IFlowItem } from "../shared/Interfaces";
+import { ItemType } from "../shared/enums/ItemType";
 
-export interface IConnections {
-    connectionLabel?: string;
-    isSelected?: boolean;
-    connectionId: string;
-}
-
-export interface ItemFluxo {
-    connections: IConnections[];
-    select(coords: Coords): any;
-    id: string | undefined;
-    isDisabled?: boolean;
-    isSelected: boolean;
-    hasError?: boolean;
-    itemType: ItemType;
-    height: number;
-    width: number;
-    name: string;
-    left: number;
-    top: number;
-    icon: any;
-}
-
-/** Tipos de items existentes na toolbar. */
-export enum ItemType {
-    COMMENT = "COMMENT",
-    FOREACH = "FOREACH",
-    SWITCH = "SWITCH",
-    ASSIGN = "ASSIGN",
-    ACTION = "ACTION",
-    START = "START",
-    END = "END",
-    IF = "IF",
-}
 
 /** Elemento que é reinderizado na para cada item de fluxo. */
-export class FlowItem implements ItemFluxo {
+export class FlowItem implements IFlowItem {
 
     public itemType: ItemType = ItemType.START;
     public id: string | undefined = undefined;
@@ -81,7 +49,7 @@ export class FlowItem implements ItemFluxo {
     }
 
     /** Valida se o elemento está ou não na área que está sendo selecionada pelo mouse. */
-    public select = (coords: Coords) => {
+    public select = (coords: ICoords) => {
         const top2 = this.top + this.height;
         const left2 = this.left + this.width;
         this.isSelected = (
