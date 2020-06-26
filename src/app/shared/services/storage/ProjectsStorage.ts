@@ -1,11 +1,14 @@
-import { Project, Tab, ComponentConfigs, OpenWindow, CurrentFocus } from "./../../interfaces/Aplication";
+import { ComponentConfigs } from "../../interfaces/ItemComponent";
 import { ComponentType } from "./../../enuns/ComponentType";
+import { OpenWindow } from "../../interfaces/OpenedWindow";
+import { Project } from "./../../interfaces/Aplication";
 import { ProjectType } from "./../../enuns/ProjectType";
+import { CurrentFocus } from "../../enuns/CurrentFocus";
 import { Utils } from "code-easy-components";
 import { StorageEnum } from "./StorageEnum";
+import { Tab } from "../../interfaces/Tabs";
 
 const newProject = (name: string, version: string, type: ProjectType, description: string) => new Project({
-    openWindows: [],
     currentComponentFocus: CurrentFocus.tree,
     projectConfigs: {
         id: `${Utils.getUUID()}`,
@@ -31,7 +34,7 @@ const newProject = (name: string, version: string, type: ProjectType, descriptio
                 description: "Routes tab",
                 type: ComponentType.tabRoutes,
             }),
-            itens: []
+            items: []
         }),
         new Tab({
             configs: new ComponentConfigs({
@@ -43,7 +46,7 @@ const newProject = (name: string, version: string, type: ProjectType, descriptio
                 description: 'Actions tab',
                 type: ComponentType.tabActions,
             }),
-            itens: [],
+            items: [],
         }),
         /* new Tab({
             configs: new ComponentConfigs({
@@ -55,7 +58,7 @@ const newProject = (name: string, version: string, type: ProjectType, descriptio
                 type: ComponentType.tabDates,
                 description: 'Data tab',
             }),
-            itens: [],
+            items: [],
         }), */
     ]
 });
@@ -77,9 +80,18 @@ export class ProjectsStorage {
 
         let res = localStorage.getItem(StorageEnum.projectsStorage);
 
-        if (res !== null && res !== "" && res !== undefined)
-            projects = JSON.parse(res);
-        else {
+        if (res !== null && res !== "" && res !== undefined) {
+            const listString: string[] | undefined = JSON.parse(res);
+
+            if (listString) {
+                projects = listString.map(projectString => Project.stringToProject(projectString));
+
+            } else {
+                ProjectsStorage.setProjects([]);
+                projects = [];
+            }
+
+        } else {
             ProjectsStorage.setProjects([]);
             projects = [];
         }
@@ -89,14 +101,16 @@ export class ProjectsStorage {
 
     /** Salva no localstorage uma lista de projetos */
     public static setProjects(projects: Project[]): Project[] {
-        localStorage.setItem(StorageEnum.projectsStorage, JSON.stringify(projects));
+        const listString = projects.map(project => Project.projectToString(project));
+
+        localStorage.setItem(StorageEnum.projectsStorage, JSON.stringify(listString));
         return projects;
     }
 
     /** Atualiza no localstorage a lista de projetos */
     public static setProjectById(project: Project) {
 
-        let projects: Project[] = [...ProjectsStorage.getProjects()];
+        let projects: Project[] = ProjectsStorage.getProjects();
 
         let itemIndex = projects.findIndex(item_project => item_project.projectConfigs.id === project.projectConfigs.id);
 
@@ -162,7 +176,7 @@ export class ProjectsStorage {
                 windowTab.isSelected = true;
 
                 project.tabs.forEach(tab => {
-                    tab.itens.forEach(item => {
+                    tab.items.forEach(item => {
 
                         if (item.id === windowId) {
                             item.isEditing = true;
@@ -189,7 +203,7 @@ export class ProjectsStorage {
         project.openWindows.splice(indexToRemove, 1);
 
         project.tabs.forEach(tab => {
-            tab.itens.forEach(item => {
+            tab.items.forEach(item => {
                 if (item.id === windowId) {
                     item.isEditing = false;
                 }
@@ -218,14 +232,14 @@ export class ProjectsStorage {
 
         }
 
-        let indexToRemove = project.openWindows.findIndex(windowTab => !project.tabs.some(tab => tab.itens.some(item => item.id === windowTab.id)));
+        let indexToRemove = project.openWindows.findIndex(windowTab => !project.tabs.some(tab => tab.items.some(item => item.id === windowTab.id)));
         while (indexToRemove >= 0) {
             project.openWindows.splice(indexToRemove, 1);
-            indexToRemove = project.openWindows.findIndex(windowTab => !project.tabs.some(tab => tab.itens.some(item => item.id === windowTab.id)));
+            indexToRemove = project.openWindows.findIndex(windowTab => !project.tabs.some(tab => tab.items.some(item => item.id === windowTab.id)));
         }
 
         project.tabs.forEach(tab => {
-            tab.itens.forEach(item => {
+            tab.items.forEach(item => {
                 if (item.isEditing && item.id) {
                     addWindowTab({
                         id: item.id,

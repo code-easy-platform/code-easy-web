@@ -1,13 +1,7 @@
 import { FlowItem } from "../../models/ItemFluxo";
+import { IBreadCampButton } from './BreadCampButton';
 
-/** Usado para mapear um quadrado de coordenadas */
-export interface Coords { startY: number, startX: number, endY: number, endX: number };
-
-export interface BreadCampButton { label: string; disabled?: boolean; onClick(e: any): void; }
-
-/**
- * Propriedades aceitas pelo editor.
- */
+/** Propriedades aceitas pelo editor. */
 export interface ICodeEditorProps {
 
     /** Identifier of the component in react and html native elements */
@@ -19,20 +13,20 @@ export interface ICodeEditorProps {
     /** Mensagem exibida quando o fluxo estiver vazio e o enabledSelection for true */
     emptyMessage?: string;
 
-    /** boolean - Usado para exibir ou não a toolbox com itens de lógica. */
+    /** boolean - Usado para exibir ou não a toolbox com items de lógica. */
     showToolbar: boolean;
 
-    /** FlowItem[] - Usado para exibir os itens na toolbox do editor. */
-    toolItens?: FlowItem[];
+    /** FlowItem[] - Usado para exibir os items na toolbox do editor. */
+    toolItems?: FlowItem[];
 
-    /** FlowItem[] - Usado para exibir os itens na tela do editor */
-    itens: FlowItem[];
+    /** FlowItem[] - Usado para exibir os items na tela do editor */
+    items: FlowItem[];
 
-    /** string[] - Usado para definir quais itens adicionais são permitidos no fluxo */
+    /** string[] - Usado para definir quais items adicionais são permitidos no fluxo */
     allowedsInDrop?: string[];
 
     /** BreadCampButton[] - Usado para identifica qual o caminho da action que está aberta */
-    breadcrumbs?: BreadCampButton[];
+    breadcrumbs?: IBreadCampButton[];
 
     /** Se "true" desabilita a área de seleção na tela. */
     enabledSelection?: boolean;
@@ -43,8 +37,8 @@ export interface ICodeEditorProps {
     /** Used when a flow item is disabled */
     disableOpacity?: number;
 
-    /** Function - Usada para emitir através do output o fluxo atualidado, acontece a cada mudança de estado dos itens de fluxo. */
-    onChangeItens(itens: FlowItem[]): any;
+    /** Function - Usada para emitir através do output o fluxo atualidado, acontece a cada mudança de estado dos items de fluxo. */
+    onChangeItems(items: FlowItem[]): any;
 
     /** Function - Acionada quando um item for dropado no editor espera o mesmo item, porem o item pode sofrer alterações adicionais */
     onDropItem?(oldItemId: string, newItemId: string, newItem: FlowItem): FlowItem | undefined;

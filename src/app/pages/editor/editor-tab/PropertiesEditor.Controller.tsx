@@ -2,12 +2,15 @@ import React, { useContext } from 'react';
 import { Utils } from 'code-easy-components';
 
 import { IItem, IProperties, TypeValues } from '../../../shared/components/properties-editor/shared/interfaces';
-import { CurrentFocus, Tab, ItemComponent, ItemFlowComplete } from '../../../shared/interfaces/Aplication';
 import { PropertiesEditor } from '../../../shared/components/properties-editor/PropertiesEditor';
+import { ItemType } from '../../../shared/components/code-editor/shared/enums/ItemType';
 import { CodeEditorContext } from '../../../shared/services/contexts/CodeEditorContext';
-import { ItemType } from '../../../shared/components/code-editor/models/ItemFluxo';
+import { ItemFlowComplete } from '../../../shared/interfaces/ItemFlowComponent';
+import { ItemComponent } from '../../../shared/interfaces/ItemComponent';
 import { PropertieTypes } from '../../../shared/enuns/PropertieTypes';
 import { ComponentType } from '../../../shared/enuns/ComponentType';
+import { CurrentFocus } from '../../../shared/enuns/CurrentFocus';
+import { Tab } from '../../../shared/interfaces/Tabs';
 
 export const PropertiesEditorController: React.FC = () => {
 
@@ -18,15 +21,13 @@ export const PropertiesEditorController: React.FC = () => {
 
 
     /** O editor de propriedades emite a lista de propriedades alteradas */
-    const propertiesEditorOutputItens = (item: IItem) => {
-
-        console.log(item);
+    const propertiesEditorOutputItems = (item: IItem) => {
 
         if (editorContext.project.currentComponentFocus === CurrentFocus.tree) {
 
             if (item.id !== undefined) {
                 editorContext.project.tabs.forEach((tab: Tab) => {
-                    tab.itens.forEach(itemTree => {
+                    tab.items.forEach(itemTree => {
                         if (itemTree.isSelected && itemTree.id === item.id) {
 
                             // Este block garante que se a label de uma routa muda o seu path será alterado junto.
@@ -63,7 +64,7 @@ export const PropertiesEditorController: React.FC = () => {
 
             let treeItemEditing: ItemComponent | undefined;
             editorContext.project.tabs.forEach((tab: Tab) => {
-                tab.itens.forEach(item => {
+                tab.items.forEach(item => {
                     if (item.isEditing) {
                         treeItemEditing = item;
                     }
@@ -72,20 +73,20 @@ export const PropertiesEditorController: React.FC = () => {
 
             if (treeItemEditing) {
 
-                let indexItemFlow = treeItemEditing.itens.findIndex((oldItem: ItemFlowComplete) => oldItem.id === item.id);
+                let indexItemFlow = treeItemEditing.items.findIndex((oldItem: ItemFlowComplete) => oldItem.id === item.id);
                 if (indexItemFlow && (indexItemFlow < 0)) return;
 
 
-                if (treeItemEditing.itens[indexItemFlow].itemType === ItemType.ACTION) {
+                if (treeItemEditing.items[indexItemFlow].itemType === ItemType.ACTION) {
 
                     // Pega a antiga action ID
-                    const oldActionId = treeItemEditing.itens[indexItemFlow].properties.find(item_old => item_old.propertieType === PropertieTypes.action)?.value;
+                    const oldActionId = treeItemEditing.items[indexItemFlow].properties.find(item_old => item_old.propertieType === PropertieTypes.action)?.value;
 
                     // Pega a nova action ID
-                    const newActionId = item.properties.find(item_new => item_new.propertieType === PropertieTypes.action)?.value;
+                    const newSelectedActionId = item.properties.find(item_new => item_new.propertieType === PropertieTypes.action)?.value;
 
                     // Compara os dois IDs, se mudou apaga todos os parâmetro da action anterior.
-                    if (oldActionId && oldActionId !== newActionId) {
+                    if ((oldActionId !== '') && (oldActionId !== newSelectedActionId)) {
                         // Encontra o promeiro parametro e remove, depois encontra os outros e irá remover eté não restar mais parâmetros
                         let indexToREmove = item.properties.findIndex(item_old => item_old.propertieType === PropertieTypes.param);
                         while (indexToREmove >= 0) {
@@ -94,11 +95,9 @@ export const PropertiesEditorController: React.FC = () => {
                         }
                     }
 
-                    const selectedActionId = item.properties.find(prop => prop.propertieType === PropertieTypes.action)?.value;
                     let actionSelected: ItemComponent | undefined;
-
                     editorContext.project.tabs.forEach((tab: Tab) => {
-                        actionSelected = tab.itens.find(item => item.id === selectedActionId);
+                        actionSelected = tab.items.find(item => item.id === newSelectedActionId);
                     });
 
                     // Altera o label do componente action de fluxo
@@ -115,11 +114,14 @@ export const PropertiesEditorController: React.FC = () => {
                         }
                     });
 
-                    treeItemEditing.itens[indexItemFlow].name = actionSelected ? actionSelected.name : item.name;
+                    treeItemEditing.items[indexItemFlow].name = actionSelected ? actionSelected.label : item.name;
 
-                } else if (treeItemEditing.itens[indexItemFlow].itemType === ItemType.ASSIGN) {
+                } else if (treeItemEditing.items[indexItemFlow].itemType === ItemType.ASSIGN) {
+                    treeItemEditing.items[indexItemFlow].name = item.name;
+                } else {
+                    treeItemEditing.items[indexItemFlow].name = item.name;
                 }
-                treeItemEditing.itens[indexItemFlow].properties = item.properties;
+                treeItemEditing.items[indexItemFlow].properties = item.properties;
 
             }
 
@@ -136,11 +138,11 @@ export const PropertiesEditorController: React.FC = () => {
             isHeader: false,
         }
 
-        if (currentFocus === CurrentFocus.tree) { // Mapeia os itens da árvore.
+        if (currentFocus === CurrentFocus.tree) { // Mapeia os items da árvore.
 
-            const tab = editorContext.project.tabs.find((tab: Tab) => tab.itens.find(item => item.isSelected));
+            const tab = editorContext.project.tabs.find((tab: Tab) => tab.items.find(item => item.isSelected));
             if (!tab) return nullRes;
-            const res = tab.itens.find(item => item.isSelected);
+            const res = tab.items.find(item => item.isSelected);
             if (!res) return nullRes;
             else return {
                 id: res.id,
@@ -150,12 +152,12 @@ export const PropertiesEditorController: React.FC = () => {
                 properties: res.properties,
             };
 
-        } else if (currentFocus === CurrentFocus.flow) { // Mapeia os itens de fluxo
-            const itensLogica: ItemFlowComplete[] = codeEditorGetItensLogica();
-            const itensFiltereds = itensLogica.filter(flowItem => flowItem.isSelected);
+        } else if (currentFocus === CurrentFocus.flow) { // Mapeia os items de fluxo
+            const itemsLogica: ItemFlowComplete[] = codeEditorGetItemsLogica();
+            const itemsFiltereds = itemsLogica.filter(flowItem => flowItem.isSelected);
 
-            const mappedItens: IItem[] = [];
-            itensFiltereds.forEach(filteredItem => {
+            const mappedItems: IItem[] = [];
+            itemsFiltereds.forEach(filteredItem => {
                 let paramsProps: IProperties[] = [];
 
                 /**
@@ -165,9 +167,9 @@ export const PropertiesEditorController: React.FC = () => {
                  */
                 let paramsSuggestion: ItemComponent[] = [];
                 editorContext.project.tabs.forEach(tab => {
-                    tab.itens.forEach(tree_item => {
+                    tab.items.forEach(tree_item => {
                         if (tree_item.isEditing) {
-                            paramsSuggestion = tab.itens.filter(tree_itemToParams => (
+                            paramsSuggestion = tab.items.filter(tree_itemToParams => (
                                 (tree_itemToParams.itemPaiId === tree_item.id) &&
                                 (
                                     tree_itemToParams.type === ComponentType.inputVariable ||
@@ -190,7 +192,7 @@ export const PropertiesEditorController: React.FC = () => {
                         // Encontra as action e adiciona como sugestions
                         editorContext.project.tabs.forEach(tab => {
                             if (tab.configs.type === ComponentType.tabActions) {
-                                tab.itens.forEach(item => {
+                                tab.items.forEach(item => {
                                     if (item.type === ComponentType.globalAction) {
                                         prop.suggestions?.push({
                                             description: item.description,
@@ -209,7 +211,7 @@ export const PropertiesEditorController: React.FC = () => {
                             if (tab.configs.type === ComponentType.tabActions) {
 
                                 // Encontra os parâmetros da action selecionada na combo
-                                const params = tab.itens.filter(item => (item.itemPaiId === prop.value) && item.type === ComponentType.inputVariable);
+                                const params = tab.items.filter(item => (item.itemPaiId === prop.value) && item.type === ComponentType.inputVariable);
 
                                 // Adiciona cada parâmetro como uma prop da action atual
                                 params.forEach(param => {
@@ -252,7 +254,7 @@ export const PropertiesEditorController: React.FC = () => {
 
                     if (emptyAssigments.length === 0) {
 
-                        // Está adicionando itens nos assigments
+                        // Está adicionando items nos assigments
                         filteredItem.properties.push({
                             name: '',
                             value: '',
@@ -263,7 +265,7 @@ export const PropertiesEditorController: React.FC = () => {
 
                     } else if (emptyAssigments.length > 1) {
 
-                        // Está removendo itens dos assigments
+                        // Está removendo items dos assigments
                         emptyAssigments.forEach((empAssig, index) => {
                             let indexToRemove = filteredItem.properties.findIndex(prop => prop.id === empAssig.id);
                             if (index < (emptyAssigments.length - 1)) {
@@ -274,7 +276,7 @@ export const PropertiesEditorController: React.FC = () => {
                     }
                 }
 
-                mappedItens.push({
+                mappedItems.push({
                     isHeader: true,
                     id: filteredItem.id,
                     name: filteredItem.name,
@@ -284,8 +286,8 @@ export const PropertiesEditorController: React.FC = () => {
 
             });
 
-            if (mappedItens.length > 0) {
-                return mappedItens[0];
+            if (mappedItems.length > 0) {
+                return mappedItems[0];
             } else {
                 return nullRes;
             }
@@ -295,13 +297,13 @@ export const PropertiesEditorController: React.FC = () => {
         return nullRes;
     }
 
-    /** Usando o state pode pegar os itens que devem ser editados pelo fluxo. */
-    const codeEditorGetItensLogica = () => {
+    /** Usando o state pode pegar os items que devem ser editados pelo fluxo. */
+    const codeEditorGetItemsLogica = () => {
 
         let itemEditing: ItemComponent | undefined;
 
         editorContext.project.tabs.forEach((tab: Tab) => {
-            tab.itens.forEach(item => {
+            tab.items.forEach(item => {
                 if (item.isEditing) {
                     itemEditing = item;
                 }
@@ -309,8 +311,8 @@ export const PropertiesEditorController: React.FC = () => {
         });
 
         if (itemEditing) {
-            itemEditing.itens.sort((a, b) => (a.top - b.top));
-            return itemEditing.itens; // Se for o completo já retorna para evitar processamento.
+            itemEditing.items.sort((a, b) => (a.top - b.top));
+            return itemEditing.items; // Se for o completo já retorna para evitar processamento.
         } else {
             return [];
         }
@@ -320,7 +322,7 @@ export const PropertiesEditorController: React.FC = () => {
 
     return (
         <PropertiesEditor
-            onChange={propertiesEditorOutputItens}
+            onChange={propertiesEditorOutputItems}
             item={propertiesEditorGetSelectedItem(editorContext.project.currentComponentFocus)}
         />
     );

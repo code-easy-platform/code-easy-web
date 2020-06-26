@@ -5,7 +5,7 @@ import { CodeEditorContext } from '../../services/contexts/CodeEditorContext';
 import { ProjectsStorage } from '../../services/storage/ProjectsStorage';
 import { TabButton, TabGroup } from '../tab-button/TabButton';
 import { TabsManager } from '../tab-manager/TabsManager';
-import { Tab } from '../../interfaces/Aplication';
+import { Tab } from '../../interfaces/Tabs';
 import { Modal } from '../modal/Modal';
 import './ToolBar.css';
 

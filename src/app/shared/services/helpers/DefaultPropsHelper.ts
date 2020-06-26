@@ -2,7 +2,7 @@ import { Utils } from "code-easy-components";
 
 import { IProperties, TypeValues } from "../../components/properties-editor/shared/interfaces";
 import { ParametersLocationList, ParametersLocation } from "../../enuns/ParametersLocation";
-import { ItemType } from "../../components/code-editor/models/ItemFluxo";
+import { ItemType } from "../../components/code-editor/shared/enums/ItemType";
 import { MethodsApi, MethodsApiList } from "../../enuns/ApiMethods";
 import { DataTypes, DataTypesList } from "../../enuns/DataType";
 import { PropertieTypes } from "../../enuns/PropertieTypes";
@@ -10,7 +10,7 @@ import { ComponentType } from "../../enuns/ComponentType";
 
 class DefaultPropsService {
 
-    /** Devolve uma lista de propriedades para ser adicionado em novos itens de fluxo ou da árvore. */
+    /** Devolve uma lista de propriedades para ser adicionado em novos items de fluxo ou da árvore. */
     public getNewProps(itemType: ItemType | ComponentType, name: string, inARouter: boolean = false): IProperties[] {
         switch (itemType) {
             case ItemType.START:

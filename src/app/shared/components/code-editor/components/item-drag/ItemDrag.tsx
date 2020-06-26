@@ -2,11 +2,11 @@ import React from 'react';
 import { IconFlowAction, IconFlowAssign, IconFlowComment, IconFlowEnd, IconFlowForeach, IconFlowIf, IconFlowStart, IconFlowSwitch } from 'code-easy-components';
 import { useDrag } from 'react-dnd';
 
-import { ItemType } from '../../models/ItemFluxo';
+import { ItemType } from '../../shared/enums/ItemType';
 import { FlowComponent } from './FlowComponent';
 
 /** Usado para definir o tipo de input de parâmetros no item drag. */
-export interface ItemDragProps {
+export interface IItemDragProps {
     id?: any;
     icon?: any;
     top?: number;
@@ -33,8 +33,8 @@ export interface ItemDragProps {
     onChangePosition?(top: number, left: number, itemId: string | undefined, e?: React.MouseEvent<SVGGElement, MouseEvent>): void;
 }
 
-/** Usado para representar os itens de lógica no fluxo do editor e na toolbar. */
-export const ItemToDrag: React.FC<ItemDragProps> = ({ title, ...props }: ItemDragProps) => {
+/** Usado para representar os items de lógica no fluxo do editor e na toolbar. */
+export const ItemToDrag: React.FC<IItemDragProps> = ({ title, ...props }: IItemDragProps) => {
 
     const {
         onChangePosition, onMouseDown, onMouseOver, width = 0, disableOpacity,

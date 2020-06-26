@@ -173,7 +173,7 @@ export const HomePage = () => {
                                 />
                             })
                         }
-                        {(projects.length === 0 && !isAdding) && <div className="font-size-m margin-s" style={{ opacity: 0.5 }}>No itens to ahow...</div>}
+                        {(projects.length === 0 && !isAdding) && <div className="font-size-m margin-s" style={{ opacity: 0.5 }}>No items to ahow...</div>}
                     </div>
                 </div>
             </div>

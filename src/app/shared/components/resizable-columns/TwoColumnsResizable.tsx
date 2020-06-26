@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+
 import { ProjectsStorage } from '../../services/storage/ProjectsStorage';
 
 interface IRecipeProps {
@@ -40,9 +41,7 @@ export class TwoColumnsResizable extends Component<IRecipeProps> {
 
     render = () => (
         <div className="flex1 full-width">
-            <div className="col-align-left display-block" style={{ width: window.innerWidth - this.state.colX }}>
-                {this.props.left}
-            </div>
+            <div className="col-align-left display-block" style={{ width: window.innerWidth - this.state.colX }}>{this.props.left}</div>
             <hr className='hr hr-vertical' />
             <div className={`display-block col-align-${this.props.aligment}`} style={{ width: !this.isRight ? (window.innerWidth - this.state.colX) : this.state.colX }}>
                 <div className="grabber-col-right" onMouseDown={this.mouseDown} />

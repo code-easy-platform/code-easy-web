@@ -11,7 +11,6 @@ import { TreeManagerController } from './TreeManager.Controller';
 import { FlowEditorController } from './FlowEditor.Controller';
 
 export default class EditorTab extends React.Component {
-
     render() {
         return (
             <TwoColumnsResizable
@@ -44,6 +43,5 @@ export default class EditorTab extends React.Component {
             />
         );
     }
-
 }
 EditorTab.contextType = CodeEditorContext;

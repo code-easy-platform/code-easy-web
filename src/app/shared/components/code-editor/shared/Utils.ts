@@ -1,4 +1,4 @@
-import { ItemType } from "../models/ItemFluxo";
+import { ItemType } from "./enums/ItemType";
 
 export class Utils {
 

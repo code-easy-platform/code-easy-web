@@ -1,7 +1,8 @@
 .breadcrump-base {
-    z-index: 1;
-    position: 'absolute';
     color: var(--font-color-label-propertie-editor);
+    position: 'absolute';
+    max-width: 90%;
+    z-index: 1;
 }
 
 .breadcrump-button {
