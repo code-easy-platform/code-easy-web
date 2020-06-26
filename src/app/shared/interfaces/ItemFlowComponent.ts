@@ -1,5 +1,6 @@
 import { IFlowItem, ICoords, IConnections } from "../components/code-editor/shared/Interfaces";
 import { IProperties } from "../components/properties-editor/shared/interfaces";
+import { DefaultPropsHelper } from '../services/helpers/DefaultPropsHelper';
 import { ItemType } from "../components/code-editor/shared/enums/ItemType";
 
 interface IItemFlowComplete extends IFlowItem {
@@ -34,9 +35,9 @@ export class ItemFlowComplete implements IItemFlowComplete {
     public top: number = 0;
 
     constructor(
-        props: {
+        private _fields: {
             connections: IConnections[],
-            properties: IProperties[],
+            properties?: IProperties[],
             id: string | undefined,
             isSelected: boolean,
             itemType: ItemType,
@@ -49,19 +50,31 @@ export class ItemFlowComplete implements IItemFlowComplete {
             icon?: any,
         },
     ) {
-        // super(props);
-        this.hasError = props.hasError || false;
-        this.connections = props.connections;
-        this.isSelected = props.isSelected;
-        this.properties = props.properties;
-        this.height = props.height || 50;
-        this.width = props.width || 50;
-        this.itemType = props.itemType;
-        this.name = props.name;
-        this.icon = props.icon;
-        this.left = props.left;
-        this.top = props.top;
-        this.id = props.id;
+        this.properties = _fields.properties || [];
+        this.hasError = _fields.hasError || false;
+        this.connections = _fields.connections;
+        this.isSelected = _fields.isSelected;
+        this.height = _fields.height || 50;
+        this.width = _fields.width || 50;
+        this.itemType = _fields.itemType;
+        this.name = _fields.name;
+        this.icon = _fields.icon;
+        this.left = _fields.left;
+        this.top = _fields.top;
+        this.id = _fields.id;
+
+        this._updateProperties(this._fields.properties || [], this._fields.itemType);
     }
 
+    private _updateProperties(properties: IProperties[], type: ItemType) {
+        const originalProperties = DefaultPropsHelper.getNewProps(type, this.name);
+
+        originalProperties.forEach(originalProp => {
+            if (!properties.some(prop => prop.propertieType === originalProp.propertieType)) {
+                properties.push(originalProp);
+            }
+        });
+
+        this.properties = properties;
+    }
 }

@@ -83,10 +83,10 @@ export const PropertiesEditorController: React.FC = () => {
                     const oldActionId = treeItemEditing.items[indexItemFlow].properties.find(item_old => item_old.propertieType === PropertieTypes.action)?.value;
 
                     // Pega a nova action ID
-                    const newActionId = item.properties.find(item_new => item_new.propertieType === PropertieTypes.action)?.value;
+                    const newSelectedActionId = item.properties.find(item_new => item_new.propertieType === PropertieTypes.action)?.value;
 
                     // Compara os dois IDs, se mudou apaga todos os parâmetro da action anterior.
-                    if (oldActionId && oldActionId !== newActionId) {
+                    if ((oldActionId !== '') && (oldActionId !== newSelectedActionId)) {
                         // Encontra o promeiro parametro e remove, depois encontra os outros e irá remover eté não restar mais parâmetros
                         let indexToREmove = item.properties.findIndex(item_old => item_old.propertieType === PropertieTypes.param);
                         while (indexToREmove >= 0) {
@@ -95,11 +95,9 @@ export const PropertiesEditorController: React.FC = () => {
                         }
                     }
 
-                    const selectedActionId = item.properties.find(prop => prop.propertieType === PropertieTypes.action)?.value;
                     let actionSelected: ItemComponent | undefined;
-
                     editorContext.project.tabs.forEach((tab: Tab) => {
-                        actionSelected = tab.items.find(item => item.id === selectedActionId);
+                        actionSelected = tab.items.find(item => item.id === newSelectedActionId);
                     });
 
                     // Altera o label do componente action de fluxo
@@ -116,9 +114,12 @@ export const PropertiesEditorController: React.FC = () => {
                         }
                     });
 
-                    treeItemEditing.items[indexItemFlow].name = actionSelected ? actionSelected.name : item.name;
+                    treeItemEditing.items[indexItemFlow].name = actionSelected ? actionSelected.label : item.name;
 
                 } else if (treeItemEditing.items[indexItemFlow].itemType === ItemType.ASSIGN) {
+                    treeItemEditing.items[indexItemFlow].name = item.name;
+                } else {
+                    treeItemEditing.items[indexItemFlow].name = item.name;
                 }
                 treeItemEditing.items[indexItemFlow].properties = item.properties;
 

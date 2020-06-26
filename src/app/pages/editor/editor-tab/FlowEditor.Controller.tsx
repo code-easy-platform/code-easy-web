@@ -3,7 +3,6 @@ import { IconTrash, Utils } from 'code-easy-components';
 
 import { ContextMenuService } from '../../../shared/components/context-menu/ContextMenuService';
 import { IBreadCampButton } from '../../../shared/components/code-editor/shared/Interfaces';
-import { DefaultPropsHelper } from '../../../shared/services/helpers/DefaultPropsHelper';
 import { ItemType } from '../../../shared/components/code-editor/shared/enums/ItemType';
 import { CodeEditorContext } from '../../../shared/services/contexts/CodeEditorContext';
 import { IContextItemList } from '../../../shared/components/context-menu/ContextMenu';
@@ -64,7 +63,6 @@ export const FlowEditorController: React.FC = () => {
                                 }));
                             } else {
                                 newItems.push(new ItemFlowComplete({
-                                    properties: DefaultPropsHelper.getNewProps(updatedItem.itemType, updatedItem.name), // Criar uma função para isso
                                     connections: updatedItem.connections,
                                     isSelected: updatedItem.isSelected,
                                     itemType: updatedItem.itemType,
@@ -204,7 +202,6 @@ export const FlowEditorController: React.FC = () => {
 
                                 // Adiciona a tab com os items alterados
                                 item_tree.items.push(new ItemFlowComplete({
-                                    properties: DefaultPropsHelper.getNewProps(item.itemType, item.name), // Criar uma função para isso
                                     itemType: item.itemType,
                                     id: Utils.getUUID(),
                                     isSelected: true,
