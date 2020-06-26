@@ -1,4 +1,4 @@
-import { ComponentConfigs } from "../../interfaces/ItemComponent";
+import { ComponentConfigs } from "../../interfaces/ItemTreeComponent";
 import { ComponentType } from "./../../enuns/ComponentType";
 import { OpenWindow } from "../../interfaces/OpenedWindow";
 import { Project } from "./../../interfaces/Aplication";

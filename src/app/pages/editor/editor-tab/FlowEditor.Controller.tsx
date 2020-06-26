@@ -10,7 +10,7 @@ import { IdeConfigStorage } from '../../../shared/services/storage/IdeConfigStor
 import { FlowItem } from '../../../shared/components/code-editor/models/ItemFluxo';
 import { ItemFlowComplete } from '../../../shared/interfaces/ItemFlowComponent';
 import { FlowEditor } from '../../../shared/components/code-editor/CodeEditor';
-import { ItemComponent } from '../../../shared/interfaces/ItemComponent';
+import { ItemComponent } from '../../../shared/interfaces/ItemTreeComponent';
 import { AssetsService } from '../../../shared/services/AssetsService';
 import { PropertieTypes } from '../../../shared/enuns/PropertieTypes';
 import { ComponentType } from '../../../shared/enuns/ComponentType';

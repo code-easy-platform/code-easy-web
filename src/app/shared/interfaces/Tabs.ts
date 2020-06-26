@@ -1,4 +1,4 @@
-import { ItemComponent, ComponentConfigs } from "./ItemComponent";
+import { ItemComponent, ComponentConfigs } from "./ItemTreeComponent";
 
 export class Tab {
     public configs: ComponentConfigs;

@@ -8,7 +8,7 @@ import { CodeEditorContext } from '../../../shared/services/contexts/CodeEditorC
 import { IContextItemList } from '../../../shared/components/context-menu/ContextMenu';
 import { TreeManager } from '../../../shared/components/tree-manager/TreeManager';
 import { ItemFlowComplete } from '../../../shared/interfaces/ItemFlowComponent';
-import { ItemComponent } from '../../../shared/interfaces/ItemComponent';
+import { ItemComponent } from '../../../shared/interfaces/ItemTreeComponent';
 import { AssetsService } from '../../../shared/services/AssetsService';
 import { PropertieTypes } from '../../../shared/enuns/PropertieTypes';
 import { ComponentType } from '../../../shared/enuns/ComponentType';

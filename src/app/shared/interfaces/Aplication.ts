@@ -1,7 +1,7 @@
 import { ItemFlowComplete } from "./ItemFlowComponent";
 import { CurrentFocus } from "../enuns/CurrentFocus";
 import { ProjectType } from "../enuns/ProjectType";
-import { ItemComponent } from "./ItemComponent";
+import { ItemComponent } from "./ItemTreeComponent";
 import { OpenWindow } from "./OpenedWindow";
 import { BaseFields } from "./BaseFields";
 import { Tab } from "./Tabs";
