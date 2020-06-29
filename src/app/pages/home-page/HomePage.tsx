@@ -85,7 +85,9 @@ export const HomePage = () => {
                                 icon={IconDownload}
                                 title={"Download your projects"}
                                 style={{ height: 'var(--tool-bar-height)', padding: '10px' }}
-                                onClick={() => Utils.downloadFile('MyProjects', 'json', JSON.stringify(projects))}
+
+                                //TODO: Download do projeto otimizado.
+                                onClick={() => Utils.downloadFile('MyProjects', 'json', Project.projectsToString(projects))}
                             />
                             {/* <Button
                                         icon={icon_tips}

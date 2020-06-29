@@ -61,7 +61,7 @@ export const Line: React.FC<ILineProps> = ({ id, onSucessorChange, top1 = 0, lef
             ...basicPosition,
             top2: event.offsetY,
             left2: event.offsetX,
-            isLeftToRight: (left2 >= left1),
+            isLeftToRight: (event.offsetX >= left1),
             rotate: Utils.getAngle(event.offsetX, event.offsetY, left1, top1),
             lineDistance: (Math.hypot((event.offsetY - top1), (event.offsetX - left1)) - 40),
         });

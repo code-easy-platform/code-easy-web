@@ -76,21 +76,15 @@ export class ProjectsStorage {
 
     /** Pega do localstorage uma lista de projetos */
     public static getProjects(): Project[] {
-        let projects: Project[];
 
+        let projects: Project[];
         let res = localStorage.getItem(StorageEnum.projectsStorage);
 
         if (res !== null && res !== "" && res !== undefined) {
-            const listString: string[] | undefined = JSON.parse(res);
-
-            if (listString) {
-                projects = listString.map(projectString => Project.stringToProject(projectString));
-
-            } else {
+            projects = Project.stringToProjects(res);
+            if (projects === []) {
                 ProjectsStorage.setProjects([]);
-                projects = [];
             }
-
         } else {
             ProjectsStorage.setProjects([]);
             projects = [];
@@ -101,9 +95,7 @@ export class ProjectsStorage {
 
     /** Salva no localstorage uma lista de projetos */
     public static setProjects(projects: Project[]): Project[] {
-        const listString = projects.map(project => Project.projectToString(project));
-
-        localStorage.setItem(StorageEnum.projectsStorage, JSON.stringify(listString));
+        localStorage.setItem(StorageEnum.projectsStorage, Project.projectsToString(projects));
         return projects;
     }
 

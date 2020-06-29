@@ -18,10 +18,10 @@ export const ImportProjects = ({ open, close }: { open: boolean, close: Function
         const file = new FileReader();
 
         file.onload = (e: any) => {
-            const projs = JSON.parse(e.target.result);
+            const projs = Project.stringToProjects(e.target.result);
 
             // Valida se o conteúdo se é uma lista.
-            if (projs.length === undefined) {
+            if (projs.length === 0) {
                 window.alert("File was not recognized!");
                 setProjectsRecognized(false);
                 setProjects([]);
@@ -50,7 +50,13 @@ export const ImportProjects = ({ open, close }: { open: boolean, close: Function
 
         };
 
-        file.readAsText(e.target.files[0]);
+        // Lê o conteúdo contido no arquivo
+        if (e.target.files[0]) {
+            file.readAsText(e.target.files[0]);
+        } else {
+            setProjects([]);
+        }
+
     }
 
     const importProjects = () => {
@@ -68,7 +74,7 @@ export const ImportProjects = ({ open, close }: { open: boolean, close: Function
             isOpen={openImportProjects}
             title={"Import your projects"}
             onClose={() => { close(); return true }}
-            children={<>
+            children={<div className="flex-column">
                 <input type="file" accept=".json" onChange={onChangeFile} />
                 <div className="margin-top-s padding-s flex-wrap overflow-auto">
                     {!projectRecognized && "No projects recognized..."}
@@ -86,7 +92,7 @@ export const ImportProjects = ({ open, close }: { open: boolean, close: Function
                         />
                     ))}
                 </div>
-            </>}
+            </div>}
         />
     );
 }

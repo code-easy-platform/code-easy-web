@@ -190,16 +190,17 @@ const CodeEditor: React.FC<ICodeEditorProps> = ({ id, items = [], disableOpacity
             }
         }
 
-        // No caso de vim undefined significa que é um novo branch.
-        // Caso se o item já esteja na lista como sucessor, remove e adiciona novamente.
-        if (branchIndex === undefined && !itemCurrent.connections.some(connection => id === connection.connectionId)) {
-            itemCurrent.connections.push({ connectionId: sucessorId });
-        } else {
-            /* const indexToRemove = itemCurrent.sucessor.findIndex(id => id === sucessorId); */
+        // No caso do branchIndex estar undefined significa que é um novo branch.
+        // Caso se o item já esteja na lista como sucessor, substitui o id.
+        if (branchIndex === undefined && !itemCurrent.connections.some(connection => sucessorId === connection.connectionId)) {
+            itemCurrent.connections.push({
+                connectionId: sucessorId,
+                id: Utils.getUUID(),
+            });
+        } else if (branchIndex !== undefined) {
 
-            if (branchIndex !== undefined) {
-                itemCurrent.connections[branchIndex].connectionId = sucessorId;
-            }
+            itemCurrent.connections[branchIndex].connectionId = sucessorId;
+
         }
 
         setFlowItems({ list: flowItems.list });
@@ -438,16 +439,6 @@ const CodeEditor: React.FC<ICodeEditorProps> = ({ id, items = [], disableOpacity
                             </div>
                         </foreignObject>
                     }
-
-                    {/* Reinderiza a área de seleção na tela. */}
-                    <SelectorArea
-                        parentRef={editorPanelRef}
-                        enabled={enabledSelection}
-                        onCoordsChange={coords => {
-                            flowItems.list.forEach((item: FlowItem) => item.select(coords));
-                            setFlowItems({ list: flowItems.list });
-                        }}
-                    />
 
                     {/* Reinderiza as linhas dos items arrastáveis da tela. */}
                     {flowItems.list.map((item: FlowItem, index) => {

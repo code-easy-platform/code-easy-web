@@ -131,4 +131,23 @@ export class Project implements IProject {
 
     }
 
+    public static projectsToString(projects: Project[]): string {
+        return JSON.stringify(projects.map(project => Project.projectToString(project)));
+    }
+
+    public static stringToProjects(projectsInString: string): Project[] {
+        try {
+            const listString: string[] | undefined = JSON.parse(projectsInString);
+            if (listString) {
+                return listString.map(projectString => Project.stringToProject(projectString));
+            } else {
+                return [];
+            }
+        } catch (e) {
+            console.error(e);
+            return [];
+        }
+
+    }
+
 }

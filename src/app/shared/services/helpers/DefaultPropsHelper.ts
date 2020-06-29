@@ -44,13 +44,12 @@ class DefaultPropsService {
             case ItemType.IF:
                 return [
                     { id: Utils.getUUID(), name: 'Label', type: TypeValues.string, value: name, propertieType: PropertieTypes.label },
-                    { id: Utils.getUUID(), name: 'Condiction', type: TypeValues.expression, value: '', propertieType: PropertieTypes.condiction },
+                    { id: Utils.getUUID(), name: 'Condition', type: TypeValues.expression, value: '', propertieType: PropertieTypes.condition },
                 ];
 
             case ItemType.SWITCH:
                 return [
                     { id: Utils.getUUID(), name: 'Label', type: TypeValues.string, value: name, propertieType: PropertieTypes.label },
-                    { id: Utils.getUUID(), name: 'Condiction1', type: TypeValues.expression, value: '', propertieType: PropertieTypes.condiction },
                 ];
 
             case ItemType.END:

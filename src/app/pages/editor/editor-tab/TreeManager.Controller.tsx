@@ -232,7 +232,7 @@ export const TreeManagerController: React.FC = () => {
                         items: (
                             routerType === ComponentType.routerExpose
                                 ? [
-                                    new ItemFlowComplete({ id: '1', name: "START", itemType: ItemType.START, left: 188, top: 128, isSelected: false, connections: [{ connectionId: '2' }], properties: [] }),
+                                    new ItemFlowComplete({ id: '1', name: "START", itemType: ItemType.START, left: 188, top: 128, isSelected: false, connections: [{ id: Utils.getUUID(), connectionId: '2' }], properties: [] }),
                                     new ItemFlowComplete({ id: '2', name: "END", itemType: ItemType.END, left: 188, top: 384, isSelected: false, connections: [], properties: [] })
                                 ]
                                 : []
@@ -278,7 +278,7 @@ export const TreeManagerController: React.FC = () => {
                         itemPaiId: inputItemId,
                         type: ComponentType.globalAction,
                         items: [
-                            new ItemFlowComplete({ id: '1', name: "START", itemType: ItemType.START, left: 188, top: 128, isSelected: false, connections: [{ connectionId: '2' }], properties: [] }),
+                            new ItemFlowComplete({ id: '1', name: "START", itemType: ItemType.START, left: 188, top: 128, isSelected: false, connections: [{ id: Utils.getUUID(), connectionId: '2' }], properties: [] }),
                             new ItemFlowComplete({ id: '2', name: "END", itemType: ItemType.END, left: 188, top: 384, isSelected: false, connections: [], properties: [] })
                         ],
                     }));
