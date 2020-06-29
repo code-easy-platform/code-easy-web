@@ -146,16 +146,20 @@ export class ItemFlowComplete implements IItemFlowComplete {
     }
 
     private _propertiesFromIf() {
+        this.connections.forEach((connection, index) => {
 
+            // Renomeando a label da connection
+            if (index === 0) connection.connectionLabel = 'True';
+            else connection.connectionLabel = 'False';
+
+        });
     }
 
     private _propertiesFromSwitch() {
 
-
-
         this.connections.forEach((connection, index) => {
 
-            // Renomea a label da connection
+            // Renomeando a label da connection
             connection.connectionLabel = 'Condition' + (index + 1);
 
             // Encontra a connection adicionada préviamente
