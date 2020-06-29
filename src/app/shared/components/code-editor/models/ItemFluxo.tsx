@@ -5,17 +5,18 @@ import { ItemType } from "../shared/enums/ItemType";
 /** Elemento que é reinderizado na para cada item de fluxo. */
 export class FlowItem implements IFlowItem {
 
-    public itemType: ItemType = ItemType.START;
-    public id: string | undefined = undefined;
-    public connections: IConnections[] = [];
-    public isDisabled?: boolean = false;
-    public isSelected: boolean = false;
-    public hasError?: boolean = false;
-    public height: number = 50;
-    public width: number = 50;
-    public name: string = "";
-    public left: number = 0;
-    public top: number = 0;
+    public connections: IConnections[];
+    public id: string | undefined;
+    public isDisabled: boolean;
+    public hasWarning: boolean;
+    public isSelected: boolean;
+    public itemType: ItemType;
+    public hasError: boolean;
+    public height: number;
+    public width: number;
+    public name: string;
+    public left: number;
+    public top: number;
     public icon: any;
 
     constructor(
@@ -24,6 +25,7 @@ export class FlowItem implements IFlowItem {
             id: string | undefined,
             isSelected?: boolean,
             isDisabled?: boolean,
+            hasWarning?: boolean,
             hasError?: boolean,
             itemType: ItemType,
             height?: number,
@@ -35,11 +37,12 @@ export class FlowItem implements IFlowItem {
         }
     ) {
         this.isSelected = this.props.isSelected || false;
+        this.isDisabled = this.props.isDisabled || false;
+        this.hasWarning = this.props.hasWarning || false;
         this.connections = this.props.connections || [];
-        this.isDisabled = this.props.isDisabled;
+        this.hasError = this.props.hasError || false;
         this.height = this.props.height || 50;
         this.itemType = this.props.itemType;
-        this.hasError = this.props.hasError;
         this.width = this.props.width || 50;
         this.left = this.props.left || 0;
         this.top = this.props.top || 0;

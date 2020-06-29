@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback, memo } from 'react';
 import { Utils } from 'code-easy-components';
 
 /** Propriedades aceitas pela linha. */
@@ -20,7 +20,7 @@ interface ILineProps {
     onChangeConnections?(itemId: string | undefined, connectionId: string): void;
 }
 
-export const Line: React.FC<ILineProps> = ({ id, onChangeConnections, top1 = 0, left1 = 0, left2 = 0, top2 = 0, ...props }) => {
+export const Line: React.FC<ILineProps> = memo(({ id, onChangeConnections, top1 = 0, left1 = 0, left2 = 0, top2 = 0, ...props }) => {
 
     const { isCurved = false, lineText = "", disableOpacity, isDisabled = false, lineOnMouseDown, lineWidth = 1, color = "var(--main-background-highlighted)", connectionIndex, lineType = 'normal' } = props;
 
@@ -56,18 +56,18 @@ export const Line: React.FC<ILineProps> = ({ id, onChangeConnections, top1 = 0, 
     const polygonBottonCenter: number = basicPosition.left2;
     const polygonBotton: number = (basicPosition.top2 - 40);
 
-    const mouseMove = (event: MouseEvent) => {
-        setBasicPosition({
-            ...basicPosition,
+    const mouseMove = useCallback((event: MouseEvent) => {
+        setBasicPosition(oldBasicPosition => ({
+            ...oldBasicPosition,
             top2: event.offsetY,
             left2: event.offsetX,
             isLeftToRight: (event.offsetX >= left1),
             rotate: Utils.getAngle(event.offsetX, event.offsetY, left1, top1),
             lineDistance: (Math.hypot((event.offsetY - top1), (event.offsetX - left1)) - 40),
-        });
-    }
+        }));
+    }, [left1, top1]);
 
-    const onMouseUp = (e: any) => {
+    const onMouseUp = useCallback((e: any) => {
         e.stopPropagation();
 
         window.onmouseup = null;
@@ -85,13 +85,13 @@ export const Line: React.FC<ILineProps> = ({ id, onChangeConnections, top1 = 0, 
         });
 
         onChangeConnections && onChangeConnections(id, e.target.id);
-    }
+    }, [id, left1, left2, onChangeConnections, top1, top2]);
 
-    const onMouseDown = () => {
+    const onMouseDown = useCallback(() => {
         document.body.style.cursor = 'crosshair';
         window.onmousemove = mouseMove;
         window.onmouseup = onMouseUp;
-    }
+    }, [mouseMove, onMouseUp])
 
     return (
         <g style={{ opacity: isDisabled ? disableOpacity : 1 }}>
@@ -132,4 +132,4 @@ export const Line: React.FC<ILineProps> = ({ id, onChangeConnections, top1 = 0, 
             />
         </g>
     );
-}
+})
