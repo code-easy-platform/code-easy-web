@@ -85,7 +85,9 @@ export const HomePage = () => {
                                 icon={IconDownload}
                                 title={"Download your projects"}
                                 style={{ height: 'var(--tool-bar-height)', padding: '10px' }}
-                                onClick={() => Utils.downloadFile('MyProjects', 'json', JSON.stringify(projects))}
+
+                                //TODO: Download do projeto otimizado.
+                                onClick={() => Utils.downloadFile('MyProjects', 'json', Project.projectsToString(projects))}
                             />
                             {/* <Button
                                         icon={icon_tips}
@@ -132,10 +134,10 @@ export const HomePage = () => {
                 </div>
                 <div className="full-width padding-xg flex-column">
                     <div>
-                        <header className="main-header codicon-word-wrap">My projects</header>
+                        <label htmlFor="projects-seach" className="main-header codicon-word-wrap">My projects</label>
                     </div>
                     <div>
-                        <input className="padding-m margin-top-m" onChange={e => setFilter(e.target.value)} style={{ width: '40%' }} placeholder="Type here to search ..." />
+                        <input id="projects-seach" className="padding-m margin-top-m" onChange={e => setFilter(e.target.value)} style={{ width: '40%' }} placeholder="Type here to search ..." />
                         <button
                             children="New project"
                             onClick={() => setIsAdding(true)}

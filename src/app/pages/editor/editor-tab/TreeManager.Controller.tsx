@@ -8,7 +8,7 @@ import { CodeEditorContext } from '../../../shared/services/contexts/CodeEditorC
 import { IContextItemList } from '../../../shared/components/context-menu/ContextMenu';
 import { TreeManager } from '../../../shared/components/tree-manager/TreeManager';
 import { ItemFlowComplete } from '../../../shared/interfaces/ItemFlowComponent';
-import { ItemComponent } from '../../../shared/interfaces/ItemComponent';
+import { ItemComponent } from '../../../shared/interfaces/ItemTreeComponent';
 import { AssetsService } from '../../../shared/services/AssetsService';
 import { PropertieTypes } from '../../../shared/enuns/PropertieTypes';
 import { ComponentType } from '../../../shared/enuns/ComponentType';
@@ -232,7 +232,7 @@ export const TreeManagerController: React.FC = () => {
                         items: (
                             routerType === ComponentType.routerExpose
                                 ? [
-                                    new ItemFlowComplete({ id: '1', name: "START", itemType: ItemType.START, left: 188, top: 128, isSelected: false, connections: [{ connectionId: '2' }], properties: [] }),
+                                    new ItemFlowComplete({ id: '1', name: "START", itemType: ItemType.START, left: 188, top: 128, isSelected: false, connections: [{ id: Utils.getUUID(), connectionId: '2' }], properties: [] }),
                                     new ItemFlowComplete({ id: '2', name: "END", itemType: ItemType.END, left: 188, top: 384, isSelected: false, connections: [], properties: [] })
                                 ]
                                 : []
@@ -278,7 +278,7 @@ export const TreeManagerController: React.FC = () => {
                         itemPaiId: inputItemId,
                         type: ComponentType.globalAction,
                         items: [
-                            new ItemFlowComplete({ id: '1', name: "START", itemType: ItemType.START, left: 188, top: 128, isSelected: false, connections: [{ connectionId: '2' }], properties: [] }),
+                            new ItemFlowComplete({ id: '1', name: "START", itemType: ItemType.START, left: 188, top: 128, isSelected: false, connections: [{ id: Utils.getUUID(), connectionId: '2' }], properties: [] }),
                             new ItemFlowComplete({ id: '2', name: "END", itemType: ItemType.END, left: 188, top: 384, isSelected: false, connections: [], properties: [] })
                         ],
                     }));

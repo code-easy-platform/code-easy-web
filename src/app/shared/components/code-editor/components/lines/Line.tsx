@@ -13,18 +13,18 @@ interface ILineProps {
     isCurved?: boolean;
     lineWidth?: number;
     isDisabled?: boolean;
-    sucessorIndex?: number;
+    connectionIndex?: number;
     disableOpacity: number;
     lineType?: 'dotted' | 'normal';
     lineOnMouseDown?(e: React.MouseEvent<SVGPathElement, MouseEvent>): void;
-    onSucessorChange?(itemId: string | undefined, sucessorId: string, branchIndex: number | undefined): void;
+    onChangeConnections?(itemId: string | undefined, connectionId: string): void;
 }
 
-export const Line: React.FC<ILineProps> = ({ id, onSucessorChange, top1 = 0, left1 = 0, left2 = 0, top2 = 0, ...props }) => {
+export const Line: React.FC<ILineProps> = ({ id, onChangeConnections, top1 = 0, left1 = 0, left2 = 0, top2 = 0, ...props }) => {
 
-    const { isCurved = false, lineText = "", disableOpacity, isDisabled = false, lineOnMouseDown, lineWidth = 1, color = "var(--main-background-highlighted)", sucessorIndex, lineType = 'normal' } = props;
+    const { isCurved = false, lineText = "", disableOpacity, isDisabled = false, lineOnMouseDown, lineWidth = 1, color = "var(--main-background-highlighted)", connectionIndex, lineType = 'normal' } = props;
 
-    if (sucessorIndex === undefined) {
+    if (connectionIndex === undefined) {
         top2 = top1 + 85;
         left2 = left1;
     }
@@ -61,7 +61,7 @@ export const Line: React.FC<ILineProps> = ({ id, onSucessorChange, top1 = 0, lef
             ...basicPosition,
             top2: event.offsetY,
             left2: event.offsetX,
-            isLeftToRight: (left2 >= left1),
+            isLeftToRight: (event.offsetX >= left1),
             rotate: Utils.getAngle(event.offsetX, event.offsetY, left1, top1),
             lineDistance: (Math.hypot((event.offsetY - top1), (event.offsetX - left1)) - 40),
         });
@@ -84,7 +84,7 @@ export const Line: React.FC<ILineProps> = ({ id, onSucessorChange, top1 = 0, lef
             lineDistance: (Math.hypot((top2 - top1), (left2 - left1)) - 40),
         });
 
-        onSucessorChange && onSucessorChange(id, e.target.id, sucessorIndex);
+        onChangeConnections && onChangeConnections(id, e.target.id);
     }
 
     const onMouseDown = () => {

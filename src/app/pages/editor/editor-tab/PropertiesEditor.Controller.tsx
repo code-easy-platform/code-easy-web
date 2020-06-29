@@ -6,7 +6,7 @@ import { PropertiesEditor } from '../../../shared/components/properties-editor/P
 import { ItemType } from '../../../shared/components/code-editor/shared/enums/ItemType';
 import { CodeEditorContext } from '../../../shared/services/contexts/CodeEditorContext';
 import { ItemFlowComplete } from '../../../shared/interfaces/ItemFlowComponent';
-import { ItemComponent } from '../../../shared/interfaces/ItemComponent';
+import { ItemComponent } from '../../../shared/interfaces/ItemTreeComponent';
 import { PropertieTypes } from '../../../shared/enuns/PropertieTypes';
 import { ComponentType } from '../../../shared/enuns/ComponentType';
 import { CurrentFocus } from '../../../shared/enuns/CurrentFocus';
@@ -88,40 +88,44 @@ export const PropertiesEditorController: React.FC = () => {
                     // Compara os dois IDs, se mudou apaga todos os parâmetro da action anterior.
                     if ((oldActionId !== '') && (oldActionId !== newSelectedActionId)) {
                         // Encontra o promeiro parametro e remove, depois encontra os outros e irá remover eté não restar mais parâmetros
-                        let indexToREmove = item.properties.findIndex(item_old => item_old.propertieType === PropertieTypes.param);
-                        while (indexToREmove >= 0) {
-                            item.properties.splice(indexToREmove, 1);
-                            indexToREmove = item.properties.findIndex(item_old => item_old.propertieType === PropertieTypes.param);
+                        let indexToRemove = item.properties.findIndex(item_old => item_old.propertieType === PropertieTypes.param);
+                        while (indexToRemove >= 0) {
+                            item.properties.splice(indexToRemove, 1);
+                            indexToRemove = item.properties.findIndex(item_old => item_old.propertieType === PropertieTypes.param);
                         }
                     }
 
-                    let actionSelected: ItemComponent | undefined;
-                    editorContext.project.tabs.forEach((tab: Tab) => {
-                        actionSelected = tab.items.find(item => item.id === newSelectedActionId);
-                    });
+                    // Altera a label do componente de fluxo
+                    const tab = editorContext.project.tabs.find((tab: Tab) => tab.items.some(itemTree => itemTree.id === newSelectedActionId));
+                    if (tab) {
 
-                    // Altera o label do componente action de fluxo
-                    item.properties.forEach(prop => {
-                        if (prop.propertieType === PropertieTypes.label && actionSelected) {
+                        /** Action selectionada */
+                        const actionSelected = tab.items.find(itemTree => itemTree.id === newSelectedActionId);
+                        if (actionSelected) {
 
-                            // Pega prop label da action selecionada
-                            const actionLabelProp = actionSelected.properties.find(propAction => propAction.propertieType === PropertieTypes.label);
+                            item.properties.forEach(prop => {
+                                if (prop.propertieType === PropertieTypes.label) {
 
-                            if (actionLabelProp) {
-                                // Altera o valor da label
-                                prop.value = actionSelected ? actionLabelProp.value || prop.value : prop.value;
-                            }
+                                    // Pega prop label da action selecionada
+                                    const actionLabelProp = actionSelected.properties.find(propAction => propAction.propertieType === PropertieTypes.label);
+                                    if (actionLabelProp) {
+
+                                        // Altera o valor da label
+                                        prop.value = actionSelected ? actionLabelProp.value || prop.value : prop.value;
+                                    }
+                                }
+                            });
+                            item.name = actionSelected.label;
                         }
-                    });
+                    }
 
-                    treeItemEditing.items[indexItemFlow].name = actionSelected ? actionSelected.label : item.name;
-
-                } else if (treeItemEditing.items[indexItemFlow].itemType === ItemType.ASSIGN) {
-                    treeItemEditing.items[indexItemFlow].name = item.name;
-                } else {
-                    treeItemEditing.items[indexItemFlow].name = item.name;
                 }
-                treeItemEditing.items[indexItemFlow].properties = item.properties;
+
+                // Reinstancia a classe para revalidar as propriedade e mais
+                treeItemEditing.items[indexItemFlow] = new ItemFlowComplete({
+                    ...treeItemEditing.items[indexItemFlow],
+                    properties: item.properties,
+                });
 
             }
 
@@ -248,33 +252,6 @@ export const PropertiesEditorController: React.FC = () => {
                         // Adicionar código aqui para mapear sugestões e mais no assing 
                     }
                 });
-
-                if (filteredItem.itemType === ItemType.ASSIGN) {
-                    let emptyAssigments = filteredItem.properties.filter(prop => (prop.name === '' && prop.value === ''));
-
-                    if (emptyAssigments.length === 0) {
-
-                        // Está adicionando items nos assigments
-                        filteredItem.properties.push({
-                            name: '',
-                            value: '',
-                            group: 'Assigments',
-                            id: Utils.getUUID(),
-                            type: TypeValues.assign,
-                        });
-
-                    } else if (emptyAssigments.length > 1) {
-
-                        // Está removendo items dos assigments
-                        emptyAssigments.forEach((empAssig, index) => {
-                            let indexToRemove = filteredItem.properties.findIndex(prop => prop.id === empAssig.id);
-                            if (index < (emptyAssigments.length - 1)) {
-                                filteredItem.properties.splice(indexToRemove, 1);
-                            }
-                        });
-
-                    }
-                }
 
                 mappedItems.push({
                     isHeader: true,

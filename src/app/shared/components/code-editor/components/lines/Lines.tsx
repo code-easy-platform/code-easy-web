@@ -9,9 +9,9 @@ interface ILinesProps {
     disableOpacity: number;
     isUseNewBranch: boolean;
     itemsConnections: FlowItem[];
-    onSucessorChange(itemId: string | undefined, sucessorId: string, branchIndex: number | undefined): void;
+    onChangeConnections(itemId: string | undefined, connectionId: string, oldConnectionId: string | undefined): void;
 };
-export const Lines: React.FC<ILinesProps> = ({ itemsConnections, item, onSucessorChange, isUseNewBranch, disableOpacity }) => {
+export const Lines: React.FC<ILinesProps> = ({ itemsConnections, item, onChangeConnections, isUseNewBranch, disableOpacity }) => {
     return <>
         {itemsConnections.map((itemConnection: FlowItem, index: number) => {
 
@@ -32,6 +32,7 @@ export const Lines: React.FC<ILinesProps> = ({ itemsConnections, item, onSucesso
             const connection = item.connections.find(connection => connection.connectionId === itemConnection.id);
 
             return <Line
+                onChangeConnections={(itemId, connectionId) => onChangeConnections(itemId, connectionId, connection?.connectionId)}
                 lineOnMouseDown={() => itemConnection.connectionSelect(itemConnection.id)}
                 lineType={item.itemType === ItemType.COMMENT ? 'dotted' : 'normal'}
                 color={connection?.isSelected ? "var(--color-botton-bar)" : "gray"}
@@ -39,10 +40,9 @@ export const Lines: React.FC<ILinesProps> = ({ itemsConnections, item, onSucesso
                 top1={(item.top || 0) + (item.height || 0) / 2}
                 key={item.id + "_" + itemConnection.id}
                 lineText={connection?.connectionLabel}
-                onSucessorChange={onSucessorChange}
                 disableOpacity={disableOpacity}
                 isDisabled={item.isDisabled}
-                sucessorIndex={index}
+                connectionIndex={index}
                 isCurved={isCurved}
                 left2={left2}
                 id={item.id}
@@ -54,11 +54,11 @@ export const Lines: React.FC<ILinesProps> = ({ itemsConnections, item, onSucesso
         {/* Usado para adicionar uma branch caso o item não tenha sucessores ainda, ou tenha bugado */}
         {(isUseNewBranch && item.id !== undefined) &&
             <Line
+                onChangeConnections={(itemId, sucessorId) => onChangeConnections(itemId, sucessorId, undefined)}
                 left1={(item.left || 0) + ((item.width || 0) / 2)}
                 top1={(item.top || 0) + (item.height || 0) / 2}
                 left2={item.left + (item.width / 2)}
                 top2={item.top + (item.height + 20)}
-                onSucessorChange={onSucessorChange}
                 disableOpacity={disableOpacity}
                 color={"gray"}
                 key={item.id}
