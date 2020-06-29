@@ -161,17 +161,20 @@ const CodeEditor: React.FC<ICodeEditorProps> = ({ id, items = [], disableOpacity
      * @param sucessorId string id do item que será usado como sucessor
      * @param branchIndex number | undefined se vim undefined é adicionado um novo sucessor, se não está atualizando ou removendo
      */
-    const changeSucessor = (itemId: string | undefined, sucessorId: string, branchIndex: number | undefined) => {
+    const changeConnections = (itemId: string | undefined, connectionId: string, oldConnectionId: string | undefined) => {
 
         /** Item em que está sendo feita as mudanças nos sucessores */
         const itemCurrent = flowItems.list.find((item: FlowItem) => item.id === itemId);
         if (!itemCurrent) return;
 
         // Se tentar ligar um item nele mesmo deve ser excluida a ligação.
-        if (itemId === sucessorId || itemId === undefined) {
-            if (branchIndex === undefined) return;
+        if (itemId === connectionId || itemId === undefined) {
+            if (oldConnectionId === undefined) return;
 
-            itemCurrent.connections.splice(branchIndex, 1);
+            const connectionCurrentIndex = itemCurrent.connections.findIndex(connection => connection.connectionId === oldConnectionId);
+            if (connectionCurrentIndex >= 0) {
+                itemCurrent.connections.splice(connectionCurrentIndex, 1);
+            }
 
             setFlowItems({ list: flowItems.list });
             onChangeFlow();
@@ -179,7 +182,7 @@ const CodeEditor: React.FC<ICodeEditorProps> = ({ id, items = [], disableOpacity
         }
 
         /** Se for um comentário, não realiza o link como sucessor */
-        const targetItem = flowItems.list.find(target => target.id === sucessorId);
+        const targetItem = flowItems.list.find(target => target.id === connectionId);
         if (!targetItem) {
             return;
         } else {
@@ -190,16 +193,17 @@ const CodeEditor: React.FC<ICodeEditorProps> = ({ id, items = [], disableOpacity
             }
         }
 
-        // No caso do branchIndex estar undefined significa que é um novo branch.
+        // No caso do oldConnectionId estar undefined significa que é um novo branch.
         // Caso se o item já esteja na lista como sucessor, substitui o id.
-        if (branchIndex === undefined && !itemCurrent.connections.some(connection => sucessorId === connection.connectionId)) {
+        if (oldConnectionId === undefined && !itemCurrent.connections.some(connection => connectionId === connection.connectionId)) {
             itemCurrent.connections.push({
-                connectionId: sucessorId,
+                connectionId: connectionId,
                 id: Utils.getUUID(),
             });
-        } else if (branchIndex !== undefined) {
+        } else if (oldConnectionId !== undefined) {
 
-            itemCurrent.connections[branchIndex].connectionId = sucessorId;
+            const connectionCurrentIndex = itemCurrent.connections.findIndex(connection => connection.connectionId === oldConnectionId);
+            itemCurrent.connections[connectionCurrentIndex].connectionId = connectionId;
 
         }
 
@@ -454,8 +458,8 @@ const CodeEditor: React.FC<ICodeEditorProps> = ({ id, items = [], disableOpacity
                             key={index}
                             item={item}
                             disableOpacity={disableOpacity}
-                            onSucessorChange={changeSucessor}
                             itemsConnections={itemsConnections}
+                            onChangeConnections={changeConnections}
                             isUseNewBranch={InternalUtils.useNewBranch(itemsConnections.length, item.itemType)}
                         />;
 
