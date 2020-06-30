@@ -2,12 +2,10 @@ import { Utils, IconWarning, IconError } from "code-easy-components";
 
 import { TreeInterface } from "../../components/tree-manager/shared/models/TreeInterface";
 import { ItemType } from "../../components/code-editor/shared/enums/ItemType";
+import { Project, IProjectConfigs } from "../../interfaces/Aplication";
 import { PropertieTypes } from "../../enuns/PropertieTypes";
 import { ComponentType } from "../../enuns/ComponentType";
-import { Project, IProjectConfigs } from "../../interfaces/Aplication";
 import { Tab } from "../../interfaces/Tabs";
-import { ItemComponent } from "../../interfaces/ItemTreeComponent";
-import { ItemFlowComplete } from "../../interfaces/ItemFlowComponent";
 
 class ProblemsHelperService {
     private _problems: TreeInterface[] = [];
@@ -30,16 +28,13 @@ class ProblemsHelperService {
             tab.items.forEach(treeItem => {
 
                 // Valida um tree item
-                this._getTreeItemProblems(treeItem);
+                this._problems = [...this._problems, ...treeItem.getProblems()];
 
                 treeItem.items.forEach(flowItem => {
                     flowItem.hasError = false;
 
                     // Valida os problemas presentes no flow item
-                    const flowItemRes = this._getFlowItemProblems(flowItem, treeItem);
-                    if (flowItemRes) {
-                        flowItem.hasError = true;
-                    }
+                    this._problems = [...this._problems, ...flowItem.getProblems()];
 
                     // Valida as props da action
                     if (flowItem.itemType === ItemType.ACTION) {
@@ -47,9 +42,9 @@ class ProblemsHelperService {
                         flowItem.properties.forEach(prop => {
                             prop.valueHasError = false;
 
-                            // Valida se action está com o campo action vazio.
+                            // Valida se action está com o campo "action" vazio.
                             if (prop.propertieType === PropertieTypes.action && prop.value === "") {
-                                this._addProblem(`In ${treeItem.label} the flow item ${flowItem.name} must have a valid value in the ${prop.name} field.`, 'error');
+                                this._addProblem(`In "${treeItem.label}" the flow item "${flowItem.name}" must have a valid value in the "${prop.name}" field.`, 'error');
                                 prop.valueHasError = true;
                             }
 
@@ -59,7 +54,7 @@ class ProblemsHelperService {
                                 if (!tabActions) return;
 
                                 if (!tabActions.items.some(item => item.id === prop.value)) {
-                                    this._addProblem(`In ${treeItem.label} the flow item ${flowItem.name} must have a valid value in the ${prop.name} field.`, 'error');
+                                    this._addProblem(`In "${treeItem.label}" the flow item "${flowItem.name}" must have a valid value in the "${prop.name}" field.`, 'error');
                                     prop.valueHasError = true;
                                 }
 
@@ -89,31 +84,6 @@ class ProblemsHelperService {
                             }
 
                         });
-
-                    } else if (flowItem.itemType === ItemType.ASSIGN) {
-
-                        // Valida os assigns
-                        flowItem.properties.forEach(prop => {
-                            prop.valueHasError = false;
-
-                            if (prop.propertieType === PropertieTypes.assigns) {
-
-                                if ((prop.name !== '' && prop.value === '') || (prop.name === '' && prop.value !== '')) {
-                                    this._addProblem(`In ${treeItem.label} a ${flowItem.name} flow item have incorrect values`, 'error');
-                                    prop.valueHasError = true;
-                                }
-
-                            }
-                        });
-
-                    } else if (flowItem.itemType === ItemType.END) {
-
-                        // Valida os ends
-                        const index = treeItem.items.findIndex(item_flow => item_flow.connections.some(connection => connection.connectionId === flowItem.id || 'undefined'));
-                        if (index === -1) {
-                            this._addProblem(`In ${treeItem.label} a ${flowItem.name} flow item is not used`, 'error');
-                            flowItem.hasError = true;
-                        }
 
                     }
 
@@ -185,53 +155,6 @@ class ProblemsHelperService {
             this._addProblem(`Add at least one route to your app`, 'error');
         }
 
-    }
-
-    private _getTreeItemProblems(treeItem: ItemComponent) {
-
-        // Valida o numero de starts na tela
-        const numStarts = treeItem.items.filter(item_flow => item_flow.itemType === ItemType.START);
-        if (numStarts.length > 1) {
-            this._addProblem(`In ${treeItem.label} must have only start flow item`, 'error');
-        }
-
-        // Valida se encontra um start e um end na tela
-        if (treeItem.type === ComponentType.globalAction || treeItem.type === ComponentType.localAction || treeItem.type === ComponentType.routerConsume) {
-            if (!(treeItem.items.some(comp => comp.itemType === ItemType.START) && treeItem.items.some(comp => comp.itemType === ItemType.END))) {
-                this._addProblem(`A ${treeItem.type} must be have a "start" and an "end" item in "${treeItem.label}"`, 'error');
-            }
-        }
-
-        // Valida o label
-        if (treeItem.label === '') {
-            this._addProblem('Field Label cannot be empty', 'error');
-        } else if (treeItem.label.length < 3) {
-            this._addProblem(`Field Label cannot be less than 3 characters in ${treeItem.label}`, 'error');
-        } else if (treeItem.label.length > 50) {
-            this._addProblem(`Field Label cannot exceed 50 characters in ${treeItem.label}`, 'error');
-        }
-
-    }
-
-    private _getFlowItemProblems(flowItem: ItemFlowComplete, treeItem: ItemComponent): boolean {
-        let hasError = false;
-
-        // Se for diferente de END e COMMENT valida se tem sucessores
-        if ((flowItem.itemType !== ItemType.END && flowItem.itemType !== ItemType.COMMENT) && flowItem.connections.length === 0) {
-            this._addProblem(`In ${treeItem.label} a flow item is missing a connector`, 'error');
-            flowItem.hasError = true;
-        }
-
-        // Valida o name
-        if (flowItem.name === '') {
-            this._addProblem(`We do not recommend that the flow item be empty in ${treeItem.label}`, 'warning');
-        } else if (flowItem.name.length < 3) {
-            this._addProblem(`A suitable name for a stream item must be longer than 3 characters in ${treeItem.label}`, 'warning');
-        } else if (flowItem.name.length > 20) {
-            this._addProblem(`A suitable name for a stream item must be less than 20 characters in ${treeItem.label}`, 'warning');
-        }
-
-        return hasError;
     }
 
 }

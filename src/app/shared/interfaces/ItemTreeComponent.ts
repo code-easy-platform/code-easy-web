@@ -1,10 +1,12 @@
-import { Utils } from "code-easy-components";
+import { Utils, IconWarning, IconError } from "code-easy-components";
 
 import { IProperties } from "../components/properties-editor/shared/interfaces";
 import { DefaultPropsHelper } from '../services/helpers/DefaultPropsHelper';
 import { ComponentType } from "../enuns/ComponentType";
 import { ItemFlowComplete } from "./ItemFlowComponent";
 import { BaseFields } from "./BaseFields";
+import { TreeInterface } from "../components/tree-manager/shared/models";
+import { ItemType } from "../components/code-editor/shared/enums/ItemType";
 
 
 /**
@@ -134,6 +136,61 @@ export class ItemComponent implements IItemComponent {
         this.items = this._fields.items.map(item => new ItemFlowComplete(item));
 
         this._updateProperties(this._fields.properties || [], this._fields.type);
+    }
+
+    /**
+     * Encontra as possíveis inconsistências que poderão em erros no código fonte final
+     */
+    public getProblems(): TreeInterface[] {
+        let problems: TreeInterface[] = [];
+
+        const addProblem = (label: string, type: 'warning' | 'error') => {
+            problems.push({
+                icon: type === 'warning' ? IconWarning : IconError,
+                isDisabledSelect: true,
+                nodeExpanded: false,
+                isSelected: false,
+                id: undefined,
+                iconSize: 15,
+                type: "ITEM",
+                childs: [],
+                label,
+            });
+        }
+
+        // Valida o label
+        if (this.label === '') {
+            addProblem('Field Label cannot be empty', 'error');
+        } else if (this.label.length < 3) {
+            addProblem(`Field Label cannot be less than 3 characters in "${this.label}"`, 'error');
+        } else if (this.label.length > 50) {
+            addProblem(`Field Label cannot exceed 50 characters in "${this.label}"`, 'error');
+        }
+
+        if (this.type !== ComponentType.routerConsume) {
+
+            // Valida o numero de starts na tela
+            const numStarts = this.items.filter(item_flow => item_flow.itemType === ItemType.START);
+            if (numStarts.length > 1) {
+                addProblem(`In ${this.label} must have only start flow item`, 'error');
+            }
+
+            // Valida se encontra um start e um end na tela
+            if (this.type === ComponentType.globalAction || this.type === ComponentType.localAction || this.type === ComponentType.routerExpose) {
+                if (!(this.items.some(comp => comp.itemType === ItemType.START) && this.items.some(comp => comp.itemType === ItemType.END))) {
+                    addProblem(`A "${this.type}" must be have a "Start" and an "End" item in "${this.label}"`, 'error');
+                }
+            }
+            // Valida os ends
+            const unusedEnd = this.items.find(item_flow => (item_flow.itemType === ItemType.END) && !this.items.some(flowItem => flowItem.connections.some(connection => connection.connectionId === item_flow.id)));
+            if (unusedEnd) {
+                addProblem(`In "${this.label}" a "${unusedEnd.name}" flow item is not used`, 'error');
+                unusedEnd.hasError = true;
+            }
+
+        }
+
+        return problems;
     }
 
     private _updateProperties(properties: IProperties[], type: ComponentType) {

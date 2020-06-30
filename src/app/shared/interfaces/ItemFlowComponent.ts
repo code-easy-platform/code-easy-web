@@ -1,9 +1,10 @@
 import { IFlowItem, ICoords, IConnections } from "../components/code-editor/shared/Interfaces";
 import { IProperties, TypeValues } from "../components/properties-editor/shared/interfaces";
+import { TreeInterface } from '../components/tree-manager/shared/models/TreeInterface';
 import { DefaultPropsHelper } from '../services/helpers/DefaultPropsHelper';
 import { ItemType } from "../components/code-editor/shared/enums/ItemType";
+import { Utils, IconWarning, IconError } from "code-easy-components";
 import { PropertieTypes } from "../enuns/PropertieTypes";
-import { Utils } from "code-easy-components";
 
 interface IItemFlowComplete extends IFlowItem {
     select(coords: ICoords): any;
@@ -66,6 +67,127 @@ export class ItemFlowComplete implements IItemFlowComplete {
         this.id = _fields.id;
 
         this._updateProperties(this._fields.properties || [], this._fields.itemType);
+        this.getProblems();
+
+    }
+
+    public getProblems(): TreeInterface[] {
+        let problems: TreeInterface[] = [];
+        this.hasError = false;
+
+        const addProblem = (label: string, type: 'warning' | 'error') => {
+            problems.push({
+                icon: type === 'warning' ? IconWarning : IconError,
+                isDisabledSelect: true,
+                nodeExpanded: false,
+                isSelected: false,
+                id: undefined,
+                iconSize: 15,
+                type: "ITEM",
+                childs: [],
+                label,
+            });
+        }
+
+        // Se for diferente de END e COMMENT valida se tem sucessores
+        if ((this.itemType !== ItemType.END && this.itemType !== ItemType.COMMENT) && this.connections.length === 0) {
+            addProblem(`The flow item "${this.name}" is missing a connector`, 'error');
+            this.hasError = true;
+        }
+
+        // Valida o name
+        if (this.name === '') {
+            addProblem(`We do not recommend that the flow item be empty in "${this.name}"`, 'error');
+            this.properties.filter(prop => prop.propertieType === PropertieTypes.label).forEach(prop => prop.valueHasError = true);
+            this.hasError = true;
+        } else if (this.name.length < 3) {
+            addProblem(`A suitable name for a stream item must be longer than 3 characters in "${this.name}"`, 'warning');
+            this.hasError = true;
+        } else if (this.name.length > 20) {
+            addProblem(`A suitable name for a stream item must be less than 20 characters in "${this.name}"`, 'warning');
+            this.hasError = true;
+        } else {
+            this.properties.filter(prop => prop.propertieType === PropertieTypes.label).forEach(prop => prop.valueHasError = false);
+        }
+
+        // Valida condições para itens específico
+        switch (this.itemType) {
+
+            case ItemType.ASSIGN:
+                this.properties.filter(prop => prop.propertieType === PropertieTypes.assigns).forEach(prop => {
+                    prop.valueHasError = false;
+                    prop.nameHasError = false;
+
+                    if (prop.name !== '' && prop.value === '') {
+                        addProblem(`In the "${this.name}" item, no value is being assigned to the "${prop.name}"`, 'error');
+                        prop.valueHasError = true;
+                    } else if (prop.name === '' && prop.value !== '') {
+                        addProblem(`In ${this.name} the value "${prop.value}" is not being assigned to any variable or parameter`, 'error');
+                        prop.nameHasError = true;
+                    }
+
+                });
+                break;
+
+            case ItemType.SWITCH:
+                this.properties.filter(prop => prop.propertieType === PropertieTypes.condition).forEach(prop => {
+                    prop.valueHasError = false;
+
+                    if (prop.value === '') {
+                        addProblem(`In the "${this.name}" item, the "${prop.name}" condition must have an informed expression`, 'error');
+                        prop.valueHasError = true;
+                    }
+
+                });
+                break;
+
+            case ItemType.IF:
+
+                // Valida a condition do IF
+                this.properties.filter(prop => prop.propertieType === PropertieTypes.condition).forEach(prop => {
+                    prop.valueHasError = false;
+                    if (prop.value === '') {
+                        addProblem(`In the "${this.name}" item, the "${prop.name}" condition must have an informed expression`, 'error');
+                        prop.valueHasError = true;
+                        this.hasError = true;
+                    }
+                });
+                // Valida as connection
+                if (this.connections.length >= 1 && this.connections.length < 2) {
+                    addProblem(`Flow item "${this.name}" is missing a connector`, 'error');
+                    this.hasError = true;
+                }
+
+                break;
+
+            case ItemType.END:
+                // Nada para validar aqui
+                break;
+
+            case ItemType.ACTION:
+                // Nada para validar aqui
+                break;
+
+            default:
+                break;
+
+        }
+
+        if (problems.length <= 1) {
+            return problems;
+        } else {
+            return [{
+                // icon: this.hasError ? IconError : IconWarning,
+                label: `Inconsistences in flow item "${this.name}"`,
+                isDisabledSelect: true,
+                nodeExpanded: true,
+                isSelected: false,
+                childs: problems,
+                id: undefined,
+                iconSize: 15,
+                type: "ITEM",
+            }];
+        }
 
     }
 
@@ -130,6 +252,7 @@ export class ItemFlowComplete implements IItemFlowComplete {
                 group: 'Assigments',
                 id: Utils.getUUID(),
                 type: TypeValues.assign,
+                propertieType: PropertieTypes.assigns,
             });
 
         } else if (emptyAssigments.length > 1) {

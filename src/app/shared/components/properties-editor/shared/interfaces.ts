@@ -33,7 +33,9 @@ export interface IProperties {
     nameHasError?: boolean;
     information?: string;
     useOnChange?: boolean;
+    /** Type of properties in the component */
     propertieType?: any;
+    /** Type of component */
     type: TypeValues;
     group?: string;
     name?: string;
