@@ -32,6 +32,7 @@ export interface IProperties {
     id: string | undefined;
     nameHasError?: boolean;
     information?: string;
+    useOnChange?: boolean;
     propertieType?: any;
     type: TypeValues;
     group?: string;
