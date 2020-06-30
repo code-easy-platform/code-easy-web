@@ -20,10 +20,10 @@ export const Assign: React.FC<IAssign> = ({ id, name, value, suggestions, nameSu
     const css_prop_item_input_value: React.CSSProperties = {
         border: valueHasError ? 'var(--input-border-error)' : 'var(--input-border)',
         textDecoration: valueHasError ? `var(--text-underline-error)` : undefined,
+        ...(!valueHasError ? { borderTop: 0 } : {}),
         borderTopRightRadius: 0,
         borderTopLeftRadius: 0,
         paddingLeft: 30,
-        borderTop: 0,
     }
 
     return (
@@ -35,15 +35,15 @@ export const Assign: React.FC<IAssign> = ({ id, name, value, suggestions, nameSu
                 openEditor={openEditor}
                 placeholder={'Propertie'}
                 id={'name_prop_id_' + id}
-                suggestions={nameSuggestions}
                 disabled={editNameDisabled}
                 key={'name_prop_key_' + id}
+                suggestions={nameSuggestions}
                 style={css_prop_item_input_name}
                 onChange={e => onChangeName(e.target.value)}
                 onSelectSuggest={option => onChangeName(option.value)}
             />
             <div style={{ alignItems: 'center' }}>
-                <span children='=' style={{ marginRight: -20, marginLeft: 10.5, zIndex: 1 }} />
+                <span children='=' onClick={openEditor} style={{ marginRight: -20, marginLeft: 10.5, zIndex: 1 }} />
                 <ExpressionInput
                     value={value}
                     onBlur={onBlur}

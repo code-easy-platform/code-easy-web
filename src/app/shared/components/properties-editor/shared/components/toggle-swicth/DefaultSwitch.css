@@ -30,11 +30,13 @@ input:focus + .slider {
 }
 
 .slider:before {
+    top: 0px;
     left: 4px;
     width: 20px;
     content: "";
-    bottom: 3.5px;
+    bottom: 0px;
     height: 20px;
+    margin: auto;
     transition: 0.4s;
     border-radius: 50%;
     position: absolute;

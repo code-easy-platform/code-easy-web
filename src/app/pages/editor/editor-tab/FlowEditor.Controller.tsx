@@ -288,8 +288,18 @@ export const FlowEditorController: React.FC = () => {
             // Se for o simples para o editor de fluxos, faz um map dos items.
             let flowItems: FlowItem[] = [];
             itemEditing.items.forEach(item => {
+                /** Prop usada para guarda o id da action referênciada */
+                const actionProp = item.properties.find(prop => prop.propertieType === PropertieTypes.action);
 
-                const icon = item.properties.find(prop => prop.propertieType === PropertieTypes.icon);
+                /** Bloco de código qu encontra o ícone que será usado no fluxo */
+                let icon: any;
+                editorContext.project.tabs.forEach((tab: Tab) => {
+                    tab.items.forEach(item => {
+                        if (item.id === actionProp?.value) {
+                            icon = item.properties.find(prop => prop.propertieType === PropertieTypes.icon);
+                        }
+                    });
+                });
 
                 flowItems.push(new FlowItem({
                     id: item.id,

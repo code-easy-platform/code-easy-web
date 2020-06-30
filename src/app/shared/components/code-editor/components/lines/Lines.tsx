@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { memo } from 'react';
 
 import { ItemType } from '../../shared/enums/ItemType';
 import { FlowItem } from '../../models/ItemFluxo';
@@ -11,7 +11,7 @@ interface ILinesProps {
     itemsConnections: FlowItem[];
     onChangeConnections(itemId: string | undefined, connectionId: string, oldConnectionId: string | undefined): void;
 };
-export const Lines: React.FC<ILinesProps> = ({ itemsConnections, item, onChangeConnections, isUseNewBranch, disableOpacity }) => {
+export const Lines: React.FC<ILinesProps> = memo(({ itemsConnections, item, onChangeConnections, isUseNewBranch, disableOpacity }) => {
     return <>
         {itemsConnections.map((itemConnection: FlowItem, index: number) => {
 
@@ -67,4 +67,4 @@ export const Lines: React.FC<ILinesProps> = ({ itemsConnections, item, onChangeC
         }
 
     </>
-};
+});

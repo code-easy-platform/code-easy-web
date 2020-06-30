@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, memo } from 'react';
 
 import { ICoords } from '../../shared/Interfaces';
 
@@ -8,7 +8,7 @@ interface SelectorAreaProps {
     onCoordsChange?(coords: ICoords): void;
 }
 /** Reinderiza a área de seleção na tela, para que seja possível selecionar diversos items de uma vez. */
-export const SelectorArea: React.FC<SelectorAreaProps> = ({ parentRef, enabled = true, onCoordsChange = (coords: { startY: number, startX: number, endY: number, endX: number }) => { } }) => {
+export const SelectorArea: React.FC<SelectorAreaProps> = memo(({ parentRef, enabled = true, onCoordsChange = (coords: { startY: number, startX: number, endY: number, endX: number }) => { } }) => {
 
     const [show, setShow] = useState(false);
     const [position, setPosition] = useState({
@@ -86,4 +86,4 @@ export const SelectorArea: React.FC<SelectorAreaProps> = ({ parentRef, enabled =
             />
             : <></>
     );
-}
+})

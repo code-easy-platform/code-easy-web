@@ -1,13 +1,13 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, memo, useCallback } from 'react';
 import { IconMoreInfo } from 'code-easy-components';
 
-import { IProperties, TypeValues } from '../interfaces';
-import { CustomInputFile } from './CustomInputFile';
-import { ExpressionInput } from './ExpressionInput';
 import { DefaultSwitch } from './toggle-swicth/DefaultSwitch';
+import { IProperties, TypeValues } from '../interfaces';
+import { ExpressionInput } from './ExpressionInput';
+import { InputFile } from './CustomInputFile';
+import { Tooltip } from './tooltip/Tooltip';
 import { Resizer } from './Resizer';
 import { Assign } from './Assign';
-import { Tooltip } from './tooltip/Tooltip';
 
 
 const css_prop_item: React.CSSProperties = {
@@ -17,12 +17,11 @@ const css_prop_item: React.CSSProperties = {
     position: 'relative',
 }
 interface PropItemProps extends IProperties {
-    onclick?(e: React.MouseEvent<HTMLInputElement, MouseEvent>): void;
     onChangeInputWidth(width: number): void;
     onChange?(data: IProperties): void;
     inputWidth: number;
 }
-export const PropItem: React.FC<PropItemProps> = (props) => { // Extende outra interface
+export const PropItem: React.FC<PropItemProps> = memo((props) => { // Extende outra interface
 
     const { inputWidth, onChange = () => { }, onChangeInputWidth, valueHasError = false, nameHasError = false } = props;
     const containerWidth = useRef<any>(null);
@@ -50,6 +49,7 @@ export const PropItem: React.FC<PropItemProps> = (props) => { // Extende outra i
         nameHasError: props.nameHasError,
         information: props.information,
         suggestions: props.suggestions,
+        useOnChange: props.useOnChange,
         openEditor: props.openEditor,
         group: props.group,
         value: props.value,
@@ -67,6 +67,7 @@ export const PropItem: React.FC<PropItemProps> = (props) => { // Extende outra i
             valueHasError: props.valueHasError,
             nameHasError: props.nameHasError,
             information: props.information,
+            useOnChange: props.useOnChange,
             suggestions: props.suggestions,
             openEditor: props.openEditor,
             group: props.group,
@@ -83,6 +84,7 @@ export const PropItem: React.FC<PropItemProps> = (props) => { // Extende outra i
         textOverflow: 'ellipsis',
         display: 'inline-block',
         whiteSpace: 'nowrap',
+        fontSize: 'smaller',
         textAlign: 'start',
         overflow: 'hidden',
     }
@@ -93,11 +95,11 @@ export const PropItem: React.FC<PropItemProps> = (props) => { // Extende outra i
         border: valueHasError ? 'var(--input-border-error)' : 'var(--input-border)',
     }
 
-    const onkeyPress = (e: any) => {
-        if (e.keyCode === 13) {
+    const onkeyPress = useCallback((e: any) => {
+        if (e.keyCode === 13 || state.useOnChange) {
             onChange(state);
         }
-    }
+    }, [onChange, state]);
 
     switch (state.type) {
         case TypeValues.viewOnly:
@@ -267,8 +269,14 @@ export const PropItem: React.FC<PropItemProps> = (props) => { // Extende outra i
                     <Tooltip elementRef={infoIconRef} description={state.information} />
                     <Resizer onChange={newWidth => onChangeInputWidth(newWidth)} />
                     <div style={{ width: inputWidth ? `${inputWidth}px` : '70%', minWidth: minWidth, maxWidth: '90%' }}>
-                        <CustomInputFile
+                        <InputFile
                             className="full-width background-bars border-radius outline-none"
+                            disabled={state.editValueDisabled}
+                            key={'prop_key_' + state.id}
+                            fileName={state.value?.name}
+                            style={css_prop_item_input}
+                            id={'prop_id_' + state.id}
+                            tabIndex={0}
                             onChange={(e) => {
 
                                 if (e.target.files && e.target.files[0]) {
@@ -295,11 +303,6 @@ export const PropItem: React.FC<PropItemProps> = (props) => { // Extende outra i
 
                                 }
                             }}
-                            disabled={state.editValueDisabled}
-                            key={'prop_key_' + state.id}
-                            style={css_prop_item_input}
-                            id={'prop_id_' + state.id}
-                            tabIndex={0}
                         />
                     </div>
                 </div>
@@ -341,6 +344,7 @@ export const PropItem: React.FC<PropItemProps> = (props) => { // Extende outra i
                     onBlur={_ => onChange(state)}
                     key={'assign_key_' + state.id}
                     information={state.information}
+                    useOnChange={state.useOnChange}
                     suggestions={state.suggestions}
                     onKeyDown={(e) => onkeyPress(e)}
                     propertieType={state.propertieType}
@@ -424,4 +428,4 @@ export const PropItem: React.FC<PropItemProps> = (props) => { // Extende outra i
             return <></>;
     }
 
-}
+});

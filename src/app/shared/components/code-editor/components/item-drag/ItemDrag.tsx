@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useCallback, useRef, memo } from 'react';
 import { IconFlowAction, IconFlowAssign, IconFlowComment, IconFlowEnd, IconFlowForeach, IconFlowIf, IconFlowStart, IconFlowSwitch } from 'code-easy-components';
 import { useDrag } from 'react-dnd';
 
@@ -20,6 +20,7 @@ export interface IItemDragProps {
     allowDrag?: boolean;
     isSelected: boolean;
     itemType?: ItemType;
+    hasWarning?: boolean;
     isDisabled?: boolean;
     parentElementRef?: any;
     disableOpacity?: number;
@@ -32,14 +33,13 @@ export interface IItemDragProps {
     onContextMenu?(data?: any, e?: React.MouseEvent<SVGGElement, MouseEvent>): void;
     onChangePosition?(top: number, left: number, itemId: string | undefined, e?: React.MouseEvent<SVGGElement, MouseEvent>): void;
 }
-
 /** Usado para representar os items de lógica no fluxo do editor e na toolbar. */
-export const ItemToDrag: React.FC<IItemDragProps> = ({ title, ...props }: IItemDragProps) => {
+export const ItemToDrag: React.FC<IItemDragProps> = memo(({ title, ...props }: IItemDragProps) => {
 
     const {
-        onChangePosition, onMouseDown, onMouseOver, width = 0, disableOpacity,
         isSelected, isDisabled, onContextMenu, hasError, onMouseUp, id,
-        height = 0, top = 0, left = 0, allowDrag, itemType, icon,
+        onChangePosition, onMouseDown, onMouseOver, width = 0, disableOpacity,
+        height = 0, top = 0, left = 0, allowDrag, itemType, icon, hasWarning = false,
     } = props;
 
     /** Permite que uym elemento seja arrastado e adicionado dentro do editor de fluxo. */
@@ -54,49 +54,49 @@ export const ItemToDrag: React.FC<IItemDragProps> = ({ title, ...props }: IItemD
      *
      * Também serve para fechar o menu de contexto.
      */
-    const mouseUp = (e: MouseEvent) => {
+    const mouseUp = useCallback((e: MouseEvent) => {
         e.stopPropagation();
         window.onmousemove = null;
         window.onmouseup = null;
-    }
+    }, []);
 
     /** Armazena a posição onde o iten item do fluxo foi clicado. */
-    let cliquedLocationFlowItem = { top: 0, left: 0 };
+    let cliquedLocationFlowItem = useRef({ top: 0, left: 0 });
 
     /** Quando um item estiver selecionado e for arrastado na tale esta fun vai fazer isso acontecer. */
-    const mouseMove = (e: MouseEvent) => {
+    const mouseMove = useCallback((e: MouseEvent) => {
         e.stopPropagation();
 
-        const top = e.offsetY - cliquedLocationFlowItem.top;
-        const left = e.offsetX - cliquedLocationFlowItem.left;
+        const top = e.offsetY - cliquedLocationFlowItem.current.top;
+        const left = e.offsetX - cliquedLocationFlowItem.current.left;
 
         onChangePosition && onChangePosition(top, left, id, e as any);
 
-    }
+    }, [id, onChangePosition]);
 
     /** Declara a fun no ref da svg para que o item atual possa ser arrastado na tela. */
-    const mouseDown = (e: React.MouseEvent<SVGGElement, MouseEvent>) => {
+    const mouseDown = useCallback((e: React.MouseEvent<SVGGElement, MouseEvent>) => {
         e.stopPropagation();
         if (onMouseDown) onMouseDown(e);
 
-        cliquedLocationFlowItem = {
+        cliquedLocationFlowItem.current = {
             top: e.nativeEvent.offsetY - top,
             left: e.nativeEvent.offsetX - left,
         };
 
         window.onmousemove = mouseMove;
         window.onmouseup = mouseUp;
-    }
+    }, [left, mouseMove, mouseUp, onMouseDown, top]);
 
     // Assim que configurado exibirá o menu de contexto deste item corrente.
-    const contextMenu = (event: React.MouseEvent<SVGGElement, MouseEvent>) => {
+    const contextMenu = useCallback((event: React.MouseEvent<SVGGElement, MouseEvent>) => {
         if (onContextMenu) {
             event.preventDefault();
             onContextMenu({ itemId: id, itemType: itemType }, event);
         }
-    }
+    }, [id, itemType, onContextMenu])
 
-    const getIcon = (type: ItemType | undefined) => {
+    const getIcon = useCallback((type: ItemType | undefined) => {
         switch (type) {
             case ItemType.COMMENT:
                 return IconFlowComment;
@@ -117,7 +117,7 @@ export const ItemToDrag: React.FC<IItemDragProps> = ({ title, ...props }: IItemD
             default:
                 return;
         }
-    };
+    }, []);
 
     /** Com base se é permitido ou não usar o "drag and drop" ele reinderiza o item na tela. */
     if (allowDrag) {
@@ -170,6 +170,7 @@ export const ItemToDrag: React.FC<IItemDragProps> = ({ title, ...props }: IItemD
                     width={width}
                     height={height}
                     hasError={hasError}
+                    hasWarning={hasWarning}
                     isDisabled={isDisabled}
                     isSelected={isSelected}
                     icon={icon || getIcon(itemType)}
@@ -178,4 +179,4 @@ export const ItemToDrag: React.FC<IItemDragProps> = ({ title, ...props }: IItemD
         );
     }
 
-}
+})

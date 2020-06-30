@@ -1,11 +1,18 @@
 import React, { useRef, useState } from 'react';
 import { Utils } from 'code-easy-components';
 
-export const CustomInputFile = (props: React.DetailedHTMLProps<React.InputHTMLAttributes<HTMLInputElement>, HTMLInputElement>) => {
+type InputFileProps = Omit<{
+    fileName?: string;
+    /** Max size in bytes */
+    maxSize?: number;
+}, keyof React.InputHTMLAttributes<HTMLInputElement>> & React.InputHTMLAttributes<HTMLInputElement>;
+/**
+ * Input use to upload files
+ */
+export const InputFile = React.forwardRef(({ fileName, ...props }: InputFileProps, ref: any) => {
+
     const input: any = useRef(null);
-    const [state, setState] = useState({
-        fileName: undefined
-    });
+    const [state, setState] = useState({ fileName });
 
     const css_input_file: React.CSSProperties = {
         ...props.style,
@@ -41,9 +48,13 @@ export const CustomInputFile = (props: React.DetailedHTMLProps<React.InputHTMLAt
             disabled={props.disabled}
             style={{ display: 'none' }}
             onChange={(e: any) => {
-                setState({ fileName: e.target.files[0]?.name });
-                onChange(e)
+                console.log(e.target.files[0])
+                if (e.target.files[0]?.size < 1048576) {
+                    setState({ fileName: e.target.files[0]?.name });
+                    onChange(e)
+                }
             }}
         />
     </>);
-}
+
+});

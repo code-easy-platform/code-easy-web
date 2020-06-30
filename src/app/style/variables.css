@@ -69,6 +69,7 @@
     --main-select-color: #1f724340;
     --main-editing-color: #1f724320;
     --main-error-color: #ff0000;
+    --main-warning-color: #b99803;
     --main-border-width: 2px;
 
     --main-grapper-size: var(--size-2);

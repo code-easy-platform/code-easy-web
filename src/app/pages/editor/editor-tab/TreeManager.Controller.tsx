@@ -472,9 +472,6 @@ export const TreeManagerController: React.FC = () => {
             // Busca todos os items que tem como pai o elemento corrente
             items.filter((item) => item.itemPaiId === tree.id).forEach(item => {
                 const icon: any = item.properties.find(prop => prop.propertieType === PropertieTypes.icon);
-
-                console.log(icon)
-
                 tree.childs.push({
                     childs: [],
                     id: item.id,
@@ -502,11 +499,8 @@ export const TreeManagerController: React.FC = () => {
 
         // Mapea todos os items que não tem pai id, significa que eles estão na raiz
         let tree: TreeInterface[] = [];
-        items.filter(item => {
-            return item.itemPaiId === undefined
-        }).forEach(item => {
+        items.filter(item => item.itemPaiId === undefined).forEach(item => {
             const icon: any = item.properties.find(prop => prop.propertieType === PropertieTypes.icon);
-
             tree.push({
                 childs: [],
                 id: item.id,

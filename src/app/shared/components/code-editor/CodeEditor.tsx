@@ -1,4 +1,4 @@
-import React, { useState, useRef, FC, useEffect } from 'react';
+import React, { useState, useRef, FC, useEffect, useCallback } from 'react';
 import { DropTargetMonitor, DndProvider } from 'react-dnd';
 import HTML5Backend from 'react-dnd-html5-backend';
 import { Utils } from 'code-easy-components';
@@ -56,15 +56,15 @@ const CodeEditor: React.FC<ICodeEditorProps> = ({ id, items = [], disableOpacity
     }, [flowItems]);
 
     /** Usada para emitir os items para fora do componente. */
-    const onChangeFlow = () => {
+    const onChangeFlow = useCallback(() => {
         if (backupFlow !== JSON.stringify(flowItems)) {
             backupFlow = JSON.stringify(flowItems); // Salva para fazer as comparações posteriores.
             onChangeItems(flowItems.list);
         }
-    }
+    }, [flowItems, onChangeItems])
 
     /** Essa função é executada sempre um item(aceito como item soltável) é sortado no painel */
-    const onDropFlowItem = (item: any, monitor: DropTargetMonitor) => {
+    const onDropFlowItem = useCallback((item: any, monitor: DropTargetMonitor) => {
 
         // Deseleciona qualquer outro item que esteja selecionado no fluxo.
         flowItems.list.forEach((item: FlowItem) => item.isSelected = false);
@@ -76,11 +76,11 @@ const CodeEditor: React.FC<ICodeEditorProps> = ({ id, items = [], disableOpacity
         const targetOffsetX: number = ((draggedOffSet.x) + (targetSize.left - targetSize.left - targetSize.left) - 25);
 
         let newItem = new FlowItem({
-            id: Utils.getUUID().toString(),
-            itemType: item.itemProps.itemType,
-            name: item.itemProps.title,
             left: Math.round(targetOffsetX / 15) * 15,
             top: Math.round(targetOffsetY / 15) * 15,
+            itemType: item.itemProps.itemType,
+            id: Utils.getUUID().toString(),
+            name: item.itemProps.title,
             isSelected: true,
             connections: [],
         });
@@ -105,7 +105,7 @@ const CodeEditor: React.FC<ICodeEditorProps> = ({ id, items = [], disableOpacity
 
         }
 
-    }
+    }, [flowItems.list, onChangeFlow, onDropItem]);
 
     /**
      * Depois que um elemento já está na tela, esta função muda a posição dele!
@@ -113,7 +113,7 @@ const CodeEditor: React.FC<ICodeEditorProps> = ({ id, items = [], disableOpacity
      * @param mousePositionLeft Posição do mouse com relação a esquerda(left) do quadro do editor
      * @param event Evento de mouse move
      */
-    const onChangePositionItems = (mousePositionTop: number, mousePositionLeft: number, itemId: string | undefined, e?: any) => {
+    const onChangePositionItems = useCallback((mousePositionTop: number, mousePositionLeft: number, itemId: string | undefined, e?: any) => {
 
         let selectedItems = flowItems.list.filter((item: FlowItem) => item.isSelected).sort((a, b) => ((a.top + b.top) - (a.left + b.left)));
         const targetItem = selectedItems.find(selectedItem => selectedItem.id === itemId);
@@ -153,7 +153,7 @@ const CodeEditor: React.FC<ICodeEditorProps> = ({ id, items = [], disableOpacity
         });
 
         setFlowItems({ list: flowItems.list });
-    }
+    }, [flowItems.list, snapGridWhileDragging])
 
     /**
      * Função usada para adicionar, remove e atualizar sucessores dos items arrastáveis
@@ -161,7 +161,7 @@ const CodeEditor: React.FC<ICodeEditorProps> = ({ id, items = [], disableOpacity
      * @param sucessorId string id do item que será usado como sucessor
      * @param branchIndex number | undefined se vim undefined é adicionado um novo sucessor, se não está atualizando ou removendo
      */
-    const changeConnections = (itemId: string | undefined, connectionId: string, oldConnectionId: string | undefined) => {
+    const changeConnections = useCallback((itemId: string | undefined, connectionId: string, oldConnectionId: string | undefined) => {
 
         /** Item em que está sendo feita as mudanças nos sucessores */
         const itemCurrent = flowItems.list.find((item: FlowItem) => item.id === itemId);
@@ -209,7 +209,8 @@ const CodeEditor: React.FC<ICodeEditorProps> = ({ id, items = [], disableOpacity
 
         setFlowItems({ list: flowItems.list });
         onChangeFlow();
-    }
+
+    }, [flowItems.list, onChangeFlow])
 
     /** CONFIG TECLAS: Valida se existe um elemento no current e define os eventos das teclas para aquele elemento */
     if (editorPanelRef.current) {
@@ -228,11 +229,18 @@ const CodeEditor: React.FC<ICodeEditorProps> = ({ id, items = [], disableOpacity
 
             /** Ctrl + c */ if (event.ctrlKey && (event.key === 'c')) copySelecteds();
             /** Ctrl + v */ if (event.ctrlKey && (event.key === 'v')) pasteSelecteds();
+            /** Ctrl + d */ if (event.ctrlKey && (event.key === 'd')) { duplicateSelecteds(); event.preventDefault(); }
 
             if (event.key === 'ArrowUp') { positionChangeByKey("ArrowUp"); event.preventDefault(); };
             if (event.key === 'ArrowDown') { positionChangeByKey("ArrowDown"); event.preventDefault(); };
             if (event.key === 'ArrowLeft') { positionChangeByKey("ArrowLeft"); event.preventDefault(); };
             if (event.key === 'ArrowRight') { positionChangeByKey("ArrowRight"); event.preventDefault(); };
+        }
+
+        /** */
+        const duplicateSelecteds = () => {
+            copySelecteds();
+            pasteSelecteds();
         }
 
         /** Copia os items de fluxo selecionados */
@@ -384,7 +392,7 @@ const CodeEditor: React.FC<ICodeEditorProps> = ({ id, items = [], disableOpacity
     }
 
     /** Desabilita qualquer item que esteja selecionado. */
-    const onMouseDown = (e: React.MouseEvent<SVGSVGElement, MouseEvent>) => {
+    const onMouseDown = useCallback((e: React.MouseEvent<SVGSVGElement, MouseEvent>) => {
 
         if (e.ctrlKey) {
             flowItems.list.forEach((item: FlowItem) => {
@@ -409,14 +417,15 @@ const CodeEditor: React.FC<ICodeEditorProps> = ({ id, items = [], disableOpacity
 
         setFlowItems({ list: flowItems.list });
         onChangeFlow();
-    }
+
+    }, [flowItems.list, onChangeFlow]);
 
     /** Para inputs que estão no meio do fluxo */
-    const itemNameChange = (text: string, index: number) => {
+    const itemNameChange = useCallback((text: string, index: number) => {
         flowItems.list[index].name = text;
         setFlowItems({ list: flowItems.list });
         onChangeFlow();
-    }
+    }, [flowItems.list, onChangeFlow]);
 
     return (
         <div className="full-width" onMouseOver={(e: any) => onMouseOver && onMouseOver(e)}>
@@ -474,7 +483,6 @@ const CodeEditor: React.FC<ICodeEditorProps> = ({ id, items = [], disableOpacity
                             parentElementRef={editorPanelRef}
                             onMouseUp={() => onChangeFlow()}
                             disableOpacity={disableOpacity}
-                            isDisabled={item.isDisabled}
                             onMouseDown={onMouseDown}
                             title={item.name}
                             key={item.id}

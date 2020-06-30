@@ -1,6 +1,7 @@
 import React from 'react';
 
 interface FlowComponentProps {
+    hasWarning?: boolean;
     isDisabled?: boolean;
     isSelected: boolean;
     hasError?: boolean;
@@ -13,9 +14,15 @@ interface FlowComponentProps {
     icon: any;
     ref?: any;
 }
-export const FlowComponent: React.FC<FlowComponentProps> = ({ id, isSelected, isDisabled, width, height, left, top, icon, hasError = false, ref }) => {
+export const FlowComponent: React.FC<FlowComponentProps> = ({ id, isSelected, isDisabled, width, height, left, top, icon, hasError = false, hasWarning = false, ref }) => {
 
-    const strokeColor: string = isSelected ? "var(--color-botton-bar)" : hasError ? "var(--main-error-color)" : "transparent";
+    const strokeColor: string = isSelected
+        ? "var(--color-botton-bar)"
+        : hasError
+            ? "var(--main-error-color)"
+            : hasWarning
+                ? "var(--main-warning-color)"
+                : "transparent";
 
     return (
         <>

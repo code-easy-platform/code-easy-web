@@ -102,6 +102,10 @@ export class ItemFlowComplete implements IItemFlowComplete {
                 this._propertiesFromSwitch();
                 break;
 
+            case ItemType.FOREACH:
+                this._propertiesFromForeach();
+                break;
+
             default:
                 break;
         }
@@ -141,8 +145,13 @@ export class ItemFlowComplete implements IItemFlowComplete {
         }
     }
 
-    private _propertiesFromAction() {
+    private _propertiesFromAction() { }
 
+    private _propertiesFromForeach() {
+        this.connections.forEach((connection, index) => {
+            // Renomeando a label da connection
+            if (index === 0) connection.connectionLabel = 'Cycle';
+        });
     }
 
     private _propertiesFromIf() {
@@ -158,24 +167,27 @@ export class ItemFlowComplete implements IItemFlowComplete {
     private _propertiesFromSwitch() {
 
         this.connections.forEach((connection, index) => {
-
-            // Renomeando a label da connection
-            connection.connectionLabel = 'Condition' + (index + 1);
-
-            // Encontra a connection adicionada préviamente
-            let existentProp = this.properties.find(prop => prop.id === connection.id);
-            if (!existentProp) {
-                this.properties.push({
-                    value: '',
-                    id: connection.id,
-                    group: 'Conditions',
-                    type: TypeValues.expression,
-                    name: 'Condition' + (index + 1),
-                    propertieType: PropertieTypes.condition,
-                });
+            if (index === 0) {
+                connection.connectionLabel = 'Default';
             } else {
-                // Está atualizando direto no "this.properties" por referência
-                existentProp.name = 'Condition' + (index + 1);
+                // Renomeando a label da connection
+                connection.connectionLabel = 'Condition' + index;
+
+                // Encontra a connection adicionada préviamente
+                let existentProp = this.properties.find(prop => prop.id === connection.id);
+                if (!existentProp) {
+                    this.properties.push({
+                        value: '',
+                        id: connection.id,
+                        group: 'Conditions',
+                        name: 'Condition' + index,
+                        type: TypeValues.expression,
+                        propertieType: PropertieTypes.condition,
+                    });
+                } else {
+                    // Está atualizando direto no "this.properties" por referência
+                    existentProp.name = 'Condition' + index;
+                }
             }
         });
 
