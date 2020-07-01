@@ -51,6 +51,7 @@ export const FlowEditorController: React.FC = () => {
                                 newItems.push(new ItemFlowComplete({
                                     properties: item.items[index].properties,
                                     connections: updatedItem.connections,
+                                    hasWarning: updatedItem.hasWarning,
                                     isSelected: updatedItem.isSelected,
                                     itemType: updatedItem.itemType,
                                     height: updatedItem.height,
@@ -64,6 +65,7 @@ export const FlowEditorController: React.FC = () => {
                             } else {
                                 newItems.push(new ItemFlowComplete({
                                     connections: updatedItem.connections,
+                                    hasWarning: updatedItem.hasWarning,
                                     isSelected: updatedItem.isSelected,
                                     itemType: updatedItem.itemType,
                                     height: updatedItem.height,
@@ -202,6 +204,7 @@ export const FlowEditorController: React.FC = () => {
 
                                 // Adiciona a tab com os items alterados
                                 item_tree.items.push(new ItemFlowComplete({
+                                    hasWarning: item.hasWarning,
                                     itemType: item.itemType,
                                     id: Utils.getUUID(),
                                     isSelected: true,
@@ -311,6 +314,7 @@ export const FlowEditorController: React.FC = () => {
                     itemType: item.itemType,
                     icon: icon?.value?.content,
                     isSelected: item.isSelected,
+                    hasWarning: item.hasWarning,
                     connections: item.connections,
                     hasError: item.properties.some(prop => (prop.valueHasError || prop.nameHasError)),
                 }));

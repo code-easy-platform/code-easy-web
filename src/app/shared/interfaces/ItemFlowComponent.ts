@@ -11,9 +11,10 @@ interface IItemFlowComplete extends IFlowItem {
     connections: IConnections[];
     properties: IProperties[];
     id: string | undefined;
-    isDisabled?: boolean;
+    isDisabled: boolean;
+    hasWarning: boolean;
     isSelected: boolean;
-    hasError?: boolean;
+    hasError: boolean;
     itemType: ItemType;
     height: number;
     width: number;
@@ -27,9 +28,11 @@ export class ItemFlowComplete implements IItemFlowComplete {
     public connections: IConnections[] = [];
     public properties: IProperties[] = [];
     public isSelected: boolean = false;
+    public hasWarning: boolean = false;
     public hasError: boolean = false;
     public id: string | undefined;
     public icon: any = undefined;
+    public isDisabled: boolean;
     public height: number = 50;
     public select = () => { };
     public width: number = 50;
@@ -42,6 +45,8 @@ export class ItemFlowComplete implements IItemFlowComplete {
             connections: IConnections[],
             properties?: IProperties[],
             id: string | undefined,
+            isDisabled?: boolean,
+            hasWarning?: boolean,
             isSelected: boolean,
             itemType: ItemType,
             hasError?: boolean,
@@ -53,6 +58,8 @@ export class ItemFlowComplete implements IItemFlowComplete {
             icon?: any,
         },
     ) {
+        this.isDisabled = _fields.isDisabled || false;
+        this.hasWarning = _fields.hasWarning || false;
         this.properties = _fields.properties || [];
         this.hasError = _fields.hasError || false;
         this.connections = _fields.connections;
@@ -73,6 +80,7 @@ export class ItemFlowComplete implements IItemFlowComplete {
 
     public getProblems(): TreeInterface[] {
         let problems: TreeInterface[] = [];
+        this.hasWarning = false;
         this.hasError = false;
 
         const addProblem = (label: string, type: 'warning' | 'error') => {
@@ -98,17 +106,18 @@ export class ItemFlowComplete implements IItemFlowComplete {
         // Valida o name
         if (this.name === '') {
             addProblem(`We do not recommend that the flow item be empty in "${this.name}"`, 'error');
-            this.properties.filter(prop => prop.propertieType === PropertieTypes.label).forEach(prop => prop.valueHasWarning = true);
+            this.properties.filter(prop => prop.propertieType === PropertieTypes.label).forEach(prop => prop.valueHasError = true);
             this.hasError = true;
         } else if (this.name.length < 3) {
             addProblem(`A suitable name for a stream item must be longer than 3 characters in "${this.name}"`, 'warning');
-            this.properties.filter(prop => prop.propertieType === PropertieTypes.label).forEach(prop => prop.valueHasWarning = true);
-            this.hasError = true;
+            this.properties.filter(prop => prop.propertieType === PropertieTypes.label).forEach(prop => { prop.valueHasWarning = true; prop.valueHasError = false });
+            this.hasWarning = true;
         } else if (this.name.length > 20) {
             addProblem(`A suitable name for a stream item must be less than 20 characters in "${this.name}"`, 'warning');
-            this.hasError = true;
+            this.properties.filter(prop => prop.propertieType === PropertieTypes.label).forEach(prop => { prop.valueHasWarning = true; prop.valueHasError = false });
+            this.hasWarning = true;
         } else {
-            this.properties.filter(prop => prop.propertieType === PropertieTypes.label).forEach(prop => prop.valueHasWarning = false);
+            this.properties.filter(prop => prop.propertieType === PropertieTypes.label).forEach(prop => { prop.valueHasWarning = false; prop.valueHasError = false });
         }
 
         // Valida condições para itens específico
@@ -166,11 +175,14 @@ export class ItemFlowComplete implements IItemFlowComplete {
                 break;
 
             case ItemType.ACTION:
-                // Nada para validar aqui
+                // Nada para validar aqui ainda
                 break;
 
-            default:
+            case ItemType.FOREACH:
+                // Nada para validar aqui ainda
                 break;
+
+            default: break;
 
         }
 
