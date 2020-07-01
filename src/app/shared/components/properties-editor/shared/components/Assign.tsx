@@ -9,18 +9,18 @@ interface IAssign extends IProperties {
     onKeyDown(e: any): void;
     onBlur(e: any): void;
 }
-export const Assign: React.FC<IAssign> = ({ id, name, value, suggestions, nameSuggestions, openEditor, nameHasError = false, valueHasError = false, onChangeName, onChangeValue, onKeyDown, onBlur, editNameDisabled = false, editValueDisabled = false }) => {
+export const Assign: React.FC<IAssign> = ({ id, name, value, useOnChange = false, suggestions, valueHasWarning, nameSuggestions, openEditor, focusOnRender, nameHasWarning = false, nameHasError = false, valueHasError = false, onChangeName, onChangeValue, onKeyDown, onBlur, editNameDisabled = false, editValueDisabled = false }) => {
 
     const css_prop_item_input_name: React.CSSProperties = {
-        border: nameHasError ? 'var(--input-border-error)' : 'var(--input-border)',
-        textDecoration: nameHasError ? `var(--text-underline-error)` : undefined,
+        border: nameHasError ? 'var(--input-border-error)' : nameHasWarning ? 'var(--input-border-warning)' : 'var(--input-border)',
+        textDecoration: nameHasError ? `var(--text-underline-error)` : nameHasWarning ? `var(--text-underline-warning)` : undefined,
         borderBottomRightRadius: 0,
         borderBottomLeftRadius: 0,
     }
     const css_prop_item_input_value: React.CSSProperties = {
-        border: valueHasError ? 'var(--input-border-error)' : 'var(--input-border)',
-        textDecoration: valueHasError ? `var(--text-underline-error)` : undefined,
-        ...(!valueHasError ? { borderTop: 0 } : {}),
+        textDecoration: valueHasError ? `var(--text-underline-error)` : valueHasError ? `var(--text-underline-warning)` : undefined,
+        border: valueHasError ? 'var(--input-border-error)' : valueHasWarning ? 'var(--input-border-warning)' : 'var(--input-border)',
+        ...((!valueHasError && (!valueHasWarning || nameHasWarning)) ? { borderTop: 0 } : {}),
         borderTopRightRadius: 0,
         borderTopLeftRadius: 0,
         paddingLeft: 30,
@@ -35,15 +35,16 @@ export const Assign: React.FC<IAssign> = ({ id, name, value, suggestions, nameSu
                 openEditor={openEditor}
                 placeholder={'Propertie'}
                 id={'name_prop_id_' + id}
+                autoFocus={focusOnRender}
                 disabled={editNameDisabled}
                 key={'name_prop_key_' + id}
                 suggestions={nameSuggestions}
                 style={css_prop_item_input_name}
-                onChange={e => onChangeName(e.target.value)}
                 onSelectSuggest={option => onChangeName(option.value)}
+                onChange={e => { onChangeName(e.target.value); useOnChange && onBlur(e) }}
             />
             <div style={{ alignItems: 'center' }}>
-                <span children='=' onClick={openEditor} style={{ marginRight: -20, marginLeft: 10.5, zIndex: 1 }} />
+                <span children='=' onClick={openEditor} style={{ marginRight: -20, marginLeft: 11, zIndex: 1 }} />
                 <ExpressionInput
                     value={value}
                     onBlur={onBlur}
@@ -55,8 +56,8 @@ export const Assign: React.FC<IAssign> = ({ id, name, value, suggestions, nameSu
                     key={'value_prop_key_' + id}
                     disabled={editValueDisabled}
                     style={css_prop_item_input_value}
-                    onChange={e => onChangeValue(e.target.value)}
                     onSelectSuggest={option => onChangeValue(option.value)}
+                    onChange={e => {onChangeValue(e.target.value); useOnChange && onBlur(e)}}
                 />
             </div>
         </div>

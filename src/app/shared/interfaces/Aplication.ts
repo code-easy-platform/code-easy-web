@@ -113,6 +113,7 @@ export class Project implements IProject {
                     id: item.id,
                     items: item.items.map((itemFlow: any) => new ItemFlowComplete({
                         connections: itemFlow.connections,
+                        hasWarning: itemFlow.hasWarning,
                         properties: itemFlow.properties,
                         isSelected: itemFlow.isSelected,
                         itemType: itemFlow.itemType,

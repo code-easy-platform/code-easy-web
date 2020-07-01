@@ -6,9 +6,10 @@ export interface IFlowItem {
     select(coords: ICoords): any;
     connections: IConnections[];
     id: string | undefined;
-    isDisabled?: boolean;
+    isDisabled: boolean;
+    hasWarning: boolean;
     isSelected: boolean;
-    hasError?: boolean;
+    hasError: boolean;
     itemType: ItemType;
     height: number;
     width: number;

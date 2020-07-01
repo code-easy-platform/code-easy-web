@@ -149,6 +149,7 @@
 
     /* Erros */
     --text-underline-error: underline wavy var(--main-error-color);
+    --text-underline-warning: underline wavy var(--main-warning-color);
 
     /* Bordas */
     --borda-size-0-25: 1px;
@@ -210,6 +211,7 @@
     /*-----------*/
 
     /*** Input borders ***/
-    --input-border: thin solid var(--main-background-highlighted);
     --input-border-error: thin solid var(--main-error-color);
+    --input-border-warning: thin solid var(--main-warning-color);
+    --input-border: thin solid var(--main-background-highlighted);
 }
