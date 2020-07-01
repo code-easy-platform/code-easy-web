@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useContext } from 'react';
 
 import { TwoColumnsResizable } from '../../../shared/components/resizable-columns/TwoColumnsResizable';
 import { TwoRowsResizable } from '../../../shared/components/resizable-columns/TwoRowsResizable';
@@ -10,38 +10,35 @@ import { PropertiesEditorController } from './PropertiesEditor.Controller';
 import { TreeManagerController } from './TreeManager.Controller';
 import { FlowEditorController } from './FlowEditor.Controller';
 
-export default class EditorTab extends React.Component {
-    render() {
-        return (
-            <TwoColumnsResizable
-                aligment={"right"}
-                id={"EditorTabCenter"}
-                left={
-                    <TwoRowsResizable
-                        top={<FlowEditorController />}
-                        id={"TwoRowsResizableOutput"}
-                        maxBottomHeight={"99%"}
-                        useMinMaxHeight={true}
-                        minBottomHeight={"1%"}
-                        bottom={
-                            <OutputPanel
-                                problems={ProblemsHelper.getProblems(this.context.project).problems}
-                                output={OutputHelper.getOutput(this.context.project)}
-                            />
-                        }
-                    />
-                }
-                right={
-                    <div className="flex1 background-panels full-width">
-                        <TwoRowsResizable
-                            id="EditorTabRightRows"
-                            top={<TreeManagerController />}
-                            bottom={<PropertiesEditorController />}
+export const EditorTab: React.FC = () => {
+    return (
+        <TwoColumnsResizable
+            aligment={"right"}
+            id={"EditorTabCenter"}
+            left={
+                <TwoRowsResizable
+                    top={<FlowEditorController />}
+                    id={"TwoRowsResizableOutput"}
+                    maxBottomHeight={"99%"}
+                    useMinMaxHeight={true}
+                    minBottomHeight={"1%"}
+                    bottom={
+                        <OutputPanel
+                            problems={ProblemsHelper.getProblems(useContext(CodeEditorContext).project).problems}
+                            output={OutputHelper.getOutput(useContext(CodeEditorContext).project)}
                         />
-                    </div>
-                }
-            />
-        );
-    }
+                    }
+                />
+            }
+            right={
+                <div className="flex1 background-panels full-width">
+                    <TwoRowsResizable
+                        id="EditorTabRightRows"
+                        top={<TreeManagerController />}
+                        bottom={<PropertiesEditorController />}
+                    />
+                </div>
+            }
+        />
+    );
 }
-EditorTab.contextType = CodeEditorContext;

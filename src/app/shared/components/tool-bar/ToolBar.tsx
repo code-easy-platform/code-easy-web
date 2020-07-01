@@ -49,7 +49,7 @@ export const ToolBar: React.FC = () => {
             <hr className="hr hr-vertical" />
             <div style={{ justifyContent: "flex-end" }}>
                 <TabGroup>
-                    {tabs.map((tab: Tab) => {
+                    {tabs.map((tab: Tab, index) => {
                         return (
                             <TabButton
                                 id={tab.configs.name}
@@ -58,8 +58,16 @@ export const ToolBar: React.FC = () => {
                                 title={tab.configs.description}
                                 isSelected={tab.configs.isEditing}
                                 className="btn-open-routers-tab flex1"
-                                onClick={() => codeEditorContext.toggleResourcesTab(tab.configs.type)}
-                                onFocus={() => codeEditorContext.toggleResourcesTab(tab.configs.type)}
+                                onClick={() => {
+                                    codeEditorContext.project.tabs.forEach(currentTab => currentTab.configs.isEditing = false);
+                                    codeEditorContext.project.tabs[index].configs.isEditing = true;
+                                    codeEditorContext.updateProjectState(codeEditorContext.project)
+                                }}
+                                onFocus={() => {
+                                    codeEditorContext.project.tabs.forEach(currentTab => currentTab.configs.isEditing = false);
+                                    codeEditorContext.project.tabs[index].configs.isEditing = true;
+                                    codeEditorContext.updateProjectState(codeEditorContext.project)
+                                }}
                             />
                         );
                     })}

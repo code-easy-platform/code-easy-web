@@ -65,14 +65,6 @@ export const HomePage = () => {
                                 onClick={e => setOpenConfig(true)}
                                 style={{ height: 'var(--tool-bar-height)', padding: '10px' }}
                             />
-                            {/* <Button
-                                        icon={icon_plugins}
-                                        style={{ height: 'var(--tool-bar-height)', padding: '10px' }}
-                                    />
-                                    <Button
-                                        icon={icon_accont}
-                                        style={{ height: 'var(--tool-bar-height)', padding: '10px' }}
-                                    /> */}
                         </div>
                         <div>
                             <Button
@@ -85,18 +77,8 @@ export const HomePage = () => {
                                 icon={IconDownload}
                                 title={"Download your projects"}
                                 style={{ height: 'var(--tool-bar-height)', padding: '10px' }}
-
-                                //TODO: Download do projeto otimizado.
                                 onClick={() => Utils.downloadFile('MyProjects', 'json', Project.projectsToString(projects))}
                             />
-                            {/* <Button
-                                        icon={icon_tips}
-                                        style={{ height: 'var(--tool-bar-height)', padding: '10px' }}
-                                    />
-                                    <Button
-                                        icon={icon_help}
-                                        style={{ height: 'var(--tool-bar-height)', padding: '10px' }}
-                                    /> */}
                             <Button
                                 title="Open on github"
                                 icon={IconOpenGithub}
