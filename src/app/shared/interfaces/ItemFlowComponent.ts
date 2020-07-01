@@ -98,16 +98,17 @@ export class ItemFlowComplete implements IItemFlowComplete {
         // Valida o name
         if (this.name === '') {
             addProblem(`We do not recommend that the flow item be empty in "${this.name}"`, 'error');
-            this.properties.filter(prop => prop.propertieType === PropertieTypes.label).forEach(prop => prop.valueHasError = true);
+            this.properties.filter(prop => prop.propertieType === PropertieTypes.label).forEach(prop => prop.valueHasWarning = true);
             this.hasError = true;
         } else if (this.name.length < 3) {
             addProblem(`A suitable name for a stream item must be longer than 3 characters in "${this.name}"`, 'warning');
+            this.properties.filter(prop => prop.propertieType === PropertieTypes.label).forEach(prop => prop.valueHasWarning = true);
             this.hasError = true;
         } else if (this.name.length > 20) {
             addProblem(`A suitable name for a stream item must be less than 20 characters in "${this.name}"`, 'warning');
             this.hasError = true;
         } else {
-            this.properties.filter(prop => prop.propertieType === PropertieTypes.label).forEach(prop => prop.valueHasError = false);
+            this.properties.filter(prop => prop.propertieType === PropertieTypes.label).forEach(prop => prop.valueHasWarning = false);
         }
 
         // Valida condições para itens específico

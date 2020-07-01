@@ -28,14 +28,23 @@ export interface IProperties {
     suggestions?: ISuggestion[];
     editValueDisabled?: boolean;
     editNameDisabled?: boolean;
+    valueHasWarning?: boolean;
+    nameHasWarning?: boolean;
     valueHasError?: boolean;
     id: string | undefined;
     nameHasError?: boolean;
-    information?: string;
     useOnChange?: boolean;
-    /** Type of properties in the component */
+    /**
+     * This property allows the input to be focused automatically when rendered on the screen
+     */
+    focusOnRender?:boolean;
+    information?: string;
+    /**
+     * Max size in bytes
+     * Default value 1MB(1048576)
+     */
+    fileMaxSize?: number;
     propertieType?: any;
-    /** Type of component */
     type: TypeValues;
     group?: string;
     name?: string;
