@@ -11,6 +11,7 @@ import { PropertieTypes } from '../../../shared/enuns/PropertieTypes';
 import { ComponentType } from '../../../shared/enuns/ComponentType';
 import { CurrentFocus } from '../../../shared/enuns/CurrentFocus';
 import { Tab } from '../../../shared/interfaces/Tabs';
+import { ContextModalListService } from '../../../shared/components/context-modais/ContextModalListService';
 
 export const PropertiesEditorController: React.FC = () => {
 
@@ -153,7 +154,12 @@ export const PropertiesEditorController: React.FC = () => {
                 isHeader: true,
                 name: res.label,
                 subname: res.type,
-                properties: res.properties,
+                properties: res.properties.map(prop => {
+                    if (prop.id && prop.name) {
+                        prop.openEditor = () => ContextModalListService.showModal(prop.id || '', `${prop.name} in ${res.label}`, [])
+                    };
+                    return prop;
+                }),
             };
 
         } else if (currentFocus === CurrentFocus.flow) { // Mapeia os items de fluxo
@@ -226,11 +232,14 @@ export const PropertiesEditorController: React.FC = () => {
                                             value: '',
                                             id: param.id,
                                             group: 'Params',
-                                            name: param.name,
+                                            name: param.label,
                                             type: TypeValues.expression,
                                             propertieType: PropertieTypes.param,
                                             information: param.description !== '' ? param.description : undefined,
-                                            openEditor: () => { window.alert("Abre editor...") },
+                                            openEditor: () => {
+                                                if (param.id)
+                                                    ContextModalListService.showModal(param.id, param.label, []);
+                                            },
                                             suggestions: paramsSuggestion.map(suggest => {
                                                 return {
                                                     disabled: false,
@@ -251,6 +260,14 @@ export const PropertiesEditorController: React.FC = () => {
                     if (prop.propertieType === PropertieTypes.assigns) {
                         // Adicionar código aqui para mapear sugestões e mais no assing 
                     }
+                });
+
+                // Mapea os items para modal
+                filteredItem.properties.map(prop => {
+                    if (prop.id && prop.name) {
+                        prop.openEditor = () => ContextModalListService.showModal(prop.id || '', `${prop.name} in ${filteredItem.name}`, [])
+                    };
+                    return prop;
                 });
 
                 mappedItems.push({

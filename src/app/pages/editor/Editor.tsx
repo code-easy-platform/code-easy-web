@@ -3,6 +3,7 @@ import { Redirect } from 'react-router-dom';
 
 import { CodeEditorContext, ICodeEditorContext } from '../../shared/services/contexts/CodeEditorContext';
 import { BottonStatusBar } from '../../shared/components/botton-status-bar/BottonStatusBar';
+import { ContextModalList } from '../../shared/components/context-modais/ContextModalList';
 import { ProjectsStorage } from '../../shared/services/storage/ProjectsStorage';
 import { ProblemsHelper } from '../../shared/services/helpers/ProblemsHelper';
 import { ToolBar } from '../../shared/components/tool-bar/ToolBar';
@@ -54,6 +55,7 @@ export class Editor extends React.Component<any> {
                     <hr className="hr" />
                     <BottonStatusBar />
                 </div>
+                <ContextModalList />
                 {(this.state.project.projectConfigs.id === undefined) && <Redirect to="/" />}
             </CodeEditorContext.Provider>
         );
