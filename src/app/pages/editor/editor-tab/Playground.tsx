@@ -10,7 +10,7 @@ import { PropertiesEditorController } from './PropertiesEditor.Controller';
 import { TreeManagerController } from './TreeManager.Controller';
 import { FlowEditorController } from './FlowEditor.Controller';
 
-export const EditorTab: React.FC = () => {
+export const Playground: React.FC = () => {
     return (
         <TwoColumnsResizable
             aligment={"right"}

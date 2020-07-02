@@ -186,6 +186,19 @@ export class ItemFlowComplete implements IItemFlowComplete {
 
         }
 
+        // Valida as propriedades
+        this.properties.forEach(prop => {
+            prop.valueHasError = false;
+
+            // Valida se action está com o campo "action" vazio.
+            if (prop.propertieType === PropertieTypes.action && prop.value === "") {
+                addProblem(`The flow item "${this.name}" must have a valid value in the "${prop.name}" field.`, 'error');
+                prop.valueHasError = true;
+                this.hasError = true;
+            }
+
+        });
+
         if (problems.length <= 1) {
             return problems;
         } else {

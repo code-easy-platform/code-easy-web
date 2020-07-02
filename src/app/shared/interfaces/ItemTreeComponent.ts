@@ -170,9 +170,12 @@ export class ItemComponent implements IItemComponent {
         if (this.type !== ComponentType.routerConsume) {
 
             // Valida o numero de starts na tela
-            const numStarts = this.items.filter(itemFlow => itemFlow.itemType === ItemType.START);
+            let numStarts = this.items.filter(itemFlow => itemFlow.itemType === ItemType.START);
             if (numStarts.length > 1) {
                 addProblem(`In ${this.label} must have only start flow item`, 'error');
+                numStarts.forEach(start => start.hasError = true);
+            } else {
+                numStarts.forEach(start => start.hasError = false);
             }
 
             // Valida se encontra um start e um end na tela
@@ -181,8 +184,9 @@ export class ItemComponent implements IItemComponent {
                     addProblem(`A "${this.type}" must be have a "Start" and an "End" item in "${this.label}"`, 'error');
                 }
             }
+
             // Valida os ends
-            const unusedEnd = this.items.find(itemFlow => (itemFlow.itemType === ItemType.END) && !this.items.some(flowItem => flowItem.connections.some(connection => connection.connectionId === itemFlow.id)));
+            let unusedEnd = this.items.find(itemFlow => (itemFlow.itemType === ItemType.END) && !this.items.some(flowItem => flowItem.connections.some(connection => connection.connectionId === itemFlow.id)));
             if (unusedEnd) {
                 addProblem(`In "${this.label}" a "${unusedEnd.name}" flow item is not used`, 'error');
                 unusedEnd.hasError = true;
