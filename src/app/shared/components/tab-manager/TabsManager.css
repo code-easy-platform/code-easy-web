@@ -22,6 +22,11 @@
     cursor: pointer;
 }
 
+.window-tabs-manager .window-tab-item:focus {
+    background-color: #00000005;
+    opacity: 1;
+}
+
 .window-tabs-manager .window-tab-item:active {
     color: var(--color-white);
     opacity: 0.5;

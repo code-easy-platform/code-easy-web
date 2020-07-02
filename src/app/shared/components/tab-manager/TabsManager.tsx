@@ -34,17 +34,18 @@ export const TabsManager: React.FC<TabsManagerProps> = ({ tabs, onChange, onCont
 
     return (
         <div className="window-tabs-manager" onWheel={onWeel}>
-            {tabs.map(({ id, title, className = "", isSelected = false, description }, index) => {
+            {tabs.map(({ id, title, className = "", isSelected = false, description, hasError, hasWarning }, index) => {
                 return (
                     <Fragment key={index}>
                         <div
                             tabIndex={0}
                             title={description}
                             onMouseDown={e => onClick(e, id)}
-                            className={"window-tab-item " + (isSelected ? "window-tab-selected " : "") + className}
+                            onKeyDown={e => { if (e.keyCode === 32) onClick(e as any, id) }}
+                            className={`window-tab-item ${isSelected ? "window-tab-selected" : ""} ${className}`}
                             onContextMenu={e => { e.preventDefault(); onContextWindowTab && onContextWindowTab(id); }}
                         >
-                            <div className="padding-m text-ellipsis">{title}</div>
+                            <div className={`padding-m text-ellipsis ${hasError ? "main-text-error-color" : hasWarning ? "main-text-warning-color" : ""}`}>{title}</div>
                             <img onClick={e => closeTab(e, id)} className="btn btn-close" src={IconClose} alt="btn-close" />
                         </div>
                         <hr className="hr hr-vertical opacity-5" />

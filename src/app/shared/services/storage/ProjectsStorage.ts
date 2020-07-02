@@ -217,6 +217,8 @@ export class ProjectsStorage {
                 if (windowTab.id === winTab.id) {
                     windowTab.isSelected = true;
                     windowTab.title = winTab.title;
+                    windowTab.hasError = winTab.hasError;
+                    windowTab.hasWarning = winTab.hasWarning;
                     windowTab.description = winTab.description;
                 } else {
                     windowTab.isSelected = false;
@@ -239,6 +241,8 @@ export class ProjectsStorage {
                         title: item.label,
                         isSelected: item.isSelected,
                         description: item.description,
+                        hasError: item.items.some(itemFlow => itemFlow.hasError),
+                        hasWarning: item.items.some(itemFlow => itemFlow.hasWarning)
                     });
                 }
             })

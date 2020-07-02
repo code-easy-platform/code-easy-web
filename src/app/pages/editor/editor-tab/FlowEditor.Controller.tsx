@@ -345,7 +345,7 @@ export const FlowEditorController: React.FC = () => {
             enabledSelection={flowEditorItems.length !== 0}
             backgroundType={ideConfigs.getConfigs().flowBackgroundType}
             snapGridWhileDragging={ideConfigs.getConfigs().snapGridWhileDragging}
-            emptyMessage={(codeEditorGetBreadcamps().length !== 0) ? "Drag and drop an item here to get started" : undefined}
+            emptyMessage={(codeEditorGetBreadcamps().length === 0) ? "Double click on an item on the right side to edit it" : undefined}
             allowedsInDrop={[ComponentType.globalAction, ComponentType.localAction, ComponentType.localVariable, ComponentType.inputVariable, ComponentType.outputVariable]}
             onContextMenu={(data, e) => {
                 if (e) {

@@ -1,7 +1,9 @@
 export interface OpenWindow {
-    id: string,
-    title: string,
-    className?: string,
-    isSelected?: boolean,
-    description: string,
+    id: string;
+    title: string;
+    hasError?: boolean;
+    className?: string;
+    description?: string;
+    hasWarning?: boolean;
+    isSelected?: boolean;
 }
