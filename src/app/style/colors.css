@@ -2,6 +2,18 @@
     background-color: var(--main-error-color);
 }
 
+.main-warning-color {
+    background-color: var(--main-warning-color);
+}
+
+.main-text-error-color {
+    color: var(--main-error-color);
+}
+
+.main-text-warning-color {
+    color: var(--main-warning-color);
+}
+
 .color-background-primary {
     background-color: var(--color-primary);
 }

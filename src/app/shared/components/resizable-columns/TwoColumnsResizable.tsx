@@ -23,18 +23,18 @@ export class TwoColumnsResizable extends Component<IRecipeProps> {
     }
 
     mouseMove = (event: any) => {
-        this.setState({ colX: this.isRight ? (window.innerWidth - event.pageX) : event.pageX });
+        this.setState({ colX: this.isRight ? (window.innerWidth - event.pageX + 6) : event.pageX });
     }
 
     mouseUp = () => {
         window.onmouseup = null;
         window.onmousemove = null;
-        window.document.body.style.pointerEvents = 'unset';
+        window.document.body.style.cursor = 'unset';
         ProjectsStorage.setColumnsResizableSize(this.props.id, this.state.colX);
     }
 
     mouseDown = () => {
-        window.document.body.style.pointerEvents = 'none';
+        window.document.body.style.cursor = 'e-resize';
         window.onmousemove = this.mouseMove;
         window.onmouseup = this.mouseUp;
     }

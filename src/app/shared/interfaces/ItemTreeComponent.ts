@@ -2,11 +2,11 @@ import { Utils, IconWarning, IconError } from "code-easy-components";
 
 import { IProperties } from "../components/properties-editor/shared/interfaces";
 import { DefaultPropsHelper } from '../services/helpers/DefaultPropsHelper';
+import { ItemType } from "../components/code-editor/shared/enums/ItemType";
+import { TreeInterface } from "../components/tree-manager/shared/models";
 import { ComponentType } from "../enuns/ComponentType";
 import { ItemFlowComplete } from "./ItemFlowComponent";
 import { BaseFields } from "./BaseFields";
-import { TreeInterface } from "../components/tree-manager/shared/models";
-import { ItemType } from "../components/code-editor/shared/enums/ItemType";
 
 
 /**

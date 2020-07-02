@@ -241,26 +241,31 @@ export const FlowEditorController: React.FC = () => {
 
                     breadcamps.push({
                         label: tab.configs.label,
-                        onClick: () => { },
-                        disabled: true,
+                        onClick: () => {
+                            editorContext.project.tabs.forEach((tab: Tab) => tab.configs.isEditing = false);
+                            editorContext.project.currentComponentFocus = CurrentFocus.tree;
+                            tab.configs.isEditing = true;
+                            onChangeState();
+                        }
                     });
 
                     breadcamps.push({
-                        onClick: ((e: any) => {
-                            /*
-                                this.editorContext.project.tabs.forEach(tab => {
-                                    tab.items.forEach(item => {
-                                        item.isSelected = false;
-                                    });
+                        onClick: (() => {
+                            editorContext.project.tabs.forEach((tab: Tab) => tab.configs.isEditing = false);
+
+                            editorContext.project.tabs.forEach(tab => {
+                                tab.items.forEach(item => {
+                                    item.isSelected = false;
                                 });
-     
-                                item.isSelected = true;
-     
-                                this.onChangeState();
-                             */
+                            });
+
+                            editorContext.project.currentComponentFocus = CurrentFocus.tree;
+                            tab.configs.isEditing = true;
+                            item.isSelected = true;
+                            onChangeState();
+
                         }),
-                        label: item.label,
-                        disabled: false,
+                        label: item.label
                     });
 
                 }
@@ -328,7 +333,6 @@ export const FlowEditorController: React.FC = () => {
 
     })();
 
-
     return (
         <FlowEditor
             id={"CODE_EDITOR"}
@@ -341,7 +345,7 @@ export const FlowEditorController: React.FC = () => {
             enabledSelection={flowEditorItems.length !== 0}
             backgroundType={ideConfigs.getConfigs().flowBackgroundType}
             snapGridWhileDragging={ideConfigs.getConfigs().snapGridWhileDragging}
-            emptyMessage={(codeEditorGetBreadcamps().length !== 0) ? "Drag and drop an item here to get started" : undefined}
+            emptyMessage={(codeEditorGetBreadcamps().length === 0) ? "Double click on an item on the right side to edit it" : undefined}
             allowedsInDrop={[ComponentType.globalAction, ComponentType.localAction, ComponentType.localVariable, ComponentType.inputVariable, ComponentType.outputVariable]}
             onContextMenu={(data, e) => {
                 if (e) {

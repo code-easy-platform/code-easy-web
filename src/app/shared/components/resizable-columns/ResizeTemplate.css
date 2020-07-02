@@ -6,7 +6,7 @@
 
 .col-align-right {
   justify-content: space-between;
-  min-width: var(--size-38);
+  min-width: 20%;
   max-width: 70%;
 }
 
@@ -20,8 +20,8 @@
   width: var(--main-grapper-size);
   height: var(--size-fill);
   position: absolute;
-  cursor: col-resize;
   border-left: none;
+  cursor: e-resize;
   overflow: hidden;
   z-index: 1;
 }
@@ -29,7 +29,8 @@
 .grabber-col-right-resize-y {
   height: var(--main-grapper-size);
   width: var(--size-fill);
-  cursor: row-resize;
   position: absolute;
+  cursor: n-resize;
+  margin-top: -4px;
   overflow: hidden;
 }

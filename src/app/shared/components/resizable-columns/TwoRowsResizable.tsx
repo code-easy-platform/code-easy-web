@@ -32,12 +32,12 @@ export class TwoRowsResizable extends Component<IRecipeProps> {
     mouseUp = () => {
         window.onmouseup = null;
         window.onmousemove = null;
-        window.document.body.style.pointerEvents = 'unset';
+        window.document.body.style.cursor = 'unset';
         ProjectsStorage.setColumnsResizableSize(this.props.id, this.state.bottomHeight);
     }
 
     mouseDown = () => {
-        window.document.body.style.pointerEvents = 'none';
+        window.document.body.style.cursor = 'n-resize';
         window.onmousemove = this.mouseMove;
         window.onmouseup = this.mouseUp;
     }
@@ -50,7 +50,7 @@ export class TwoRowsResizable extends Component<IRecipeProps> {
                 <div className="full-width" style={{
                     maxHeight: useMinMaxHeight ? this.props.maxBottomHeight || '90%' : undefined,
                     minHeight: useMinMaxHeight ? this.props.minBottomHeight || '10%' : undefined,
-                    height: (window.innerHeight - this.state.bottomHeight) - 60,
+                    height: (window.innerHeight - this.state.bottomHeight) - 56,
                 }}>{this.props.top}</div>
 
                 <hr className='hr' />
