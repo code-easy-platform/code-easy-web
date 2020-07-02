@@ -15,7 +15,7 @@ export const TabsManager: React.FC<TabsManagerProps> = ({ tabs, onChange, onCont
     const closeTab = (e: React.MouseEvent<HTMLDivElement, MouseEvent>, tabId: string) => {
         e.stopPropagation();
         onCloseWindowTab && onCloseWindowTab(tabId);
-    }
+    };
 
     const onWeel = (e: React.WheelEvent<HTMLDivElement>) => {
         if (e.deltaY > 0) {
@@ -23,14 +23,15 @@ export const TabsManager: React.FC<TabsManagerProps> = ({ tabs, onChange, onCont
         } else {
             e.currentTarget.scrollLeft -= 25;
         }
-    }
+    };
 
     const onClick = (e: React.MouseEvent<HTMLDivElement, MouseEvent>, tabId: string) => {
-        if (e.button === 1)
+        if (e.button === 1) {
             onCloseWindowTab && onCloseWindowTab(tabId);
-        else
+        } else {
             onChange && onChange(tabId);
-    }
+        }
+    };
 
     return (
         <div className="window-tabs-manager" onWheel={onWeel}>
@@ -41,7 +42,7 @@ export const TabsManager: React.FC<TabsManagerProps> = ({ tabs, onChange, onCont
                             tabIndex={0}
                             title={description}
                             onMouseDown={e => onClick(e, id)}
-                            onKeyDown={e => { if (e.keyCode === 32) onClick(e as any, id) }}
+                            onKeyDown={e => { if (e.keyCode === 32) { onClick(e as any, id); } }}
                             className={`window-tab-item ${isSelected ? "window-tab-selected" : ""} ${className}`}
                             onContextMenu={e => { e.preventDefault(); onContextWindowTab && onContextWindowTab(id); }}
                         >

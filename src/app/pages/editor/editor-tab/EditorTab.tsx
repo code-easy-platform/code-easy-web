@@ -41,4 +41,4 @@ export const EditorTab: React.FC = () => {
             }
         />
     );
-}
+};

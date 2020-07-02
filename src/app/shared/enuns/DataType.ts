@@ -10,7 +10,7 @@ export enum DataTypes {
     list = "List",
     void = "Void",
     any = "Any",
-};
+}
 
 export const DataTypesList: DataTypes[] = [
     DataTypes.datetime,

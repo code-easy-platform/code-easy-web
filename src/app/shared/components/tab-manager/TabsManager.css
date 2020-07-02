@@ -3,6 +3,7 @@
     overflow-x: auto;
     flex: 1;
 }
+
 .window-tabs-manager::-webkit-scrollbar {
     height: var(--size-none);
     width: var(--size-none);
@@ -56,6 +57,7 @@
     background-color: transparent;
     opacity: 0.7;
 }
+
 .window-tabs-manager .window-tab-item:hover .btn-close:hover,
 .window-tabs-manager .window-tab-item.window-tab-selected .btn-close:hover {
     opacity: 1;

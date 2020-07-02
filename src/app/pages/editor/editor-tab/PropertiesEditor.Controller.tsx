@@ -26,7 +26,7 @@ export const PropertiesEditorController: React.FC = () => {
 
         if (editorContext.project.currentComponentFocus === CurrentFocus.tree) {
 
-            if (item.id !== undefined) {
+            if (item.id) {
                 editorContext.project.tabs.forEach((tab: Tab) => {
                     tab.items.forEach(itemTree => {
                         if (itemTree.isSelected && itemTree.id === item.id) {
@@ -46,9 +46,9 @@ export const PropertiesEditorController: React.FC = () => {
                                 const labelProp = item.properties.find(prop => prop.propertieType === PropertieTypes.label);
                                 const descriptionProp = item.properties.find(prop => prop.propertieType === PropertieTypes.description);
 
-                                if (labelProp) itemTree.label = labelProp.value;
-                                if (descriptionProp) itemTree.description = descriptionProp.value;
-                                if (nameProp) itemTree.name = Utils.getNormalizedString(nameProp.value);
+                                if (labelProp) { itemTree.label = labelProp.value; }
+                                if (descriptionProp) { itemTree.description = descriptionProp.value; }
+                                if (nameProp) { itemTree.name = Utils.getNormalizedString(nameProp.value); }
 
                                 // Atualizas as props
                                 itemTree.properties = item.properties;
@@ -69,30 +69,30 @@ export const PropertiesEditorController: React.FC = () => {
                     if (item.isEditing) {
                         treeItemEditing = item;
                     }
-                })
+                });
             });
 
             if (treeItemEditing) {
 
                 let indexItemFlow = treeItemEditing.items.findIndex((oldItem: ItemFlowComplete) => oldItem.id === item.id);
-                if (indexItemFlow && (indexItemFlow < 0)) return;
+                if (indexItemFlow && (indexItemFlow < 0)) { return; };
 
 
                 if (treeItemEditing.items[indexItemFlow].itemType === ItemType.ACTION) {
 
                     // Pega a antiga action ID
-                    const oldActionId = treeItemEditing.items[indexItemFlow].properties.find(item_old => item_old.propertieType === PropertieTypes.action)?.value;
+                    const oldActionId = treeItemEditing.items[indexItemFlow].properties.find(itemOld => itemOld.propertieType === PropertieTypes.action)?.value;
 
                     // Pega a nova action ID
-                    const newSelectedActionId = item.properties.find(item_new => item_new.propertieType === PropertieTypes.action)?.value;
+                    const newSelectedActionId = item.properties.find(itemNew => itemNew.propertieType === PropertieTypes.action)?.value;
 
                     // Compara os dois IDs, se mudou apaga todos os parâmetro da action anterior.
                     if ((oldActionId !== '') && (oldActionId !== newSelectedActionId)) {
                         // Encontra o promeiro parametro e remove, depois encontra os outros e irá remover eté não restar mais parâmetros
-                        let indexToRemove = item.properties.findIndex(item_old => item_old.propertieType === PropertieTypes.param);
+                        let indexToRemove = item.properties.findIndex(itemOld => itemOld.propertieType === PropertieTypes.param);
                         while (indexToRemove >= 0) {
                             item.properties.splice(indexToRemove, 1);
-                            indexToRemove = item.properties.findIndex(item_old => item_old.propertieType === PropertieTypes.param);
+                            indexToRemove = item.properties.findIndex(itemOld => itemOld.propertieType === PropertieTypes.param);
                         }
                     }
 
@@ -131,7 +131,7 @@ export const PropertiesEditorController: React.FC = () => {
             }
 
             onChangeState();
-        }
+        };
     }
 
     /** Devolve para o editor de propriedades as propriedades do item selecionado no momento. */
@@ -146,21 +146,23 @@ export const PropertiesEditorController: React.FC = () => {
         if (currentFocus === CurrentFocus.tree) { // Mapeia os items da árvore.
 
             const tab = editorContext.project.tabs.find((tab: Tab) => tab.items.find(item => item.isSelected));
-            if (!tab) return nullRes;
+            if (!tab) { return nullRes; }
             const res = tab.items.find(item => item.isSelected);
-            if (!res) return nullRes;
-            else return {
-                id: res.id,
-                isHeader: true,
-                name: res.label,
-                subname: res.type,
-                properties: res.properties.map(prop => {
-                    if (prop.id && prop.name) {
-                        prop.openEditor = () => ContextModalListService.showModal(prop.id || '', `${prop.name} in ${res.label}`, [])
-                    };
-                    return prop;
-                }),
-            };
+            if (!res) { return nullRes; }
+            else {
+                return {
+                    id: res.id,
+                    isHeader: true,
+                    name: res.label,
+                    subname: res.type,
+                    properties: res.properties.map(prop => {
+                        if (prop.id && prop.name) {
+                            prop.openEditor = () => ContextModalListService.showModal(prop.id || '', `${prop.name} in ${res.label}`, []);
+                        }
+                        return prop;
+                    })
+                };
+            }
 
         } else if (currentFocus === CurrentFocus.flow) { // Mapeia os items de fluxo
             const itemsLogica: ItemFlowComplete[] = codeEditorGetItemsLogica();
@@ -179,12 +181,12 @@ export const PropertiesEditorController: React.FC = () => {
                 editorContext.project.tabs.forEach(tab => {
                     tab.items.forEach(tree_item => {
                         if (tree_item.isEditing) {
-                            paramsSuggestion = tab.items.filter(tree_itemToParams => (
-                                (tree_itemToParams.itemPaiId === tree_item.id) &&
+                            paramsSuggestion = tab.items.filter(treeItemToParams => (
+                                (treeItemToParams.itemPaiId === tree_item.id) &&
                                 (
-                                    tree_itemToParams.type === ComponentType.inputVariable ||
-                                    tree_itemToParams.type === ComponentType.localVariable ||
-                                    tree_itemToParams.type === ComponentType.outputVariable
+                                    treeItemToParams.type === ComponentType.inputVariable ||
+                                    treeItemToParams.type === ComponentType.localVariable ||
+                                    treeItemToParams.type === ComponentType.outputVariable
                                 )
                             ));
                         }

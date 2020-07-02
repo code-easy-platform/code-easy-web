@@ -38,7 +38,7 @@ export class Editor extends React.Component<any> {
         ProjectsStorage.setProjectById(project);
 
         // Atualiza o state do projeto para refletir as alterações na tela
-        this.setState({ project: project });
+        this.setState({ project });
     }
 
     render() {

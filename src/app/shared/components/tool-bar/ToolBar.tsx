@@ -13,7 +13,7 @@ export const ToolBar: React.FC = () => {
     const codeEditorContext = useContext(CodeEditorContext);
     const tabs: Tab[] = (codeEditorContext.project?.tabs || []);
 
-    const [isOpenModalProps, setIsOpenModalProps] = useState(false)
+    const [isOpenModalProps, setIsOpenModalProps] = useState(false);
 
     return (<>
         <div className="tool-bar background-bars">
@@ -84,4 +84,4 @@ export const ToolBar: React.FC = () => {
             onClose={(value) => { setIsOpenModalProps(false); return true; }}
         />
     </>);
-}
+};

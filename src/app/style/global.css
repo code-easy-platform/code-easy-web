@@ -147,7 +147,6 @@ input[type="checkbox"]:checked {
 .background-highlighted {
   background-color: var(--main-background-highlighted);
 }
-/*  ---------------- */
 
 .input-border {
   border: var(--input-border);
@@ -205,6 +204,7 @@ input[type="checkbox"]:checked {
 .full-width {
   width: var(--size-fill);
 }
+
 .full-height {
   height: var(--size-fill);
 }
@@ -220,9 +220,11 @@ input[type="checkbox"]:checked {
 .overflow-auto {
   overflow: auto;
 }
+
 .overflow-scroll {
   overflow: scroll;
 }
+
 .overflow-contrast:hover::-webkit-scrollbar-thumb {
   background-color: var(--color-scroll-bar-hover);
 }

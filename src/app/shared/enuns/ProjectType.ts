@@ -7,7 +7,7 @@ export enum ProjectType {
     api = "API",
     web = "WEB",
     mobile = "MOBILE",
-};
+}
 
 /** Lista de tipos, pode ser usada para listagens */
 export const ProjectTypeList: { name: string, type: ProjectType }[] = [

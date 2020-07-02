@@ -156,7 +156,7 @@ export class ItemComponent implements IItemComponent {
                 childs: [],
                 label,
             });
-        }
+        };
 
         // Valida o label
         if (this.label === '') {
@@ -170,7 +170,7 @@ export class ItemComponent implements IItemComponent {
         if (this.type !== ComponentType.routerConsume) {
 
             // Valida o numero de starts na tela
-            const numStarts = this.items.filter(item_flow => item_flow.itemType === ItemType.START);
+            const numStarts = this.items.filter(itemFlow => itemFlow.itemType === ItemType.START);
             if (numStarts.length > 1) {
                 addProblem(`In ${this.label} must have only start flow item`, 'error');
             }
@@ -182,7 +182,7 @@ export class ItemComponent implements IItemComponent {
                 }
             }
             // Valida os ends
-            const unusedEnd = this.items.find(item_flow => (item_flow.itemType === ItemType.END) && !this.items.some(flowItem => flowItem.connections.some(connection => connection.connectionId === item_flow.id)));
+            const unusedEnd = this.items.find(itemFlow => (itemFlow.itemType === ItemType.END) && !this.items.some(flowItem => flowItem.connections.some(connection => connection.connectionId === itemFlow.id)));
             if (unusedEnd) {
                 addProblem(`In "${this.label}" a "${unusedEnd.name}" flow item is not used`, 'error');
                 unusedEnd.hasError = true;

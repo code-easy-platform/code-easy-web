@@ -1,16 +1,19 @@
 .tab-group {
   min-height: var(--size-8);
 }
+
 .btn-tab {
   background-color: transparent;
   justify-content: center;
   align-items: center;
   border: none;
 }
+
 .btn-tab:hover {
   background-color: var(--main-background-panels);
   cursor: pointer;
 }
+
 .btn-tab:active {
   color: var(--color-white);
   opacity: 0.5;
