@@ -32,7 +32,7 @@ class DefaultPropsService {
 
             case ItemType.COMMENT:
                 return [
-                    { id: Utils.getUUID(), name: 'Write your comment here', type: TypeValues.fullBigString, value: '', propertieType: PropertieTypes.comment },
+                    { id: Utils.getUUID(), name: 'Write your comment here', type: TypeValues.fullBigString, value: '', propertieType: PropertieTypes.comment, focusOnRender: true },
                 ];
 
             case ItemType.FOREACH:
