@@ -8,7 +8,7 @@ import { ProjectsStorage } from '../../shared/services/storage/ProjectsStorage';
 import { ProblemsHelper } from '../../shared/services/helpers/ProblemsHelper';
 import { ToolBar } from '../../shared/components/tool-bar/ToolBar';
 import { Project } from '../../shared/interfaces/Aplication';
-import { EditorTab } from './editor-tab/EditorTab';
+import { Playground } from './editor-tab/Playground';
 import './Editor.css';
 
 
@@ -16,7 +16,7 @@ export class Editor extends React.Component<any> {
     private params: any = this.props.match.params;
 
     public state: ICodeEditorContext = {
-        currentTab: <EditorTab />,
+        currentTab: <Playground />,
         project: ProjectsStorage.getProjectById(this.params.id),
         updateProjectState: (project: Project) => this.updateProjectState(project),
     }
@@ -33,12 +33,11 @@ export class Editor extends React.Component<any> {
         // WindowsTabsManager
         project = ProjectsStorage.updateWindowTabs(project);
 
-
         // Salva a nova versão do projeto no local storage
         ProjectsStorage.setProjectById(project);
 
         // Atualiza o state do projeto para refletir as alterações na tela
-        this.setState({ project: project });
+        this.setState({ project });
     }
 
     render() {

@@ -11,14 +11,14 @@ import { Tab } from "../../interfaces/Tabs";
 const newProject = (name: string, version: string, type: ProjectType, description: string) => new Project({
     currentComponentFocus: CurrentFocus.tree,
     projectConfigs: {
-        id: `${Utils.getUUID()}`,
-        type: type,
+        type,
+        version,
+        description,
         label: name,
-        version: version,
         currentProcess: '',
         createdDate: new Date(),
         updatedDate: new Date(),
-        description: description,
+        id: `${Utils.getUUID()}`,
         autor: ProjectsStorage.getAuthorName(),
         name: Utils.getNormalizedString(name.toLowerCase()),
         currentPlatformVersion: `${process.env.REACT_APP_VERSION}`,
@@ -80,7 +80,7 @@ export class ProjectsStorage {
         let projects: Project[];
         let res = localStorage.getItem(StorageEnum.projectsStorage);
 
-        if (res !== null && res !== "" && res !== undefined) {
+        if (res !== null && res !== "" && res) {
             projects = Project.stringToProjects(res);
             if (projects === []) {
                 ProjectsStorage.setProjects([]);
@@ -104,7 +104,7 @@ export class ProjectsStorage {
 
         let projects: Project[] = ProjectsStorage.getProjects();
 
-        let itemIndex = projects.findIndex(item_project => item_project.projectConfigs.id === project.projectConfigs.id);
+        let itemIndex = projects.findIndex(itemProject => itemProject.projectConfigs.id === project.projectConfigs.id);
 
         if (itemIndex > -1) {
             project.projectConfigs.updatedDate = new Date(Date.now());
@@ -120,7 +120,7 @@ export class ProjectsStorage {
 
         let project = projects.find(proj => proj.projectConfigs.id === id);
 
-        if (project === undefined) {
+        if (!project) {
             return new Project(newProject('', '', ProjectType.api, ''));
         } else {
             return new Project(project);
@@ -131,7 +131,7 @@ export class ProjectsStorage {
     public static removeProjectById(id?: string): Project[] {
 
         let projects = ProjectsStorage.getProjects();
-        if (!id) return projects;
+        if (!id) { return projects; }
 
         const itemIndex = projects.findIndex(project => project.projectConfigs.id === id);
 
@@ -190,7 +190,7 @@ export class ProjectsStorage {
     public static removeWindowById(project: Project, windowId: string): Project {
 
         const indexToRemove = project.openWindows.findIndex(windowTab => windowTab.id === windowId);
-        if (indexToRemove === -1) return project;
+        if (indexToRemove === -1) { return project; }
 
         project.openWindows.splice(indexToRemove, 1);
 
@@ -225,7 +225,7 @@ export class ProjectsStorage {
                 }
             });
 
-        }
+        };
 
         let indexToRemove = project.openWindows.findIndex(windowTab => !project.tabs.some(tab => tab.items.some(item => item.id === windowTab.id)));
         while (indexToRemove >= 0) {
@@ -245,7 +245,7 @@ export class ProjectsStorage {
                         hasWarning: item.items.some(itemFlow => itemFlow.hasWarning)
                     });
                 }
-            })
+            });
         });
 
         return project;

@@ -14,7 +14,7 @@
     --size-half-10: 10%;
 
     /* Dimensões em px */
-    --size-none: 0px;
+    --size-none: 0;
     --size-0-5: 2px;
     --size-0-75: 3px;
     --size-1: 4px;
@@ -39,22 +39,25 @@
     --size-20: 76px;
     --size-21: 80px;
     --size-22: 84px;
+
     /* ... */
     --size-35: 140px;
     --size-38: 152px;
+
     /* ... */
     --size-75: 300px;
+
     /* ... */
     --size-92-5: 370px;
+
     /* ... */
     --size-150: 600px;
+
     /* ... */
     --size-250: 1000px;
 
-
-
     /* Border-sizes ------------- */
-    --border-size-0: 0px;
+    --border-size-0: 0;
     --border-size-1: 1px;
 
     /************* Colors *************/
@@ -65,21 +68,17 @@
     --main-background-panels: #252527;
     --main-background-highlighted: #3c3c3c;
     --main-background-input-focus: #3c3c3c;
-
     --main-select-color: #1f724340;
     --main-editing-color: #1f724320;
-    --main-error-color: #ff0000;
+    --main-error-color: #f00;
     --main-warning-color: #b99803;
     --main-border-width: 2px;
-
     --main-grapper-size: var(--size-2);
-
-    --color-primary: #1C5334;
+    --color-primary: #1c5334;
     --color-transparent: transparent;
     --color-white: white;
     --color-gray-5: #e0e0e0;
     --color-black: black;
-    /* ---------------- */
 
     /* Bottom status bar */
     --color-botton-bar: #0f77bf;
@@ -103,7 +102,6 @@
     --size-x-scroll-bar-small: var(--size-1);
     --size-x-scroll-bar-hover: var(--size-2); /* Não funciona */
     --size-x-scroll-bar-active: var(--size-2); /* Não funciona */
-    /* ------------------------------------------------- */
 
     /* List item */
     --color-list-item-hover: #1f724340;
@@ -123,7 +121,7 @@
     --font-family-vs-code: "Droid Sans Mono", "monospace", monospace, "Droid Sans Fallback";
 
     /* Fonte colors */
-    --font-color-title: #333333;
+    --font-color-title: #333;
     --font-color-label-propertie-editor: #adadad;
     --font-color-input-propertie-editor: #d8d8d8;
     --font-color-input-propertie-editor-focus: #f3f3f3;
@@ -135,6 +133,8 @@
 
     /* Box shadows */
     --box-shadow-small: 4px -1px 5px 0.1px #191919;
+    --box-shadow-small-center: 0px 0px 5px 1px #191919;
+    --box-shadow-medium-center: 0px 0px 10px 4px #191919;
 
     /* Toolbar */
     --tool-bar-height: var(--size-10);
@@ -162,7 +162,6 @@
     --borda-size-4: 16px;
     --borda-size-5: 20px;
 
-
     /* Font-sizes */
     --font-size-1: 4px;
     --font-size-1-5: 6px;
@@ -177,22 +176,20 @@
     --font-size-9: 36px;
     --font-size-10: 40px;
     --font-size-17: 64px;
-
     --font-size-xs: var(--font-size-1);
     --font-size-s: var(--font-size-2);
     --font-size-sm: var(--font-size-3);
     --font-size-m: var(--font-size-4);
     --font-size-g: var(--font-size-6);
     --font-size-xg: var(--font-size-8);
-    /*-----------*/
 
     /** Sizes **/
+    --size-xxs: 1px;
     --size-xs: 4px;
     --size-s: 8px;
     --size-m: 16px;
     --size-g: 24px;
     --size-xg: 32px;
-    /*-----------*/
 
     /** Margins **/
     --margin-xs: var(--size-xs);
@@ -200,15 +197,14 @@
     --margin-m: var(--size-m);
     --margin-g: var(--size-g);
     --margin-xg: var(--size-xg);
-    /*-----------*/
 
     /** Paddings **/
+    --padding-xxs: var(--size-xxs);
     --padding-xs: var(--size-xs);
     --padding-s: var(--size-s);
     --padding-m: var(--size-m);
     --padding-g: var(--size-g);
     --padding-xg: var(--size-xg);
-    /*-----------*/
 
     /*** Input borders ***/
     --input-border-error: thin solid var(--main-error-color);

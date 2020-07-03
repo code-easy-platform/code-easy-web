@@ -13,7 +13,7 @@ export const ToolBar: React.FC = () => {
     const codeEditorContext = useContext(CodeEditorContext);
     const tabs: Tab[] = (codeEditorContext.project?.tabs || []);
 
-    const [isOpenModalProps, setIsOpenModalProps] = useState(false)
+    const [isOpenModalProps, setIsOpenModalProps] = useState(false);
 
     return (<>
         <div className="tool-bar background-bars">
@@ -78,10 +78,12 @@ export const ToolBar: React.FC = () => {
             initialHeight={500}
             title={"Properties"}
             isOpen={isOpenModalProps}
+            primaryButtomText={"Done"}
             children={<PropertiesTab />}
-            onSave={() => setIsOpenModalProps(false)}
-            onCancel={() => setIsOpenModalProps(false)}
+            secondaryButtomText={"Close"}
+            onClickPrimary={() => setIsOpenModalProps(false)}
+            onClickSecondary={() => setIsOpenModalProps(false)}
             onClose={(value) => { setIsOpenModalProps(false); return true; }}
         />
     </>);
-}
+};

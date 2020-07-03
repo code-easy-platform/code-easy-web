@@ -50,10 +50,12 @@ export class ContextModalList extends React.Component {
                     maxHeight={620}
                     key={modal.editingId}
                     title={modal.modalTitle}
+                    primaryButtomText={"Done"}
+                    secondaryButtomText={"Close"}
                     allowBackdropClick={modal.allowBackdropClick}
-                    onSave={e => this.removeModal(modal.editingId)}
-                    onCancel={e => this.removeModal(modal.editingId)}
                     closeWithBackdropClick={modal.closeWithBackdropClick}
+                    onClickPrimary={e => this.removeModal(modal.editingId)}
+                    onClickSecondary={e => this.removeModal(modal.editingId)}
                     onClose={value => { this.removeModal(modal.editingId); return value; }}
                 />
             );

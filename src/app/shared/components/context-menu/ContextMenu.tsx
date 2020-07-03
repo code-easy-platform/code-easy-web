@@ -1,8 +1,8 @@
 import React from 'react';
+import { Utils } from 'code-easy-components';
 
 import { ContextMenuService } from './ContextMenuService';
 import './ContextMenu.css';
-import { Utils } from 'code-easy-components';
 
 export interface IContextItemList {
     icon?: any;

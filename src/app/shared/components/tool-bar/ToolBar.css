@@ -9,18 +9,22 @@
   content: url(./../../../assets/icons/btn-menu-user.svg);
   padding: var(--size-0-75);
 }
+
 .btn-open-menu-tab {
   padding: 1px;
   content: url(./../../../assets/icons/btn-menu.svg);
 }
+
 .btn-open-editor-tab {
   padding: var(--size-0-75);
   content: url(./../../../assets/icons/btn-open-editor-tab.svg);
 }
+
 .btn-open-plugins-tab {
   padding: var(--size-0-75);
   content: url(./../../../assets/icons/btn-open-plugins-tab.svg);
 }
+
 .btn-open-properties-tab {
   padding: var(--size-0-75);
   content: url(./../../../assets/icons/btn-open-properties-tab.svg);

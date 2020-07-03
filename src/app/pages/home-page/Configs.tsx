@@ -25,10 +25,10 @@ export const IdeConfigs: React.FC<{ open: boolean, close(): void }> = ({ open, c
     return (
         <Modal
             onClose={() => { close(); return true }}
+            onClickSecondary={() => close()}
             allowBackdropClick={false}
-            onCancel={() => close()}
             title={"Configurações"}
-            onSave={save}
+            onClickPrimary={save}
             isOpen={open}
             children={<>
                 <div className="margin-top-s flex-column">

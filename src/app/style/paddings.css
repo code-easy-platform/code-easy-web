@@ -2,6 +2,10 @@
   padding: unset;
 }
 
+.padding-xxs {
+  padding: var(--padding-xxs);
+}
+
 .padding-xs {
   padding: var(--padding-xs);
 }
@@ -24,6 +28,10 @@
 
 .padding-top-none {
   padding-top: unset;
+}
+
+.padding-top-xxs {
+  padding-top: var(--padding-xxs);
 }
 
 .padding-top-xs {
@@ -50,6 +58,10 @@
   padding-left: unset;
 }
 
+.padding-left-xxs {
+  padding-left: var(--padding-xxs);
+}
+
 .padding-left-xs {
   padding-left: var(--padding-xs);
 }
@@ -74,6 +86,10 @@
   padding-right: unset;
 }
 
+.padding-right-xxs {
+  padding-right: var(--padding-xxs);
+}
+
 .padding-right-xs {
   padding-right: var(--padding-xs);
 }
@@ -95,7 +111,11 @@
 }
 
 .padding-bottom-none {
-  padding-bottom: 0px;
+  padding-bottom: 0;
+}
+
+.padding-bottom-xxs {
+  padding-bottom: var(--padding-xxs);
 }
 
 .padding-bottom-xs {
@@ -123,9 +143,14 @@
   padding-left: unset;
 }
 
+.padding-horizontal-xxs {
+  padding-right: var(--padding-xxs);
+  padding-left: var(--padding-xxs);
+}
+
 .padding-horizontal-xs {
-  padding-right: var(--padding-xs);
-  padding-left: var(--padding-xs);
+  padding-right: var(--padding-xxs);
+  padding-left: var(--padding-xxs);
 }
 
 .padding-horizontal-s {

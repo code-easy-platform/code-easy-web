@@ -5,7 +5,6 @@ import { ItemType } from "../../components/code-editor/shared/enums/ItemType";
 import { Project, IProjectConfigs } from "../../interfaces/Aplication";
 import { PropertieTypes } from "../../enuns/PropertieTypes";
 import { ComponentType } from "../../enuns/ComponentType";
-import { Tab } from "../../interfaces/Tabs";
 
 class ProblemsHelperService {
     private _problems: TreeInterface[] = [];
@@ -22,7 +21,7 @@ class ProblemsHelperService {
         project.tabs.forEach(tab => {
 
             // Valida alguns detalhes da tab
-            this._getTabsProblems(tab);
+            this._problems = [...this._problems, ...tab.getProblems()];
 
             // Valida os items da tab
             tab.items.forEach(treeItem => {
@@ -31,7 +30,6 @@ class ProblemsHelperService {
                 this._problems = [...this._problems, ...treeItem.getProblems()];
 
                 treeItem.items.forEach(flowItem => {
-                    flowItem.hasError = false;
 
                     // Valida os problemas presentes no flow item
                     this._problems = [...this._problems, ...flowItem.getProblems()];
@@ -41,12 +39,6 @@ class ProblemsHelperService {
 
                         flowItem.properties.forEach(prop => {
                             prop.valueHasError = false;
-
-                            // Valida se action está com o campo "action" vazio.
-                            if (prop.propertieType === PropertieTypes.action && prop.value === "") {
-                                this._addProblem(`In "${treeItem.label}" the flow item "${flowItem.name}" must have a valid value in the "${prop.name}" field.`, 'error');
-                                prop.valueHasError = true;
-                            }
 
                             if (prop.propertieType === PropertieTypes.action && prop.value !== "") {
 
@@ -145,14 +137,6 @@ class ProblemsHelperService {
             this._addProblem('Project Author name field cannot be less than 3 characters', 'warning');
         } else if (configs.autor.length > 50) {
             this._addProblem('Project Author name field cannot exceed 50 characters', 'warning');
-        }
-
-    }
-
-    private _getTabsProblems(tab: Tab) {
-
-        if (tab.items.length === 0 && tab.configs.type === ComponentType.tabRoutes) {
-            this._addProblem(`Add at least one route to your app`, 'error');
         }
 
     }

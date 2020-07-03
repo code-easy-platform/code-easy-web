@@ -10,7 +10,7 @@ import { PropertiesEditorController } from './PropertiesEditor.Controller';
 import { TreeManagerController } from './TreeManager.Controller';
 import { FlowEditorController } from './FlowEditor.Controller';
 
-export const EditorTab: React.FC = () => {
+export const Playground: React.FC = () => {
     return (
         <TwoColumnsResizable
             aligment={"right"}
@@ -23,10 +23,12 @@ export const EditorTab: React.FC = () => {
                     useMinMaxHeight={true}
                     minBottomHeight={"1%"}
                     bottom={
-                        <OutputPanel
-                            problems={ProblemsHelper.getProblems(useContext(CodeEditorContext).project).problems}
-                            output={OutputHelper.getOutput(useContext(CodeEditorContext).project)}
-                        />
+                        <div className="flex1 z1">
+                            <OutputPanel
+                                problems={ProblemsHelper.getProblems(useContext(CodeEditorContext).project).problems}
+                                output={OutputHelper.getOutput(useContext(CodeEditorContext).project)}
+                            />
+                        </div>
                     }
                 />
             }
@@ -41,4 +43,4 @@ export const EditorTab: React.FC = () => {
             }
         />
     );
-}
+};
