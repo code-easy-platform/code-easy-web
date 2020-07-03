@@ -23,10 +23,12 @@ export const Playground: React.FC = () => {
                     useMinMaxHeight={true}
                     minBottomHeight={"1%"}
                     bottom={
-                        <OutputPanel
-                            problems={ProblemsHelper.getProblems(useContext(CodeEditorContext).project).problems}
-                            output={OutputHelper.getOutput(useContext(CodeEditorContext).project)}
-                        />
+                        <div className="flex1 z1">
+                            <OutputPanel
+                                problems={ProblemsHelper.getProblems(useContext(CodeEditorContext).project).problems}
+                                output={OutputHelper.getOutput(useContext(CodeEditorContext).project)}
+                            />
+                        </div>
                     }
                 />
             }

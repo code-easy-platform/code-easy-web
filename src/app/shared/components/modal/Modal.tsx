@@ -4,13 +4,19 @@ import { IconClose, IconMaximize } from 'code-easy-components';
 import './Modal.css';
 
 interface ModalProps {
-    onCancel?(e: React.MouseEvent<HTMLButtonElement, MouseEvent>): void;
-    onSave?(e: React.MouseEvent<HTMLButtonElement, MouseEvent>): void;
+    onClickSecondary?(e: React.MouseEvent<HTMLButtonElement, MouseEvent>): void;
+    onClickPrimary?(e: React.MouseEvent<HTMLButtonElement, MouseEvent>): void;
     onMaximize?(value: boolean): boolean;
     onMinimize?(value: boolean): boolean;
     onClose?(value: boolean): boolean;
     closeWithBackdropClick?: boolean;
+    extraButtoms?: {
+        text: string;
+        onClick(e: React.MouseEvent<HTMLButtonElement, MouseEvent>): void;
+    }[];
     allowBackdropClick?: boolean;
+    secondaryButtomText?: string;
+    primaryButtomText?: string;
     initialHeight?: number;
     initialWidth?: number;
     maxHeight?: number;
@@ -18,7 +24,7 @@ interface ModalProps {
     isOpen: boolean;
     title?: string;
 }
-export const Modal: React.FC<ModalProps> = ({ children, maxWidth = 800, maxHeight = 700, title = '', initialHeight = 400, initialWidth = 600, onMaximize, onMinimize, onClose, isOpen, onCancel, onSave, allowBackdropClick = true, closeWithBackdropClick = false }) => {
+export const Modal: React.FC<ModalProps> = ({ children, extraButtoms = [], primaryButtomText, secondaryButtomText, maxWidth = 800, maxHeight = 700, title = '', initialHeight = 400, initialWidth = 600, onMaximize, onMinimize, onClose, isOpen, onClickPrimary, onClickSecondary, allowBackdropClick = true, closeWithBackdropClick = false }) => {
 
     const [clickedPosition, setClickedPosition] = useState({ clickedTop: 0, clickedLeft: 0 });
 
@@ -212,10 +218,10 @@ export const Modal: React.FC<ModalProps> = ({ children, maxWidth = 800, maxHeigh
                 <div className="flex1 flex-items-center padding-horizontal-s opacity-9">{title}</div>
                 <div>
                     <button onClick={toggleMaximize} onMouseDown={e => e.stopPropagation()} className="btn border-radius-soft outline-none modal-btn">
-                        <img height={30} width={30} src={IconMaximize} alt="Toggle maximize modal" />
+                        <img height={30} width={30} src={IconMaximize} alt="Toggle maximize modal" draggable={false} />
                     </button>
                     <button onClick={close} onMouseDown={e => e.stopPropagation()} className="btn border-radius-soft outline-none modal-btn" title="Close(Esc)">
-                        <img height={30} width={30} src={IconClose} alt="Close modal" />
+                        <img height={30} width={30} src={IconClose} alt="Close modal" draggable={false} />
                     </button>
                 </div>
             </div>
@@ -225,8 +231,9 @@ export const Modal: React.FC<ModalProps> = ({ children, maxWidth = 800, maxHeigh
             </div>
 
             <div className={`modal-top-footer padding-top-xs flex-row modal-top-footer`}>
-                <button onClick={onCancel} className="btn padding-s padding-left-m padding-right-m margin-right-s outline-none border-radius-soft">Cancel</button>
-                <button onClick={onSave} style={{ backgroundColor: 'var(--color-primary)' }} className="btn padding-s padding-left-m padding-right-m outline-none border-radius-soft">Save</button>
+                {extraButtoms.map(btn => <button onClick={btn.onClick} children={btn.text || "Cancel"} className="btn padding-s padding-left-m padding-right-m margin-right-s outline-none border-radius-soft" />)}
+                <button onClick={onClickSecondary} className="btn padding-s padding-left-m padding-right-m margin-right-s outline-none border-radius-soft">{secondaryButtomText || "Cancel"}</button>
+                <button onClick={onClickPrimary} style={{ backgroundColor: 'var(--color-primary)' }} className="btn padding-s padding-left-m padding-right-m outline-none border-radius-soft">{primaryButtomText || "Save"}</button>
             </div>
 
         </div>

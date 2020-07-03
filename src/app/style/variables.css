@@ -80,8 +80,6 @@
     --color-gray-5: #e0e0e0;
     --color-black: black;
 
-    /* ---------------- */
-
     /* Bottom status bar */
     --color-botton-bar: #0f77bf;
 
@@ -135,6 +133,8 @@
 
     /* Box shadows */
     --box-shadow-small: 4px -1px 5px 0.1px #191919;
+    --box-shadow-small-center: 0px 0px 5px 1px #191919;
+    --box-shadow-medium-center: 0px 0px 10px 4px #191919;
 
     /* Toolbar */
     --tool-bar-height: var(--size-10);
@@ -184,6 +184,7 @@
     --font-size-xg: var(--font-size-8);
 
     /** Sizes **/
+    --size-xxs: 1px;
     --size-xs: 4px;
     --size-s: 8px;
     --size-m: 16px;
@@ -198,6 +199,7 @@
     --margin-xg: var(--size-xg);
 
     /** Paddings **/
+    --padding-xxs: var(--size-xxs);
     --padding-xs: var(--size-xs);
     --padding-s: var(--size-s);
     --padding-m: var(--size-m);

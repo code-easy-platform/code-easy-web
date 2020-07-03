@@ -68,11 +68,13 @@ export const ImportProjects = ({ open, close }: { open: boolean, close: Function
     return (
         <Modal
             key="ImportAFile"
-            onSave={importProjects}
-            onCancel={() => close()}
             allowBackdropClick={false}
             isOpen={openImportProjects}
+            primaryButtomText={"Import"}
+            secondaryButtomText={"Close"}
             title={"Import your projects"}
+            onClickPrimary={importProjects}
+            onClickSecondary={() => close()}
             onClose={() => { close(); return true }}
             children={<div className="flex-column">
                 <input type="file" accept=".json" onChange={onChangeFile} />
