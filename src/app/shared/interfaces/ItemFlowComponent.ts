@@ -361,9 +361,9 @@ export class ItemFlowComplete implements IItemFlowComplete {
     private _propertiesFromComment() {
         const propLabel = this.properties.find(prop => prop.propertieType === PropertieTypes.label);
         const propComment = this.properties.find(prop => prop.propertieType === PropertieTypes.comment);
-        this.name = propComment?.value || this.itemType.toString();
+        this.name = propComment?.value || 'Write here your comment';
         if (propLabel) {
-            propLabel.value = propComment?.value || this.itemType.toString();
+            propLabel.value = propComment?.value || 'Write here your comment';
         }
     }
 

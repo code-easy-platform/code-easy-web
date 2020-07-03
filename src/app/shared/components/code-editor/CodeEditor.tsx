@@ -39,6 +39,34 @@ let backupFlow: string = "";
 /** Editor do fluxo. */
 const CodeEditor: React.FC<ICodeEditorProps> = ({ id, items = [], disableOpacity = 0.3, emptyMessage, snapGridWhileDragging = true, toolItems = [], onChangeItems = () => { }, onMouseOver, backgroundType, showToolbar = false, onDropItem = () => undefined, allowedsInDrop = [], onContextMenu, onKeyDown, breadcrumbs, enabledSelection = true }) => {
 
+    items.forEach(item => {
+        if (item.itemType !== ItemType.COMMENT) return;
+
+        const getSizeByText = (text: string) => {
+            var span = document.createElement("span");
+            document.body.appendChild(span);
+            span.style.whiteSpace = 'pre-line';
+            span.style.position = 'absolute';
+            span.style.textAlign = 'start';
+            span.style.fontSize = 'small';
+            span.style.height = 'auto';
+            span.style.width = 'auto';
+            span.innerText = text;
+            var formattedWidth = Math.ceil(span.clientWidth);
+            var formattedHeight = Math.ceil(span.clientHeight);
+            document.body.removeChild(span);
+            return {
+                width:  formattedWidth < 100 ? 100 : formattedWidth,
+                height: formattedHeight < 70 ? 70 : formattedHeight,
+            };
+        };
+
+        const sizes = getSizeByText(item.name);
+        item.height = sizes.height;
+        item.width = sizes.width;
+
+    });
+
     /** Referencia o svg onde está todos os items de fluxo. */
     const editorPanelRef = useRef<any>(null);
     const inputCopyRef = useRef<any>(null);
@@ -499,6 +527,7 @@ const CodeEditor: React.FC<ICodeEditorProps> = ({ id, items = [], disableOpacity
                             setFlowItems({ list: flowItems.list });
                         }}
                     />
+
                 </EditorPanel>
             </main>
         </div>
