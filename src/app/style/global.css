@@ -310,6 +310,10 @@ input[type="checkbox"]:checked {
   height: calc(var(--size-xg) * 3);
 }
 
+.no-draggable {
+  -webkit-user-drag: none;
+}
+
 .width-auto {
   width: auto;
 }

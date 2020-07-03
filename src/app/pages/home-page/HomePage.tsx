@@ -1,12 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { useHistory } from 'react-router-dom';
 import { Utils, IconOpenGithub, IconDownload, IconImport, IconConfig } from 'code-easy-components';
+import { useHistory } from 'react-router-dom';
 import dataformat from 'dateformat';
 
 import { BottonStatusBar } from '../../shared/components/botton-status-bar/BottonStatusBar';
 import { ProjectsStorage } from '../../shared/services/storage/ProjectsStorage';
 import { TabButton } from '../../shared/components/tab-button/TabButton';
-import { Button } from '../../shared/components/buttons/Button';
 import { Project } from '../../shared/interfaces/Aplication';
 import { ProjectType } from '../../shared/enuns/ProjectType';
 import { ImportProjects } from './ImportFiles';
@@ -47,9 +46,8 @@ export const HomePage = () => {
                     <TabButton
                         id="tabMenu"
                         title="Menu"
-                        to="/projects"
                         style={{ outline: 'none' }}
-                        className=" btn btn-open-menu-tab"
+                        className={" btn btn-open-menu-tab"}
                     />
                     <hr className="hr hr-vertical" />
                 </div>
@@ -60,30 +58,35 @@ export const HomePage = () => {
                 <div className="background-panels flex-column" style={{ width: 350 }}>
                     <div className="flex-space-between">
                         <div>
-                            <Button
-                                icon={IconConfig}
-                                onClick={e => setOpenConfig(true)}
-                                style={{ height: 'var(--tool-bar-height)', padding: '10px' }}
+                            <button
+                                title={"Configurations"}
+                                className="btn outline-none padding-s"
+                                onClick={() => setOpenConfig(true)}
+                                style={{ height: 'var(--tool-bar-height)' }}
+                                children={<img src={IconConfig} className="full-height" alt={IconConfig} draggable="false" />}
                             />
                         </div>
                         <div>
-                            <Button
-                                icon={IconImport}
-                                title={"Import a list of projects from your files"}
-                                style={{ height: 'var(--tool-bar-height)', padding: '10px' }}
+                            <button
+                                className="btn outline-none padding-s"
                                 onClick={() => setOpenImportProjects(true)}
+                                style={{ height: 'var(--tool-bar-height)' }}
+                                title={"Import a list of projects from your files"}
+                                children={<img src={IconImport} className="full-height" alt={IconOpenGithub} draggable="false" />}
                             />
-                            <Button
-                                icon={IconDownload}
+                            <button
+                                className="btn outline-none padding-s"
                                 title={"Download your projects"}
-                                style={{ height: 'var(--tool-bar-height)', padding: '10px' }}
+                                style={{ height: 'var(--tool-bar-height)' }}
+                                children={<img src={IconDownload} className="full-height" alt={IconOpenGithub} draggable="false" />}
                                 onClick={() => Utils.downloadFile('MyProjects', 'json', Project.projectsToString(projects))}
                             />
-                            <Button
-                                title="Open on github"
-                                icon={IconOpenGithub}
-                                style={{ height: 'var(--tool-bar-height)', padding: '10px' }}
+                            <button
+                                title={"Open on github"}
+                                className="btn outline-none padding-s"
+                                style={{ height: 'var(--tool-bar-height)' }}
                                 onClick={() => window.open('https://github.com/code-easy-platform')}
+                                children={<img src={IconOpenGithub} className="full-height" alt={IconOpenGithub} draggable="false" />}
                             />
                         </div>
                     </div>
