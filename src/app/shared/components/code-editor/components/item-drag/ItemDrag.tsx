@@ -4,6 +4,7 @@ import { useDrag } from 'react-dnd';
 
 import { ItemType } from '../../shared/enums/ItemType';
 import { FlowComponent } from './FlowComponent';
+import { FlowComment } from './FlowComment';
 
 /** Usado para definir o tipo de input de parâmetros no item drag. */
 export interface IItemDragProps {
@@ -34,12 +35,12 @@ export interface IItemDragProps {
     onChangePosition?(top: number, left: number, itemId: string | undefined, e?: React.MouseEvent<SVGGElement, MouseEvent>): void;
 }
 /** Usado para representar os items de lógica no fluxo do editor e na toolbar. */
-export const ItemToDrag: React.FC<IItemDragProps> = memo(({ title, ...props }: IItemDragProps) => {
+export const ItemToDrag: React.FC<IItemDragProps> = memo(({ title, width = 0, height = 0, ...props }: IItemDragProps) => {
 
     const {
         isSelected, isDisabled, onContextMenu, hasError, onMouseUp, id,
-        onChangePosition, onMouseDown, onMouseOver, width = 0, disableOpacity,
-        height = 0, top = 0, left = 0, allowDrag, itemType, icon, hasWarning = false,
+        onChangePosition, onMouseDown, onMouseOver, disableOpacity,
+        top = 0, left = 0, allowDrag, itemType, icon, hasWarning = false,
     } = props;
 
     /** Permite que uym elemento seja arrastado e adicionado dentro do editor de fluxo. */
@@ -139,8 +140,13 @@ export const ItemToDrag: React.FC<IItemDragProps> = memo(({ title, ...props }: I
         />;
     } else {
 
-        // Ajusta o tamanho do titulo para não ficar muito grande
-        title = title.length < 10 ? title : title.slice(0, 15);
+        // Pega o tamanho do width e height pelo exto que está no sendo renderizado.
+        if (itemType !== ItemType.COMMENT) {
+
+            // Ajusta o tamanho do titulo para não ficar muito grande
+            title = title.length < 10 ? title : title.slice(0, 15);
+
+        }
 
         /** Reinderiza um tipo de tag svg na tela, somente dentro do editor de fluxo. */
         return (
@@ -163,18 +169,19 @@ export const ItemToDrag: React.FC<IItemDragProps> = memo(({ title, ...props }: I
                         id={id}
                     >{title}</text>
                 }
-                <FlowComponent
-                    id={id}
-                    top={top}
-                    left={left}
-                    width={width}
-                    height={height}
-                    hasError={hasError}
-                    hasWarning={hasWarning}
-                    isDisabled={isDisabled}
-                    isSelected={isSelected}
-                    icon={icon || getIcon(itemType)}
-                />
+                {itemType === ItemType.COMMENT
+                    ? <FlowComment id={id} isSelected={isSelected} left={left} top={top} name={title} height={height} width={width} />
+                    : <FlowComponent
+                        id={id}
+                        top={top}
+                        left={left}
+                        width={width}
+                        height={height}
+                        hasError={hasError}
+                        hasWarning={hasWarning}
+                        isSelected={isSelected}
+                        icon={icon || getIcon(itemType)}
+                    />}
             </g>
         );
     }

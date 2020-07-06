@@ -112,7 +112,7 @@ export class ItemFlowComplete implements IItemFlowComplete {
             addProblem(`A suitable name for a stream item must be longer than 3 characters in "${this.name}"`, 'warning');
             this.properties.filter(prop => prop.propertieType === PropertieTypes.label).forEach(prop => { prop.valueHasWarning = true; prop.valueHasError = false });
             this.hasWarning = true;
-        } else if (this.name.length > 20) {
+        } else if (this.name.length > 20 && this.itemType !== ItemType.COMMENT) {
             addProblem(`A suitable name for a stream item must be less than 20 characters in "${this.name}"`, 'warning');
             this.properties.filter(prop => prop.propertieType === PropertieTypes.label).forEach(prop => { prop.valueHasWarning = true; prop.valueHasError = false });
             this.hasWarning = true;
@@ -135,7 +135,6 @@ export class ItemFlowComplete implements IItemFlowComplete {
                         addProblem(`In ${this.name} the value "${prop.value}" is not being assigned to any variable or parameter`, 'error');
                         prop.nameHasError = true;
                     }
-
                 });
                 break;
 
@@ -218,12 +217,18 @@ export class ItemFlowComplete implements IItemFlowComplete {
     }
 
     private _updateProperties(properties: IProperties[], type: ItemType) {
+
+        // Remove o auto focus caso exista em algum componente
+        this.properties.forEach(prop => prop.focusOnRender = false);
+
         const originalProperties = DefaultPropsHelper.getNewProps(type, this.name);
 
         originalProperties.forEach(originalProp => {
+
             if (!properties.some(prop => prop.propertieType === originalProp.propertieType)) {
                 properties.push(originalProp);
             }
+
         });
 
         /** Define o nome da label encontrado nas properties do componente */
@@ -252,6 +257,10 @@ export class ItemFlowComplete implements IItemFlowComplete {
 
             case ItemType.FOREACH:
                 this._propertiesFromForeach();
+                break;
+
+            case ItemType.COMMENT:
+                this._propertiesFromComment();
                 break;
 
             default:
@@ -347,6 +356,15 @@ export class ItemFlowComplete implements IItemFlowComplete {
             indexToRemove = this.properties.findIndex(prop => (prop.propertieType === PropertieTypes.condition && !this.connections.some(connection => connection.id === prop.id)));
         }
 
+    }
+
+    private _propertiesFromComment() {
+        const propLabel = this.properties.find(prop => prop.propertieType === PropertieTypes.label);
+        const propComment = this.properties.find(prop => prop.propertieType === PropertieTypes.comment);
+        this.name = propComment?.value || 'Write here your comment';
+        if (propLabel) {
+            propLabel.value = propComment?.value || 'Write here your comment';
+        }
     }
 
 }

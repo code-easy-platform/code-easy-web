@@ -13,21 +13,18 @@ interface ILineProps {
     isCurved?: boolean;
     lineWidth?: number;
     isDisabled?: boolean;
-    connectionIndex?: number;
+    newArrowWidth?: number;
     disableOpacity: number;
+    newArrowHeight?: number;
+    connectionIndex?: number;
     lineType?: 'dotted' | 'normal';
     lineOnMouseDown?(e: React.MouseEvent<SVGPathElement, MouseEvent>): void;
     onChangeConnections?(itemId: string | undefined, connectionId: string): void;
 }
 
-export const Line: React.FC<ILineProps> = memo(({ id, onChangeConnections, top1 = 0, left1 = 0, left2 = 0, top2 = 0, ...props }) => {
+export const Line: React.FC<ILineProps> = memo(({ id, newArrowHeight = 0, newArrowWidth = 0, onChangeConnections, top1 = 0, left1 = 0, left2 = 0, top2 = 0, ...props }) => {
 
     const { isCurved = false, lineText = "", disableOpacity, isDisabled = false, lineOnMouseDown, lineWidth = 1, color = "var(--main-background-highlighted)", connectionIndex, lineType = 'normal' } = props;
-
-    if (connectionIndex === undefined) {
-        top2 = top1 + 85;
-        left2 = left1;
-    }
 
     const [basicPosition, setBasicPosition] = useState({
         top1: top1,
@@ -115,6 +112,19 @@ export const Line: React.FC<ILineProps> = memo(({ id, onChangeConnections, top1 
                 style={{ transform: `rotate(${basicPosition.rotate}deg)`, transformOrigin: `${basicPosition.left1}px ${basicPosition.top1}px` }}
                 d={`M${basicPosition.left1} ${basicPosition.top1 + 30} Q${basicPosition.left1 - (isCurved ? 50 : 0)} ${basicPosition.top1 + (basicPosition.lineDistance / 2)} ${basicPosition.left1} ${basicPosition.top1 + basicPosition.lineDistance}`}
             />
+            {connectionIndex === undefined &&
+                <rect
+                    style={{ cursor: 'crosshair', zIndex: 2 }}
+                    strokeWidth={"var(--main-border-width)"}
+                    x={left1 - (newArrowWidth / 2)}
+                    y={top1 - (newArrowHeight / 2)}
+                    onMouseDown={onMouseDown}
+                    height={newArrowHeight}
+                    width={newArrowWidth}
+                    fill={"transparent"}
+                    id={id}
+                />
+            }
             <path
                 id={"path_" + id}
                 key={"path_" + id}
@@ -130,6 +140,7 @@ export const Line: React.FC<ILineProps> = memo(({ id, onChangeConnections, top1 
                     transformOrigin: `${basicPosition.left2}px ${basicPosition.top2}px`,
                 }}
             />
+
         </g>
     );
 })
