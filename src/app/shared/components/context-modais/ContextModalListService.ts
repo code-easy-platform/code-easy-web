@@ -1,17 +1,13 @@
 import { Subject } from 'rxjs';
 
-interface IContextModalList {
+export interface IContextOpenedModal {
     editingId: string;
-    modalTitle: string;
-    contextPath: string[];
-    allowBackdropClick?: boolean;
-    closeWithBackdropClick?: boolean;
 }
-const subject = new Subject<IContextModalList>();
+const subject = new Subject<IContextOpenedModal>();
 export const ContextModalListService = {
     clearMessages: () => subject.next(),
     getMessage: () => subject.asObservable(),
-    showModal: (editingId: string, modalTitle: string, contextPath: string[], allowBackdropClick?: boolean, closeWithBackdropClick?: boolean) => {
-        subject.next({ editingId, modalTitle, contextPath, allowBackdropClick, closeWithBackdropClick });
+    showModal: (modal: IContextOpenedModal) => {
+        subject.next({ editingId: modal.editingId });
     }
 }

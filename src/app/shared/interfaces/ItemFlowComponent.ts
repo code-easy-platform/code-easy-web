@@ -1,4 +1,5 @@
 import { IFlowItem, ICoords, IConnections } from "../components/code-editor/shared/Interfaces";
+import { ContextModalListService } from "../components/context-modais/ContextModalListService";
 import { IProperties, TypeValues } from "../components/properties-editor/shared/interfaces";
 import { TreeInterface } from '../components/tree-manager/shared/models/TreeInterface';
 import { DefaultPropsHelper } from '../services/helpers/DefaultPropsHelper';
@@ -221,6 +222,9 @@ export class ItemFlowComplete implements IItemFlowComplete {
         // Remove o auto focus caso exista em algum componente
         this.properties.forEach(prop => prop.focusOnRender = false);
 
+        // Define a função que abre a modal para edição
+        this.properties.forEach(prop => prop.openEditor = () => { prop.id && ContextModalListService.showModal({ editingId: prop.id }); });
+
         const originalProperties = DefaultPropsHelper.getNewProps(type, this.name);
 
         originalProperties.forEach(originalProp => {
@@ -279,13 +283,14 @@ export class ItemFlowComplete implements IItemFlowComplete {
         /** Essa sequência de código garante que sempre terá apenas um assigment vazio disponível */
         const emptyAssigments = this.properties.filter(prop => (prop.name === '' && prop.value === ''));
         if (emptyAssigments.length === 0) {
+            const newId = Utils.getUUID();
 
             // Está adicionando items nos assigments
             this.properties.push({
                 name: '',
+                id: newId,
                 value: '',
                 group: 'Assigments',
-                id: Utils.getUUID(),
                 type: TypeValues.assign,
                 propertieType: PropertieTypes.assigns,
             });

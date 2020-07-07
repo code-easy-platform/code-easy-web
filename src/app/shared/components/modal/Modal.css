@@ -4,6 +4,10 @@
     position: fixed;
     z-index: 2;
 }
+.base-modal:focus {
+    outline: none;
+    z-index: 3;
+}
 
 .modal-top-bar {
     justify-content: flex-end;

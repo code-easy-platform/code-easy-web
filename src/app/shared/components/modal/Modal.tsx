@@ -102,6 +102,7 @@ export const Modal: React.FC<ModalProps> = ({ children, extraButtoms = [], prima
             },
             mouseUp: () => {
                 setClickedPosition({ clickedLeft: 0, clickedTop: 0 });
+                window.document.body.style.cursor = 'unset';
                 window.onmousemove = null;
                 window.onmouseup = null;
             },
@@ -120,12 +121,14 @@ export const Modal: React.FC<ModalProps> = ({ children, extraButtoms = [], prima
                 setWidth(newWidth);
             },
             mouseUp: () => {
+                window.document.body.style.cursor = 'unset';
                 window.onmousemove = null;
                 window.onmouseup = null;
             },
             mouseDown: () => {
                 window.onmousemove = risizers.resizeRight.mouseMove;
                 window.onmouseup = risizers.resizeRight.mouseUp;
+                window.document.body.style.cursor = 'e-resize';
             }
         },
         resizeLeft: {
@@ -138,11 +141,13 @@ export const Modal: React.FC<ModalProps> = ({ children, extraButtoms = [], prima
                 setWidth(newWidth);
             },
             mouseUp: () => {
+                window.document.body.style.cursor = 'unset';
                 window.onmousemove = null;
                 window.onmouseup = null;
             },
             mouseDown: () => {
                 window.onmousemove = risizers.resizeLeft.mouseMove;
+                window.document.body.style.cursor = 'e-resize';
                 window.onmouseup = risizers.resizeLeft.mouseUp;
             }
         },
@@ -152,12 +157,14 @@ export const Modal: React.FC<ModalProps> = ({ children, extraButtoms = [], prima
                 setHeight(newHeight);
             },
             mouseUp: () => {
+                window.document.body.style.cursor = 'unset';
                 window.onmousemove = null;
                 window.onmouseup = null;
             },
             mouseDown: () => {
                 window.onmousemove = risizers.resizeBottom.mouseMove;
                 window.onmouseup = risizers.resizeBottom.mouseUp;
+                window.document.body.style.cursor = 'n-resize';
             }
         },
         resizeTop: {
@@ -170,11 +177,13 @@ export const Modal: React.FC<ModalProps> = ({ children, extraButtoms = [], prima
                 setHeight(newHeight);
             },
             mouseUp: () => {
+                window.document.body.style.cursor = 'unset';
                 window.onmousemove = null;
                 window.onmouseup = null;
             },
             mouseDown: () => {
                 window.onmousemove = risizers.resizeTop.mouseMove;
+                window.document.body.style.cursor = 'n-resize';
                 window.onmouseup = risizers.resizeTop.mouseUp;
             }
         }
@@ -187,7 +196,7 @@ export const Modal: React.FC<ModalProps> = ({ children, extraButtoms = [], prima
             <div
                 tabIndex={0}
                 onKeyDown={keyDown}
-                style={{ backgroundColor: '#ffffff10' }}
+                style={{ backgroundColor: '#ffffff10', zIndex: 1 }}
                 className={"fade-in full-height full-width absolute"}
                 onClick={() => closeWithBackdropClick ? close() : undefined}
             />
@@ -210,6 +219,7 @@ export const Modal: React.FC<ModalProps> = ({ children, extraButtoms = [], prima
 
                 transitionDuration: maximized ? '.1s' : undefined,
             }}
+            tabIndex={0}
             onMouseDown={risizers.initialize}
             onMouseMove={risizers.cursorChange}
             className={`base-modal padding-xs background-bars box-shadow-small flex-column${maximized ? ' full-width full-height' : ''}`}

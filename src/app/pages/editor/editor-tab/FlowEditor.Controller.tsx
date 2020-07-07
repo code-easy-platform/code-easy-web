@@ -7,7 +7,7 @@ import { ItemType } from '../../../shared/components/code-editor/shared/enums/It
 import { CodeEditorContext } from '../../../shared/services/contexts/CodeEditorContext';
 import { IContextItemList } from '../../../shared/components/context-menu/ContextMenu';
 import { IdeConfigStorage } from '../../../shared/services/storage/IdeConfigStorage';
-import { FlowItem } from '../../../shared/components/code-editor/models/ItemFluxo';
+import { FlowItem } from '../../../shared/components/code-editor/models/FlowItem';
 import { ItemFlowComplete } from '../../../shared/interfaces/ItemFlowComponent';
 import { FlowEditor } from '../../../shared/components/code-editor/CodeEditor';
 import { ItemComponent } from '../../../shared/interfaces/ItemTreeComponent';
