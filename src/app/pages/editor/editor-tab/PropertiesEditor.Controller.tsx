@@ -2,6 +2,7 @@ import React, { useContext } from 'react';
 import { Utils } from 'code-easy-components';
 
 import { IItem, IProperties, TypeValues } from '../../../shared/components/properties-editor/shared/interfaces';
+import { ContextModalListService } from '../../../shared/components/context-modais/ContextModalListService';
 import { PropertiesEditor } from '../../../shared/components/properties-editor/PropertiesEditor';
 import { ItemType } from '../../../shared/components/code-editor/shared/enums/ItemType';
 import { CodeEditorContext } from '../../../shared/services/contexts/CodeEditorContext';
@@ -11,7 +12,6 @@ import { PropertieTypes } from '../../../shared/enuns/PropertieTypes';
 import { ComponentType } from '../../../shared/enuns/ComponentType';
 import { CurrentFocus } from '../../../shared/enuns/CurrentFocus';
 import { Tab } from '../../../shared/interfaces/Tabs';
-import { ContextModalListService } from '../../../shared/components/context-modais/ContextModalListService';
 
 export const PropertiesEditorController: React.FC = () => {
 
@@ -157,7 +157,7 @@ export const PropertiesEditorController: React.FC = () => {
                     subname: res.type,
                     properties: res.properties.map(prop => {
                         if (prop.id && prop.name) {
-                            prop.openEditor = () => ContextModalListService.showModal(prop.id || '', `${prop.name} in ${res.label}`, []);
+                            prop.openEditor = () => ContextModalListService.showModal({ editingId: prop.id || '' });
                         }
                         return prop;
                     })
@@ -240,7 +240,7 @@ export const PropertiesEditorController: React.FC = () => {
                                             information: param.description !== '' ? param.description : undefined,
                                             openEditor: () => {
                                                 if (param.id)
-                                                    ContextModalListService.showModal(param.id, param.label, []);
+                                                    ContextModalListService.showModal({ editingId: param.id });
                                             },
                                             suggestions: paramsSuggestion.map(suggest => {
                                                 return {
@@ -267,7 +267,7 @@ export const PropertiesEditorController: React.FC = () => {
                 // Mapea os items para modal
                 filteredItem.properties.map(prop => {
                     if (prop.id && prop.name) {
-                        prop.openEditor = () => ContextModalListService.showModal(prop.id || '', `${prop.name} in ${filteredItem.name}`, [])
+                        prop.openEditor = () => ContextModalListService.showModal({ editingId: prop.id || '' });
                     };
                     return prop;
                 });

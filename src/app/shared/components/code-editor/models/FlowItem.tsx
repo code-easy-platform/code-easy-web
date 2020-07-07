@@ -1,7 +1,6 @@
 import { IConnections, ICoords, IFlowItem } from "../shared/Interfaces";
 import { ItemType } from "../shared/enums/ItemType";
 
-
 /** Elemento que é reinderizado na para cada item de fluxo. */
 export class FlowItem implements IFlowItem {
 
@@ -55,17 +54,41 @@ export class FlowItem implements IFlowItem {
     public select = (coords: ICoords) => {
         const top2 = this.top + this.height;
         const left2 = this.left + this.width;
+
+        const yGreaterThan0 = ((coords.endY - coords.startY) > 0);
+        const xGreaterThan0 = ((coords.endX - coords.startX) > 0);
+
+        const lessThan0Selected = (_param1: number, _param2: number, _coordStart: number, _coordEnd: number) => {
+            return (
+                (
+                    (_param1 <= _coordStart) || (_param2 <= _coordStart)
+                ) && (
+                    (_param1 >= _coordEnd) || (_param2 >= _coordEnd)
+                )
+            );
+        }
+
+        const greaterThan0Selected = (_param1: number, _param2: number, _coordStart: number, _coordEnd: number) => {
+            return (
+                (
+                    (_param1 >= _coordStart) || (_param2 >= _coordStart)
+                ) && (
+                    (_param1 <= _coordEnd) || (_param2 <= _coordEnd)
+                )
+            );
+        }
+
         this.isSelected = (
             (
-                ((coords.endY - coords.startY) > 0)
-                    ? ((this.top >= coords.startY) || (top2 >= coords.startY)) && ((this.top <= coords.endY) || (top2 <= coords.endY))
-                    : ((this.top <= coords.startY) || (top2 <= coords.startY)) && ((this.top >= coords.endY) || (top2 >= coords.endY))
+                yGreaterThan0
+                    ? greaterThan0Selected(this.top, top2, coords.startY, coords.endY)
+                    : lessThan0Selected(this.top, top2, coords.startY, coords.endY)
             )
             &&
             (
-                ((coords.endX - coords.startX) > 0)
-                    ? ((this.left >= coords.startX) || (left2 >= coords.startX)) && ((this.left <= coords.endX) || (left2 <= coords.endX))
-                    : ((this.left <= coords.startX) || (left2 <= coords.startX)) && ((this.left >= coords.endX) || (left2 >= coords.endX))
+                xGreaterThan0
+                    ? greaterThan0Selected(this.left, left2, coords.startX, coords.endX)
+                    : lessThan0Selected(this.left, left2, coords.startX, coords.endX)
             )
         );
     };

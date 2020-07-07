@@ -1,7 +1,7 @@
 import React, { memo } from 'react';
 
 import { ItemType } from '../../shared/enums/ItemType';
-import { FlowItem } from '../../models/ItemFluxo';
+import { FlowItem } from '../../models/FlowItem';
 import { Line } from './Line';
 
 interface ILinesProps {

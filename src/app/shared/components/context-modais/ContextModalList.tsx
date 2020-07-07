@@ -1,16 +1,11 @@
 import React from 'react';
 
-import { ContextModalListService } from './ContextModalListService';
-import { Modal } from '../modal/Modal';
+import { ContextModalListService, IContextOpenedModal } from './ContextModalListService';
+import { CodeEditorContext } from '../../services/contexts/CodeEditorContext';
+import { EditableContent } from '../editable-content/EditableContent';
 import './ContextModalList.css';
 
-export interface IContextOpenedModal {
-    editingId: string;
-    modalTitle: string;
-    contextPath: string[];
-    allowBackdropClick?: boolean;
-    closeWithBackdropClick?: boolean;
-}
+
 interface ContextModalListState {
     modalList: IContextOpenedModal[]
 }
@@ -41,24 +36,6 @@ export class ContextModalList extends React.Component {
         }
     }
 
-    render = () => (<>
-        {this.state.modalList.map(modal => {
-            return (
-                <Modal
-                    isOpen={true}
-                    maxWidth={820}
-                    maxHeight={620}
-                    key={modal.editingId}
-                    title={modal.modalTitle}
-                    primaryButtomText={"Done"}
-                    secondaryButtomText={"Close"}
-                    allowBackdropClick={modal.allowBackdropClick}
-                    closeWithBackdropClick={modal.closeWithBackdropClick}
-                    onClickPrimary={e => this.removeModal(modal.editingId)}
-                    onClickSecondary={e => this.removeModal(modal.editingId)}
-                    onClose={value => { this.removeModal(modal.editingId); return value; }}
-                />
-            );
-        })}
-    </>);
-}
+    render = () => this.state.modalList.map(modal => <EditableContent key={modal.editingId} itemId={modal.editingId} removeModal={() => this.removeModal(modal.editingId)} />)
+};
+ContextModalList.contextType = CodeEditorContext;
