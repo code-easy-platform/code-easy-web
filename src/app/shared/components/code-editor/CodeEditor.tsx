@@ -13,7 +13,7 @@ import { Toolbar } from './components/tool-bar/ToolBar';
 import { Utils as InternalUtils } from './shared/Utils';
 import { ItemType } from './shared/enums/ItemType';
 import { Lines } from './components/lines/Lines';
-import { FlowItem } from './models/ItemFluxo';
+import { FlowItem } from './models/FlowItem';
 
 
 /**
@@ -56,7 +56,7 @@ const CodeEditor: React.FC<ICodeEditorProps> = ({ id, items = [], disableOpacity
             var formattedHeight = Math.ceil(span.clientHeight);
             document.body.removeChild(span);
             return {
-                width:  formattedWidth < 100 ? 100 : formattedWidth,
+                width: formattedWidth < 100 ? 100 : formattedWidth,
                 height: formattedHeight < 70 ? 70 : formattedHeight,
             };
         };
@@ -449,8 +449,12 @@ const CodeEditor: React.FC<ICodeEditorProps> = ({ id, items = [], disableOpacity
     }, [flowItems.list, onChangeFlow]);
 
     /** Para inputs que estão no meio do fluxo */
-    const itemNameChange = useCallback((text: string, index: number) => {
-        flowItems.list[index].name = text;
+    const itemNameChange = useCallback((text: string, itemId?: string) => {
+        const item = flowItems.list.find(flowItems => flowItems.id === itemId)
+        if (item) {
+            item.name = text;
+        }
+
         setFlowItems({ list: flowItems.list });
         onChangeFlow();
     }, [flowItems.list, onChangeFlow]);
@@ -503,10 +507,10 @@ const CodeEditor: React.FC<ICodeEditorProps> = ({ id, items = [], disableOpacity
                     })}
 
                     {/* Reinderiza os items arrastáveis na tela! */}
-                    {flowItems.list.map((item: FlowItem, index) => (
+                    {flowItems.list.map(item => (
                         <ItemToDrag
                             onContextMenu={(data, e) => { e?.stopPropagation(); (onContextMenu && enabledSelection) && onContextMenu(data, e) }}
-                            onNameChange={text => itemNameChange(text, index)}
+                            onNameChange={text => itemNameChange(text, item.id)}
                             onChangePosition={onChangePositionItems}
                             parentElementRef={editorPanelRef}
                             onMouseUp={() => onChangeFlow()}
@@ -518,15 +522,38 @@ const CodeEditor: React.FC<ICodeEditorProps> = ({ id, items = [], disableOpacity
                         />
                     ))}
 
-                    {/* Reinderiza a área de seleção na tela. */}
+                    {/* Render the selection area in the screen. */}
                     <SelectorArea
                         parentRef={editorPanelRef}
-                        enabled={enabledSelection}
+                        onSelectionEnd={onChangeFlow}
+                        isDisabled={!enabledSelection}
                         onCoordsChange={coords => {
-                            flowItems.list.forEach((item: FlowItem) => item.select(coords));
-                            setFlowItems({ list: flowItems.list });
+                            let hasChange = false;
+
+                            flowItems.list.forEach((item: FlowItem) => {
+                                const olsIsSelected = item.isSelected;
+                                item.select(coords);
+
+                                // Valida se houve mudanças nos items
+                                if (item.isSelected !== olsIsSelected) {
+                                    hasChange = true;
+                                }
+                            });
+
+                            // Atualiza o state apenas se houve mudanças
+                            if (hasChange) {
+                                setFlowItems({ list: flowItems.list });
+                            }
                         }}
                     />
+
+                    {(!enabledSelection && flowItems.list.length === 0)
+                        && <foreignObject width={"100%"} height={"100%"}>
+                            <div className="full-height full-width flex-items-center flex-content-center opacity-5">
+                                <header>{emptyMessage || "Double-click on an item in the tree to edit it"}</header>
+                            </div>
+                        </foreignObject>
+                    }
 
                 </EditorPanel>
             </main>

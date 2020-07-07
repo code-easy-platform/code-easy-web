@@ -33,7 +33,7 @@ export const Line: React.FC<ILineProps> = memo(({ id, newArrowHeight = 0, newArr
         left2: left2,
         isLeftToRight: (left2 >= left1),
         rotate: Utils.getAngle(left2, top2, left1, top1),
-        lineDistance: (Math.hypot((top2 - top1), (left2 - left1)) - 40),
+        lineDistance: Math.hypot((top2 - top1), (left2 - left1)) - 40,
     });
     useEffect(() => {
         setBasicPosition({
@@ -43,7 +43,7 @@ export const Line: React.FC<ILineProps> = memo(({ id, newArrowHeight = 0, newArr
             left2: left2,
             isLeftToRight: (left2 >= left1),
             rotate: Utils.getAngle(left2, top2, left1, top1),
-            lineDistance: (Math.hypot((top2 - top1), (left2 - left1)) - 40),
+            lineDistance: Math.hypot((top2 - top1), (left2 - left1)) - 40,
         });
     }, [left1, left2, top1, top2]);
 
@@ -140,7 +140,6 @@ export const Line: React.FC<ILineProps> = memo(({ id, newArrowHeight = 0, newArr
                     transformOrigin: `${basicPosition.left2}px ${basicPosition.top2}px`,
                 }}
             />
-
         </g>
     );
 })

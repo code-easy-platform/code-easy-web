@@ -1,4 +1,4 @@
-import { FlowItem } from "../../models/ItemFluxo";
+import { FlowItem } from "../../models/FlowItem";
 import { IBreadCampButton } from './BreadCampButton';
 
 /** Propriedades aceitas pelo editor. */
