@@ -56,4 +56,4 @@ If you need help with Code easy platform, feel free to open an issue with a desc
 
 ## License
 
-MIT © [Lucas Souza](https://lucasdevargassouza.com.br)
+APACHE 2 © [Lucas Souza](https://lucasdevargassouza.com.br)
