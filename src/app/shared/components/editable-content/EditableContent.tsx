@@ -1,14 +1,14 @@
 import React from 'react';
 
-import { CodeEditorContext } from '../../services/contexts/CodeEditorContext';
 import MonacoEditor from 'react-monaco-editor';
 import { Modal } from '../modal/Modal';
+import { useCodeEditorContext } from '../../services/contexts/CodeEditorContext';
 
 export const EditableContent: React.FC<{ itemId: string, removeModal: Function }> = ({ itemId, removeModal }) => {
-    const context = React.useContext(CodeEditorContext);
+    const { project, updateProjectState } = useCodeEditorContext();
     let selectedItem: any;
 
-    context.project.tabs.forEach(tab => {
+    project.tabs.forEach(tab => {
         tab.items.forEach(treeItem => {
 
             if (treeItem.id === itemId) {
@@ -59,7 +59,7 @@ export const EditableContent: React.FC<{ itemId: string, removeModal: Function }
                     autoClosingQuotes: "always",
                     tabCompletion: "on",
                     dragAndDrop: true,
-                    links:true,
+                    links: true,
                     mouseWheelZoom: true,
                     suggest: {
                         showFunctions: true
@@ -68,7 +68,7 @@ export const EditableContent: React.FC<{ itemId: string, removeModal: Function }
                 theme={"vs-dark"}
                 language="typescript"
                 value={selectedItem?.value}
-                onChange={value => { selectedItem.value = value; context.updateProjectState(context.project) }}
+                onChange={value => { selectedItem.value = value; updateProjectState(project) }}
             />
         </Modal>
     );

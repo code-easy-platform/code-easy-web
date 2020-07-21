@@ -1,10 +1,10 @@
-import React, { useContext } from 'react';
+import React from 'react';
 import { IconTrash, Utils } from 'code-easy-components';
 
 import { TreeInterface } from '../../../shared/components/tree-manager/shared/models/TreeInterface';
 import { ContextMenuService } from '../../../shared/components/context-menu/ContextMenuService';
+import { useCodeEditorContext } from '../../../shared/services/contexts/CodeEditorContext';
 import { ItemType } from '../../../shared/components/code-editor/shared/enums/ItemType';
-import { CodeEditorContext } from '../../../shared/services/contexts/CodeEditorContext';
 import { IContextItemList } from '../../../shared/components/context-menu/ContextMenu';
 import { TreeManager } from '../../../shared/components/tree-manager/TreeManager';
 import { ItemFlowComplete } from '../../../shared/interfaces/ItemFlowComponent';
@@ -17,14 +17,14 @@ import { Tab } from '../../../shared/interfaces/Tabs';
 
 export const TreeManagerController: React.FC = () => {
 
-    const editorContext = useContext(CodeEditorContext);
+    const { project, updateProjectState } = useCodeEditorContext();
 
 
     /** Atualiza o contexto do projeto */
-    const onChangeState = () => editorContext.updateProjectState(editorContext.project);
+    const onChangeState = () => updateProjectState(project);
 
     /** Atualiza o foco do editor de propriedades */
-    const changeFocus = () => editorContext.project.currentComponentFocus = CurrentFocus.tree;
+    const changeFocus = () => project.currentComponentFocus = CurrentFocus.tree;
 
 
     /** Quando um item da árvore for clicado, está função será chamada */
@@ -32,7 +32,7 @@ export const TreeManagerController: React.FC = () => {
 
         changeFocus();
 
-        editorContext.project.tabs.forEach((tab: Tab) => {
+        project.tabs.forEach((tab: Tab) => {
             tab.items.forEach(item_loop => {
                 if (item_loop.id === itemTreeId) {
                     item_loop.isSelected = true;
@@ -58,7 +58,7 @@ export const TreeManagerController: React.FC = () => {
         let indexItemToRemove: number | any;
 
         // Pega a lista de items corrente na árvore
-        editorContext.project.tabs.forEach((tab: Tab, indexTab) => {
+        project.tabs.forEach((tab: Tab, indexTab) => {
             tab.items.forEach((item, index) => {
                 if (item.id === inputItemId) {
                     indexTabToRemove = indexTab;
@@ -70,15 +70,15 @@ export const TreeManagerController: React.FC = () => {
         if (indexItemToRemove !== undefined && indexItemToRemove !== undefined) {
 
             // Remove o item e retorna ele mesmo para que possa ser removido os seus dependentes
-            const deletedItem = editorContext.project.tabs[indexTabToRemove].items.splice(indexItemToRemove, 1)[0];
+            const deletedItem = project.tabs[indexTabToRemove].items.splice(indexItemToRemove, 1)[0];
 
             // Busca para o caso de ter um dependente
-            let indexToRemove = editorContext.project.tabs[indexTabToRemove].items.findIndex(item => item.itemPaiId === deletedItem.id);
+            let indexToRemove = project.tabs[indexTabToRemove].items.findIndex(item => item.itemPaiId === deletedItem.id);
             while (indexToRemove > -1) {
                 //Remove o item dependente
-                editorContext.project.tabs[indexTabToRemove].items.splice(indexToRemove, 1);
+                project.tabs[indexTabToRemove].items.splice(indexToRemove, 1);
                 //Busca para o caso de ter outro item dependente
-                indexToRemove = editorContext.project.tabs[indexTabToRemove].items.findIndex(item => item.itemPaiId === deletedItem.id);
+                indexToRemove = project.tabs[indexTabToRemove].items.findIndex(item => item.itemPaiId === deletedItem.id);
             }
         }
 
@@ -88,7 +88,7 @@ export const TreeManagerController: React.FC = () => {
     const treeManagerOnKeyDowm = (e: React.FocusEvent<HTMLDivElement> | any) => {
         if (e.key === 'Delete') {
             let items: ItemComponent[] = [];
-            editorContext.project.tabs.forEach((tab: Tab) => {
+            project.tabs.forEach((tab: Tab) => {
                 if (tab.configs.isEditing) {
                     items = tab.items;
                 }
@@ -107,7 +107,7 @@ export const TreeManagerController: React.FC = () => {
 
         changeFocus();
 
-        editorContext.project.tabs.forEach((tab: Tab) => {
+        project.tabs.forEach((tab: Tab) => {
             tab.items.forEach(item_loop => {
                 if (item_loop.id === itemTreeId) {
                     item_loop.nodeExpanded = !item_loop.nodeExpanded;
@@ -130,7 +130,7 @@ export const TreeManagerController: React.FC = () => {
 
         // Pega a lista de items corrente na árvore
         let items: ItemComponent[] = [];
-        editorContext.project.tabs.forEach((tab: Tab) => {
+        project.tabs.forEach((tab: Tab) => {
             if (tab.configs.isEditing) {
                 items = tab.items;
             }
@@ -152,7 +152,7 @@ export const TreeManagerController: React.FC = () => {
     /** Quando houver um duplo clique em um item da árvore, está função será chamada */
     const treeManagerOnDoubleClick = (itemTreeId: string, item: TreeInterface) => {
 
-        editorContext.project.tabs.forEach((tab: Tab) => {
+        project.tabs.forEach((tab: Tab) => {
             tab.items.forEach(item => {
 
                 /** Valida para que seja editado somente se for actions ou rotas expostas */
@@ -181,7 +181,7 @@ export const TreeManagerController: React.FC = () => {
 
         const addParam = (inputItemId: string | undefined, paramType: ComponentType.inputVariable | ComponentType.localVariable | ComponentType.outputVariable) => {
             let tabIndex: number | undefined;
-            editorContext.project.tabs.forEach((tab: Tab, indexTab) => {
+            project.tabs.forEach((tab: Tab, indexTab) => {
                 tab.items.forEach(item => {
                     if (item.id === inputItemId) {
                         tabIndex = indexTab;
@@ -190,9 +190,9 @@ export const TreeManagerController: React.FC = () => {
             });
 
             if (tabIndex !== undefined) {
-                const newName = Utils.newName('NewParam', editorContext.project.tabs[tabIndex].items.map(item => item.label));
+                const newName = Utils.newName('NewParam', project.tabs[tabIndex].items.map(item => item.label));
 
-                editorContext.project.tabs[tabIndex].items.push(new ItemComponent({
+                project.tabs[tabIndex].items.push(new ItemComponent({
                     items: [],
                     name: newName,
                     label: newName,
@@ -212,7 +212,7 @@ export const TreeManagerController: React.FC = () => {
         const addRoute = (inputItemId: string | undefined, routerType: ComponentType.routerConsume | ComponentType.routerExpose) => {
             if (inputItemId === undefined) {
                 let tabIndex: number | undefined;
-                editorContext.project.tabs.forEach((tab: Tab, indexTab) => {
+                project.tabs.forEach((tab: Tab, indexTab) => {
                     if (tab.configs.isEditing) {
                         tabIndex = indexTab;
                     }
@@ -226,9 +226,9 @@ export const TreeManagerController: React.FC = () => {
                 });
 
                 if (tabIndex !== undefined) {
-                    const newName = Utils.newName('NewRouter', editorContext.project.tabs[tabIndex].items.map(item => item.label));
+                    const newName = Utils.newName('NewRouter', project.tabs[tabIndex].items.map(item => item.label));
 
-                    editorContext.project.tabs[tabIndex].items.push(new ItemComponent({
+                    project.tabs[tabIndex].items.push(new ItemComponent({
                         items: (
                             routerType === ComponentType.routerExpose
                                 ? [
@@ -254,7 +254,7 @@ export const TreeManagerController: React.FC = () => {
         const addAction = (inputItemId: string | undefined) => {
             if (inputItemId === undefined) {
                 let tabIndex: number | undefined;
-                editorContext.project.tabs.forEach((tab: Tab, indexTab) => {
+                project.tabs.forEach((tab: Tab, indexTab) => {
                     if (tab.configs.isEditing) {
                         tabIndex = indexTab;
                     }
@@ -266,9 +266,9 @@ export const TreeManagerController: React.FC = () => {
                 });
 
                 if (tabIndex !== undefined) {
-                    const newName = Utils.newName('NewAction', editorContext.project.tabs[tabIndex].items.map(item => item.label));
+                    const newName = Utils.newName('NewAction', project.tabs[tabIndex].items.map(item => item.label));
 
-                    editorContext.project.tabs[tabIndex].items.push(new ItemComponent({
+                    project.tabs[tabIndex].items.push(new ItemComponent({
                         id: Utils.getUUID(),
                         label: newName,
                         description: '',
@@ -287,7 +287,7 @@ export const TreeManagerController: React.FC = () => {
             onChangeState()
         }
 
-        editorContext.project.tabs.forEach((tab: Tab) => {
+        project.tabs.forEach((tab: Tab) => {
             if (tab.configs.isEditing) {
                 if (tab.configs.type === ComponentType.tabRoutes) {
 
@@ -443,7 +443,7 @@ export const TreeManagerController: React.FC = () => {
     const treeManagerItems = (() => {
 
         let items: ItemComponent[] = [];
-        editorContext.project.tabs.forEach((tab: Tab) => {
+        project.tabs.forEach((tab: Tab) => {
             if (tab.configs.isEditing) {
                 items = tab.items;
             }
@@ -535,7 +535,7 @@ export const TreeManagerController: React.FC = () => {
                 isDisabledSelect: true,
                 type: ComponentType.grouper,
                 icon: AssetsService.getIcon(ComponentType.grouper),
-                label: editorContext.project.tabs.find(item => item.configs.isEditing)?.configs.label || '',
+                label: project.tabs.find(item => item.configs.isEditing)?.configs.label || '',
             }
         ];
 

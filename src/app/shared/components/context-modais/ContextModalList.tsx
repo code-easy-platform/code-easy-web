@@ -1,7 +1,6 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 
 import { ContextModalListService, IContextOpenedModal } from './ContextModalListService';
-import { CodeEditorContext } from '../../services/contexts/CodeEditorContext';
 import { EditableContent } from '../editable-content/EditableContent';
 import './ContextModalList.css';
 
@@ -9,33 +8,34 @@ import './ContextModalList.css';
 interface ContextModalListState {
     modalList: IContextOpenedModal[]
 }
-export class ContextModalList extends React.Component {
-    private modaisSubscrition: any;
+export const ContextModalList = () => {
+    // let modaisSubscrition: any;
 
-    state: ContextModalListState = {
+    const [state, setState] = useState<ContextModalListState>({
         modalList: []
-    }
+    });
 
-    componentDidMount() {
-        this.modaisSubscrition = ContextModalListService.getMessage().subscribe(data => {
-            if (this.state.modalList.some(modal => modal.editingId === data.editingId)) {
+    useEffect(() => {
+        /* modaisSubscrition =  */ContextModalListService.getMessage().subscribe(data => {
+        if (state.modalList.some(modal => modal.editingId === data.editingId)) {
 
-            } else {
-                this.state.modalList.push(data);
-            }
-            this.setState(this.state);
-        });
-    }
+        } else {
+            state.modalList.push(data);
+        }
+        setState(state);
+    });
+    }, [state]);
 
-    componentWillUnmount = () => this.modaisSubscrition.unsubscribe();
+    // componentWillUnmount = () => this.modaisSubscrition.unsubscribe();
 
-    removeModal(editingId: string) {
-        const indexToRemove = this.state.modalList.findIndex(modal => modal.editingId === editingId);
+    const removeModal = (editingId: string) => {
+        const indexToRemove = state.modalList.findIndex(modal => modal.editingId === editingId);
         if (indexToRemove >= 0) {
-            this.state.modalList.splice(indexToRemove, 1);
+            state.modalList.splice(indexToRemove, 1);
         }
     }
 
-    render = () => this.state.modalList.map(modal => <EditableContent key={modal.editingId} itemId={modal.editingId} removeModal={() => this.removeModal(modal.editingId)} />)
+    return (<>
+        {state.modalList.map(modal => <EditableContent key={modal.editingId} itemId={modal.editingId} removeModal={() => removeModal(modal.editingId)} />)}
+    </>)
 };
-ContextModalList.contextType = CodeEditorContext;

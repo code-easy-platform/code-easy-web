@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback, memo } from 'react';
 import { Utils, IconOpenGithub, IconDownload, IconImport, IconConfig } from 'code-easy-components';
 import { useHistory } from 'react-router-dom';
 import dataformat from 'dateformat';
@@ -13,7 +13,7 @@ import { IdeConfigs } from './Configs';
 import { CardItem } from './CardItem';
 
 
-export const HomePage = () => {
+export const HomePage = memo(() => {
 
     const [projects, setProjects] = useState<Project[]>(ProjectsStorage.getProjects() || []);
     const [openImportProjects, setOpenImportProjects] = useState(false);
@@ -24,11 +24,11 @@ export const HomePage = () => {
 
     useEffect(() => {
         ProjectsStorage.setProjects(projects);
+        document.title = "Projects - Code easy";
     }, [projects]);
 
-    document.title = "Projects - Code easy";
 
-    const addNewProject = (item: any) => {
+    const addNewProject = useCallback((item: any) => {
         setIsAdding(false);
 
         projects.push(ProjectsStorage.getNewProject(item.name, item.version, item.type, item.description));
@@ -37,7 +37,7 @@ export const HomePage = () => {
 
         setProjects(projects);
         ProjectsStorage.setProjects(projects);
-    }
+    }, [projects]);
 
     return (
         <div className="main-page fade-in">
@@ -176,4 +176,4 @@ export const HomePage = () => {
                 }}
             />
         </div>);
-}
+});

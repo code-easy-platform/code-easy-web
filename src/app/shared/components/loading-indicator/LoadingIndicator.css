@@ -1,11 +1,8 @@
 .loader {
     -webkit-animation: spin 0.3s linear infinite; /* Safari */
     animation: spin 0.3s linear infinite;
-    border: 2px solid #f3f3f3;
-    border-top-color: #3498db;
+    border: 2px solid transparent;
     border-radius: 50%;
-    height: 12px;
-    width: 12px;
 }
 
 /* Safari */
