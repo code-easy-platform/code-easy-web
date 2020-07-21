@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { memo } from 'react';
 
 interface FlowCommentProp {
     id: string | undefined;
@@ -9,10 +9,8 @@ interface FlowCommentProp {
     left: number;
     top: number;
 }
-export const FlowComment: React.FC<FlowCommentProp> = ({ id, isSelected, left, top, name, width, height }) => {
-
+export const FlowComment: React.FC<FlowCommentProp> = memo(({ id, isSelected, left, top, name, width, height }) => {
     const strokeColor: string = isSelected ? "var(--color-botton-bar)" : "#383321";
-
     return (
         <foreignObject
             id={id}
@@ -20,16 +18,19 @@ export const FlowComment: React.FC<FlowCommentProp> = ({ id, isSelected, left, t
             x={left}
             width={width}
             height={height}
-            style={{ cursor: 'move', zIndex: 2 }}
+            style={{
+                zIndex: 2,
+                cursor: 'move',
+            }}
         >
             <div
                 children={name}
-                className="padding-xs"
+                className={"padding-xs"}
                 style={{
                     border: `var(--main-border-width) solid ${strokeColor}`,
-                    backgroundColor: '#374e36',
                     height: '-webkit-fill-available',
                     width: '-webkit-fill-available',
+                    backgroundColor: '#374e36',
                     whiteSpace: 'pre-line',
                     pointerEvents: 'none',
                     textAlign: 'start',
@@ -39,4 +40,4 @@ export const FlowComment: React.FC<FlowCommentProp> = ({ id, isSelected, left, t
             />
         </foreignObject>
     );
-}
+});

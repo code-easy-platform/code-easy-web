@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { memo } from 'react';
 
 interface FlowComponentProps {
     hasWarning?: boolean;
@@ -13,7 +13,7 @@ interface FlowComponentProps {
     icon: any;
     ref?: any;
 }
-export const FlowComponent: React.FC<FlowComponentProps> = ({ id, isSelected, width, height, left, top, icon, hasError = false, hasWarning = false, ref }) => {
+export const FlowComponent: React.FC<FlowComponentProps> = memo(({ id, isSelected, width, height, left, top, icon, hasError = false, hasWarning = false, ref }) => {
 
     const strokeColor: string = isSelected
         ? "var(--color-botton-bar)"
@@ -26,8 +26,8 @@ export const FlowComponent: React.FC<FlowComponentProps> = ({ id, isSelected, wi
     return (
         <>
             <rect
+                strokeWidth={"var(--main-border-width)"}
                 style={{ cursor: 'move', zIndex: 2 }}
-                strokeWidth="var(--main-border-width)"
                 fill="var(--main-background)"
                 strokeLinejoin="round"
                 height={height}
@@ -39,7 +39,7 @@ export const FlowComponent: React.FC<FlowComponentProps> = ({ id, isSelected, wi
                 id={id}
             />
             <rect
-                strokeWidth="var(--main-border-width)"
+                strokeWidth={"var(--main-border-width)"}
                 style={{ pointerEvents: 'none' }}
                 strokeLinejoin="round"
                 stroke={strokeColor}
@@ -52,7 +52,10 @@ export const FlowComponent: React.FC<FlowComponentProps> = ({ id, isSelected, wi
                 id={id}
             />
             <image
-                style={{ pointerEvents: 'none', filter: 'gray' }}
+                style={{
+                    filter: 'gray',
+                    pointerEvents: 'none',
+                }}
                 stroke={strokeColor}
                 xlinkHref={icon}
                 height={height}
@@ -62,4 +65,4 @@ export const FlowComponent: React.FC<FlowComponentProps> = ({ id, isSelected, wi
             />
         </>
     );
-}
+});

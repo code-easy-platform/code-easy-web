@@ -1,4 +1,4 @@
-import React, { useState, useRef, FC, useEffect, useCallback } from 'react';
+import React, { useState, useRef, FC, useEffect, useCallback, memo } from 'react';
 import { DropTargetMonitor, DndProvider } from 'react-dnd';
 import HTML5Backend from 'react-dnd-html5-backend';
 import { Utils } from 'code-easy-components';
@@ -25,19 +25,47 @@ import { FlowItem } from './models/FlowItem';
  * @param onDropItem Function - Usada para emitir através do output o item que foi dropado no fluxo.
  * @param isShowToolbar boolean - Usado para exibir ou não a toolbox cons items de lógica.
  */
-export const FlowEditor: FC<ICodeEditorProps> = (props: ICodeEditorProps) => {
+export const FlowEditor: FC<ICodeEditorProps> = memo((props: ICodeEditorProps) => {
     return (
         <DndProvider backend={HTML5Backend}>
             <CodeEditor {...props} />
         </DndProvider>
     );
-}
+});
 
 /** Usada para validar houve mudanças no estados dos items e impedir a realização outputs desnecessários. */
 let backupFlow: string = "";
 
 /** Editor do fluxo. */
-const CodeEditor: React.FC<ICodeEditorProps> = ({ id, items = [], disableOpacity = 0.3, emptyMessage, snapGridWhileDragging = true, toolItems = [], onChangeItems = () => { }, onMouseOver, backgroundType, showToolbar = false, onDropItem = () => undefined, allowedsInDrop = [], onContextMenu, onKeyDown, breadcrumbs, enabledSelection = true }) => {
+const CodeEditor: React.FC<ICodeEditorProps> = memo(({ id, items = [], disableOpacity = 0.3, emptyMessage, snapGridWhileDragging = true, toolItems = [], onChangeItems = () => { }, onMouseOver, backgroundType, showToolbar = false, onDropItem = () => undefined, allowedsInDrop = [], onContextMenu, onKeyDown, breadcrumbs, enabledSelection = true }) => {
+
+    items.forEach(item => {
+        if (item.itemType !== ItemType.COMMENT) return;
+
+        const getSizeByText = (text: string) => {
+            var span = document.createElement("span");
+            document.body.appendChild(span);
+            span.style.whiteSpace = 'pre-line';
+            span.style.position = 'absolute';
+            span.style.textAlign = 'start';
+            span.style.fontSize = 'small';
+            span.style.height = 'auto';
+            span.style.width = 'auto';
+            span.innerText = text;
+            var formattedWidth = Math.ceil(span.clientWidth);
+            var formattedHeight = Math.ceil(span.clientHeight);
+            document.body.removeChild(span);
+            return {
+                width: formattedWidth < 100 ? 100 : formattedWidth,
+                height: formattedHeight < 70 ? 70 : formattedHeight,
+            };
+        };
+
+        const sizes = getSizeByText(item.name);
+        item.height = sizes.height;
+        item.width = sizes.width;
+
+    });
 
     /** Referencia o svg onde está todos os items de fluxo. */
     const editorPanelRef = useRef<any>(null);
@@ -45,38 +73,7 @@ const CodeEditor: React.FC<ICodeEditorProps> = ({ id, items = [], disableOpacity
 
     /** Controla o estado do editor inteiro. */
     const [flowItems, setFlowItems] = useState<{ list: FlowItem[] }>({ list: [] });
-    useEffect(() => {
-
-        items.forEach(item => {
-            if (item.itemType !== ItemType.COMMENT) return;
-
-            const getSizeByText = (text: string) => {
-                var span = document.createElement("span");
-                document.body.appendChild(span);
-                span.style.whiteSpace = 'pre-line';
-                span.style.position = 'absolute';
-                span.style.textAlign = 'start';
-                span.style.fontSize = 'small';
-                span.style.height = 'auto';
-                span.style.width = 'auto';
-                span.innerText = text;
-                var formattedWidth = Math.ceil(span.clientWidth);
-                var formattedHeight = Math.ceil(span.clientHeight);
-                document.body.removeChild(span);
-                return {
-                    width: formattedWidth < 100 ? 100 : formattedWidth,
-                    height: formattedHeight < 70 ? 70 : formattedHeight,
-                };
-            };
-
-            const sizes = getSizeByText(item.name);
-            item.height = sizes.height;
-            item.width = sizes.width;
-
-        });
-
-        setFlowItems({ list: items })
-    }, [items]);
+    useEffect(() => setFlowItems({ list: items }), [items]);
 
     const [svgSize, setSvgSize] = useState({ svgHeight: 0, svgWidth: 0 });
     useEffect(() => {
@@ -84,7 +81,7 @@ const CodeEditor: React.FC<ICodeEditorProps> = ({ id, items = [], disableOpacity
             svgHeight: flowItems.list.length > 0 ? flowItems.list.sort((a, b) => b.top - a.top)[0].top + 300 : 0,
             svgWidth: flowItems.list.length > 0 ? flowItems.list.sort((a, b) => b.left - a.left)[0].left + 200 : 0,
         });
-    }, [flowItems.list]);
+    }, [flowItems]);
 
     /** Usada para emitir os items para fora do componente. */
     const onChangeFlow = useCallback(() => {
@@ -563,4 +560,4 @@ const CodeEditor: React.FC<ICodeEditorProps> = ({ id, items = [], disableOpacity
         </div>
     );
 
-}
+});

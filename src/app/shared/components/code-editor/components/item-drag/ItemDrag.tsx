@@ -185,5 +185,4 @@ export const ItemToDrag: React.FC<IItemDragProps> = memo(({ title, width = 0, he
             </g>
         );
     }
-
-})
+});

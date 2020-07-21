@@ -1,12 +1,11 @@
-import React from 'react';
+import React, { memo } from 'react';
 
 import { IFlowItem } from '../../shared/Interfaces';
 import { ItemToDrag } from '../item-drag/ItemDrag';
 import { FlowItem } from '../../models/FlowItem';
 import './Toolbar.css';
 
-export const Toolbar = ({ itemsLogica, isShow }: { itemsLogica: FlowItem[], isShow: boolean }) => {
-
+export const Toolbar: React.FC<{ itemsLogica: FlowItem[], isShow: boolean }> = memo(({ itemsLogica, isShow }) => {
     return (
         isShow
             ? <div className="mini-scroll-bar toolbar">
@@ -23,5 +22,4 @@ export const Toolbar = ({ itemsLogica, isShow }: { itemsLogica: FlowItem[], isSh
             </div>
             : <></>
     );
-
-}
+});

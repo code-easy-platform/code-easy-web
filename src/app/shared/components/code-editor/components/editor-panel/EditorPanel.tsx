@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { memo } from 'react';
 import { useDrop, DropTargetMonitor } from 'react-dnd';
 
 import { ItemType } from '../../shared/enums/ItemType';
@@ -19,7 +19,7 @@ type EditorPanelProps = Omit<{
  * @param onDropItem - **Function** - Função executada quando um elemento for dropado no painel
  * @param backgroundType - **'dotted'** | **'checkered'** | **'custom'** - Parâmetro que controla o estilo do background do painel
  */
-export const EditorPanel = React.forwardRef(({ allowedsInDrop, onDropItem, onChangeZoom, backgroundType = 'dotted', ...props }: EditorPanelProps, ref: any) => {
+export const EditorPanel = memo(React.forwardRef(({ allowedsInDrop, onDropItem, onChangeZoom, backgroundType = 'dotted', ...props }: EditorPanelProps, ref: any) => {
 
     const [zoom, setZoom] = React.useState(1);
     const wheel = (e: React.WheelEvent<SVGSVGElement>) => {
@@ -72,4 +72,4 @@ export const EditorPanel = React.forwardRef(({ allowedsInDrop, onDropItem, onCha
         />
     );
 
-});
+}));
