@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { memo } from 'react';
 
 import './Button.css';
 
@@ -6,7 +6,7 @@ interface ButtonProps extends React.DetailedHTMLProps<React.ButtonHTMLAttributes
     icon?: string;
     size?: 'xs' | 's' | 'm' | 'g' | 'xg'
 }
-export const Button = (props: ButtonProps) => {
+export const Button = memo((props: ButtonProps) => {
 
     return (
         <button {...props} className={`btn outline-none btn-${props.size || 'm'}`}>
@@ -14,4 +14,4 @@ export const Button = (props: ButtonProps) => {
             {props.children}
         </button>
     );
-}
+});

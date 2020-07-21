@@ -1,19 +1,18 @@
-import React, { useContext, useState } from 'react';
+import React, { useState, memo } from 'react';
 
 import { PropertiesTab } from '../../../pages/editor/properties-tab/PropertiesTab';
-import { CodeEditorContext } from '../../services/contexts/CodeEditorContext';
 import { ProjectsStorage } from '../../services/storage/ProjectsStorage';
 import { TabButton, TabGroup } from '../tab-button/TabButton';
 import { TabsManager } from '../tab-manager/TabsManager';
 import { Tab } from '../../interfaces/Tabs';
 import { Modal } from '../modal/Modal';
 import './ToolBar.css';
+import { useCodeEditorContext } from '../../services/contexts/CodeEditorContext';
 
-export const ToolBar: React.FC = () => {
-    const codeEditorContext = useContext(CodeEditorContext);
-    const tabs: Tab[] = (codeEditorContext.project?.tabs || []);
-
+export const ToolBar: React.FC = memo(() => {
     const [isOpenModalProps, setIsOpenModalProps] = useState(false);
+    const { project, updateProjectState } = useCodeEditorContext();
+    const tabs: Tab[] = (project?.tabs || []);
 
     return (<>
         <div className="tool-bar background-bars">
@@ -34,15 +33,15 @@ export const ToolBar: React.FC = () => {
             </div>
             <hr className="hr hr-vertical" />
             <TabsManager
-                tabs={codeEditorContext.project.openWindows || []}
+                tabs={project.openWindows || []}
                 onChange={windowId => {
-                    if (codeEditorContext.project.projectConfigs.id) {
-                        codeEditorContext.updateProjectState(ProjectsStorage.selectWindowById(codeEditorContext.project, windowId));
+                    if (project.projectConfigs.id) {
+                        updateProjectState(ProjectsStorage.selectWindowById(project, windowId));
                     }
                 }}
                 onCloseWindowTab={windowId => {
-                    if (codeEditorContext.project.projectConfigs.id) {
-                        codeEditorContext.updateProjectState(ProjectsStorage.removeWindowById(codeEditorContext.project, windowId));
+                    if (project.projectConfigs.id) {
+                        updateProjectState(ProjectsStorage.removeWindowById(project, windowId));
                     }
                 }}
             />
@@ -59,14 +58,14 @@ export const ToolBar: React.FC = () => {
                                 isSelected={tab.configs.isEditing}
                                 className="btn-open-routers-tab flex1"
                                 onClick={() => {
-                                    codeEditorContext.project.tabs.forEach(currentTab => currentTab.configs.isEditing = false);
-                                    codeEditorContext.project.tabs[index].configs.isEditing = true;
-                                    codeEditorContext.updateProjectState(codeEditorContext.project)
+                                    project.tabs.forEach(currentTab => currentTab.configs.isEditing = false);
+                                    project.tabs[index].configs.isEditing = true;
+                                    updateProjectState(project)
                                 }}
                                 onFocus={() => {
-                                    codeEditorContext.project.tabs.forEach(currentTab => currentTab.configs.isEditing = false);
-                                    codeEditorContext.project.tabs[index].configs.isEditing = true;
-                                    codeEditorContext.updateProjectState(codeEditorContext.project)
+                                    project.tabs.forEach(currentTab => currentTab.configs.isEditing = false);
+                                    project.tabs[index].configs.isEditing = true;
+                                    updateProjectState(project)
                                 }}
                             />
                         );
@@ -86,4 +85,4 @@ export const ToolBar: React.FC = () => {
             onClose={(value) => { setIsOpenModalProps(false); return true; }}
         />
     </>);
-};
+});

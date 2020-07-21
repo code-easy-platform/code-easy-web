@@ -3,7 +3,7 @@ import { Switch, Route, BrowserRouter } from 'react-router-dom';
 import { HomePage } from './home-page/HomePage';
 import { Editor } from './editor/Editor';
 
-export const Routes = () => {
+export const Routes: React.FC = () => {
     return (
         <BrowserRouter>
             <Switch>

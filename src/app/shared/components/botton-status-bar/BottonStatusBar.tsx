@@ -1,10 +1,10 @@
-import React, { Component } from 'react';
+import React, { Component, memo } from 'react';
 
 import { LoadingIndicator } from '../loading-indicator/LoadingIndicator';
 import { AlertService, AlertTypes } from './AlertService';
 import './BottonStatusBar.css';
 
-export class BottonStatusBar extends Component {
+class _BottonStatusBar extends Component {
     private alertSubscrition: any;
 
     state = {
@@ -44,3 +44,5 @@ export class BottonStatusBar extends Component {
         }
     }
 }
+
+export const BottonStatusBar = memo(_BottonStatusBar)

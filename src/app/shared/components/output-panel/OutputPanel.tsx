@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, memo } from 'react';
 
 import { TreeInterface } from '../tree-manager/shared/models/TreeInterface';
 import { TabGroup, TabButton } from '../tab-button/TabButton';
@@ -18,7 +18,7 @@ interface OutputPanelProps {
     problems?: TreeInterface[];
     output?: TreeInterface[];
 }
-export const OutputPanel: React.FC<OutputPanelProps> = ({ notification, output, problems }) => {
+export const OutputPanel: React.FC<OutputPanelProps> = memo(({ notification, output, problems }) => {
     const [currTab, setCurrtab] = useState(OutputTab.problems);
 
     return (
@@ -79,4 +79,4 @@ export const OutputPanel: React.FC<OutputPanelProps> = ({ notification, output, 
             </div>
         </div>
     );
-}
+});

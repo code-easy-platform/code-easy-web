@@ -1,10 +1,10 @@
-import React, { useContext } from 'react';
+import React from 'react';
 import { IconTrash, Utils } from 'code-easy-components';
 
 import { ContextMenuService } from '../../../shared/components/context-menu/ContextMenuService';
 import { IBreadCampButton } from '../../../shared/components/code-editor/shared/Interfaces';
 import { ItemType } from '../../../shared/components/code-editor/shared/enums/ItemType';
-import { CodeEditorContext } from '../../../shared/services/contexts/CodeEditorContext';
+import { useCodeEditorContext } from '../../../shared/services/contexts/CodeEditorContext';
 import { IContextItemList } from '../../../shared/components/context-menu/ContextMenu';
 import { IdeConfigStorage } from '../../../shared/services/storage/IdeConfigStorage';
 import { FlowItem } from '../../../shared/components/code-editor/models/FlowItem';
@@ -19,16 +19,15 @@ import { Tab } from '../../../shared/interfaces/Tabs';
 
 export const FlowEditorController: React.FC = () => {
 
+    const { project, updateProjectState } = useCodeEditorContext();
     const ideConfigs = new IdeConfigStorage();
-    const editorContext = useContext(CodeEditorContext);
 
 
     /** Atualiza o contexto do projeto */
-    const onChangeState = () => editorContext.updateProjectState(editorContext.project);
+    const onChangeState = () => updateProjectState(project);
 
     /** Atualiza o foco do editor de propriedades */
-    const changeFocus = () => editorContext.project.currentComponentFocus = CurrentFocus.flow;
-
+    const changeFocus = () => project.currentComponentFocus = CurrentFocus.flow;
 
     /** Toda vez que houver uma alteração nos items de fluxo está função será executada. */
     const codeEditorOutputFlowItems = (updatedItems: FlowItem[]) => {
@@ -37,7 +36,7 @@ export const FlowEditorController: React.FC = () => {
         changeFocus()
 
         // Encontra a tab certa e atualiza os items
-        editorContext.project.tabs.forEach((tab: Tab) => {
+        project.tabs.forEach((tab: Tab) => {
             tab.items.forEach(item => {
                 if (item.isEditing) {
                     let newItems: ItemFlowComplete[] = [];
@@ -104,7 +103,7 @@ export const FlowEditorController: React.FC = () => {
             //TODO: Não está chegando o old id corretamente
 
             // Pega as antigas propriedades do item dropado para adicionar na atual
-            /* this.editorContext.project.tabs.forEach((tab: Tab) => {
+            /* this.project.tabs.forEach((tab: Tab) => {
                 tab.items.forEach(item => {
                     if (item.isEditing) {
 
@@ -164,7 +163,7 @@ export const FlowEditorController: React.FC = () => {
                     let indexTabToDelete: number | undefined;
                     let indexToDelete: number | undefined;
 
-                    editorContext.project.tabs.forEach((tab: Tab, indexTab) => {
+                    project.tabs.forEach((tab: Tab, indexTab) => {
                         tab.items.forEach((item, indexTree) => {
                             if (item.isEditing) {
                                 indexToDelete = item.items.findIndex(flow_item => flow_item.id === itemToDelete.itemId);
@@ -175,7 +174,7 @@ export const FlowEditorController: React.FC = () => {
                     });
 
                     if (indexTabToDelete !== undefined && indexToDelete !== undefined && indexToDelete !== -1 && indexTreeToDelete !== undefined) {
-                        editorContext.project.tabs[indexTabToDelete].items[indexTreeToDelete].items.splice(indexToDelete, 1);
+                        project.tabs[indexTabToDelete].items[indexTreeToDelete].items.splice(indexToDelete, 1);
 
                         // Atualiza o context do projeto
                         onChangeState();
@@ -195,7 +194,7 @@ export const FlowEditorController: React.FC = () => {
                 action: () => {
 
                     // Encontra a tab certa e adiciona um item de fluxo aos items
-                    editorContext.project.tabs.forEach((tab: Tab) => {
+                    project.tabs.forEach((tab: Tab) => {
                         tab.items.forEach(item_tree => {
                             if (item_tree.isEditing) {
 
@@ -235,15 +234,15 @@ export const FlowEditorController: React.FC = () => {
 
         let breadcamps: IBreadCampButton[] = [];
 
-        editorContext.project.tabs.forEach((tab: Tab) => {
+        project.tabs.forEach((tab: Tab) => {
             tab.items.forEach(item => {
                 if (item.isEditing) {
 
                     breadcamps.push({
                         label: tab.configs.label,
                         onClick: () => {
-                            editorContext.project.tabs.forEach((tab: Tab) => tab.configs.isEditing = false);
-                            editorContext.project.currentComponentFocus = CurrentFocus.tree;
+                            project.tabs.forEach((tab: Tab) => tab.configs.isEditing = false);
+                            project.currentComponentFocus = CurrentFocus.tree;
                             tab.configs.isEditing = true;
                             onChangeState();
                         }
@@ -251,15 +250,15 @@ export const FlowEditorController: React.FC = () => {
 
                     breadcamps.push({
                         onClick: (() => {
-                            editorContext.project.tabs.forEach((tab: Tab) => tab.configs.isEditing = false);
+                            project.tabs.forEach((tab: Tab) => tab.configs.isEditing = false);
 
-                            editorContext.project.tabs.forEach(tab => {
+                            project.tabs.forEach(tab => {
                                 tab.items.forEach(item => {
                                     item.isSelected = false;
                                 });
                             });
 
-                            editorContext.project.currentComponentFocus = CurrentFocus.tree;
+                            project.currentComponentFocus = CurrentFocus.tree;
                             tab.configs.isEditing = true;
                             item.isSelected = true;
                             onChangeState();
@@ -280,7 +279,7 @@ export const FlowEditorController: React.FC = () => {
 
         let itemEditing: ItemComponent | undefined;
 
-        editorContext.project.tabs.forEach((tab: Tab) => {
+        project.tabs.forEach((tab: Tab) => {
             tab.items.forEach(item => {
                 if (item.isEditing) {
                     itemEditing = item;
@@ -301,7 +300,7 @@ export const FlowEditorController: React.FC = () => {
 
                 /** Bloco de código qu encontra o ícone que será usado no fluxo */
                 let icon: any;
-                editorContext.project.tabs.forEach((tab: Tab) => {
+                project.tabs.forEach((tab: Tab) => {
                     tab.items.forEach(item => {
                         if (item.id === actionProp?.value) {
                             icon = item.properties.find(prop => prop.propertieType === PropertieTypes.icon);

@@ -1,11 +1,11 @@
-import React, { useContext } from 'react';
+import React from 'react';
 import { Utils } from 'code-easy-components';
 
 import { IItem, IProperties, TypeValues } from '../../../shared/components/properties-editor/shared/interfaces';
 import { ContextModalListService } from '../../../shared/components/context-modais/ContextModalListService';
 import { PropertiesEditor } from '../../../shared/components/properties-editor/PropertiesEditor';
+import { useCodeEditorContext } from '../../../shared/services/contexts/CodeEditorContext';
 import { ItemType } from '../../../shared/components/code-editor/shared/enums/ItemType';
-import { CodeEditorContext } from '../../../shared/services/contexts/CodeEditorContext';
 import { ItemFlowComplete } from '../../../shared/interfaces/ItemFlowComponent';
 import { ItemComponent } from '../../../shared/interfaces/ItemTreeComponent';
 import { PropertieTypes } from '../../../shared/enuns/PropertieTypes';
@@ -15,19 +15,19 @@ import { Tab } from '../../../shared/interfaces/Tabs';
 
 export const PropertiesEditorController: React.FC = () => {
 
-    const editorContext = useContext(CodeEditorContext);
+    const { project, updateProjectState } = useCodeEditorContext();
 
     /** Atualiza o contexto do projeto */
-    const onChangeState = () => editorContext.updateProjectState(editorContext.project);
+    const onChangeState = () => updateProjectState(project);
 
 
     /** O editor de propriedades emite a lista de propriedades alteradas */
     const propertiesEditorOutputItems = (item: IItem) => {
 
-        if (editorContext.project.currentComponentFocus === CurrentFocus.tree) {
+        if (project.currentComponentFocus === CurrentFocus.tree) {
 
             if (item.id) {
-                editorContext.project.tabs.forEach((tab: Tab) => {
+                project.tabs.forEach((tab: Tab) => {
                     tab.items.forEach(itemTree => {
                         if (itemTree.isSelected && itemTree.id === item.id) {
 
@@ -61,10 +61,10 @@ export const PropertiesEditorController: React.FC = () => {
                 onChangeState();
             }
 
-        } else if (editorContext.project.currentComponentFocus === CurrentFocus.flow) {
+        } else if (project.currentComponentFocus === CurrentFocus.flow) {
 
             let treeItemEditing: ItemComponent | undefined;
-            editorContext.project.tabs.forEach((tab: Tab) => {
+            project.tabs.forEach((tab: Tab) => {
                 tab.items.forEach(item => {
                     if (item.isEditing) {
                         treeItemEditing = item;
@@ -97,7 +97,7 @@ export const PropertiesEditorController: React.FC = () => {
                     }
 
                     // Altera a label do componente de fluxo
-                    const tab = editorContext.project.tabs.find((tab: Tab) => tab.items.some(itemTree => itemTree.id === newSelectedActionId));
+                    const tab = project.tabs.find((tab: Tab) => tab.items.some(itemTree => itemTree.id === newSelectedActionId));
                     if (tab) {
 
                         /** Action selectionada */
@@ -145,7 +145,7 @@ export const PropertiesEditorController: React.FC = () => {
 
         if (currentFocus === CurrentFocus.tree) { // Mapeia os items da árvore.
 
-            const tab = editorContext.project.tabs.find((tab: Tab) => tab.items.find(item => item.isSelected));
+            const tab = project.tabs.find((tab: Tab) => tab.items.find(item => item.isSelected));
             if (!tab) { return nullRes; }
             const res = tab.items.find(item => item.isSelected);
             if (!res) { return nullRes; }
@@ -178,7 +178,7 @@ export const PropertiesEditorController: React.FC = () => {
                  * Pode ser usado para sugerir para o assign e outros componentes
                  */
                 let paramsSuggestion: ItemComponent[] = [];
-                editorContext.project.tabs.forEach(tab => {
+                project.tabs.forEach(tab => {
                     tab.items.forEach(tree_item => {
                         if (tree_item.isEditing) {
                             paramsSuggestion = tab.items.filter(treeItemToParams => (
@@ -202,7 +202,7 @@ export const PropertiesEditorController: React.FC = () => {
                         prop.suggestions = [];
 
                         // Encontra as action e adiciona como sugestions
-                        editorContext.project.tabs.forEach(tab => {
+                        project.tabs.forEach(tab => {
                             if (tab.configs.type === ComponentType.tabActions) {
                                 tab.items.forEach(item => {
                                     if (item.type === ComponentType.globalAction) {
@@ -219,7 +219,7 @@ export const PropertiesEditorController: React.FC = () => {
                         });
 
                         // Encontra os parametros e adiona como props
-                        editorContext.project.tabs.forEach(tab => {
+                        project.tabs.forEach(tab => {
                             if (tab.configs.type === ComponentType.tabActions) {
 
                                 // Encontra os parâmetros da action selecionada na combo
@@ -298,7 +298,7 @@ export const PropertiesEditorController: React.FC = () => {
 
         let itemEditing: ItemComponent | undefined;
 
-        editorContext.project.tabs.forEach((tab: Tab) => {
+        project.tabs.forEach((tab: Tab) => {
             tab.items.forEach(item => {
                 if (item.isEditing) {
                     itemEditing = item;
@@ -319,7 +319,7 @@ export const PropertiesEditorController: React.FC = () => {
     return (
         <PropertiesEditor
             onChange={propertiesEditorOutputItems}
-            item={propertiesEditorGetSelectedItem(editorContext.project.currentComponentFocus)}
+            item={propertiesEditorGetSelectedItem(project.currentComponentFocus)}
         />
     );
 }

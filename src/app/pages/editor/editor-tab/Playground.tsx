@@ -1,8 +1,8 @@
-import React, { useContext } from 'react';
+import React, { memo } from 'react';
 
 import { TwoColumnsResizable } from '../../../shared/components/resizable-columns/TwoColumnsResizable';
 import { TwoRowsResizable } from '../../../shared/components/resizable-columns/TwoRowsResizable';
-import { CodeEditorContext } from '../../../shared/services/contexts/CodeEditorContext';
+import { useCodeEditorContext } from '../../../shared/services/contexts/CodeEditorContext';
 import { OutputPanel } from '../../../shared/components/output-panel/OutputPanel';
 import { ProblemsHelper } from '../../../shared/services/helpers/ProblemsHelper';
 import { OutputHelper } from '../../../shared/services/helpers/OutputHelper';
@@ -10,7 +10,7 @@ import { PropertiesEditorController } from './PropertiesEditor.Controller';
 import { TreeManagerController } from './TreeManager.Controller';
 import { FlowEditorController } from './FlowEditor.Controller';
 
-export const Playground: React.FC = () => {
+export const Playground: React.FC = memo(() => {
     return (
         <TwoColumnsResizable
             aligment={"right"}
@@ -25,8 +25,8 @@ export const Playground: React.FC = () => {
                     bottom={
                         <div className="flex1 z1">
                             <OutputPanel
-                                problems={ProblemsHelper.getProblems(useContext(CodeEditorContext).project).problems}
-                                output={OutputHelper.getOutput(useContext(CodeEditorContext).project)}
+                                problems={ProblemsHelper.getProblems(useCodeEditorContext().project).problems}
+                                output={OutputHelper.getOutput(useCodeEditorContext().project)}
                             />
                         </div>
                     }
@@ -43,4 +43,4 @@ export const Playground: React.FC = () => {
             }
         />
     );
-};
+});

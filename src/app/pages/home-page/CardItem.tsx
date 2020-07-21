@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, memo } from 'react';
 
 import { ProjectTypeList, ProjectType } from '../../shared/enuns/ProjectType';
 import { ContextMenuService } from '../../shared/components/context-menu/ContextMenuService';
@@ -27,7 +27,7 @@ interface CardItemProps {
     }
     listMode?: boolean;
 }
-export const CardItem = ({ listMode, ...props }: CardItemProps) => {
+export const CardItem = memo(({ listMode, ...props }: CardItemProps) => {
     const [item, setItem] = useState(props.item);
 
     const contextMenu = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
@@ -108,4 +108,4 @@ export const CardItem = ({ listMode, ...props }: CardItemProps) => {
                 </div>
             </div>
     );
-}
+});

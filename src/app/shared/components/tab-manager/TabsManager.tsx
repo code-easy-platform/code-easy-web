@@ -1,4 +1,4 @@
-import React, { Fragment } from 'react';
+import React, { Fragment, useCallback, memo } from 'react';
 import { IconClose } from 'code-easy-components';
 
 import { OpenWindow } from '../../interfaces/OpenedWindow';
@@ -10,28 +10,28 @@ interface TabsManagerProps {
     onCloseWindowTab?(tabId: string): void;
     onContextWindowTab?(tabId: string): void;
 }
-export const TabsManager: React.FC<TabsManagerProps> = ({ tabs, onChange, onContextWindowTab, onCloseWindowTab }) => {
+export const TabsManager: React.FC<TabsManagerProps> = memo(({ tabs, onChange, onContextWindowTab, onCloseWindowTab }) => {
 
-    const closeTab = (e: React.MouseEvent<HTMLDivElement, MouseEvent>, tabId: string) => {
+    const closeTab = useCallback((e: React.MouseEvent<HTMLDivElement, MouseEvent>, tabId: string) => {
         e.stopPropagation();
         onCloseWindowTab && onCloseWindowTab(tabId);
-    };
+    }, [onCloseWindowTab]);
 
-    const onWeel = (e: React.WheelEvent<HTMLDivElement>) => {
+    const onWeel = useCallback((e: React.WheelEvent<HTMLDivElement>) => {
         if (e.deltaY > 0) {
             e.currentTarget.scrollLeft += 25;
         } else {
             e.currentTarget.scrollLeft -= 25;
         }
-    };
+    }, []);
 
-    const onClick = (e: React.MouseEvent<HTMLDivElement, MouseEvent>, tabId: string) => {
+    const onClick = useCallback((e: React.MouseEvent<HTMLDivElement, MouseEvent>, tabId: string) => {
         if (e.button === 1) {
             onCloseWindowTab && onCloseWindowTab(tabId);
         } else {
             onChange && onChange(tabId);
         }
-    };
+    }, [onChange, onCloseWindowTab]);
 
     return (
         <div className="window-tabs-manager" onWheel={onWeel}>
@@ -55,4 +55,4 @@ export const TabsManager: React.FC<TabsManagerProps> = ({ tabs, onChange, onCont
             })}
         </div>
     );
-}
+});
