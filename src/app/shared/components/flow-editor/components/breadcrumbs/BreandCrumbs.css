@@ -1,0 +1,58 @@
+/* Style the list */
+
+ul.breadcrumb {
+    padding: 4px;
+    max-width: 70%;
+    list-style: none;
+    text-align: start;
+    overflow-x: hidden;
+    font-size: smaller;
+    position: absolute;
+    overflow-y: hidden;
+    border-width: thin;
+    padding-right: 8px;
+    white-space: nowrap;
+    scroll-behavior: smooth;
+    border-right-style: solid;
+    border-bottom-style: solid;
+    border-bottom-right-radius: 8px;
+}
+
+ul.breadcrumb::-webkit-scrollbar {
+    height: 4px;
+}
+
+ul.breadcrumb::-webkit-scrollbar-thumb {
+    height: 4px;
+}
+
+ul.breadcrumb::-webkit-scrollbar-thumb:active {
+    filter: brightness(0.6);
+}
+
+/* Display list items side by side */
+ul.breadcrumb li {
+    display: inline;
+}
+
+/* Add a slash symbol (/) before/behind each list item */
+ul.breadcrumb li+li:before {
+    filter: brightness(0.6);
+    padding: 4px;
+    content: "/";
+}
+
+.breadcrumb-item input {
+    opacity: 0;
+    height: 0;
+    width: 0;
+}
+
+.breadcrumb-item label {
+    filter: brightness(0.6);
+}
+
+.breadcrumb-item :checked:focus+label {
+    outline-color: currentcolor;
+    outline: thin solid;
+}
