@@ -16,7 +16,6 @@
     "dateformat": "^3.0.3",
     "immutability-helper": "^3.0.1",
     "marked": "^1.0.0",
-    "node-sass": "^4.12.0",
     "react": "^16.10.2",
     "react-dnd": "^9.4.0",
     "react-dnd-html5-backend": "^9.4.0",
@@ -24,7 +23,6 @@
     "react-monaco-editor": "^0.35.0",
     "react-router-dom": "^5.1.2",
     "react-scripts": "^3.2.0",
-    "react-switch": "^5.0.1",
     "typeface-roboto": "^0.0.75"
   },
   "scripts": {
