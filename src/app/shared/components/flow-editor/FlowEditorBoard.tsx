@@ -1,5 +1,7 @@
 import React, { useCallback, useRef } from 'react';
+import { DropTargetMonitor } from 'react-dnd';
 import { useRecoilCallback } from 'recoil';
+import { Utils } from 'code-easy-components';
 
 import { useFlowItems, useConfigs, useSelectItemById, useCopySelecteds, usePasteSelecteds, useFlowItemsConnetionsSelector, useDuplicateSelecteds } from './shared/hooks';
 import { FlowItemStore, FlowItemsStore, GetFlowItemsSelector, GetSelectedFlowItemsSelector, FlowLinesStore } from './shared/stores';
@@ -13,9 +15,6 @@ import { ICoords, IFlowItem } from './shared/interfaces';
 import { Line } from './components/flow-item/line/Line';
 import FlowItem from './components/flow-item/FlowItem';
 import Toolbar from './components/tool-bar/ToolBar';
-import { DropTargetMonitor } from 'react-dnd';
-import { Utils } from 'code-easy-components';
-import { AllowedsInDrop } from '../Mock';
 
 export const FlowEditorBoard: React.FC<IFlowEditorBoardProps> = (props) => {
     const {
@@ -356,7 +355,7 @@ export const FlowEditorBoard: React.FC<IFlowEditorBoardProps> = (props) => {
                         targetId={targetId}
                         onDropItem={handleDroptem}
                         onContextMenu={onContextMenu}
-                        allowedsInDrop={AllowedsInDrop}
+                        allowedsInDrop={typesAllowedToDrop}
                     />)}
                     {items.map(id => (
                         <FlowItem

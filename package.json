@@ -23,6 +23,7 @@
     "react-monaco-editor": "^0.35.0",
     "react-router-dom": "^5.1.2",
     "react-scripts": "^3.2.0",
+    "recoil": "^0.0.10",
     "typeface-roboto": "^0.0.75"
   },
   "scripts": {
