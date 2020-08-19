@@ -4,8 +4,8 @@ import { IconTrash, Utils } from 'code-easy-components';
 import { TreeInterface } from '../../../shared/components/tree-manager/shared/models/TreeInterface';
 import { ContextMenuService } from '../../../shared/components/context-menu/ContextMenuService';
 import { useCodeEditorContext } from '../../../shared/services/contexts/CodeEditorContext';
-import { ItemType } from '../../../shared/components/code-editor/shared/enums/ItemType';
 import { IContextItemList } from '../../../shared/components/context-menu/ContextMenu';
+import { EItemType, EFlowItemType } from '../../../shared/components/flow-editor';
 import { TreeManager } from '../../../shared/components/tree-manager/TreeManager';
 import { ItemFlowComplete } from '../../../shared/interfaces/ItemFlowComponent';
 import { ItemComponent } from '../../../shared/interfaces/ItemTreeComponent';
@@ -232,8 +232,8 @@ export const TreeManagerController: React.FC = () => {
                         items: (
                             routerType === ComponentType.routerExpose
                                 ? [
-                                    new ItemFlowComplete({ id: '1', name: "START", itemType: ItemType.START, left: 188, top: 128, isSelected: false, connections: [{ id: Utils.getUUID(), connectionId: '2' }], properties: [] }),
-                                    new ItemFlowComplete({ id: '2', name: "END", itemType: ItemType.END, left: 188, top: 384, isSelected: false, connections: [], properties: [] })
+                                    new ItemFlowComplete({ id: '1', name: "START", flowItemType: EFlowItemType.acorn, itemType: EItemType.START, left: 188, top: 128, isSelected: false, connections: [{ id: Utils.getUUID(), targetId: '2', originId: '1', isSelected: false }], properties: [] }),
+                                    new ItemFlowComplete({ id: '2', name: "END", flowItemType: EFlowItemType.acorn, itemType: EItemType.END, left: 188, top: 384, isSelected: false, connections: [], properties: [] })
                                 ]
                                 : []
                         ),
@@ -278,8 +278,8 @@ export const TreeManagerController: React.FC = () => {
                         itemPaiId: inputItemId,
                         type: ComponentType.globalAction,
                         items: [
-                            new ItemFlowComplete({ id: '1', name: "START", itemType: ItemType.START, left: 188, top: 128, isSelected: false, connections: [{ id: Utils.getUUID(), connectionId: '2' }], properties: [] }),
-                            new ItemFlowComplete({ id: '2', name: "END", itemType: ItemType.END, left: 188, top: 384, isSelected: false, connections: [], properties: [] })
+                            new ItemFlowComplete({ id: '1', name: "START", flowItemType: EFlowItemType.acorn, itemType: EItemType.START, left: 188, top: 128, isSelected: false, connections: [{ id: Utils.getUUID(), targetId: '2', originId: '1', isSelected: false }], properties: [] }),
+                            new ItemFlowComplete({ id: '2', name: "END", flowItemType: EFlowItemType.acorn, itemType: EItemType.END, left: 188, top: 384, isSelected: false, connections: [], properties: [] })
                         ],
                     }));
                 }

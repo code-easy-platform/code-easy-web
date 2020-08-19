@@ -2,10 +2,10 @@ import { Utils, IconWarning, IconError } from "code-easy-components";
 
 import { IProperties } from "../components/properties-editor/shared/interfaces";
 import { DefaultPropsHelper } from '../services/helpers/DefaultPropsHelper';
-import { ItemType } from "../components/code-editor/shared/enums/ItemType";
 import { TreeInterface } from "../components/tree-manager/shared/models";
 import { ComponentType } from "../enuns/ComponentType";
 import { ItemFlowComplete } from "./ItemFlowComponent";
+import { EItemType } from "../components/flow-editor";
 import { BaseFields } from "./BaseFields";
 
 
@@ -170,7 +170,7 @@ export class ItemComponent implements IItemComponent {
         if (this.type !== ComponentType.routerConsume) {
 
             // Valida o numero de starts na tela
-            let numStarts = this.items.filter(itemFlow => itemFlow.itemType === ItemType.START);
+            let numStarts = this.items.filter(itemFlow => itemFlow.itemType === EItemType.START);
             if (numStarts.length > 1) {
                 addProblem(`In ${this.label} must have only start flow item`, 'error');
                 numStarts.forEach(start => start.hasError = true);
@@ -180,13 +180,13 @@ export class ItemComponent implements IItemComponent {
 
             // Valida se encontra um start e um end na tela
             if (this.type === ComponentType.globalAction || this.type === ComponentType.localAction || this.type === ComponentType.routerExpose) {
-                if (!(this.items.some(comp => comp.itemType === ItemType.START) && this.items.some(comp => comp.itemType === ItemType.END))) {
+                if (!(this.items.some(comp => comp.itemType === EItemType.START) && this.items.some(comp => comp.itemType === EItemType.END))) {
                     addProblem(`A "${this.type}" must be have a "Start" and an "End" item in "${this.label}"`, 'error');
                 }
             }
 
             // Valida os ends
-            let unusedEnd = this.items.find(itemFlow => (itemFlow.itemType === ItemType.END) && !this.items.some(flowItem => flowItem.connections.some(connection => connection.connectionId === itemFlow.id)));
+            let unusedEnd = this.items.find(itemFlow => (itemFlow.itemType === EItemType.END) && !this.items.some(flowItem => flowItem.connections.some(connection => connection.targetId === itemFlow.id)));
             if (unusedEnd) {
                 addProblem(`In "${this.label}" a "${unusedEnd.name}" flow item is not used`, 'error');
                 unusedEnd.hasError = true;

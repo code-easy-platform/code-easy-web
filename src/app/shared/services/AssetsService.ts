@@ -4,35 +4,35 @@ import {
     IconFlowIf, IconFlowStart, IconFlowSwitch, IconRouterConsume, IconRouterExpose
 } from 'code-easy-components';
 
-import { ItemType } from '../components/code-editor/shared/enums/ItemType';
 import { ComponentType } from "../enuns/ComponentType";
+import { EItemType } from '../components/flow-editor';
 
 
 class Assets {
-    public getIcon(type: ComponentType | ItemType): string {
+    public getIcon(type: ComponentType | EItemType): string {
         switch (type) {
-            case ItemType.ACTION:
+            case EItemType.ACTION:
                 return IconFlowAction;
 
-            case ItemType.ASSIGN:
+            case EItemType.ASSIGN:
                 return IconFlowAssign;
 
-            case ItemType.COMMENT:
+            case EItemType.COMMENT:
                 return IconFlowComment;
 
-            case ItemType.END:
+            case EItemType.END:
                 return IconFlowEnd;
 
-            case ItemType.FOREACH:
+            case EItemType.FOREACH:
                 return IconFlowForeach;
 
-            case ItemType.IF:
+            case EItemType.IF:
                 return IconFlowIf;
 
-            case ItemType.START:
+            case EItemType.START:
                 return IconFlowStart;
 
-            case ItemType.SWITCH:
+            case EItemType.SWITCH:
                 return IconFlowSwitch;
 
             case ComponentType.routerConsume:
