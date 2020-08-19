@@ -4,10 +4,10 @@ import { PropertiesTab } from '../../../pages/editor/properties-tab/PropertiesTa
 import { ProjectsStorage } from '../../services/storage/ProjectsStorage';
 import { TabButton, TabGroup } from '../tab-button/TabButton';
 import { TabsManager } from '../tab-manager/TabsManager';
+import { useCodeEditorContext } from '../../contexts';
 import { Tab } from '../../interfaces/Tabs';
 import { Modal } from '../modal/Modal';
 import './ToolBar.css';
-import { useCodeEditorContext } from '../../services/contexts/CodeEditorContext';
 
 export const ToolBar: React.FC = memo(() => {
     const [isOpenModalProps, setIsOpenModalProps] = useState(false);

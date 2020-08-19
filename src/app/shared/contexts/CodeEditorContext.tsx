@@ -1,10 +1,10 @@
 import React, { useState, useEffect, useCallback, useContext } from 'react';
 import { useParams, Redirect } from 'react-router-dom';
 
-import { CenterLoadingIndicator } from '../../components/loading-indicator/LoadingIndicator';
-import { ProjectsStorage } from '../storage/ProjectsStorage';
-import { ProblemsHelper } from '../helpers/ProblemsHelper';
-import { Project } from '../../interfaces/Aplication';
+import { CenterLoadingIndicator } from '../components/loading-indicator/LoadingIndicator';
+import { ProjectsStorage } from '../services/storage/ProjectsStorage';
+import { ProblemsHelper } from '../services/helpers/ProblemsHelper';
+import { Project } from '../interfaces/Aplication';
 
 export interface ICodeEditorContext {
     project: Project,
@@ -46,9 +46,11 @@ export const CodeEditorProvider: React.FC = ({ children }) => {
     return (
         <CodeEditorContext.Provider value={state}>
             {(id === undefined) && <Redirect to="/" />}
-            {state.project.projectConfigs
-                ? children
-                : <CenterLoadingIndicator />}
+            {
+                state.project.projectConfigs
+                    ? children
+                    : <CenterLoadingIndicator />
+            }
         </CodeEditorContext.Provider>
     );
 }

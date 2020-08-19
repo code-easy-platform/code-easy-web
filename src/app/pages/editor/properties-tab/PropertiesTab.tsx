@@ -1,8 +1,8 @@
 import React from 'react';
 import { useHistory } from 'react-router-dom';
 
-import { useCodeEditorContext } from '../../../shared/services/contexts/CodeEditorContext';
 import { ProjectsStorage } from '../../../shared/services/storage/ProjectsStorage';
+import { useCodeEditorContext } from '../../../shared/contexts';
 
 export const PropertiesTab = () => {
     const { project, updateProjectState } = useCodeEditorContext();

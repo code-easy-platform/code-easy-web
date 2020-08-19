@@ -2,8 +2,8 @@ import React from 'react';
 
 import { BottonStatusBar } from '../../shared/components/botton-status-bar/BottonStatusBar';
 import { ContextModalList } from '../../shared/components/context-modais/ContextModalList';
-import { CodeEditorProvider } from '../../shared/services/contexts/CodeEditorContext';
 import { ToolBar } from '../../shared/components/tool-bar/ToolBar';
+import { CodeEditorProvider } from '../../shared/contexts';
 import { Playground } from './editor-tab/Playground';
 import './Editor.css';
 

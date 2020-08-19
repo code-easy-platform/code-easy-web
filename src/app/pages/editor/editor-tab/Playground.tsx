@@ -2,12 +2,12 @@ import React, { memo } from 'react';
 
 import { TwoColumnsResizable } from '../../../shared/components/resizable-columns/TwoColumnsResizable';
 import { TwoRowsResizable } from '../../../shared/components/resizable-columns/TwoRowsResizable';
-import { useCodeEditorContext } from '../../../shared/services/contexts/CodeEditorContext';
 import { OutputPanel } from '../../../shared/components/output-panel/OutputPanel';
 import { ProblemsHelper } from '../../../shared/services/helpers/ProblemsHelper';
 import { OutputHelper } from '../../../shared/services/helpers/OutputHelper';
 import { PropertiesEditorController } from './PropertiesEditor.Controller';
 import { TreeManagerController } from './TreeManager.Controller';
+import { useCodeEditorContext } from '../../../shared/contexts';
 import { FlowEditorController } from './FlowEditor.Controller';
 
 export const Playground: React.FC = memo(() => {

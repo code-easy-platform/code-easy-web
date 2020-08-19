@@ -3,7 +3,6 @@ import { IconTrash, Utils } from 'code-easy-components';
 
 import { TreeInterface } from '../../../shared/components/tree-manager/shared/models/TreeInterface';
 import { ContextMenuService } from '../../../shared/components/context-menu/ContextMenuService';
-import { useCodeEditorContext } from '../../../shared/services/contexts/CodeEditorContext';
 import { IContextItemList } from '../../../shared/components/context-menu/ContextMenu';
 import { EItemType, EFlowItemType } from '../../../shared/components/flow-editor';
 import { TreeManager } from '../../../shared/components/tree-manager/TreeManager';
@@ -13,6 +12,7 @@ import { AssetsService } from '../../../shared/services/AssetsService';
 import { PropertieTypes } from '../../../shared/enuns/PropertieTypes';
 import { ComponentType } from '../../../shared/enuns/ComponentType';
 import { CurrentFocus } from '../../../shared/enuns/CurrentFocus';
+import { useCodeEditorContext } from '../../../shared/contexts';
 import { Tab } from '../../../shared/interfaces/Tabs';
 
 export const TreeManagerController: React.FC = () => {

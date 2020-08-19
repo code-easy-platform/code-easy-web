@@ -1,24 +1,23 @@
 import React from 'react';
-import { IconTrash, Utils } from 'code-easy-components';
+import { IconTrash, Utils, IconFlowStart, IconFlowAction, IconFlowIf, IconFlowForeach, IconFlowSwitch, IconFlowAssign, IconFlowEnd, IconFlowComment } from 'code-easy-components';
 
 import { FlowEditor, IFlowItem, IBreadCrumbButton, EItemType, EFlowItemType, parseEItemType } from '../../../shared/components/flow-editor';
 import { ContextMenuService } from '../../../shared/components/context-menu/ContextMenuService';
-import { useCodeEditorContext } from '../../../shared/services/contexts/CodeEditorContext';
+import { useCodeEditorContext } from '../../../shared/contexts/CodeEditorContext';
 import { IContextItemList } from '../../../shared/components/context-menu/ContextMenu';
-import { IdeConfigStorage } from '../../../shared/services/storage/IdeConfigStorage';
 import { ItemFlowComplete } from '../../../shared/interfaces/ItemFlowComponent';
 import { ItemComponent } from '../../../shared/interfaces/ItemTreeComponent';
 import { AssetsService } from '../../../shared/services/AssetsService';
 import { PropertieTypes } from '../../../shared/enuns/PropertieTypes';
 import { ComponentType } from '../../../shared/enuns/ComponentType';
 import { CurrentFocus } from '../../../shared/enuns/CurrentFocus';
+import { useIdeConfigs } from '../../../shared/contexts';
 import { Tab } from '../../../shared/interfaces/Tabs';
 
 export const FlowEditorController: React.FC = () => {
 
+    const { flowBackgroundType, snapGridWhileDragging } = useIdeConfigs();
     const { project, updateProjectState } = useCodeEditorContext();
-    const ideConfigs = new IdeConfigStorage();
-
 
     /** Atualiza o contexto do projeto */
     const onChangeState = () => updateProjectState(project);
@@ -133,14 +132,14 @@ export const FlowEditorController: React.FC = () => {
 
     /** Alimenta a toolbox, de onde pode ser arrastados items para o fluxo. */
     const codeEditorGetToolBoxItems = () => [
-        { id: '1', name: "START", itemType: EItemType.START, top: 0, left: 0, flowItemType: EFlowItemType.acorn },
-        { id: '2', name: "ACTION", itemType: EItemType.ACTION, top: 0, left: 0, flowItemType: EFlowItemType.acorn },
-        { id: '3', name: "IF", itemType: EItemType.IF, top: 0, left: 0, flowItemType: EFlowItemType.acorn },
-        { id: '4', name: "FOREACH", itemType: EItemType.FOREACH, top: 0, left: 0, flowItemType: EFlowItemType.acorn },
-        { id: '6', name: "SWITCH", itemType: EItemType.SWITCH, top: 0, left: 0, flowItemType: EFlowItemType.acorn },
-        { id: '7', name: "ASSIGN", itemType: EItemType.ASSIGN, top: 0, left: 0, flowItemType: EFlowItemType.acorn },
-        { id: '8', name: "END", itemType: EItemType.END, top: 0, left: 0, flowItemType: EFlowItemType.acorn },
-        { id: '9', name: "COMMENT", itemType: EItemType.COMMENT, top: 0, left: 0, flowItemType: EFlowItemType.acorn },
+        { id: '1', icon: IconFlowStart, name: "START", itemType: EItemType.START, top: 0, left: 0, flowItemType: EFlowItemType.acorn },
+        { id: '2', icon: IconFlowAction, name: "ACTION", itemType: EItemType.ACTION, top: 0, left: 0, flowItemType: EFlowItemType.acorn },
+        { id: '3', icon: IconFlowIf, name: "IF", itemType: EItemType.IF, top: 0, left: 0, flowItemType: EFlowItemType.acorn },
+        { id: '4', icon: IconFlowForeach, name: "FOREACH", itemType: EItemType.FOREACH, top: 0, left: 0, flowItemType: EFlowItemType.acorn },
+        { id: '6', icon: IconFlowSwitch, name: "SWITCH", itemType: EItemType.SWITCH, top: 0, left: 0, flowItemType: EFlowItemType.acorn },
+        { id: '7', icon: IconFlowAssign, name: "ASSIGN", itemType: EItemType.ASSIGN, top: 0, left: 0, flowItemType: EFlowItemType.acorn },
+        { id: '8', icon: IconFlowEnd, name: "END", itemType: EItemType.END, top: 0, left: 0, flowItemType: EFlowItemType.acorn },
+        { id: '9', icon: IconFlowComment, name: "COMMENT", itemType: EItemType.COMMENT, top: 0, left: 0, flowItemType: EFlowItemType.acorn },
     ];
 
     /** Quando clicado com o botão esquerdo do mouse no interior do editor esta função é acionada. */
@@ -333,7 +332,7 @@ export const FlowEditorController: React.FC = () => {
 
     })();
 
-    return (
+    return (<>
         <FlowEditor
             id={"CODE_EDITOR"}
             items={flowEditorItems}
@@ -341,12 +340,19 @@ export const FlowEditorController: React.FC = () => {
             breadcrumbs={codeEditorGetBreadcamps()}
             toolItems={codeEditorGetToolBoxItems()}
             onChangeItems={codeEditorOutputFlowItems}
-            childrenWhenItemsEmpty={(codeEditorGetBreadcamps().length === 0) ? "Double click on an item on the right side to edit it" : undefined}
+            childrenWhenItemsEmpty={
+                (codeEditorGetBreadcamps().length === 0)
+                    ? <>
+                        <div style={{ height: '-webkit-fill-available', width: '-webkit-fill-available', justifyContent: 'center', alignItems: 'center', opacity: 0.5 }}>
+                            <h1>Drag and drop something here to start</h1>
+                        </div>
+                    </>
+                    : undefined
+            }
             configs={{
-                showToolbar: true,
+                backgroundType: flowBackgroundType,
+                snapGridWhileDragging: snapGridWhileDragging,
                 disableSelection: flowEditorItems.length === 0,
-                backgroundType: ideConfigs.getConfigs().flowBackgroundType,
-                snapGridWhileDragging: ideConfigs.getConfigs().snapGridWhileDragging,
                 typesAllowedToDrop: [ComponentType.globalAction, ComponentType.localAction, ComponentType.localVariable, ComponentType.inputVariable, ComponentType.outputVariable],
             }}
             onContextMenu={(e) => {
@@ -356,5 +362,5 @@ export const FlowEditorController: React.FC = () => {
                 }
             }}
         />
-    );
+    </>);
 }

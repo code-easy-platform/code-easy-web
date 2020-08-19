@@ -4,13 +4,13 @@ import { Utils } from 'code-easy-components';
 import { IItem, IProperties, TypeValues } from '../../../shared/components/properties-editor/shared/interfaces';
 import { ContextModalListService } from '../../../shared/components/context-modais/ContextModalListService';
 import { PropertiesEditor } from '../../../shared/components/properties-editor/PropertiesEditor';
-import { useCodeEditorContext } from '../../../shared/services/contexts/CodeEditorContext';
 import { ItemFlowComplete } from '../../../shared/interfaces/ItemFlowComponent';
 import { ItemComponent } from '../../../shared/interfaces/ItemTreeComponent';
 import { PropertieTypes } from '../../../shared/enuns/PropertieTypes';
 import { ComponentType } from '../../../shared/enuns/ComponentType';
 import { EItemType } from '../../../shared/components/flow-editor';
 import { CurrentFocus } from '../../../shared/enuns/CurrentFocus';
+import { useCodeEditorContext } from '../../../shared/contexts';
 import { Tab } from '../../../shared/interfaces/Tabs';
 
 export const PropertiesEditorController: React.FC = () => {

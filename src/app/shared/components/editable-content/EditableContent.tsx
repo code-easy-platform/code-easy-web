@@ -1,8 +1,8 @@
 import React from 'react';
-
 import MonacoEditor from 'react-monaco-editor';
+
+import { useCodeEditorContext } from '../../contexts';
 import { Modal } from '../modal/Modal';
-import { useCodeEditorContext } from '../../services/contexts/CodeEditorContext';
 
 export const EditableContent: React.FC<{ itemId: string, removeModal: Function }> = ({ itemId, removeModal }) => {
     const { project, updateProjectState } = useCodeEditorContext();

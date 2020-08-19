@@ -1,3 +1,4 @@
+import { IConfigurations } from "../../interfaces/IConfigurations";
 import { StorageEnum } from "./StorageEnum";
 
 export enum FlowBackgroundType {
@@ -6,17 +7,44 @@ export enum FlowBackgroundType {
     none = 'custom',
 }
 
-interface IIdeConfigs {
-    snapGridWhileDragging: boolean,
-    flowBackgroundType: FlowBackgroundType;
-}
-
 export class IdeConfigStorage {
     /**
      * Queries IDE settings in storage
+     * 
+     * @deprecated 
      */
-    public getConfigs(): IIdeConfigs {
-        let configs: IIdeConfigs;
+    public getConfigs(): IConfigurations {
+        let configs: IConfigurations;
+
+        let res = localStorage.getItem(StorageEnum.ideConfigStorage);
+
+        if (res !== null && res !== "" && res !== undefined)
+            configs = JSON.parse(res);
+        else {
+            configs = this.setConfigs({
+                flowBackgroundType: FlowBackgroundType.dotted,
+                snapGridWhileDragging: true,
+            });
+        }
+
+        return configs;
+    }
+
+    /**
+     * Save IDE settings to storage
+     * 
+     * @deprecated 
+     */
+    public setConfigs(confgs: IConfigurations): IConfigurations {
+        localStorage.setItem(StorageEnum.ideConfigStorage, JSON.stringify(confgs));
+        return confgs;
+    }
+
+    /**
+     * Queries IDE settings in storage
+     */
+    public static getConfigs(): IConfigurations {
+        let configs: IConfigurations;
 
         let res = localStorage.getItem(StorageEnum.ideConfigStorage);
 
@@ -35,9 +63,8 @@ export class IdeConfigStorage {
     /**
      * Save IDE settings to storage
      */
-    public setConfigs(confgs: IIdeConfigs): IIdeConfigs {
+    public static setConfigs(confgs: IConfigurations): IConfigurations {
         localStorage.setItem(StorageEnum.ideConfigStorage, JSON.stringify(confgs));
         return confgs;
     }
-
 }
