@@ -15,7 +15,7 @@ export const Editor: React.FC = () => {
                 <ToolBar />
                 <hr className="hr" />
 
-                <div style={{ height: "calc(100vh - 60px)" }}>
+                <div style={{ height: "calc(100vh - 62px)" }}>
                     <Playground />
                 </div>
 

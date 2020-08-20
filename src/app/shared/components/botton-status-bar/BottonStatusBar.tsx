@@ -3,6 +3,7 @@ import React, { Component, memo } from 'react';
 import { LoadingIndicator } from '../loading-indicator/LoadingIndicator';
 import { AlertService, AlertTypes } from './AlertService';
 import './BottonStatusBar.css';
+import { IdeVersion } from '../version/IdeVersion';
 
 class _BottonStatusBar extends Component {
     private alertSubscrition: any;
@@ -26,22 +27,16 @@ class _BottonStatusBar extends Component {
     componentWillUnmount = () => this.alertSubscrition.unsubscribe();
 
     render() {
-        switch (this.state.type) {
-            case AlertTypes.loading:
-                return (
-                    <div className="status-bar-main" style={{ backgroundColor: this.state.color }}>
-                        <LoadingIndicator />
-                        <div style={{ flex: 1, textAlign: 'start', alignItems: 'center', marginLeft: '8px' }} title={this.state.messageLong}>{this.state.message}</div>
-                    </div>
-                );
 
-            default:
-                return (
-                    <div className="status-bar-main" style={{ backgroundColor: this.state.color }}>
-                        <div style={{ flex: 1, textAlign: 'start', alignItems: 'center' }} title={this.state.messageLong}>{this.state.message}</div>
-                    </div>
-                );
-        }
+        return (
+            <div style={{ backgroundColor: this.state.color }} className="status-bar-main width-auto z1 padding-sx padding-left-s padding-right-s display-flex flex-items-center background-highlighted">
+                {this.state.type === AlertTypes.loading && <LoadingIndicator />}
+                <div className="flex1 margin-left-s flex-items-center" title={this.state.messageLong}>
+                    {this.state.message}
+                </div>
+                <IdeVersion prefix={"v. "} />
+            </div>
+        );
     }
 }
 

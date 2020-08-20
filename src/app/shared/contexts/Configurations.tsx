@@ -48,5 +48,6 @@ export const useIdeConfigs = () => {
     return {
         ...context.configs,
         setConfigs: context.setConfigs,
+        ideVersion: process.env.REACT_APP_VERSION,
     };
 }
