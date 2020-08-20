@@ -7,7 +7,7 @@ import { ProblemsHelper } from '../../../shared/services/helpers/ProblemsHelper'
 import { OutputHelper } from '../../../shared/services/helpers/OutputHelper';
 import { PropertiesEditorController } from './PropertiesEditor.Controller';
 import { TreeManagerController } from './TreeManager.Controller';
-import { useCodeEditorContext } from '../../../shared/contexts';
+import { useEditorContext } from '../../../shared/contexts';
 import { FlowEditorController } from './FlowEditor.Controller';
 
 export const Playground: React.FC = memo(() => {
@@ -25,8 +25,8 @@ export const Playground: React.FC = memo(() => {
                     bottom={
                         <div className="flex1 z1">
                             <OutputPanel
-                                problems={ProblemsHelper.getProblems(useCodeEditorContext().project).problems}
-                                output={OutputHelper.getOutput(useCodeEditorContext().project)}
+                                problems={ProblemsHelper.getProblems(useEditorContext().project).problems}
+                                output={OutputHelper.getOutput(useEditorContext().project)}
                             />
                         </div>
                     }

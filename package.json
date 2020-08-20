@@ -2,7 +2,7 @@
   "name": "code-easy-react",
   "version": "0.0.1",
   "private": false,
-  "license": "MIT",
+  "license": "Apache 2.0",
   "husky": {
     "hooks": {
       "commit-msg": "commitlint -E HUSKY_GIT_PARAMS",

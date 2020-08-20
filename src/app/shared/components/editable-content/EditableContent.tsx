@@ -1,11 +1,11 @@
 import React from 'react';
 import MonacoEditor from 'react-monaco-editor';
 
-import { useCodeEditorContext } from '../../contexts';
+import { useEditorContext } from '../../contexts';
 import { Modal } from '../modal/Modal';
 
 export const EditableContent: React.FC<{ itemId: string, removeModal: Function }> = ({ itemId, removeModal }) => {
-    const { project, updateProjectState } = useCodeEditorContext();
+    const { project, setProject } = useEditorContext();
     let selectedItem: any;
 
     project.tabs.forEach(tab => {
@@ -68,7 +68,7 @@ export const EditableContent: React.FC<{ itemId: string, removeModal: Function }
                 theme={"vs-dark"}
                 language="typescript"
                 value={selectedItem?.value}
-                onChange={value => { selectedItem.value = value; updateProjectState(project) }}
+                onChange={value => { selectedItem.value = value; setProject(project) }}
             />
         </Modal>
     );

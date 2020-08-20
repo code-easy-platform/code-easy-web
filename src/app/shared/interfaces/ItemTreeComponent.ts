@@ -71,7 +71,6 @@ interface IItemComponent extends BaseFields {
     itemPaiId: string | undefined;
     /** Usado para lista todas as propriedades de um item */
     properties: IProperties[];
-
 }
 export class ItemComponent implements IItemComponent {
     public id: string | undefined;

@@ -2,10 +2,10 @@ import React from 'react';
 import { useHistory } from 'react-router-dom';
 
 import { ProjectsStorage } from '../../../shared/services/storage/ProjectsStorage';
-import { useCodeEditorContext } from '../../../shared/contexts';
+import { useEditorContext } from '../../../shared/contexts';
 
 export const PropertiesTab = () => {
-    const { project, updateProjectState } = useCodeEditorContext();
+    const { project, setProject } = useEditorContext();
     const history = useHistory();
 
     return (
@@ -23,7 +23,7 @@ export const PropertiesTab = () => {
                         type='text'
                         onChange={(e) => {
                             project.projectConfigs.label = e.target.value;
-                            updateProjectState(project);
+                            setProject(project);
                         }}
                     />
                 </div>
@@ -37,7 +37,7 @@ export const PropertiesTab = () => {
                         style={{ resize: 'vertical', minHeight: 50, maxHeight: 100 }}
                         onChange={(e) => {
                             project.projectConfigs.description = e.target.value;
-                            updateProjectState(project);
+                            setProject(project);
                         }}
                     />
                 </div>
@@ -51,7 +51,7 @@ export const PropertiesTab = () => {
                         type='text'
                         onChange={(e) => {
                             project.projectConfigs.autor = e.target.value;
-                            updateProjectState(project);
+                            setProject(project);
                         }}
                     />
                 </div>
@@ -65,7 +65,7 @@ export const PropertiesTab = () => {
                         type='text'
                         onChange={(e) => {
                             project.projectConfigs.version = e.target.value;
-                            updateProjectState(project);
+                            setProject(project);
                         }}
                     />
                 </div>

@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback, useContext } from 'react';
-import { useParams, Redirect } from 'react-router-dom';
+import { useParams, useHistory } from 'react-router-dom';
 
 import { CenterLoadingIndicator } from '../components/loading-indicator/LoadingIndicator';
 import { ProjectsStorage } from '../services/storage/ProjectsStorage';
@@ -8,27 +8,17 @@ import { Project } from '../interfaces/Aplication';
 
 export interface ICodeEditorContext {
     project: Project,
-    updateProjectState(project: Project): void,
+    setProject(project: Project): void,
 }
 const CodeEditorContext = React.createContext<ICodeEditorContext>({} as ICodeEditorContext);
 
 export const CodeEditorProvider: React.FC = ({ children }) => {
 
+    const history = useHistory();
     const { id } = useParams();
 
-    const [state, setState] = useState<ICodeEditorContext>({
-        updateProjectState: (project: Project) => updateProjectState(project),
-        project: ProjectsStorage.getProjectById(id),
-    });
-    useEffect(() => {
-        const project = ProjectsStorage.getProjectById(id);
-        setState(oldState => ({ ...oldState, project }));
-    }, [id]);
-
     /** Usada para atualizar o state global do projeto e para atualizar o localstorage */
-    const updateProjectState = useCallback((project: Project) => {
-        const { label } = state.project.projectConfigs;
-        document.title = label === '' ? 'Code Easy' : label + ' - Code Easy';
+    const handleSetProject = useCallback((project: Project) => {
 
         // Valida o projeto e encontra os problemas
         project = ProblemsHelper.getProblems(project).project;
@@ -40,12 +30,31 @@ export const CodeEditorProvider: React.FC = ({ children }) => {
         ProjectsStorage.setProjectById(project);
 
         // Atualiza o state do projeto para refletir as alterações na tela
-        setState(oldState => ({ ...oldState, project }));
-    }, [state.project.projectConfigs]);
+        setState(oldState => {
+            const { label } = oldState.project.projectConfigs;
+            document.title = label === '' ? 'Code Easy' : label + ' - Code Easy';
+
+            return {
+                ...oldState,
+                project
+            }
+        });
+    }, []);
+
+    const [state, setState] = useState<ICodeEditorContext>({
+        project: ProjectsStorage.getProjectById(id),
+        setProject: handleSetProject,
+    });
+    useEffect(() => {
+        if (id === undefined) history.replace('/');
+        setState(oldState => ({
+            ...oldState,
+            project: ProjectsStorage.getProjectById(id)
+        }));
+    }, [id, history]);
 
     return (
         <CodeEditorContext.Provider value={state}>
-            {(id === undefined) && <Redirect to="/" />}
             {
                 state.project.projectConfigs
                     ? children
@@ -55,4 +64,4 @@ export const CodeEditorProvider: React.FC = ({ children }) => {
     );
 }
 
-export const useCodeEditorContext = () => useContext<ICodeEditorContext>(CodeEditorContext);
+export const useEditorContext = () => useContext<ICodeEditorContext>(CodeEditorContext);

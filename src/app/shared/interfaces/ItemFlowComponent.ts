@@ -13,7 +13,7 @@ interface IItemFlowComplete extends IFlowItem {
 }
 export class ItemFlowComplete implements IItemFlowComplete {
     public flowItemType: EFlowItemType = EFlowItemType.acorn;
-    public isEnabledNewConnetion?: boolean | undefined;
+    public isEnabledNewConnetion: boolean = false;
     public itemType: EItemType = EItemType.START;
     public connections: IConnection[] = [];
     public properties: IProperties[] = [];
@@ -33,16 +33,19 @@ export class ItemFlowComplete implements IItemFlowComplete {
 
     constructor(
         private _fields: {
+            isEnabledNewConnetion?: boolean,
             flowItemType: EFlowItemType,
             connections: IConnection[],
             properties?: IProperties[],
             id: string | undefined,
+            description?: string,
             isDisabled?: boolean,
             hasWarning?: boolean,
             isSelected: boolean,
             itemType: EItemType,
             hasError?: boolean,
             height?: number,
+            label?: string,
             width?: number,
             name: string,
             left: number,
@@ -50,8 +53,10 @@ export class ItemFlowComplete implements IItemFlowComplete {
             icon?: any,
         },
     ) {
+        this.isEnabledNewConnetion = _fields.isEnabledNewConnetion || false;
         this.isDisabled = _fields.isDisabled || false;
         this.hasWarning = _fields.hasWarning || false;
+        this.description = _fields.description || '';
         this.properties = _fields.properties || [];
         this.hasError = _fields.hasError || false;
         this.flowItemType = _fields.flowItemType;
@@ -60,6 +65,7 @@ export class ItemFlowComplete implements IItemFlowComplete {
         this.height = _fields.height || 50;
         this.width = _fields.width || 50;
         this.itemType = _fields.itemType;
+        this.label = _fields.label || '';
         this.name = _fields.name;
         this.icon = _fields.icon;
         this.left = _fields.left;
@@ -68,7 +74,6 @@ export class ItemFlowComplete implements IItemFlowComplete {
 
         this._updateProperties(this._fields.properties || [], this._fields.itemType);
         this.getProblems();
-
     }
 
     public getProblems(): TreeInterface[] {
@@ -313,8 +318,8 @@ export class ItemFlowComplete implements IItemFlowComplete {
         this.connections.forEach((connection, index) => {
 
             // Renomeando a label da connection
-            if (index === 0) connection.connectionLabel = 'True';
-            else connection.connectionLabel = 'False';
+            if (index === 0) connection = { ...connection, connectionLabel: 'True' };
+            else connection = { ...connection, connectionLabel: 'False' };
 
         });
     }
@@ -323,10 +328,10 @@ export class ItemFlowComplete implements IItemFlowComplete {
 
         this.connections.forEach((connection, index) => {
             if (index === 0) {
-                connection.connectionLabel = 'Default';
+                connection = { ...connection, connectionLabel: 'Default' };
             } else {
                 // Renomeando a label da connection
-                connection.connectionLabel = 'Condition' + index;
+                connection = { ...connection, connectionLabel: 'Condition' + index };
 
                 // Encontra a connection adicionada préviamente
                 let existentProp = this.properties.find(prop => prop.id === connection.id);

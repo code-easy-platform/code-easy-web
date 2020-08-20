@@ -10,15 +10,15 @@ import { PropertieTypes } from '../../../shared/enuns/PropertieTypes';
 import { ComponentType } from '../../../shared/enuns/ComponentType';
 import { EItemType } from '../../../shared/components/flow-editor';
 import { CurrentFocus } from '../../../shared/enuns/CurrentFocus';
-import { useCodeEditorContext } from '../../../shared/contexts';
+import { useEditorContext } from '../../../shared/contexts';
 import { Tab } from '../../../shared/interfaces/Tabs';
 
 export const PropertiesEditorController: React.FC = () => {
 
-    const { project, updateProjectState } = useCodeEditorContext();
+    const { project, setProject } = useEditorContext();
 
     /** Atualiza o contexto do projeto */
-    const onChangeState = () => updateProjectState(project);
+    const onChangeState = () => setProject(project);
 
 
     /** O editor de propriedades emite a lista de propriedades alteradas */

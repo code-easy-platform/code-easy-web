@@ -12,16 +12,16 @@ import { AssetsService } from '../../../shared/services/AssetsService';
 import { PropertieTypes } from '../../../shared/enuns/PropertieTypes';
 import { ComponentType } from '../../../shared/enuns/ComponentType';
 import { CurrentFocus } from '../../../shared/enuns/CurrentFocus';
-import { useCodeEditorContext } from '../../../shared/contexts';
+import { useEditorContext } from '../../../shared/contexts';
 import { Tab } from '../../../shared/interfaces/Tabs';
 
 export const TreeManagerController: React.FC = () => {
 
-    const { project, updateProjectState } = useCodeEditorContext();
+    const { project, setProject } = useEditorContext();
 
 
     /** Atualiza o contexto do projeto */
-    const onChangeState = () => updateProjectState(project);
+    const onChangeState = () => setProject(project);
 
     /** Atualiza o foco do editor de propriedades */
     const changeFocus = () => project.currentComponentFocus = CurrentFocus.tree;
