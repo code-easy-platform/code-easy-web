@@ -24,9 +24,9 @@ export class ItemFlowComplete implements IItemFlowComplete {
     public description: string = '';
     public id: string | undefined;
     public icon: any = undefined;
-    public height: number = 50;
+    public height: number = 40;
     public label: string = '';
-    public width: number = 50;
+    public width: number = 40;
     public name: string = "";
     public left: number = 0;
     public top: number = 0;
@@ -62,8 +62,8 @@ export class ItemFlowComplete implements IItemFlowComplete {
         this.flowItemType = _fields.flowItemType;
         this.connections = _fields.connections;
         this.isSelected = _fields.isSelected;
-        this.height = _fields.height || 50;
-        this.width = _fields.width || 50;
+        this.height = _fields.height || 40;
+        this.width = _fields.width || 40;
         this.itemType = _fields.itemType;
         this.label = _fields.label || '';
         this.name = _fields.name;
@@ -310,7 +310,7 @@ export class ItemFlowComplete implements IItemFlowComplete {
     private _propertiesFromForeach() {
         this.connections.forEach((connection, index) => {
             // Renomeando a label da connection
-            if (index === 0) connection.connectionLabel = 'Cycle';
+            if (index === 0) connection = { ...connection, connectionLabel: 'Cycle' };
         });
     }
 

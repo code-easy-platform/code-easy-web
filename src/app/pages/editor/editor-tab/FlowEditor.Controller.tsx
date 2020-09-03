@@ -18,7 +18,7 @@ export const FlowEditorController: React.FC = memo(() => {
     const { project, setProject } = useEditorContext();
 
     /** Atualiza o foco do editor de propriedades */
-    const changeFocus = useCallback(() => project.currentComponentFocus = CurrentFocus.flow, [project.currentComponentFocus]);
+    const changeFocus = useCallback(() => project.currentComponentFocus = CurrentFocus.flow, [project]);
 
     const handleOnChangeItems = useCallback((updatedItems: IFlowItem[]) => {
 

@@ -171,6 +171,7 @@ export const PropertiesEditorController: React.FC = () => {
             if (itemsFiltereds.length > 1) {
                 return {
                     name: `${itemsFiltereds.length} items selecteds`,
+                    subname: 'Selection',
                     properties: [],
                     isHeader: true,
                     id: undefined,

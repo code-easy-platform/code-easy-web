@@ -29,7 +29,7 @@ class _BottonStatusBar extends Component {
     render() {
 
         return (
-            <div style={{ backgroundColor: this.state.color }} className="status-bar-main width-auto z1 padding-sx padding-left-s padding-right-s display-flex flex-items-center background-highlighted">
+            <div style={{ backgroundColor: this.state.color }} className="status-bar-main width-auto z1 padding-sx padding-left-s padding-right-s display-flex flex-items-center background-bars">
                 {this.state.type === AlertTypes.loading && <LoadingIndicator />}
                 <div className="flex1 margin-left-s flex-items-center" title={this.state.messageLong}>
                     {this.state.message}
