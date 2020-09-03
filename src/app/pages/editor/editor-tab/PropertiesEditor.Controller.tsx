@@ -168,6 +168,15 @@ export const PropertiesEditorController: React.FC = () => {
             const itemsLogica: ItemFlowComplete[] = codeEditorGetItemsLogica();
             const itemsFiltereds = itemsLogica.filter(flowItem => flowItem.isSelected);
 
+            if (itemsFiltereds.length > 1) {
+                return {
+                    name: `${itemsFiltereds.length} items selecteds`,
+                    properties: [],
+                    isHeader: true,
+                    id: undefined,
+                }
+            }
+
             const mappedItems: IItem[] = [];
             itemsFiltereds.forEach(filteredItem => {
                 let paramsProps: IProperties[] = [];

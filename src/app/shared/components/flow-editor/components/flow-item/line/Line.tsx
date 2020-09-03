@@ -6,6 +6,7 @@ import { useRecoilValue } from 'recoil';
 import { useConfigs, useSelectItemById, useCreateOrUpdateConnection } from '../../../shared/hooks';
 import { GetConnectionPropsSelector } from '../../../shared/stores';
 import { TextOverLine, Arrow, SingleLine } from './components';
+import { emitOnChange } from '../../on-change-emitter';
 import { EFlowItemType } from '../../../shared/enums';
 
 interface LineProps {
@@ -122,7 +123,9 @@ export const Line: React.FC<LineProps> = ({ id, originId, allowedsInDrop, newCon
                 lineDistance: Math.hypot((top2 - top), (left2 - left)),
             });
         }
-    }, [left, left2, top, top2, isCurved, id, originId, newConnectionBoxRef, createOrUpdateConnection]);
+
+        emitOnChange();
+    }, [createOrUpdateConnection, id, originId, newConnectionBoxRef, isCurved, top, top2, left, left2]);
 
     const mouseDown = useCallback((e: any) => {
         e.stopPropagation();
@@ -133,7 +136,9 @@ export const Line: React.FC<LineProps> = ({ id, originId, allowedsInDrop, newCon
 
         selectItemById(id, e.ctrlKey);
         onMouseDown && onMouseDown(e);
-    }, [mouseMove, onMouseUp, onMouseDown, selectItemById, id]);
+
+        emitOnChange();
+    }, [mouseMove, onMouseUp, selectItemById, id, onMouseDown]);
 
     // Used when being used to create a new line
     if (newConnectionBoxRef?.current) {
@@ -144,7 +149,9 @@ export const Line: React.FC<LineProps> = ({ id, originId, allowedsInDrop, newCon
         e.stopPropagation();
         selectItemById(id, e.ctrlKey);
         onMouseDown && onMouseDown(e);
-    }, [onMouseDown, selectItemById, id]);
+
+        emitOnChange();
+    }, [selectItemById, id, onMouseDown]);
 
     /** Used to make it possible to drop items on the line. */
     const [{ isDraggingOver }, dropRef] = useDrop({

@@ -1,6 +1,7 @@
 import React, { useCallback, useRef, memo } from 'react';
 
 import { useFlowItem, useDragAllElements, useSelectItemById, useConfigs } from '../../shared/hooks';
+import { emitOnChange } from '../on-change-emitter';
 import { EFlowItemType } from '../../shared/enums';
 import { Acorn } from './acorn/Acorn';
 import { Comment } from './Comment';
@@ -25,6 +26,8 @@ const FlowItem: React.FC<FlowProps> = ({ id, onContextMenu }) => {
         e.stopPropagation();
         window.onmousemove = null;
         window.onmouseup = null;
+
+        emitOnChange();
     }, []);
 
     /** Stores the position where the flow item item was clicked. */
@@ -38,7 +41,7 @@ const FlowItem: React.FC<FlowProps> = ({ id, onContextMenu }) => {
         const left = e.offsetX - cliquedLocationFlowItem.current.left;
 
         dragAllFlowItems(flowItem.id, top, left, snapGridWhileDragging);
-    }, [flowItem, snapGridWhileDragging, dragAllFlowItems]);
+    }, [dragAllFlowItems, flowItem.id, snapGridWhileDragging]);
 
     /** Declara a fun no ref da svg para que o item atual possa ser arrastado na tela. */
     const mouseDown = useCallback((e: React.MouseEvent<SVGGElement, MouseEvent>) => {
@@ -49,6 +52,7 @@ const FlowItem: React.FC<FlowProps> = ({ id, onContextMenu }) => {
             left: e.nativeEvent.offsetX - (flowItem?.left || 0),
         };
 
+        // Select the item and emit OnChange event
         selectItemById(flowItem.id, e.ctrlKey);
 
         window.onmousemove = mouseMove;

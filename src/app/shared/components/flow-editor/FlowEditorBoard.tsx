@@ -6,11 +6,11 @@ import { Utils } from 'code-easy-components';
 import { useFlowItems, useConfigs, useSelectItemById, useCopySelecteds, usePasteSelecteds, useFlowItemsConnetionsSelector, useDuplicateSelecteds } from './shared/hooks';
 import { FlowItemStore, FlowItemsStore, GetFlowItemsSelector, GetSelectedFlowItemsSelector, FlowLinesStore } from './shared/stores';
 import { IFlowEditorBoardProps } from './shared/interfaces/FlowEditorInterfaces';
-import OnChangeEmitter from './components/on-change-emitter/OnChangeEmitter';
 import { EmptyFeedback } from './components/empty-feedback/EmptyFeedback';
 import SelectorArea from './components/area-selector/SelectorArea';
 import BreandCrumbs from './components/breadcrumbs/BreandCrumbs';
 import EditorPanel from './components/editor-panel/EditorPanel';
+import { emitOnChange } from './components/on-change-emitter';
 import { ICoords, IFlowItem } from './shared/interfaces';
 import { Line } from './components/flow-item/line/Line';
 import FlowItem from './components/flow-item/FlowItem';
@@ -26,7 +26,7 @@ export const FlowEditorBoard: React.FC<IFlowEditorBoardProps> = (props) => {
         selectionBackgroundColor, selectionBorderColor, useElevation,
     } = useConfigs();
     const { id, childrenWhenItemsEmpty = "Nothing here to edit", breadcrumbs = [], toolItems = [] } = props;
-    const { onMouseEnter, onMouseLeave, onContextMenu, onChangeItems, onDropItem } = props;
+    const { onMouseEnter, onMouseLeave, onContextMenu, onDropItem } = props;
     const duplicateSelectedItems = useDuplicateSelecteds();
     const pasteSelectedItems = usePasteSelecteds();
     const lines = useFlowItemsConnetionsSelector();
@@ -80,9 +80,11 @@ export const FlowEditorBoard: React.FC<IFlowEditorBoardProps> = (props) => {
     const setSelectedFlowItem = useRecoilCallback(({ set, snapshot }) => (coords: ICoords) => {
         items.forEach(async id => {
             const item = await snapshot.getPromise(FlowItemStore(id));
-            const isSelected = selectItem(item, coords);
-            if (item.isSelected !== isSelected) {
-                set(FlowItemStore(id), { ...item, isSelected });
+            const mustSelect = selectItem(item, coords);
+            if (item.isSelected !== mustSelect) {
+                set(FlowItemStore(id), { ...item, isSelected: mustSelect });
+
+                emitOnChange();
             }
         });
     });
@@ -94,6 +96,8 @@ export const FlowEditorBoard: React.FC<IFlowEditorBoardProps> = (props) => {
                 isSelected: true
             }))
         });
+
+        emitOnChange();
     }, [items]);
 
     const handleDelete = useRecoilCallback(({ set, snapshot }) => async () => {
@@ -160,6 +164,8 @@ export const FlowEditorBoard: React.FC<IFlowEditorBoardProps> = (props) => {
 
         // Update lines
         set(FlowLinesStore, oldLines);
+
+        emitOnChange();
     });
 
     const handleArrowKeyDown = useRecoilCallback(({ set, snapshot }) => async (direction: "ArrowUp" | "ArrowDown" | "ArrowLeft" | "ArrowRight") => {
@@ -196,6 +202,8 @@ export const FlowEditorBoard: React.FC<IFlowEditorBoardProps> = (props) => {
                 set(FlowItemStore(String(item.id)), item);
             }
         });
+
+        emitOnChange();
     });
 
     /** Essa função é executada sempre um item(aceito como item soltável) é sortado no painel */
@@ -295,6 +303,8 @@ export const FlowEditorBoard: React.FC<IFlowEditorBoardProps> = (props) => {
 
             // Creates the state for the item
             set(FlowItemStore(String(newItem.id)), newItem);
+
+            emitOnChange();
         } else if (onDropRes) {
 
             // Add a new item in array state
@@ -302,6 +312,8 @@ export const FlowEditorBoard: React.FC<IFlowEditorBoardProps> = (props) => {
 
             // Creates the state for the item
             set(FlowItemStore(String(onDropRes.id)), onDropRes);
+
+            emitOnChange();
         }
 
         target.focus();
@@ -341,12 +353,12 @@ export const FlowEditorBoard: React.FC<IFlowEditorBoardProps> = (props) => {
                     onKeyDownCtrlV={pasteSelectedItems}
                     allowedsInDrop={typesAllowedToDrop}
                     onArrowKeyDown={handleArrowKeyDown}
+                    onKeyDownCtrlA={handleSelecteAllFlowItems}
+                    onMouseDown={e => selectItemById(undefined, e.ctrlKey)}
                     onKeyDownCtrlD={e => {
                         e.preventDefault();
                         duplicateSelectedItems();
                     }}
-                    onKeyDownCtrlA={handleSelecteAllFlowItems}
-                    onMouseDown={e => selectItemById(undefined, e.ctrlKey)}
                 >
                     {lines.map(({ id, originId, targetId }, index) => <Line
                         id={id}
@@ -366,6 +378,7 @@ export const FlowEditorBoard: React.FC<IFlowEditorBoardProps> = (props) => {
                     ))}
                     <SelectorArea
                         isDisabled={disableSelection}
+                        onSelectionEnd={emitOnChange}
                         borderType={selectionBorderType}
                         borderWidth={selectionBorderWidth}
                         borderColor={selectionBorderColor}
@@ -373,7 +386,6 @@ export const FlowEditorBoard: React.FC<IFlowEditorBoardProps> = (props) => {
                         backgroundColor={selectionBackgroundColor}
                     />
                     <EmptyFeedback show={items.length === 0} children={childrenWhenItemsEmpty} />
-                    <OnChangeEmitter onChange={onChangeItems} />
                 </EditorPanel>
             </main>
         </div>

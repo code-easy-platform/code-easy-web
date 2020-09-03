@@ -3,6 +3,7 @@ import { Utils } from "code-easy-components";
 
 import { FlowItemsStore, FlowItemStore, GetFlowItemsSelector, GetSelectedFlowItemsSelector, GetBoardSizeSelector, FlowLinesStore } from "../stores";
 import { IConnection, IFlowItem, ILine } from "../interfaces";
+import { emitOnChange } from "../../components";
 
 export const useFlowItems = () => {
     return useRecoilValue(FlowItemsStore);
@@ -28,6 +29,10 @@ export const useBoardSize = () => {
     return useRecoilValue(GetBoardSizeSelector);
 }
 
+
+/**
+ * DragAll allow you drag all elements selecteds in the board.
+ */
 export const useDragAllElements = () => useRecoilCallback(({ snapshot, set }) => async (targetId: string | undefined, top: number, left: number, snapGridWhileDragging: boolean | undefined) => {
 
     // Pega do selector todos os selecionados
@@ -83,7 +88,7 @@ export const useDragAllElements = () => useRecoilCallback(({ snapshot, set }) =>
 
 export const useSelectItemById = () => useRecoilCallback(({ snapshot, set }) => async (id: string | undefined, keepSelecteds: boolean) => {
 
-    // Pega todos os selecionados
+    // Get all selecteds items
     const items = await snapshot.getPromise(GetFlowItemsSelector);
 
     const selectConnection = (connections: IConnection[], hasChange: boolean) => {
@@ -176,6 +181,8 @@ export const useSelectItemById = () => useRecoilCallback(({ snapshot, set }) => 
             });
         }
     }
+
+    emitOnChange();
 });
 
 export const useCreateOrUpdateConnection = () => useRecoilCallback(({ snapshot, set }) => async (
@@ -268,6 +275,8 @@ export const useCreateOrUpdateConnection = () => useRecoilCallback(({ snapshot, 
 
     set(FlowLinesStore, lines);
 
+    emitOnChange();
+
     // If has changed connection or create
     return true;
 });
@@ -336,6 +345,8 @@ export const useDuplicateSelecteds = () => useRecoilCallback(({ snapshot, set })
 
     set(FlowItemsStore, itemIds);
     set(FlowLinesStore, oldLinesState => ([...oldLinesState, ...newLines]));
+
+    emitOnChange();
 });
 
 /** Paste selected flow items */
@@ -400,6 +411,8 @@ export const usePasteSelecteds = () => useRecoilCallback(({ snapshot, set }) => 
 
                     set(FlowItemsStore, itemIds);
                     set(FlowLinesStore, oldLinesState => ([...oldLinesState, ...newLines]));
+
+                    emitOnChange();
                 } catch (_) { }
             });
     } catch (e) { console.log(e) }

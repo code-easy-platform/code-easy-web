@@ -49,6 +49,7 @@ const BreandCrumbs: React.FC<BreandCrumbsProps> = ({ breadcrumbs = [], backgroun
                         />
                         <label
                             htmlFor={String(index)}
+                            style={{ cursor: disabled ? 'default' : 'pointer' }}
                             onClick={disabled ? undefined : e => {
                                 ulRef.current.scrollTo(e.currentTarget.offsetLeft - 100, 0);
                                 onClick(e);
