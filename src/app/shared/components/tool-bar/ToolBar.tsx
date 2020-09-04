@@ -4,14 +4,14 @@ import { PropertiesTab } from '../../../pages/editor/properties-tab/PropertiesTa
 import { ProjectsStorage } from '../../services/storage/ProjectsStorage';
 import { TabButton, TabGroup } from '../tab-button/TabButton';
 import { TabsManager } from '../tab-manager/TabsManager';
+import { useEditorContext } from '../../contexts';
 import { Tab } from '../../interfaces/Tabs';
 import { Modal } from '../modal/Modal';
 import './ToolBar.css';
-import { useCodeEditorContext } from '../../services/contexts/CodeEditorContext';
 
 export const ToolBar: React.FC = memo(() => {
     const [isOpenModalProps, setIsOpenModalProps] = useState(false);
-    const { project, updateProjectState } = useCodeEditorContext();
+    const { project, setProject } = useEditorContext();
     const tabs: Tab[] = (project?.tabs || []);
 
     return (<>
@@ -36,12 +36,12 @@ export const ToolBar: React.FC = memo(() => {
                 tabs={project.openWindows || []}
                 onChange={windowId => {
                     if (project.projectConfigs.id) {
-                        updateProjectState(ProjectsStorage.selectWindowById(project, windowId));
+                        setProject(ProjectsStorage.selectWindowById(project, windowId));
                     }
                 }}
                 onCloseWindowTab={windowId => {
                     if (project.projectConfigs.id) {
-                        updateProjectState(ProjectsStorage.removeWindowById(project, windowId));
+                        setProject(ProjectsStorage.removeWindowById(project, windowId));
                     }
                 }}
             />
@@ -60,12 +60,12 @@ export const ToolBar: React.FC = memo(() => {
                                 onClick={() => {
                                     project.tabs.forEach(currentTab => currentTab.configs.isEditing = false);
                                     project.tabs[index].configs.isEditing = true;
-                                    updateProjectState(project)
+                                    setProject(project)
                                 }}
                                 onFocus={() => {
                                     project.tabs.forEach(currentTab => currentTab.configs.isEditing = false);
                                     project.tabs[index].configs.isEditing = true;
-                                    updateProjectState(project)
+                                    setProject(project)
                                 }}
                             />
                         );

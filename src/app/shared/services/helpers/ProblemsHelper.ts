@@ -1,10 +1,10 @@
 import { Utils, IconWarning, IconError } from "code-easy-components";
 
 import { TreeInterface } from "../../components/tree-manager/shared/models/TreeInterface";
-import { ItemType } from "../../components/code-editor/shared/enums/ItemType";
 import { Project, IProjectConfigs } from "../../interfaces/Aplication";
 import { PropertieTypes } from "../../enuns/PropertieTypes";
 import { ComponentType } from "../../enuns/ComponentType";
+import { EItemType } from "../../components/flow-editor";
 
 class ProblemsHelperService {
     private _problems: TreeInterface[] = [];
@@ -35,7 +35,7 @@ class ProblemsHelperService {
                     this._problems = [...this._problems, ...flowItem.getProblems()];
 
                     // Valida as props da action
-                    if (flowItem.itemType === ItemType.ACTION) {
+                    if (flowItem.itemType === EItemType.ACTION) {
 
                         flowItem.properties.forEach(prop => {
                             prop.valueHasError = false;

@@ -4,21 +4,21 @@ import { Utils } from 'code-easy-components';
 import { IItem, IProperties, TypeValues } from '../../../shared/components/properties-editor/shared/interfaces';
 import { ContextModalListService } from '../../../shared/components/context-modais/ContextModalListService';
 import { PropertiesEditor } from '../../../shared/components/properties-editor/PropertiesEditor';
-import { useCodeEditorContext } from '../../../shared/services/contexts/CodeEditorContext';
-import { ItemType } from '../../../shared/components/code-editor/shared/enums/ItemType';
 import { ItemFlowComplete } from '../../../shared/interfaces/ItemFlowComponent';
 import { ItemComponent } from '../../../shared/interfaces/ItemTreeComponent';
 import { PropertieTypes } from '../../../shared/enuns/PropertieTypes';
 import { ComponentType } from '../../../shared/enuns/ComponentType';
+import { EItemType } from '../../../shared/components/flow-editor';
 import { CurrentFocus } from '../../../shared/enuns/CurrentFocus';
+import { useEditorContext } from '../../../shared/contexts';
 import { Tab } from '../../../shared/interfaces/Tabs';
 
 export const PropertiesEditorController: React.FC = () => {
 
-    const { project, updateProjectState } = useCodeEditorContext();
+    const { project, setProject } = useEditorContext();
 
     /** Atualiza o contexto do projeto */
-    const onChangeState = () => updateProjectState(project);
+    const onChangeState = () => setProject(project);
 
 
     /** O editor de propriedades emite a lista de propriedades alteradas */
@@ -78,7 +78,7 @@ export const PropertiesEditorController: React.FC = () => {
                 if (indexItemFlow && (indexItemFlow < 0)) { return; };
 
 
-                if (treeItemEditing.items[indexItemFlow].itemType === ItemType.ACTION) {
+                if (treeItemEditing.items[indexItemFlow].itemType === EItemType.ACTION) {
 
                     // Pega a antiga action ID
                     const oldActionId = treeItemEditing.items[indexItemFlow].properties.find(itemOld => itemOld.propertieType === PropertieTypes.action)?.value;
@@ -167,6 +167,16 @@ export const PropertiesEditorController: React.FC = () => {
         } else if (currentFocus === CurrentFocus.flow) { // Mapeia os items de fluxo
             const itemsLogica: ItemFlowComplete[] = codeEditorGetItemsLogica();
             const itemsFiltereds = itemsLogica.filter(flowItem => flowItem.isSelected);
+
+            if (itemsFiltereds.length > 1) {
+                return {
+                    name: `${itemsFiltereds.length} items selecteds`,
+                    subname: 'Selection',
+                    properties: [],
+                    isHeader: true,
+                    id: undefined,
+                }
+            }
 
             const mappedItems: IItem[] = [];
             itemsFiltereds.forEach(filteredItem => {

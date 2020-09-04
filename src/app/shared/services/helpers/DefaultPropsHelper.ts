@@ -2,57 +2,57 @@ import { Utils } from "code-easy-components";
 
 import { IProperties, TypeValues } from "../../components/properties-editor/shared/interfaces";
 import { ParametersLocationList, ParametersLocation } from "../../enuns/ParametersLocation";
-import { ItemType } from "../../components/code-editor/shared/enums/ItemType";
 import { MethodsApi, MethodsApiList } from "../../enuns/ApiMethods";
 import { DataTypes, DataTypesList } from "../../enuns/DataType";
 import { PropertieTypes } from "../../enuns/PropertieTypes";
 import { ComponentType } from "../../enuns/ComponentType";
+import { EItemType } from "../../components/flow-editor";
 
 class DefaultPropsService {
 
     /** Devolve uma lista de propriedades para ser adicionado em novos items de fluxo ou da árvore. */
-    public getNewProps(itemType: ItemType | ComponentType, name: string, inARouter: boolean = false): IProperties[] {
+    public getNewProps(itemType: EItemType | ComponentType, name: string, inARouter: boolean = false): IProperties[] {
         switch (itemType) {
-            case ItemType.START:
+            case EItemType.START:
                 return [
                     { id: Utils.getUUID(), name: 'Label', type: TypeValues.viewOnly, value: name, propertieType: PropertieTypes.label },
                 ];
 
-            case ItemType.ACTION:
+            case EItemType.ACTION:
                 return [
                     { id: Utils.getUUID(), name: 'Label', type: TypeValues.string, value: name, propertieType: PropertieTypes.label },
                     { id: Utils.getUUID(), name: 'Action', type: TypeValues.expression, value: '', propertieType: PropertieTypes.action },
                 ];
 
-            case ItemType.ASSIGN:
+            case EItemType.ASSIGN:
                 return [
                     { id: Utils.getUUID(), name: 'Label', type: TypeValues.string, value: name, propertieType: PropertieTypes.label },
                     { id: Utils.getUUID(), name: '', type: TypeValues.assign, value: '', group: 'Assigments', propertieType: PropertieTypes.assigns },
                 ];
 
-            case ItemType.COMMENT:
+            case EItemType.COMMENT:
                 return [
                     { id: Utils.getUUID(), name: 'Write your comment here', type: TypeValues.fullBigString, value: '', propertieType: PropertieTypes.comment, focusOnRender: true },
                 ];
 
-            case ItemType.FOREACH:
+            case EItemType.FOREACH:
                 return [
                     { id: Utils.getUUID(), name: 'Label', type: TypeValues.string, value: name, propertieType: PropertieTypes.label },
                     { id: Utils.getUUID(), name: 'SourceList', type: TypeValues.expression, value: name, propertieType: PropertieTypes.sourceList },
                 ];
 
-            case ItemType.IF:
+            case EItemType.IF:
                 return [
                     { id: Utils.getUUID(), name: 'Label', type: TypeValues.string, value: name, propertieType: PropertieTypes.label },
                     { id: Utils.getUUID(), name: 'Condition', type: TypeValues.expression, value: '', propertieType: PropertieTypes.condition },
                 ];
 
-            case ItemType.SWITCH:
+            case EItemType.SWITCH:
                 return [
                     { id: Utils.getUUID(), name: 'Label', type: TypeValues.string, value: name, propertieType: PropertieTypes.label },
                 ];
 
-            case ItemType.END:
+            case EItemType.END:
                 return [
                     { id: Utils.getUUID(), name: 'Label', type: TypeValues.viewOnly, value: name, propertieType: PropertieTypes.label },
                 ];

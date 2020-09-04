@@ -83,6 +83,12 @@ select {
   color: var(--color-white);
 }
 
+input:disabled,
+textarea:disabled,
+select:disabled {
+  opacity: 0.7;
+}
+
 input:focus,
 textarea:focus,
 select:focus {

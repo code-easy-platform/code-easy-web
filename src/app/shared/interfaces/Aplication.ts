@@ -1,7 +1,7 @@
 import { ItemFlowComplete } from "./ItemFlowComponent";
 import { CurrentFocus } from "../enuns/CurrentFocus";
-import { ProjectType } from "../enuns/ProjectType";
 import { ItemComponent } from "./ItemTreeComponent";
+import { ProjectType } from "../enuns/ProjectType";
 import { OpenWindow } from "./OpenedWindow";
 import { BaseFields } from "./BaseFields";
 import { Tab } from "./Tabs";
@@ -71,12 +71,17 @@ export class Project implements IProject {
                     name: itemTree.name,
                     id: itemTree.id,
                     items: itemTree.items.map(flowItem => ({
+                        flowItemType: flowItem.flowItemType,
+                        description: flowItem.description,
                         connections: flowItem.connections,
                         properties: flowItem.properties,
                         isSelected: flowItem.isSelected,
+                        hasWarning: flowItem.hasWarning,
+                        isDisabled: flowItem.isDisabled,
                         itemType: flowItem.itemType,
                         hasError: flowItem.hasError,
                         height: flowItem.height,
+                        label: flowItem.label,
                         width: flowItem.width,
                         icon: flowItem.icon,
                         left: flowItem.left,
@@ -112,7 +117,9 @@ export class Project implements IProject {
                     type: item.type,
                     id: item.id,
                     items: item.items.map((itemFlow: any) => new ItemFlowComplete({
+                        flowItemType: itemFlow.flowItemType,
                         connections: itemFlow.connections,
+                        isDisabled: itemFlow.isDisabled,
                         hasWarning: itemFlow.hasWarning,
                         properties: itemFlow.properties,
                         isSelected: itemFlow.isSelected,
