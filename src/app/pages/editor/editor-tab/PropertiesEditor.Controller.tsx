@@ -1,9 +1,8 @@
 import React from 'react';
 import { Utils } from 'code-easy-components';
 
-import { IItem, IProperties, TypeValues } from '../../../shared/components/properties-editor/shared/interfaces';
 import { ContextModalListService } from '../../../shared/components/context-modais/ContextModalListService';
-import { PropertiesEditor } from '../../../shared/components/properties-editor/PropertiesEditor';
+import { PropertiesEditor, IProperty, TypeOfValues, IItem } from '../../../shared/components/properties-editor';
 import { ItemFlowComplete } from '../../../shared/interfaces/ItemFlowComponent';
 import { ItemComponent } from '../../../shared/interfaces/ItemTreeComponent';
 import { PropertieTypes } from '../../../shared/enuns/PropertieTypes';
@@ -157,7 +156,7 @@ export const PropertiesEditorController: React.FC = () => {
                     subname: res.type,
                     properties: res.properties.map(prop => {
                         if (prop.id && prop.name) {
-                            prop.openEditor = () => ContextModalListService.showModal({ editingId: prop.id || '' });
+                            prop.onPickerValueClick = () => ContextModalListService.showModal({ editingId: prop.id || '' });
                         }
                         return prop;
                     })
@@ -180,7 +179,7 @@ export const PropertiesEditorController: React.FC = () => {
 
             const mappedItems: IItem[] = [];
             itemsFiltereds.forEach(filteredItem => {
-                let paramsProps: IProperties[] = [];
+                let paramsProps: IProperty[] = [];
 
                 /**
                  * Pega as variáveis do item que está sendo editado atualmente para colocar como sugestão nas expressions
@@ -208,14 +207,14 @@ export const PropertiesEditorController: React.FC = () => {
                     if (prop.propertieType === PropertieTypes.action) {
 
                         /** Tranforma a action atual em tipo de campo selection */
-                        prop.type = TypeValues.selection;
+                        prop.type = TypeOfValues.selection;
                         prop.suggestions = [];
 
                         // Encontra as action e adiciona como sugestions
                         project.tabs.forEach(tab => {
                             if (tab.configs.type === ComponentType.tabActions) {
                                 tab.items.forEach(item => {
-                                    if (item.type === ComponentType.globalAction) {
+                                    if (item.id && item.type === ComponentType.globalAction) {
                                         prop.suggestions?.push({
                                             description: item.description,
                                             label: item.label,
@@ -245,10 +244,10 @@ export const PropertiesEditorController: React.FC = () => {
                                             id: param.id,
                                             group: 'Params',
                                             name: param.label,
-                                            type: TypeValues.expression,
+                                            type: TypeOfValues.expression,
                                             propertieType: PropertieTypes.param,
                                             information: param.description !== '' ? param.description : undefined,
-                                            openEditor: () => {
+                                            onPickerValueClick: () => {
                                                 if (param.id)
                                                     ContextModalListService.showModal({ editingId: param.id });
                                             },
@@ -277,13 +276,12 @@ export const PropertiesEditorController: React.FC = () => {
                 // Mapea os items para modal
                 filteredItem.properties.map(prop => {
                     if (prop.id && prop.name) {
-                        prop.openEditor = () => ContextModalListService.showModal({ editingId: prop.id || '' });
+                        prop.onPickerValueClick = () => ContextModalListService.showModal({ editingId: prop.id || '' });
                     };
                     return prop;
                 });
 
                 mappedItems.push({
-                    isHeader: true,
                     id: filteredItem.id,
                     name: filteredItem.name,
                     subname: filteredItem.itemType,

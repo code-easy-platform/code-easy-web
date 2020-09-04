@@ -1,5 +1,5 @@
 import { ContextModalListService } from "../components/context-modais/ContextModalListService";
-import { IProperties, TypeValues } from "../components/properties-editor/shared/interfaces";
+import { IProperty, TypeOfValues } from "../components/properties-editor";
 import { TreeInterface } from '../components/tree-manager/shared/models/TreeInterface';
 import { DefaultPropsHelper } from '../services/helpers/DefaultPropsHelper';
 import { Utils, IconWarning, IconError } from "code-easy-components";
@@ -8,7 +8,7 @@ import { PropertieTypes } from "../enuns/PropertieTypes";
 import { IFlowItem, IConnection, EItemType, EFlowItemType } from "../components/flow-editor";
 
 interface IItemFlowComplete extends IFlowItem {
-    properties: IProperties[];
+    properties: IProperty[];
     name: string;
 }
 export class ItemFlowComplete implements IItemFlowComplete {
@@ -16,7 +16,7 @@ export class ItemFlowComplete implements IItemFlowComplete {
     public isEnabledNewConnetion: boolean = false;
     public itemType: EItemType = EItemType.START;
     public connections: IConnection[] = [];
-    public properties: IProperties[] = [];
+    public properties: IProperty[] = [];
     public isSelected: boolean = false;
     public hasWarning: boolean = false;
     public isDisabled: boolean = false;
@@ -35,7 +35,7 @@ export class ItemFlowComplete implements IItemFlowComplete {
         private _fields: {
             flowItemType: EFlowItemType,
             connections: IConnection[],
-            properties?: IProperties[],
+            properties?: IProperty[],
             id: string | undefined,
             description?: string,
             isDisabled?: boolean,
@@ -212,13 +212,13 @@ export class ItemFlowComplete implements IItemFlowComplete {
 
     }
 
-    private _updateProperties(properties: IProperties[], type: EItemType) {
+    private _updateProperties(properties: IProperty[], type: EItemType) {
 
         // Remove o auto focus caso exista em algum componente
         this.properties.forEach(prop => prop.focusOnRender = false);
 
         // Define a função que abre a modal para edição
-        this.properties.forEach(prop => prop.openEditor = () => { prop.id && ContextModalListService.showModal({ editingId: prop.id }); });
+        this.properties.forEach(prop => prop.onPickerValueClick = () => { prop.id && ContextModalListService.showModal({ editingId: prop.id }); });
 
         const originalProperties = DefaultPropsHelper.getNewProps(type, this.name);
 
@@ -294,7 +294,7 @@ export class ItemFlowComplete implements IItemFlowComplete {
                 id: newId,
                 value: '',
                 group: 'Assigments',
-                type: TypeValues.assign,
+                type: TypeOfValues.assign,
                 propertieType: PropertieTypes.assigns,
             });
 
@@ -391,7 +391,7 @@ export class ItemFlowComplete implements IItemFlowComplete {
                         id: connection.id,
                         group: 'Conditions',
                         name: 'Condition' + index,
-                        type: TypeValues.expression,
+                        type: TypeOfValues.expression,
                         propertieType: PropertieTypes.condition,
                     });
                 } else {
@@ -415,6 +415,7 @@ export class ItemFlowComplete implements IItemFlowComplete {
     private _propertiesFromComment() {
 
         this.isEnabledNewConnetion = true;
+        this.flowItemType = EFlowItemType.comment;
 
         const propLabel = this.properties.find(prop => prop.propertieType === PropertieTypes.label);
         const propComment = this.properties.find(prop => prop.propertieType === PropertieTypes.comment);

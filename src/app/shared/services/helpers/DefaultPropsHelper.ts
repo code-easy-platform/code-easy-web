@@ -1,7 +1,7 @@
 import { Utils } from "code-easy-components";
 
-import { IProperties, TypeValues } from "../../components/properties-editor/shared/interfaces";
 import { ParametersLocationList, ParametersLocation } from "../../enuns/ParametersLocation";
+import { IProperty, TypeOfValues } from "../../components/properties-editor";
 import { MethodsApi, MethodsApiList } from "../../enuns/ApiMethods";
 import { DataTypes, DataTypesList } from "../../enuns/DataType";
 import { PropertieTypes } from "../../enuns/PropertieTypes";
@@ -11,59 +11,59 @@ import { EItemType } from "../../components/flow-editor";
 class DefaultPropsService {
 
     /** Devolve uma lista de propriedades para ser adicionado em novos items de fluxo ou da árvore. */
-    public getNewProps(itemType: EItemType | ComponentType, name: string, inARouter: boolean = false): IProperties[] {
+    public getNewProps(itemType: EItemType | ComponentType, name: string, inARouter: boolean = false): IProperty[] {
         switch (itemType) {
             case EItemType.START:
                 return [
-                    { id: Utils.getUUID(), name: 'Label', type: TypeValues.viewOnly, value: name, propertieType: PropertieTypes.label },
+                    { id: Utils.getUUID(), name: 'Label', type: TypeOfValues.viewOnly, value: name, propertieType: PropertieTypes.label },
                 ];
 
             case EItemType.ACTION:
                 return [
-                    { id: Utils.getUUID(), name: 'Label', type: TypeValues.string, value: name, propertieType: PropertieTypes.label },
-                    { id: Utils.getUUID(), name: 'Action', type: TypeValues.expression, value: '', propertieType: PropertieTypes.action },
+                    { id: Utils.getUUID(), name: 'Label', type: TypeOfValues.string, value: name, propertieType: PropertieTypes.label },
+                    { id: Utils.getUUID(), name: 'Action', type: TypeOfValues.expression, value: '', propertieType: PropertieTypes.action },
                 ];
 
             case EItemType.ASSIGN:
                 return [
-                    { id: Utils.getUUID(), name: 'Label', type: TypeValues.string, value: name, propertieType: PropertieTypes.label },
-                    { id: Utils.getUUID(), name: '', type: TypeValues.assign, value: '', group: 'Assigments', propertieType: PropertieTypes.assigns },
+                    { id: Utils.getUUID(), name: 'Label', type: TypeOfValues.string, value: name, propertieType: PropertieTypes.label },
+                    { id: Utils.getUUID(), name: '', type: TypeOfValues.assign, value: '', group: 'Assigments', propertieType: PropertieTypes.assigns },
                 ];
 
             case EItemType.COMMENT:
                 return [
-                    { id: Utils.getUUID(), name: 'Write your comment here', type: TypeValues.fullBigString, value: '', propertieType: PropertieTypes.comment, focusOnRender: true },
+                    { id: Utils.getUUID(), name: 'Write your comment here', type: TypeOfValues.fullBigString, value: '', propertieType: PropertieTypes.comment, focusOnRender: true },
                 ];
 
             case EItemType.FOREACH:
                 return [
-                    { id: Utils.getUUID(), name: 'Label', type: TypeValues.string, value: name, propertieType: PropertieTypes.label },
-                    { id: Utils.getUUID(), name: 'SourceList', type: TypeValues.expression, value: name, propertieType: PropertieTypes.sourceList },
+                    { id: Utils.getUUID(), name: 'Label', type: TypeOfValues.string, value: name, propertieType: PropertieTypes.label },
+                    { id: Utils.getUUID(), name: 'SourceList', type: TypeOfValues.expression, value: name, propertieType: PropertieTypes.sourceList },
                 ];
 
             case EItemType.IF:
                 return [
-                    { id: Utils.getUUID(), name: 'Label', type: TypeValues.string, value: name, propertieType: PropertieTypes.label },
-                    { id: Utils.getUUID(), name: 'Condition', type: TypeValues.expression, value: '', propertieType: PropertieTypes.condition },
+                    { id: Utils.getUUID(), name: 'Label', type: TypeOfValues.string, value: name, propertieType: PropertieTypes.label },
+                    { id: Utils.getUUID(), name: 'Condition', type: TypeOfValues.expression, value: '', propertieType: PropertieTypes.condition },
                 ];
 
             case EItemType.SWITCH:
                 return [
-                    { id: Utils.getUUID(), name: 'Label', type: TypeValues.string, value: name, propertieType: PropertieTypes.label },
+                    { id: Utils.getUUID(), name: 'Label', type: TypeOfValues.string, value: name, propertieType: PropertieTypes.label },
                 ];
 
             case EItemType.END:
                 return [
-                    { id: Utils.getUUID(), name: 'Label', type: TypeValues.viewOnly, value: name, propertieType: PropertieTypes.label },
+                    { id: Utils.getUUID(), name: 'Label', type: TypeOfValues.viewOnly, value: name, propertieType: PropertieTypes.label },
                 ];
 
             case ComponentType.routerExpose:
                 return [
-                    { id: Utils.getUUID(), name: 'Label', value: name, type: TypeValues.string, propertieType: PropertieTypes.label },
-                    { id: Utils.getUUID(), name: 'Description', type: TypeValues.bigstring, value: "", propertieType: PropertieTypes.description },
-                    { id: Utils.getUUID(), name: 'Url', type: TypeValues.string, value: "/newroute", propertieType: PropertieTypes.url },
+                    { id: Utils.getUUID(), name: 'Label', value: name, type: TypeOfValues.string, propertieType: PropertieTypes.label },
+                    { id: Utils.getUUID(), name: 'Description', type: TypeOfValues.bigstring, value: "", propertieType: PropertieTypes.description },
+                    { id: Utils.getUUID(), name: 'Url', type: TypeOfValues.string, value: "/newroute", propertieType: PropertieTypes.url },
                     {
-                        id: Utils.getUUID(), name: 'Method http', type: TypeValues.selection, value: MethodsApi.post, propertieType: PropertieTypes.type, suggestions: MethodsApiList.map(value => {
+                        id: Utils.getUUID(), name: 'Method http', type: TypeOfValues.selection, value: MethodsApi.post, propertieType: PropertieTypes.type, suggestions: MethodsApiList.map(value => {
                             return {
                                 name: value,
                                 value: value,
@@ -77,10 +77,10 @@ class DefaultPropsService {
 
             case ComponentType.routerConsume:
                 return [
-                    { id: Utils.getUUID(), name: 'Label', value: name, type: TypeValues.string, propertieType: PropertieTypes.label },
-                    { id: Utils.getUUID(), name: 'Description', type: TypeValues.bigstring, value: "", propertieType: PropertieTypes.description },
+                    { id: Utils.getUUID(), name: 'Label', value: name, type: TypeOfValues.string, propertieType: PropertieTypes.label },
+                    { id: Utils.getUUID(), name: 'Description', type: TypeOfValues.bigstring, value: "", propertieType: PropertieTypes.description },
                     {
-                        id: Utils.getUUID(), name: 'Method http', type: TypeValues.selection, value: MethodsApi.post, propertieType: PropertieTypes.type, suggestions: MethodsApiList.map(value => {
+                        id: Utils.getUUID(), name: 'Method http', type: TypeOfValues.selection, value: MethodsApi.post, propertieType: PropertieTypes.type, suggestions: MethodsApiList.map(value => {
                             return {
                                 name: value,
                                 value: value,
@@ -90,30 +90,30 @@ class DefaultPropsService {
                             };
                         })
                     },
-                    { id: Utils.getUUID(), name: 'Url', type: TypeValues.string, value: "https://www.yourdomain.com/api/v1/hello", propertieType: PropertieTypes.url },
+                    { id: Utils.getUUID(), name: 'Url', type: TypeOfValues.string, value: "https://www.yourdomain.com/api/v1/hello", propertieType: PropertieTypes.url },
                 ];
 
             case ComponentType.globalAction:
                 return [
-                    { id: Utils.getUUID(), name: 'Label', value: name, type: TypeValues.string, propertieType: PropertieTypes.label },
-                    { id: Utils.getUUID(), name: 'Description', type: TypeValues.bigstring, value: "", propertieType: PropertieTypes.description },
-                    { id: Utils.getUUID(), name: 'Icon', type: TypeValues.binary, value: "Default", propertieType: PropertieTypes.icon },
+                    { id: Utils.getUUID(), name: 'Label', value: name, type: TypeOfValues.string, propertieType: PropertieTypes.label },
+                    { id: Utils.getUUID(), name: 'Description', type: TypeOfValues.bigstring, value: "", propertieType: PropertieTypes.description },
+                    { id: Utils.getUUID(), name: 'Icon', type: TypeOfValues.binary, value: "Default", propertieType: PropertieTypes.icon },
                 ];
 
             case ComponentType.localAction:
                 return [
-                    { id: Utils.getUUID(), name: 'Label', value: name, type: TypeValues.string, propertieType: PropertieTypes.label },
-                    { id: Utils.getUUID(), name: 'Description', type: TypeValues.bigstring, value: "", propertieType: PropertieTypes.description },
-                    { id: Utils.getUUID(), name: 'Icon', type: TypeValues.binary, value: "Default", propertieType: PropertieTypes.icon },
+                    { id: Utils.getUUID(), name: 'Label', value: name, type: TypeOfValues.string, propertieType: PropertieTypes.label },
+                    { id: Utils.getUUID(), name: 'Description', type: TypeOfValues.bigstring, value: "", propertieType: PropertieTypes.description },
+                    { id: Utils.getUUID(), name: 'Icon', type: TypeOfValues.binary, value: "Default", propertieType: PropertieTypes.icon },
                 ];
 
             case ComponentType.inputVariable:
                 return [
-                    { id: Utils.getUUID(), name: 'Label', value: name, type: TypeValues.string, propertieType: PropertieTypes.label },
-                    { id: Utils.getUUID(), name: 'Description', type: TypeValues.bigstring, value: "", propertieType: PropertieTypes.description },
+                    { id: Utils.getUUID(), name: 'Label', value: name, type: TypeOfValues.string, propertieType: PropertieTypes.label },
+                    { id: Utils.getUUID(), name: 'Description', type: TypeOfValues.bigstring, value: "", propertieType: PropertieTypes.description },
                     ...(inARouter
                         ? [{
-                            id: Utils.getUUID(), name: 'Parameter in', type: TypeValues.selection, value: ParametersLocation.body, propertieType: PropertieTypes.parametersIn, suggestions: ParametersLocationList.map(value => {
+                            id: Utils.getUUID(), name: 'Parameter in', type: TypeOfValues.selection, value: ParametersLocation.body, propertieType: PropertieTypes.parametersIn, suggestions: ParametersLocationList.map(value => {
                                 return {
                                     name: value,
                                     value: value,
@@ -125,9 +125,9 @@ class DefaultPropsService {
                         }]
                         : []
                     ),
-                    { id: Utils.getUUID(), name: 'Required', type: TypeValues.boolean, value: true, propertieType: PropertieTypes.required },
+                    { id: Utils.getUUID(), name: 'Required', type: TypeOfValues.boolean, value: true, propertieType: PropertieTypes.required },
                     {
-                        id: Utils.getUUID(), name: 'Data type', type: TypeValues.selection, value: DataTypes.string, propertieType: PropertieTypes.dataType, suggestions: DataTypesList.map(value => {
+                        id: Utils.getUUID(), name: 'Data type', type: TypeOfValues.selection, value: DataTypes.string, propertieType: PropertieTypes.dataType, suggestions: DataTypesList.map(value => {
                             return {
                                 name: value,
                                 label: value,
@@ -137,15 +137,15 @@ class DefaultPropsService {
                             }
                         })
                     },
-                    { id: Utils.getUUID(), name: 'Default value', type: TypeValues.expression, value: "", propertieType: PropertieTypes.defaultValue },
+                    { id: Utils.getUUID(), name: 'Default value', type: TypeOfValues.expression, value: "", propertieType: PropertieTypes.defaultValue },
                 ];
 
             case ComponentType.localVariable:
                 return [
-                    { id: Utils.getUUID(), name: 'Label', value: name, type: TypeValues.string, propertieType: PropertieTypes.label },
-                    { id: Utils.getUUID(), name: 'Description', type: TypeValues.bigstring, value: "", propertieType: PropertieTypes.description },
+                    { id: Utils.getUUID(), name: 'Label', value: name, type: TypeOfValues.string, propertieType: PropertieTypes.label },
+                    { id: Utils.getUUID(), name: 'Description', type: TypeOfValues.bigstring, value: "", propertieType: PropertieTypes.description },
                     {
-                        id: Utils.getUUID(), name: 'Data type', type: TypeValues.selection, value: DataTypes.string, propertieType: PropertieTypes.dataType, suggestions: DataTypesList.map(value => {
+                        id: Utils.getUUID(), name: 'Data type', type: TypeOfValues.selection, value: DataTypes.string, propertieType: PropertieTypes.dataType, suggestions: DataTypesList.map(value => {
                             return {
                                 name: value,
                                 label: value,
@@ -155,15 +155,15 @@ class DefaultPropsService {
                             }
                         })
                     },
-                    { id: Utils.getUUID(), name: 'Default value', type: TypeValues.expression, value: "", propertieType: PropertieTypes.defaultValue },
+                    { id: Utils.getUUID(), name: 'Default value', type: TypeOfValues.expression, value: "", propertieType: PropertieTypes.defaultValue },
                 ];
 
             case ComponentType.outputVariable:
                 return [
-                    { id: Utils.getUUID(), name: 'Label', value: name, type: TypeValues.string, propertieType: PropertieTypes.label },
-                    { id: Utils.getUUID(), name: 'Description', type: TypeValues.bigstring, value: "", propertieType: PropertieTypes.description },
+                    { id: Utils.getUUID(), name: 'Label', value: name, type: TypeOfValues.string, propertieType: PropertieTypes.label },
+                    { id: Utils.getUUID(), name: 'Description', type: TypeOfValues.bigstring, value: "", propertieType: PropertieTypes.description },
                     {
-                        id: Utils.getUUID(), name: 'Data type', type: TypeValues.selection, value: DataTypes.string, propertieType: PropertieTypes.dataType, suggestions: DataTypesList.map(value => {
+                        id: Utils.getUUID(), name: 'Data type', type: TypeOfValues.selection, value: DataTypes.string, propertieType: PropertieTypes.dataType, suggestions: DataTypesList.map(value => {
                             return {
                                 name: value,
                                 label: value,
@@ -173,12 +173,12 @@ class DefaultPropsService {
                             }
                         })
                     },
-                    { id: Utils.getUUID(), name: 'Default value', type: TypeValues.expression, value: "", propertieType: PropertieTypes.defaultValue },
+                    { id: Utils.getUUID(), name: 'Default value', type: TypeOfValues.expression, value: "", propertieType: PropertieTypes.defaultValue },
                 ];
 
             default:
                 return [
-                    { id: Utils.getUUID(), name: 'Label', type: TypeValues.viewOnly, value: '<tipo de item não encontrado>', propertieType: PropertieTypes.label },
+                    { id: Utils.getUUID(), name: 'Label', type: TypeOfValues.viewOnly, value: '<tipo de item não encontrado>', propertieType: PropertieTypes.label },
                 ];
         }
     }

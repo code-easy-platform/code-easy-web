@@ -3,8 +3,14 @@ import { Utils } from 'code-easy-components';
 
 import './InputFile.css';
 
-
 type InputFileProps = Omit<{
+    /**
+     * File content, if a image show a preview. 
+     */
+    fileContent: string | ArrayBuffer | null;
+    /**
+     * File name, used to show in the input.
+     */
     fileName?: string;
     /**
      * Max size in bytes
@@ -15,13 +21,14 @@ type InputFileProps = Omit<{
 /**
  * Input use to upload files
  */
-export const InputFile = React.forwardRef(({ fileName, fileMaxSize = 1048576, ...props }: InputFileProps, ref: any) => {
+export const InputFile = React.forwardRef(({ fileName, fileMaxSize = 1048576, fileContent, ...props }: InputFileProps, ref: any) => {
 
-    const input: any = useRef(null);
     const [state, setState] = useState({ fileName });
+    const input: any = useRef(null);
 
     const css_input_file: React.CSSProperties = {
         ...props.style,
+        opacity: props.disabled ? 0.7 : undefined,
         padding: 'var(--size-2)',
         paddingRight: 'var(--size-1)',
         paddingLeft: 'var(--size-1)',
@@ -37,30 +44,35 @@ export const InputFile = React.forwardRef(({ fileName, fileMaxSize = 1048576, ..
     }
 
     return (<>
-        <div
-            {...props}
-            style={css_input_file}
-            id={Utils.getUUID() + "_" + props.id}
-            key={Utils.getUUID() + "_" + props.id}
-            onClick={e => { input.current.click() }}
-            onKeyPress={e => { input.current.click() }}
-        >{state.fileName || 'Select a file...'}</div>
         <input
             ref={input}
-            tabIndex={0}
             type={'file'}
             id={props.id}
             key={props.id}
             disabled={props.disabled}
             style={{ display: 'none' }}
             onChange={(e: any) => {
-                console.log(e.target.files[0])
                 if (e.target.files[0]?.size < fileMaxSize) {
                     setState({ fileName: e.target.files[0]?.name });
                     onChange(e)
                 }
             }}
         />
+        <div
+            {...props}
+            style={css_input_file}
+            id={Utils.getUUID() + "_" + props.id}
+            key={Utils.getUUID() + "_" + props.id}
+            onClick={e => { input.current.click() }}
+            tabIndex={!props.disabled ? 0 : undefined}
+            onKeyPress={e => { input.current.click() }}
+            className={props.className + " input-file-view"}
+        >
+            <div>
+                {fileContent && <img src={String(fileContent)} height={16} alt="" className="padding-right-xs" />}
+                {state.fileName || 'Select a file...'}
+            </div>
+        </div>
     </>);
 
 });
