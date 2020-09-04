@@ -40,7 +40,7 @@ export const HomePage = memo(() => {
     }, [projects]);
 
     return (
-        <div className="main-page fade-in">
+        <div className="main-page">
             <div className="tool-bar background-bars">
                 <div>
                     <TabButton
@@ -54,7 +54,7 @@ export const HomePage = memo(() => {
             </div>
             <hr className="hr" />
 
-            <div className="flex1" style={{ height: "calc(100vh - 60px)" }}>
+            <div className="flex1 fade-in" style={{ height: "calc(100vh - 60px)" }}>
                 <div className="background-panels flex-column" style={{ width: 350 }}>
                     <div className="flex-space-between">
                         <div>
@@ -124,9 +124,11 @@ export const HomePage = memo(() => {
                     <div>
                         <input id="projects-seach" className="padding-m margin-top-m" onChange={e => setFilter(e.target.value)} style={{ width: '40%' }} placeholder="Type here to search ..." />
                         <button
+                            disabled={isAdding}
                             children="New project"
                             onClick={() => setIsAdding(true)}
-                            className="btn outline-none padding-m margin-top-m margin-left-s border-radius background-highlighted"
+                            style={{ backgroundColor: 'var(--color-primary)' }}
+                            className={`btn outline-none padding-m padding-horizontal-xg margin-top-m margin-left-s border-radius ${isAdding ? 'opacity-5' : ''}`}
                         />
                     </div>
                     <hr className="hr margin-bottom-s margin-top-s" style={{ backgroundColor: 'var(--main-background-highlighted)' }} />

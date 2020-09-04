@@ -1,57 +1,50 @@
-import { IFlowItem, ICoords, IConnections } from "../components/code-editor/shared/Interfaces";
 import { ContextModalListService } from "../components/context-modais/ContextModalListService";
 import { IProperties, TypeValues } from "../components/properties-editor/shared/interfaces";
 import { TreeInterface } from '../components/tree-manager/shared/models/TreeInterface';
 import { DefaultPropsHelper } from '../services/helpers/DefaultPropsHelper';
-import { ItemType } from "../components/code-editor/shared/enums/ItemType";
 import { Utils, IconWarning, IconError } from "code-easy-components";
 import { PropertieTypes } from "../enuns/PropertieTypes";
 
+import { IFlowItem, IConnection, EItemType, EFlowItemType } from "../components/flow-editor";
+
 interface IItemFlowComplete extends IFlowItem {
-    select(coords: ICoords): any;
-    connections: IConnections[];
     properties: IProperties[];
-    id: string | undefined;
-    isDisabled: boolean;
-    hasWarning: boolean;
-    isSelected: boolean;
-    hasError: boolean;
-    itemType: ItemType;
-    height: number;
-    width: number;
     name: string;
-    left: number;
-    top: number;
-    icon: any;
 }
 export class ItemFlowComplete implements IItemFlowComplete {
-    public itemType: ItemType = ItemType.START;
-    public connections: IConnections[] = [];
+    public flowItemType: EFlowItemType = EFlowItemType.acorn;
+    public isEnabledNewConnetion: boolean = false;
+    public itemType: EItemType = EItemType.START;
+    public connections: IConnection[] = [];
     public properties: IProperties[] = [];
     public isSelected: boolean = false;
     public hasWarning: boolean = false;
+    public isDisabled: boolean = false;
     public hasError: boolean = false;
+    public description: string = '';
     public id: string | undefined;
     public icon: any = undefined;
-    public isDisabled: boolean;
-    public height: number = 50;
-    public select = () => { };
-    public width: number = 50;
+    public height: number = 40;
+    public label: string = '';
+    public width: number = 40;
     public name: string = "";
     public left: number = 0;
     public top: number = 0;
 
     constructor(
         private _fields: {
-            connections: IConnections[],
+            flowItemType: EFlowItemType,
+            connections: IConnection[],
             properties?: IProperties[],
             id: string | undefined,
+            description?: string,
             isDisabled?: boolean,
             hasWarning?: boolean,
             isSelected: boolean,
-            itemType: ItemType,
+            itemType: EItemType,
             hasError?: boolean,
             height?: number,
+            label?: string,
             width?: number,
             name: string,
             left: number,
@@ -61,13 +54,16 @@ export class ItemFlowComplete implements IItemFlowComplete {
     ) {
         this.isDisabled = _fields.isDisabled || false;
         this.hasWarning = _fields.hasWarning || false;
+        this.description = _fields.description || '';
         this.properties = _fields.properties || [];
         this.hasError = _fields.hasError || false;
+        this.flowItemType = _fields.flowItemType;
         this.connections = _fields.connections;
         this.isSelected = _fields.isSelected;
-        this.height = _fields.height || 50;
-        this.width = _fields.width || 50;
+        this.height = _fields.height || 40;
+        this.width = _fields.width || 40;
         this.itemType = _fields.itemType;
+        this.label = _fields.label || '';
         this.name = _fields.name;
         this.icon = _fields.icon;
         this.left = _fields.left;
@@ -76,7 +72,6 @@ export class ItemFlowComplete implements IItemFlowComplete {
 
         this._updateProperties(this._fields.properties || [], this._fields.itemType);
         this.getProblems();
-
     }
 
     public getProblems(): TreeInterface[] {
@@ -99,7 +94,7 @@ export class ItemFlowComplete implements IItemFlowComplete {
         }
 
         // Se for diferente de END e COMMENT valida se tem sucessores
-        if ((this.itemType !== ItemType.END && this.itemType !== ItemType.COMMENT) && this.connections.length === 0) {
+        if ((this.itemType !== EItemType.END && this.itemType !== EItemType.COMMENT) && this.connections.length === 0) {
             addProblem(`The flow item "${this.name}" is missing a connector`, 'error');
             this.hasError = true;
         }
@@ -113,7 +108,7 @@ export class ItemFlowComplete implements IItemFlowComplete {
             addProblem(`A suitable name for a stream item must be longer than 3 characters in "${this.name}"`, 'warning');
             this.properties.filter(prop => prop.propertieType === PropertieTypes.label).forEach(prop => { prop.valueHasWarning = true; prop.valueHasError = false });
             this.hasWarning = true;
-        } else if (this.name.length > 20 && this.itemType !== ItemType.COMMENT) {
+        } else if (this.name.length > 20 && this.itemType !== EItemType.COMMENT) {
             addProblem(`A suitable name for a stream item must be less than 20 characters in "${this.name}"`, 'warning');
             this.properties.filter(prop => prop.propertieType === PropertieTypes.label).forEach(prop => { prop.valueHasWarning = true; prop.valueHasError = false });
             this.hasWarning = true;
@@ -124,7 +119,7 @@ export class ItemFlowComplete implements IItemFlowComplete {
         // Valida condições para itens específico
         switch (this.itemType) {
 
-            case ItemType.ASSIGN:
+            case EItemType.ASSIGN:
                 this.properties.filter(prop => prop.propertieType === PropertieTypes.assigns).forEach(prop => {
                     prop.valueHasError = false;
                     prop.nameHasError = false;
@@ -139,7 +134,7 @@ export class ItemFlowComplete implements IItemFlowComplete {
                 });
                 break;
 
-            case ItemType.SWITCH:
+            case EItemType.SWITCH:
                 this.properties.filter(prop => prop.propertieType === PropertieTypes.condition).forEach(prop => {
                     prop.valueHasError = false;
 
@@ -151,7 +146,7 @@ export class ItemFlowComplete implements IItemFlowComplete {
                 });
                 break;
 
-            case ItemType.IF:
+            case EItemType.IF:
 
                 // Valida a condition do IF
                 this.properties.filter(prop => prop.propertieType === PropertieTypes.condition).forEach(prop => {
@@ -170,15 +165,15 @@ export class ItemFlowComplete implements IItemFlowComplete {
 
                 break;
 
-            case ItemType.END:
+            case EItemType.END:
                 // Nada para validar aqui
                 break;
 
-            case ItemType.ACTION:
+            case EItemType.ACTION:
                 // Nada para validar aqui ainda
                 break;
 
-            case ItemType.FOREACH:
+            case EItemType.FOREACH:
                 // Nada para validar aqui ainda
                 break;
 
@@ -217,7 +212,7 @@ export class ItemFlowComplete implements IItemFlowComplete {
 
     }
 
-    private _updateProperties(properties: IProperties[], type: ItemType) {
+    private _updateProperties(properties: IProperties[], type: EItemType) {
 
         // Remove o auto focus caso exista em algum componente
         this.properties.forEach(prop => prop.focusOnRender = false);
@@ -243,28 +238,36 @@ export class ItemFlowComplete implements IItemFlowComplete {
 
         switch (type) {
 
-            case ItemType.ASSIGN:
+            case EItemType.ASSIGN:
                 this._propertiesFromAssigns();
                 break;
 
-            case ItemType.ACTION:
+            case EItemType.ACTION:
                 this._propertiesFromAction();
                 break;
 
-            case ItemType.IF:
+            case EItemType.IF:
                 this._propertiesFromIf();
                 break;
 
-            case ItemType.SWITCH:
+            case EItemType.SWITCH:
                 this._propertiesFromSwitch();
                 break;
 
-            case ItemType.FOREACH:
+            case EItemType.FOREACH:
                 this._propertiesFromForeach();
                 break;
 
-            case ItemType.COMMENT:
+            case EItemType.COMMENT:
                 this._propertiesFromComment();
+                break;
+
+            case EItemType.END:
+                this._propertiesFromEnd();
+                break;
+
+            case EItemType.START:
+                this._propertiesFromStart();
                 break;
 
             default:
@@ -306,35 +309,79 @@ export class ItemFlowComplete implements IItemFlowComplete {
             });
 
         }
+
+        // Enable or disable new connections
+        if (this.connections.length === 0) {
+            this.isEnabledNewConnetion = true;
+        } else {
+            this.isEnabledNewConnetion = false;
+        }
     }
 
-    private _propertiesFromAction() { }
+    private _propertiesFromAction() {
+
+        // Enable or disable new connections
+        if (this.connections.length === 0) {
+            this.isEnabledNewConnetion = true;
+        } else {
+            this.isEnabledNewConnetion = false;
+        }
+    }
 
     private _propertiesFromForeach() {
-        this.connections.forEach((connection, index) => {
+        this.connections = this.connections.map((connection, index) => {
             // Renomeando a label da connection
-            if (index === 0) connection.connectionLabel = 'Cycle';
+            if (index === 0)
+                return { ...connection, connectionLabel: 'Cycle' };
+
+            return connection;
         });
+
+        // Enable or disable new connections
+        if (this.connections.length < 2) {
+            this.isEnabledNewConnetion = true;
+        } else {
+            this.isEnabledNewConnetion = false;
+        }
     }
 
     private _propertiesFromIf() {
-        this.connections.forEach((connection, index) => {
 
-            // Renomeando a label da connection
-            if (index === 0) connection.connectionLabel = 'True';
-            else connection.connectionLabel = 'False';
+        this.connections = [
+            ...this.connections.map((connection, index) => {
+                // Renomeando a label da connection
+                if (index === 0) {
+                    return {
+                        ...connection,
+                        connectionLabel: 'True'
+                    };
+                } else {
+                    return {
+                        ...connection,
+                        connectionLabel: 'False'
+                    };
+                }
+            })
+        ];
 
-        });
+        // Enable or disable new connections
+        if (this.connections.length < 2) {
+            this.isEnabledNewConnetion = true;
+        } else {
+            this.isEnabledNewConnetion = false;
+        }
     }
 
     private _propertiesFromSwitch() {
 
-        this.connections.forEach((connection, index) => {
+        this.isEnabledNewConnetion = true;
+
+        this.connections = this.connections.map((connection, index) => {
             if (index === 0) {
-                connection.connectionLabel = 'Default';
+                return { ...connection, connectionLabel: 'Default' };
             } else {
                 // Renomeando a label da connection
-                connection.connectionLabel = 'Condition' + index;
+                connection = { ...connection, connectionLabel: 'Condition' + index };
 
                 // Encontra a connection adicionada préviamente
                 let existentProp = this.properties.find(prop => prop.id === connection.id);
@@ -351,6 +398,8 @@ export class ItemFlowComplete implements IItemFlowComplete {
                     // Está atualizando direto no "this.properties" por referência
                     existentProp.name = 'Condition' + index;
                 }
+
+                return connection;
             }
         });
 
@@ -364,6 +413,9 @@ export class ItemFlowComplete implements IItemFlowComplete {
     }
 
     private _propertiesFromComment() {
+
+        this.isEnabledNewConnetion = true;
+
         const propLabel = this.properties.find(prop => prop.propertieType === PropertieTypes.label);
         const propComment = this.properties.find(prop => prop.propertieType === PropertieTypes.comment);
         this.name = propComment?.value || 'Write here your comment';
@@ -372,4 +424,17 @@ export class ItemFlowComplete implements IItemFlowComplete {
         }
     }
 
+    private _propertiesFromStart() {
+
+        // Enable or disable new connections
+        if (this.connections.length === 0) {
+            this.isEnabledNewConnetion = true;
+        } else {
+            this.isEnabledNewConnetion = false;
+        }
+    }
+
+    private _propertiesFromEnd() {
+        this.isEnabledNewConnetion = false;
+    }
 }

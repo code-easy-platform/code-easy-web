@@ -1,0 +1,26 @@
+.toolbar {
+  border: 0 solid;
+  border-right-width: thin;
+  flex-direction: column;
+  align-items: center;
+  overflow: auto;
+  height: 100%;
+}
+
+.toolbar::-webkit-scrollbar {
+  width: 8px;
+}
+
+.toolbar::-webkit-scrollbar-thumb {
+  width: 8px;
+}
+
+.toolbar-item {
+  transition: filter, transform .1s;
+  cursor: "move";
+}
+
+.toolbar-item:hover {
+  filter: brightness(1.2);
+  transform: scale(1.2);
+}

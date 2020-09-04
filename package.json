@@ -2,7 +2,7 @@
   "name": "code-easy-react",
   "version": "0.0.1",
   "private": false,
-  "license": "MIT",
+  "license": "Apache 2.0",
   "husky": {
     "hooks": {
       "commit-msg": "commitlint -E HUSKY_GIT_PARAMS",
@@ -23,6 +23,7 @@
     "react-monaco-editor": "^0.35.0",
     "react-router-dom": "^5.1.2",
     "react-scripts": "^3.2.0",
+    "recoil": "^0.0.10",
     "typeface-roboto": "^0.0.75"
   },
   "scripts": {
