@@ -11,11 +11,11 @@ import './Editor.css';
 export const Editor: React.FC = () => {
     return (
         <CodeEditorProvider>
-            <div className="main-page fade-in">
+            <div className="main-page">
                 <ToolBar />
                 <hr className="hr" />
 
-                <div style={{ height: "calc(100vh - 62px)" }}>
+                <div className="fade-in" style={{ height: "calc(100vh - 62px)" }}>
                     <Playground />
                 </div>
 

@@ -33,7 +33,6 @@ export class ItemFlowComplete implements IItemFlowComplete {
 
     constructor(
         private _fields: {
-            isEnabledNewConnetion?: boolean,
             flowItemType: EFlowItemType,
             connections: IConnection[],
             properties?: IProperties[],
@@ -53,7 +52,6 @@ export class ItemFlowComplete implements IItemFlowComplete {
             icon?: any,
         },
     ) {
-        this.isEnabledNewConnetion = _fields.isEnabledNewConnetion || false;
         this.isDisabled = _fields.isDisabled || false;
         this.hasWarning = _fields.hasWarning || false;
         this.description = _fields.description || '';
@@ -264,6 +262,14 @@ export class ItemFlowComplete implements IItemFlowComplete {
                 this._propertiesFromComment();
                 break;
 
+            case EItemType.END:
+                this._propertiesFromEnd();
+                break;
+
+            case EItemType.START:
+                this._propertiesFromStart();
+                break;
+
             default:
                 break;
         }
@@ -303,32 +309,76 @@ export class ItemFlowComplete implements IItemFlowComplete {
             });
 
         }
+
+        // Enable or disable new connections
+        if (this.connections.length === 0) {
+            this.isEnabledNewConnetion = true;
+        } else {
+            this.isEnabledNewConnetion = false;
+        }
     }
 
-    private _propertiesFromAction() { }
+    private _propertiesFromAction() {
+
+        // Enable or disable new connections
+        if (this.connections.length === 0) {
+            this.isEnabledNewConnetion = true;
+        } else {
+            this.isEnabledNewConnetion = false;
+        }
+    }
 
     private _propertiesFromForeach() {
-        this.connections.forEach((connection, index) => {
+        this.connections = this.connections.map((connection, index) => {
             // Renomeando a label da connection
-            if (index === 0) connection = { ...connection, connectionLabel: 'Cycle' };
+            if (index === 0)
+                return { ...connection, connectionLabel: 'Cycle' };
+
+            return connection;
         });
+
+        // Enable or disable new connections
+        if (this.connections.length < 2) {
+            this.isEnabledNewConnetion = true;
+        } else {
+            this.isEnabledNewConnetion = false;
+        }
     }
 
     private _propertiesFromIf() {
-        this.connections.forEach((connection, index) => {
 
-            // Renomeando a label da connection
-            if (index === 0) connection = { ...connection, connectionLabel: 'True' };
-            else connection = { ...connection, connectionLabel: 'False' };
+        this.connections = [
+            ...this.connections.map((connection, index) => {
+                // Renomeando a label da connection
+                if (index === 0) {
+                    return {
+                        ...connection,
+                        connectionLabel: 'True'
+                    };
+                } else {
+                    return {
+                        ...connection,
+                        connectionLabel: 'False'
+                    };
+                }
+            })
+        ];
 
-        });
+        // Enable or disable new connections
+        if (this.connections.length < 2) {
+            this.isEnabledNewConnetion = true;
+        } else {
+            this.isEnabledNewConnetion = false;
+        }
     }
 
     private _propertiesFromSwitch() {
 
-        this.connections.forEach((connection, index) => {
+        this.isEnabledNewConnetion = true;
+
+        this.connections = this.connections.map((connection, index) => {
             if (index === 0) {
-                connection = { ...connection, connectionLabel: 'Default' };
+                return { ...connection, connectionLabel: 'Default' };
             } else {
                 // Renomeando a label da connection
                 connection = { ...connection, connectionLabel: 'Condition' + index };
@@ -348,6 +398,8 @@ export class ItemFlowComplete implements IItemFlowComplete {
                     // Está atualizando direto no "this.properties" por referência
                     existentProp.name = 'Condition' + index;
                 }
+
+                return connection;
             }
         });
 
@@ -361,6 +413,9 @@ export class ItemFlowComplete implements IItemFlowComplete {
     }
 
     private _propertiesFromComment() {
+
+        this.isEnabledNewConnetion = true;
+
         const propLabel = this.properties.find(prop => prop.propertieType === PropertieTypes.label);
         const propComment = this.properties.find(prop => prop.propertieType === PropertieTypes.comment);
         this.name = propComment?.value || 'Write here your comment';
@@ -369,4 +424,17 @@ export class ItemFlowComplete implements IItemFlowComplete {
         }
     }
 
+    private _propertiesFromStart() {
+
+        // Enable or disable new connections
+        if (this.connections.length === 0) {
+            this.isEnabledNewConnetion = true;
+        } else {
+            this.isEnabledNewConnetion = false;
+        }
+    }
+
+    private _propertiesFromEnd() {
+        this.isEnabledNewConnetion = false;
+    }
 }
