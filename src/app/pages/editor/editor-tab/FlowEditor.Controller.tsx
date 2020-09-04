@@ -2,18 +2,18 @@ import React, { memo, useCallback } from 'react';
 import { IconTrash, Utils, IconFlowStart, IconFlowAction, IconFlowIf, IconFlowForeach, IconFlowSwitch, IconFlowAssign, IconFlowEnd, IconFlowComment } from 'code-easy-components';
 
 import { FlowEditor, IFlowItem, IBreadCrumbButton, EItemType, EFlowItemType, parseEItemType, EItemTypeList } from '../../../shared/components/flow-editor';
+import { BackgroundEmpty, BackgroundEmptyLeft, BackgroundEmptyLeftToTop } from '../../../assets';
 import { ContextMenuService } from '../../../shared/components/context-menu/ContextMenuService';
+import { DefaultPropsHelper } from '../../../shared/services/helpers/DefaultPropsHelper';
 import { IContextItemList } from '../../../shared/components/context-menu/ContextMenu';
 import { ItemFlowComplete } from '../../../shared/interfaces/ItemFlowComponent';
 import { ItemComponent } from '../../../shared/interfaces/ItemTreeComponent';
 import { useIdeConfigs, useEditorContext } from '../../../shared/contexts';
 import { AssetsService } from '../../../shared/services/AssetsService';
-// import { PropertieTypes } from '../../../shared/enuns/PropertieTypes';
+import { PropertieTypes } from '../../../shared/enuns/PropertieTypes';
 import { ComponentType } from '../../../shared/enuns/ComponentType';
 import { CurrentFocus } from '../../../shared/enuns/CurrentFocus';
 import { Tab } from '../../../shared/interfaces/Tabs';
-import { BackgroundEmpty, BackgroundEmptyLeft } from '../../../assets';
-import { PropertieTypes } from '../../../shared/enuns/PropertieTypes';
 
 export const FlowEditorController: React.FC = memo(() => {
     const { flowBackgroundType, snapGridWhileDragging } = useIdeConfigs();
@@ -54,8 +54,6 @@ export const FlowEditorController: React.FC = memo(() => {
                                     isDisabled: updatedItem.isDisabled,
                                     hasError: updatedItem.hasError,
                                     name: updatedItem.label || '',
-                                    height: updatedItem.height,
-                                    width: updatedItem.width,
                                     left: updatedItem.left,
                                     icon: updatedItem.icon,
                                     top: updatedItem.top,
@@ -72,8 +70,6 @@ export const FlowEditorController: React.FC = memo(() => {
                                     isDisabled: updatedItem.isDisabled,
                                     hasError: updatedItem.hasError,
                                     name: updatedItem.label || '',
-                                    height: updatedItem.height,
-                                    width: updatedItem.width,
                                     icon: updatedItem.icon,
                                     left: updatedItem.left,
                                     top: updatedItem.top,
@@ -100,11 +96,53 @@ export const FlowEditorController: React.FC = memo(() => {
      */
     const handleOnDropItem = useCallback((oldItemId: string, newItemId: string, newItem: IFlowItem) => {
 
+        console.log('oldItemId', oldItemId)
+        console.log('newItemId', newItemId)
+        console.log('newItem', newItem)
+
         // Action
         if (newItem.itemType?.toString() === ComponentType.globalAction.toString() || newItem.itemType?.toString() === ComponentType.localAction.toString()) {
             newItem.isEnabledNewConnetion = true;
             newItem.itemType = EItemType.ACTION;
             newItem.icon = IconFlowAction;
+
+            const originalProperties = DefaultPropsHelper.getNewProps(EItemType.ACTION, newItem.itemType);
+
+            // Encontra a tab certa e atualiza os items
+            project.tabs.forEach((tab: Tab) => {
+                tab.items.forEach(item => {
+                    if (!item.isEditing) {
+                        item.items.forEach(flowItem => flowItem.isSelected = false);
+                    } else {
+
+                        originalProperties.forEach(prop => {
+                            if (prop.propertieType === PropertieTypes.action) {
+                                prop.value = oldItemId;
+                            }
+                        });
+
+                        let completeItem = new ItemFlowComplete({
+                            itemType: parseEItemType(String(newItem.itemType)),
+                            isSelected: newItem.isSelected || false,
+                            connections: newItem.connections || [],
+                            flowItemType: EFlowItemType.acorn,
+                            description: newItem.description,
+                            properties: originalProperties,
+                            hasWarning: newItem.hasWarning,
+                            isDisabled: newItem.isDisabled,
+                            hasError: newItem.hasError,
+                            name: newItem.label || '',
+                            label: newItem.itemType,
+                            icon: newItem.icon,
+                            left: newItem.left,
+                            top: newItem.top,
+                            id: newItem.id,
+                        });
+
+                        item.items.push(completeItem);
+                    }
+                })
+            })
 
             // Some var type
         } else if (
@@ -126,7 +164,7 @@ export const FlowEditorController: React.FC = memo(() => {
         changeFocus();
 
         return newItem;
-    }, [changeFocus]);
+    }, [changeFocus, project.tabs]);
 
     /** Alimenta a toolbox, de onde pode ser arrastados items para o fluxo. */
     const toolBoxItems = useCallback(() => [
@@ -212,8 +250,6 @@ export const FlowEditorController: React.FC = memo(() => {
                                     name: item.name,
                                     connections: [],
                                     properties: [],
-                                    height: 40,
-                                    width: 40,
                                     left,
                                     top,
                                 }));
@@ -354,6 +390,37 @@ export const FlowEditorController: React.FC = memo(() => {
 
     const flowEditorItemsResult = flowEditorItems();
 
+    const getBackgroundEmpty = useCallback(() => {
+
+        if (flowEditorItemsResult.flowItems.length !== 0) return null;
+
+        if (flowEditorItemsResult.hasSomethingEditing) {
+            return (
+                <>
+                    <BackgroundEmptyLeft className="opacity-9" width={600} style={{ position: 'absolute', top: 0, left: 0 }} />
+                    <BackgroundEmpty className="opacity-9" width={600} style={{ position: 'absolute', top: 0, right: 0 }} />
+                    <h1 style={{ textAlign: 'center' }}>Drag and drop something here</h1>
+                </>
+            );
+        } else if (!flowEditorItemsResult.hasSomethingToEdit) {
+            return (
+                <>
+                    <h1 style={{ textAlign: 'center' }}>In the tree on the left,<br /> create a new feature to start</h1>
+                    <BackgroundEmptyLeftToTop className="opacity-9" width={600} style={{ position: 'absolute', top: 0, right: 0 }} />
+                </>
+            );
+        } else if (flowEditorItemsResult.hasSomethingToEdit && !flowEditorItemsResult.hasSomethingEditing) {
+            return (
+                <>
+                    <h1 style={{ textAlign: 'center' }}>In the tree on the left,<br />double click to edit</h1>
+                    <BackgroundEmptyLeftToTop className="opacity-9" width={600} style={{ position: 'absolute', top: 0, right: 0 }} />
+                </>
+            );
+        } else {
+            return null;
+        }
+    }, [flowEditorItemsResult]);
+
     return (
         <FlowEditor
             id={"CODE_EDITOR"}
@@ -363,37 +430,23 @@ export const FlowEditorController: React.FC = memo(() => {
             items={flowEditorItemsResult.flowItems}
             onChangeItems={handleOnChangeItems}
             childrenWhenItemsEmpty={
-                (flowEditorItemsResult.flowItems.length === 0)
-                    ? (
-                        flowEditorItemsResult.hasSomethingEditing
-                            ? (
-                                <div style={{ height: '-webkit-fill-available', width: '-webkit-fill-available', justifyContent: 'center', alignItems: 'center', opacity: 0.5 }}>
-                                    <BackgroundEmptyLeft className="opacity-9" width={600} style={{ position: 'absolute', top: 0, left: 0 }} />
-                                    <BackgroundEmpty className="opacity-9" width={600} style={{ position: 'absolute', top: 0, right: 0 }} />
-                                    <h1 style={{ textAlign: 'center' }}>Drag and drop something here to start</h1>
-                                </div>)
-                            : (
-                                <div style={{ height: '-webkit-fill-available', width: '-webkit-fill-available', justifyContent: 'center', alignItems: 'center', opacity: 0.5 }}>
-                                    <h1 style={{ textAlign: 'center' }}>In the tree on the left,<br /> create a new feature to start</h1>
-                                    <BackgroundEmpty className="opacity-9" width={600} style={{ position: 'absolute', top: 0, right: 0 }} />
-                                </div>
-                            )
-                    )
-                    : null
+                <div className="opacity-6 flex-content-center flex-items-center no-events" style={{ height: '-webkit-fill-available', width: '-webkit-fill-available' }}>
+                    {getBackgroundEmpty()}
+                </div>
             }
             configs={{
-                selectionBackgroundColor: '#ffffff11',
                 selectionBorderColor: 'var(--color-botton-bar)',
+                selectionBackgroundColor: '#ffffff11',
 
-                commentTextColor: '#ffffff',
-                flowItemErrorColor: 'var(--main-error-color)',
-                flowItemSelectedColor: 'var(--color-botton-bar)',
                 flowItemWarningColor: 'var(--main-warning-color)',
+                flowItemSelectedColor: 'var(--color-botton-bar)',
+                flowItemErrorColor: 'var(--main-error-color)',
+                commentTextColor: '#ffffff',
 
-                lineWidth: 1,
-                backgroundType: flowBackgroundType,
-                snapGridWhileDragging: snapGridWhileDragging,
                 typesAllowedToDrop: [...EItemTypeList, ComponentType.globalAction, ComponentType.localAction, ComponentType.localVariable, ComponentType.inputVariable, ComponentType.outputVariable],
+                snapGridWhileDragging: snapGridWhileDragging,
+                backgroundType: flowBackgroundType,
+                lineWidth: 1,
             }}
             onContextMenu={(e) => {
                 if (e) {

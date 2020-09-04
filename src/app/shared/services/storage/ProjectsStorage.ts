@@ -194,6 +194,10 @@ export class ProjectsStorage {
 
         project.openWindows.splice(indexToRemove, 1);
 
+        if (project.openWindows.length > 0) {
+            project = ProjectsStorage.selectWindowById(project, project.openWindows[project.openWindows.length - 1].id);
+        }
+
         project.tabs.forEach(tab => {
             tab.items.forEach(item => {
                 if (item.id === windowId) {

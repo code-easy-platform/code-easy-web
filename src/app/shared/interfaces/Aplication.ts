@@ -125,8 +125,6 @@ export class Project implements IProject {
                         isSelected: itemFlow.isSelected,
                         itemType: itemFlow.itemType,
                         hasError: itemFlow.hasError,
-                        height: itemFlow.height,
-                        width: itemFlow.width,
                         left: itemFlow.left,
                         name: itemFlow.name,
                         icon: itemFlow.icon,

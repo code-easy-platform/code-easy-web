@@ -43,9 +43,7 @@ export class ItemFlowComplete implements IItemFlowComplete {
             isSelected: boolean,
             itemType: EItemType,
             hasError?: boolean,
-            height?: number,
             label?: string,
-            width?: number,
             name: string,
             left: number,
             top: number,
@@ -60,8 +58,6 @@ export class ItemFlowComplete implements IItemFlowComplete {
         this.flowItemType = _fields.flowItemType;
         this.connections = _fields.connections;
         this.isSelected = _fields.isSelected;
-        this.height = _fields.height || 40;
-        this.width = _fields.width || 40;
         this.itemType = _fields.itemType;
         this.label = _fields.label || '';
         this.name = _fields.name;

@@ -1,7 +1,7 @@
 import React, { useCallback, useRef } from 'react';
 import { DropTargetMonitor } from 'react-dnd';
-import { useRecoilCallback } from 'recoil';
 import { Utils } from 'code-easy-components';
+import { useRecoilCallback } from 'recoil';
 
 import { useFlowItems, useConfigs, useSelectItemById, useCopySelecteds, usePasteSelecteds, useFlowItemsConnetionsSelector, useDuplicateSelecteds } from './shared/hooks';
 import { FlowItemStore, FlowItemsStore, GetFlowItemsSelector, GetSelectedFlowItemsSelector, FlowLinesStore } from './shared/stores';
@@ -295,7 +295,7 @@ export const FlowEditorBoard: React.FC<IFlowEditorBoardProps> = (props) => {
         }
 
         /** Wait for the return to insert the item, if you receive undefined just insert, if different from undefined insert the result of the event if there is something */
-        const onDropRes = onDropItem ? onDropItem(item.id, String(newItem.id), newItem) : undefined;
+        const onDropRes = onDropItem ? onDropItem(item.itemProps.id, String(newItem.id), newItem) : undefined;
         if (!onDropRes) {
 
             // Add a new item in array state
