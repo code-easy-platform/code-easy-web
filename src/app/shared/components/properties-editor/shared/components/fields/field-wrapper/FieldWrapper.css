@@ -1,0 +1,15 @@
+.container-field-wrapper {
+    justify-content: space-between;
+    height: min-content;
+    align-items: center;
+    position: relative;
+}
+
+.label-field-wrapper {
+    text-overflow: ellipsis;
+    display: inline-block;
+    white-space: nowrap;
+    font-size: smaller;
+    text-align: start;
+    overflow: hidden;
+}

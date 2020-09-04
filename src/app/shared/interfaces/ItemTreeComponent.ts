@@ -1,6 +1,6 @@
 import { Utils, IconWarning, IconError } from "code-easy-components";
 
-import { IProperties } from "../components/properties-editor/shared/interfaces";
+import { IProperty } from "../components/properties-editor/shared/interfaces";
 import { DefaultPropsHelper } from '../services/helpers/DefaultPropsHelper';
 import { TreeInterface } from "../components/tree-manager/shared/models";
 import { ComponentType } from "../enuns/ComponentType";
@@ -70,7 +70,7 @@ interface IItemComponent extends BaseFields {
     /** Usado para fazer auto referência usado para construir árvores */
     itemPaiId: string | undefined;
     /** Usado para lista todas as propriedades de um item */
-    properties: IProperties[];
+    properties: IProperty[];
 }
 export class ItemComponent implements IItemComponent {
     public id: string | undefined;
@@ -92,7 +92,7 @@ export class ItemComponent implements IItemComponent {
     /** Usado para fazer auto referência usado para construir árvores */
     public itemPaiId: string | undefined;
     /** Usado para lista todas as propriedades de um item */
-    public properties: IProperties[] = [];
+    public properties: IProperty[] = [];
 
     constructor(
         private _fields: {
@@ -116,7 +116,7 @@ export class ItemComponent implements IItemComponent {
             type: ComponentType;
             nodeExpanded: boolean;
             /** Usado para lista todas as propriedades de um item */
-            properties?: IProperties[];
+            properties?: IProperty[];
             items: ItemFlowComplete[];
             itemPaiId: string | undefined;
         }
@@ -196,7 +196,7 @@ export class ItemComponent implements IItemComponent {
         return problems;
     }
 
-    private _updateProperties(properties: IProperties[], type: ComponentType) {
+    private _updateProperties(properties: IProperty[], type: ComponentType) {
         const originalProperties = DefaultPropsHelper.getNewProps(type, this.label, (this.type === ComponentType.routerConsume || this.type === ComponentType.routerExpose));
 
         originalProperties.forEach(originalProp => {

@@ -1,0 +1,38 @@
+.options {
+    align-items: flex-start;
+    scroll-behavior: smooth;
+    max-height: 200px;
+    list-style: none;
+    overflow: auto;
+}
+
+.option-item input {
+    opacity: 0;
+    height: 0;
+    width: 0;
+}
+
+.option-item {
+    max-width: 250px;
+}
+
+.option-item label {
+    width: -webkit-fill-available;
+}
+
+.option-item label:hover {
+    background-color: var(--main-background-highlighted);
+}
+
+.option-item label+input:disabled {
+    filter: brightness(0.7);
+}
+
+.option-item :checked:focus+label {
+    background-color: var(--main-background-highlighted);
+}
+
+.input-search {
+    border-radius: 0;
+    width: -webkit-fill-available;
+}
