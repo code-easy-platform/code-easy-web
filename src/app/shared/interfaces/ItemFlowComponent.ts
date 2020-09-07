@@ -33,7 +33,6 @@ export class ItemFlowComplete implements IItemFlowComplete {
 
     constructor(
         private _fields: {
-            flowItemType: EFlowItemType,
             connections: IConnection[],
             properties?: IProperty[],
             id: string | undefined,
@@ -55,7 +54,6 @@ export class ItemFlowComplete implements IItemFlowComplete {
         this.description = _fields.description || '';
         this.properties = _fields.properties || [];
         this.hasError = _fields.hasError || false;
-        this.flowItemType = _fields.flowItemType;
         this.connections = _fields.connections;
         this.isSelected = _fields.isSelected;
         this.itemType = _fields.itemType;
@@ -410,8 +408,8 @@ export class ItemFlowComplete implements IItemFlowComplete {
 
     private _propertiesFromComment() {
 
-        this.isEnabledNewConnetion = true;
         this.flowItemType = EFlowItemType.comment;
+        this.isEnabledNewConnetion = true;
 
         const propLabel = this.properties.find(prop => prop.propertieType === PropertieTypes.label);
         const propComment = this.properties.find(prop => prop.propertieType === PropertieTypes.comment);

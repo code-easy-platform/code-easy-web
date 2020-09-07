@@ -48,7 +48,6 @@ export const FlowEditorController: React.FC = memo(() => {
                                     isSelected: updatedItem.isSelected || false,
                                     connections: updatedItem.connections || [],
                                     properties: item.items[index].properties,
-                                    flowItemType: updatedItem.flowItemType,
                                     description: updatedItem.description,
                                     hasWarning: updatedItem.hasWarning,
                                     isDisabled: updatedItem.isDisabled,
@@ -64,7 +63,6 @@ export const FlowEditorController: React.FC = memo(() => {
                                     itemType: parseEItemType(String(updatedItem.itemType)),
                                     isSelected: updatedItem.isSelected || false,
                                     connections: updatedItem.connections || [],
-                                    flowItemType: updatedItem.flowItemType,
                                     description: updatedItem.description,
                                     hasWarning: updatedItem.hasWarning,
                                     isDisabled: updatedItem.isDisabled,
@@ -125,7 +123,6 @@ export const FlowEditorController: React.FC = memo(() => {
                             itemType: parseEItemType(String(newItem.itemType)),
                             isSelected: newItem.isSelected || false,
                             connections: newItem.connections || [],
-                            flowItemType: EFlowItemType.acorn,
                             description: newItem.description,
                             properties: originalProperties,
                             hasWarning: newItem.hasWarning,
@@ -240,7 +237,6 @@ export const FlowEditorController: React.FC = memo(() => {
                                 // Adiciona a tab com os items alterados
                                 item_tree.items.push(new ItemFlowComplete({
                                     icon: AssetsService.getIcon(item.itemType),
-                                    flowItemType: item.itemType === EItemType.COMMENT ? EFlowItemType.comment : EFlowItemType.acorn,
                                     itemType: item.itemType,
                                     id: Utils.getUUID(),
                                     isDisabled: false,
@@ -427,8 +423,8 @@ export const FlowEditorController: React.FC = memo(() => {
             toolItems={toolBoxItems()}
             breadcrumbs={getBreadcamps()}
             onDropItem={handleOnDropItem}
-            items={flowEditorItemsResult.flowItems}
             onChangeItems={handleOnChangeItems}
+            items={flowEditorItemsResult.flowItems}
             childrenWhenItemsEmpty={
                 <div className="opacity-6 flex-content-center flex-items-center no-events" style={{ height: '-webkit-fill-available', width: '-webkit-fill-available' }}>
                     {getBackgroundEmpty()}

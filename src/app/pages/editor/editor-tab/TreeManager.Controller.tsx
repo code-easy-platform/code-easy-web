@@ -4,13 +4,13 @@ import { IconTrash, Utils, IconFlowStart, IconFlowEnd } from 'code-easy-componen
 import { TreeInterface } from '../../../shared/components/tree-manager/shared/models/TreeInterface';
 import { ContextMenuService } from '../../../shared/components/context-menu/ContextMenuService';
 import { IContextItemList } from '../../../shared/components/context-menu/ContextMenu';
-import { EItemType, EFlowItemType } from '../../../shared/components/flow-editor';
 import { TreeManager } from '../../../shared/components/tree-manager/TreeManager';
 import { ItemFlowComplete } from '../../../shared/interfaces/ItemFlowComponent';
 import { ItemComponent } from '../../../shared/interfaces/ItemTreeComponent';
 import { AssetsService } from '../../../shared/services/AssetsService';
 import { PropertieTypes } from '../../../shared/enuns/PropertieTypes';
 import { ComponentType } from '../../../shared/enuns/ComponentType';
+import { EItemType } from '../../../shared/components/flow-editor';
 import { CurrentFocus } from '../../../shared/enuns/CurrentFocus';
 import { useEditorContext } from '../../../shared/contexts';
 import { Tab } from '../../../shared/interfaces/Tabs';
@@ -232,8 +232,8 @@ export const TreeManagerController: React.FC = () => {
                         items: (
                             routerType === ComponentType.routerExpose
                                 ? [
-                                    new ItemFlowComplete({ id: '1', name: "START", flowItemType: EFlowItemType.acorn, icon: IconFlowStart, itemType: EItemType.START, left: 188, top: 128, isSelected: false, connections: [{ id: Utils.getUUID(), targetId: '2', originId: '1', isSelected: false }], properties: [] }),
-                                    new ItemFlowComplete({ id: '2', name: "END", flowItemType: EFlowItemType.acorn, icon: IconFlowEnd, itemType: EItemType.END, left: 188, top: 384, isSelected: false, connections: [], properties: [] })
+                                    new ItemFlowComplete({ id: '1', name: "START", icon: IconFlowStart, itemType: EItemType.START, left: 188, top: 128, isSelected: false, connections: [{ id: Utils.getUUID(), targetId: '2', originId: '1', isSelected: false }], properties: [] }),
+                                    new ItemFlowComplete({ id: '2', name: "END", icon: IconFlowEnd, itemType: EItemType.END, left: 188, top: 384, isSelected: false, connections: [], properties: [] })
                                 ]
                                 : []
                         ),
@@ -278,8 +278,8 @@ export const TreeManagerController: React.FC = () => {
                         itemPaiId: inputItemId,
                         type: ComponentType.globalAction,
                         items: [
-                            new ItemFlowComplete({ id: '1', name: "START", flowItemType: EFlowItemType.acorn, icon: IconFlowStart, itemType: EItemType.START, left: 188, top: 128, isSelected: false, connections: [{ id: Utils.getUUID(), targetId: '2', originId: '1', isSelected: false }], properties: [] }),
-                            new ItemFlowComplete({ id: '2', name: "END", flowItemType: EFlowItemType.acorn, icon: IconFlowEnd, itemType: EItemType.END, left: 188, top: 384, isSelected: false, connections: [], properties: [] })
+                            new ItemFlowComplete({ id: '1', name: "START", icon: IconFlowStart, itemType: EItemType.START, left: 188, top: 128, isSelected: false, connections: [{ id: Utils.getUUID(), targetId: '2', originId: '1', isSelected: false }], properties: [] }),
+                            new ItemFlowComplete({ id: '2', name: "END", icon: IconFlowEnd, itemType: EItemType.END, left: 188, top: 384, isSelected: false, connections: [], properties: [] })
                         ],
                     }));
                 }
