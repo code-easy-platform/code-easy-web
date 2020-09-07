@@ -28,7 +28,6 @@ export const InputExpression: React.FC<SimpleStringProps> = ({ onChange, ...prop
     }, [onChange, props, value]);
 
     const handleOnSelect = useCallback((option: ISuggestion<string>) => {
-        console.log(option)
         if (option.value !== value && onChange) {
             onChange({ ...props, value: option.value });
             setValue(option.value);
@@ -36,6 +35,13 @@ export const InputExpression: React.FC<SimpleStringProps> = ({ onChange, ...prop
             setValue(option.value);
         }
     }, [onChange, props, value]);
+
+    const hadleOnKeyPress = useCallback((e: React.KeyboardEvent<HTMLInputElement>) => {
+        if (e.key === 'Enter' && onChange) {
+            onChange({ ...props, value: e.currentTarget.value });
+            setValue(e.currentTarget.value);
+        }
+    }, [onChange, props]);
 
     return (
         <FieldWrapper
@@ -54,6 +60,7 @@ export const InputExpression: React.FC<SimpleStringProps> = ({ onChange, ...prop
                     onSelectSuggest={handleOnSelect}
                     autoFocus={props.focusOnRender}
                     suggestions={props.suggestions}
+                    onKeyPress={hadleOnKeyPress}
                     onChange={handleOnChange}
                     onBlur={handleOnBlur}
                     value={value}

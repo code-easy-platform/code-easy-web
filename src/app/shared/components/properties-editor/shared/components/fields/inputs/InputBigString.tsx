@@ -26,6 +26,13 @@ export const InputBigString: React.FC<InputBigStringProps> = ({ onChange, ...pro
         }
     }, [onChange, props, value]);
 
+    const hadleOnKeyPress = useCallback((e: React.KeyboardEvent<HTMLTextAreaElement>) => {
+        if (e.ctrlKey && e.key === 'Enter' && onChange) {
+            onChange({ ...props, value: e.currentTarget.value });
+            setValue(e.currentTarget.value);
+        }
+    }, [onChange, props]);
+
     return (
         <FieldWrapper
             minWidth={60}
@@ -40,6 +47,7 @@ export const InputBigString: React.FC<InputBigStringProps> = ({ onChange, ...pro
                     className={"full-width background-bars"}
                     disabled={props.editValueDisabled}
                     autoFocus={props.focusOnRender}
+                    onKeyPress={hadleOnKeyPress}
                     onChange={handleOnChange}
                     onBlur={handleOnBlur}
                     autoComplete={"off"}

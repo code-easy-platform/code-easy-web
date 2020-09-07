@@ -8,6 +8,7 @@ interface PropertiesEditorFormProps {
     onChange?(item: IItem): void;
 }
 export const PropertiesEditorForm: React.FC<PropertiesEditorFormProps> = ({ item, onChange }) => {
+    const showHeader = item.name !== "" && (item.subname && item.subname !== "");
 
     const handleOnChange = useCallback((fields: IProperty<any>[]) => {
         onChange && onChange({ ...item, properties: fields });
@@ -15,13 +16,13 @@ export const PropertiesEditorForm: React.FC<PropertiesEditorFormProps> = ({ item
 
     return (
         <div className="flex1 flex-column full-width">
-            <Header
+            {showHeader && <Header
                 title={item.name}
                 subtitle={item.subname}
                 titleFontSize={"medium"}
                 subtitleFontSize={"x-small"}
                 backgroundColor={"var(--main-background-bars)"}
-            />
+            />}
             <FieldsList
                 onChange={handleOnChange}
                 fields={item.properties}

@@ -31,12 +31,20 @@ export const InputFullBigString: React.FC<InputFullBigStringProps> = ({ onChange
         }
     }, [onChange, props, value]);
 
+    const hadleOnKeyPress = useCallback((e: React.KeyboardEvent<HTMLTextAreaElement>) => {
+        if (e.ctrlKey && e.key === 'Enter' && onChange) {
+            onChange({ ...props, value: e.currentTarget.value });
+            setValue(e.currentTarget.value);
+        }
+    }, [onChange, props]);
+
     return (
         <div style={css_prop_item} className="padding-s padding-bottom-none">
             <textarea
                 className={"full-width background-bars"}
                 disabled={props.editValueDisabled}
                 autoFocus={props.focusOnRender}
+                onKeyPress={hadleOnKeyPress}
                 id={'prop_id_' + props.id}
                 onChange={handleOnChange}
                 onBlur={handleOnBlur}

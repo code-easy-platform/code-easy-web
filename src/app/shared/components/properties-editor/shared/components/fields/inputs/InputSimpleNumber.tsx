@@ -26,6 +26,13 @@ export const InputSimpleNumber: React.FC<InputSimpleNumberProps> = ({ onChange, 
         }
     }, [onChange, props, value]);
 
+    const hadleOnKeyPress = useCallback((e: React.KeyboardEvent<HTMLInputElement>) => {
+        if (e.key === 'Enter' && onChange) {
+            onChange({ ...props, value: Number(e.currentTarget.value) });
+            setValue(Number(e.currentTarget.value));
+        }
+    }, [onChange, props]);
+
     return (
         <FieldWrapper
             minWidth={60}
@@ -40,6 +47,7 @@ export const InputSimpleNumber: React.FC<InputSimpleNumberProps> = ({ onChange, 
                     className={"full-width background-bars"}
                     disabled={props.editValueDisabled}
                     autoFocus={props.focusOnRender}
+                    onKeyPress={hadleOnKeyPress}
                     onChange={handleOnChange}
                     onBlur={handleOnBlur}
                     autoComplete={'off'}
