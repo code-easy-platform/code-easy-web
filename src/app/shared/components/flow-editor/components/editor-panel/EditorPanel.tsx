@@ -1,7 +1,8 @@
 import React, { memo, useRef } from 'react';
-import { useDrop, DropTargetMonitor } from 'react-dnd';
+import { useDrop, DropTargetMonitor, XYCoord } from 'react-dnd';
 
 import { useBoardSize } from '../../shared/hooks';
+import { IDroppableItem } from '../../shared/interfaces';
 
 type EditorPanelProps = Omit<{
     dotColor?: string;
@@ -12,13 +13,14 @@ type EditorPanelProps = Omit<{
     allowedsInDrop?: string[];
     onChangeZoom?(zoom: number): void;
     backgroundType?: 'dotted' | 'checkered' | 'custom';
-    onDropItem?(item: any, monitor: DropTargetMonitor): void;
     onAnyKeyDown?(event: React.KeyboardEvent<SVGSVGElement>): void;
     onKeyDownCtrlC?(event: React.KeyboardEvent<SVGSVGElement>): void;
     onKeyDownCtrlD?(event: React.KeyboardEvent<SVGSVGElement>): void;
     onKeyDownCtrlV?(event: React.KeyboardEvent<SVGSVGElement>): void;
-    onKeyDownDelete?(event: React.KeyboardEvent<SVGSVGElement>): void;
     onKeyDownCtrlA?(event: React.KeyboardEvent<SVGSVGElement>): void;
+    onKeyDownDelete?(event: React.KeyboardEvent<SVGSVGElement>): void;
+    onDropItem?(item: IDroppableItem, monitor: DropTargetMonitor): void;
+    onDropPlaceholderChange?(isShow: boolean, item?: IDroppableItem, XYCoords?: XYCoord): void;
     onArrowKeyDown?(direction: 'ArrowUp' | 'ArrowDown' | 'ArrowLeft' | 'ArrowRight', event: React.KeyboardEvent<SVGSVGElement>): void;
 }, keyof React.SVGProps<SVGSVGElement>> & React.SVGProps<SVGSVGElement>;
 
@@ -30,7 +32,7 @@ type EditorPanelProps = Omit<{
  * @param onDropItem - **Function** - Função executada quando um elemento for dropado no painel
  * @param backgroundType - **'dotted'** | **'checkered'** | **'custom'** - Parâmetro que controla o estilo do background do painel
  */
-const EditorPanel = React.forwardRef(({ allowedsInDrop, onDropItem, onChangeZoom, dotColor = '', elevationColor = 'black', useElevation = false, backgroundColor = '', dottedSize = 15, backgroundType = 'dotted', onArrowKeyDown, onKeyDownCtrlC, onKeyDownCtrlD, onKeyDownCtrlV, onKeyDownCtrlA, onKeyDownDelete, onAnyKeyDown, ...props }: EditorPanelProps, ref: any) => {
+const EditorPanel = React.forwardRef(({ allowedsInDrop, onDropItem, onDropPlaceholderChange, onChangeZoom, dotColor = '', elevationColor = 'black', useElevation = false, backgroundColor = '', dottedSize = 15, backgroundType = 'dotted', onArrowKeyDown, onKeyDownCtrlC, onKeyDownCtrlD, onKeyDownCtrlV, onKeyDownCtrlA, onKeyDownDelete, onAnyKeyDown, ...props }: EditorPanelProps, ref: any) => {
     const { height, width } = useBoardSize();
 
     const [zoom, setZoom] = React.useState(1);
@@ -78,10 +80,32 @@ const EditorPanel = React.forwardRef(({ allowedsInDrop, onDropItem, onChangeZoom
     }
 
     /** Usado para que seja possível o drop de items no editor. */
-    const [, dropRef] = useDrop({
-        accept: [...allowedsInDrop || []], // Especifica quem pode ser dropado na editor
-        drop: onDropItem,
+    const [, dropRef] = useDrop<IDroppableItem, any, any>({
+        accept: [...(allowedsInDrop || [])], // Especifica quem pode ser dropado na editor
+        drop: (item: IDroppableItem, monitor: DropTargetMonitor) => {
+            onDropPlaceholderChange && onDropPlaceholderChange(false);
+            onDropItem && onDropItem(item, monitor);
+        },
+        hover: !onDropPlaceholderChange ? undefined : (item, monitor) => {
 
+            const target = ref.current;
+            const isElemOver = monitor.isOver();
+            const draggedOffSet = monitor.getClientOffset();
+
+            if (isElemOver && target && draggedOffSet) {
+
+                const targetSize = target.getBoundingClientRect();
+                const targetOffsetY = (draggedOffSet.y + (targetSize.top - targetSize.top - targetSize.top) - 25);
+                const targetOffsetX = (draggedOffSet.x + (targetSize.left - targetSize.left - targetSize.left) - 25);
+
+                onDropPlaceholderChange(isElemOver, item, {
+                    x: Math.round(targetOffsetX / 15) * 15,
+                    y: Math.round(targetOffsetY / 15) * 15
+                });
+            } else {
+                onDropPlaceholderChange(isElemOver);
+            }
+        }
     });
 
     /** Agrupa as referências do drop com as da ref. */

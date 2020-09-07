@@ -2,6 +2,7 @@ import React, { memo } from 'react';
 import { useDrag } from 'react-dnd';
 
 import { EFlowItemType } from '../../../shared/enums';
+import { IDroppableItem } from '../../../shared/interfaces';
 
 interface ListItemProps {
     icon?: any;
@@ -13,8 +14,8 @@ interface ListItemProps {
 const ListItemDraggable: React.FC<ListItemProps> = ({ flowItemType, itemType, label, icon, width = 30 }) => {
 
     /** Permite que uym elemento seja arrastado e adicionado dentro do editor de fluxo. */
-    const [, dragRef] = useDrag({
-        item: { type: itemType || 'undefined', itemProps: { label, itemType, flowItemType, icon, width: 40, height: 40 } },
+    const [, dragRef] = useDrag<IDroppableItem, any, any>({
+        item: { type: itemType || 'undefined', itemProps: { id: undefined, label, itemType, flowItemType, icon, width: 40, height: 40 } },
         collect: monitor => ({ isDragging: monitor.isDragging() }),
     });
 

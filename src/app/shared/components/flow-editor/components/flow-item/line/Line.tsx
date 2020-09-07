@@ -6,6 +6,7 @@ import { useRecoilValue } from 'recoil';
 import { useConfigs, useSelectItemById, useCreateOrUpdateConnection } from '../../../shared/hooks';
 import { GetConnectionPropsSelector } from '../../../shared/stores';
 import { TextOverLine, Arrow, SingleLine } from './components';
+import { IDroppableItem } from '../../../shared/interfaces';
 import { emitOnChange } from '../../on-change-emitter';
 import { EFlowItemType } from '../../../shared/enums';
 
@@ -154,7 +155,7 @@ export const Line: React.FC<LineProps> = ({ id, originId, allowedsInDrop, newCon
     }, [selectItemById, id, onMouseDown]);
 
     /** Used to make it possible to drop items on the line. */
-    const [{ isDraggingOver }, dropRef] = useDrop({
+    const [{ isDraggingOver }, dropRef] = useDrop<IDroppableItem, any, any>({
         accept: !isComment && allowedsInDrop ? allowedsInDrop : [], // Especifica quem pode ser dropado na editor
         drop: (item, monitor) => onDropItem && onDropItem(item, monitor, id),
         collect: (monitor) => ({
