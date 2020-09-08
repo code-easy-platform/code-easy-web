@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useEffect } from 'react';
 
 import { FieldWrapper } from '../field-wrapper/FieldWrapper';
 import { IProperty } from '../../../interfaces';
@@ -9,7 +9,9 @@ interface SimpleStringProps extends IProperty<string> {
 }
 export const SimpleString: React.FC<SimpleStringProps> = ({ onChange, ...props }) => {
     const { inputBorderError, inputBorderWarning, inputBorderDefault, inputTextError, inputTextWarning, inputTextDefault } = useConfigs();
+    
     const [value, setValue] = useState(props.value);
+    useEffect(() => setValue(props.value), [props.value]);
 
     const handleOnChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
         if (props.useOnChange && onChange) {
@@ -26,6 +28,13 @@ export const SimpleString: React.FC<SimpleStringProps> = ({ onChange, ...props }
         }
     }, [onChange, props, value]);
 
+    const hadleOnKeyPress = useCallback((e: React.KeyboardEvent<HTMLInputElement>) => {
+        if (e.key === 'Enter' && onChange) {
+            onChange({ ...props, value: e.currentTarget.value });
+            setValue(e.currentTarget.value);
+        }
+    }, [onChange, props]);
+
     return (
         <FieldWrapper
             minWidth={60}
@@ -40,6 +49,7 @@ export const SimpleString: React.FC<SimpleStringProps> = ({ onChange, ...props }
                     className={"full-width background-bars"}
                     disabled={props.editValueDisabled}
                     autoFocus={props.focusOnRender}
+                    onKeyPress={hadleOnKeyPress}
                     onChange={handleOnChange}
                     onBlur={handleOnBlur}
                     autoComplete={'off'}

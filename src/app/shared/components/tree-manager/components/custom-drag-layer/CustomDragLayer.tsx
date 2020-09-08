@@ -3,11 +3,11 @@ import { useDragLayer, XYCoord } from 'react-dnd';
 
 export const CustomDragLayer: React.FC = ({ children }) => {
 
-    const { isDragging, initialOffset, currentOffset } = useDragLayer((monitor) => ({
+    const { isDragging, initialOffset, clientOffset } = useDragLayer((monitor) => ({
         item: monitor.getItem(),
         itemType: monitor.getItemType(),
         isDragging: monitor.isDragging(),
-        currentOffset: monitor.getSourceClientOffset(),
+        clientOffset: monitor.getClientOffset(),
         initialOffset: monitor.getInitialSourceClientOffset(),
     }));
 
@@ -30,7 +30,7 @@ export const CustomDragLayer: React.FC = ({ children }) => {
 
     return (
         <div style={{ pointerEvents: 'none', position: 'fixed', zIndex: 10000, left: 0, top: 0 }}>
-            <div style={getItemStyles(initialOffset, currentOffset)}>
+            <div style={getItemStyles(initialOffset, clientOffset)}>
                 {children}
             </div>
         </div>

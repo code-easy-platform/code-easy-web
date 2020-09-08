@@ -1,9 +1,10 @@
+import { Utils, IconWarning, IconError } from "code-easy-components";
+
 import { ContextModalListService } from "../components/context-modais/ContextModalListService";
 import { IProperty, TypeOfValues } from "../components/properties-editor";
-import { TreeInterface } from '../components/tree-manager/shared/models/TreeInterface';
 import { DefaultPropsHelper } from '../services/helpers/DefaultPropsHelper';
-import { Utils, IconWarning, IconError } from "code-easy-components";
 import { PropertieTypes } from "../enuns/PropertieTypes";
+import { ITreeItem } from '../components/tree-manager';
 
 import { IFlowItem, IConnection, EItemType, EFlowItemType } from "../components/flow-editor";
 
@@ -33,7 +34,6 @@ export class ItemFlowComplete implements IItemFlowComplete {
 
     constructor(
         private _fields: {
-            flowItemType: EFlowItemType,
             connections: IConnection[],
             properties?: IProperty[],
             id: string | undefined,
@@ -43,9 +43,7 @@ export class ItemFlowComplete implements IItemFlowComplete {
             isSelected: boolean,
             itemType: EItemType,
             hasError?: boolean,
-            height?: number,
             label?: string,
-            width?: number,
             name: string,
             left: number,
             top: number,
@@ -57,11 +55,8 @@ export class ItemFlowComplete implements IItemFlowComplete {
         this.description = _fields.description || '';
         this.properties = _fields.properties || [];
         this.hasError = _fields.hasError || false;
-        this.flowItemType = _fields.flowItemType;
         this.connections = _fields.connections;
         this.isSelected = _fields.isSelected;
-        this.height = _fields.height || 40;
-        this.width = _fields.width || 40;
         this.itemType = _fields.itemType;
         this.label = _fields.label || '';
         this.name = _fields.name;
@@ -74,8 +69,8 @@ export class ItemFlowComplete implements IItemFlowComplete {
         this.getProblems();
     }
 
-    public getProblems(): TreeInterface[] {
-        let problems: TreeInterface[] = [];
+    public getProblems(): ITreeItem[] {
+        let problems: ITreeItem[] = [];
         this.hasWarning = false;
         this.hasError = false;
 
@@ -88,7 +83,6 @@ export class ItemFlowComplete implements IItemFlowComplete {
                 id: undefined,
                 iconSize: 15,
                 type: "ITEM",
-                childs: [],
                 label,
             });
         }
@@ -197,19 +191,21 @@ export class ItemFlowComplete implements IItemFlowComplete {
         if (problems.length <= 1) {
             return problems;
         } else {
-            return [{
-                // icon: this.hasError ? IconError : IconWarning,
-                label: `Inconsistences in flow item "${this.name}"`,
-                isDisabledSelect: true,
-                nodeExpanded: true,
-                isSelected: false,
-                childs: problems,
-                id: undefined,
-                iconSize: 15,
-                type: "ITEM",
-            }];
+            const newId = Utils.getUUID();
+            return [
+                ...problems.map(problem => ({ ...problem, ascendantId: newId })),
+                {
+                    // icon: this.hasError ? IconError : IconWarning,
+                    label: `Inconsistences in flow item "${this.name}"`,
+                    isDisabledSelect: true,
+                    nodeExpanded: true,
+                    isSelected: false,
+                    id: newId,
+                    iconSize: 15,
+                    type: "ITEM",
+                },
+            ];
         }
-
     }
 
     private _updateProperties(properties: IProperty[], type: EItemType) {
@@ -414,8 +410,8 @@ export class ItemFlowComplete implements IItemFlowComplete {
 
     private _propertiesFromComment() {
 
-        this.isEnabledNewConnetion = true;
         this.flowItemType = EFlowItemType.comment;
+        this.isEnabledNewConnetion = true;
 
         const propLabel = this.properties.find(prop => prop.propertieType === PropertieTypes.label);
         const propComment = this.properties.find(prop => prop.propertieType === PropertieTypes.comment);

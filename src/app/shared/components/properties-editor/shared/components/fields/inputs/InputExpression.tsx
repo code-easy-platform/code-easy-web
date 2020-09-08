@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useEffect } from 'react';
 
 import { ExpressionInput } from '../../expression-input/ExpressionInput';
 import { IProperty, ISuggestion } from '../../../interfaces';
@@ -10,7 +10,9 @@ interface SimpleStringProps extends IProperty<string> {
 }
 export const InputExpression: React.FC<SimpleStringProps> = ({ onChange, ...props }) => {
     const { inputBorderError, inputBorderWarning, inputBorderDefault, inputTextError, inputTextWarning, inputTextDefault } = useConfigs();
+
     const [value, setValue] = useState(props.value);
+    useEffect(() => setValue(props.value), [props.value]);
 
     const handleOnChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
         if (props.useOnChange && onChange) {
@@ -28,7 +30,6 @@ export const InputExpression: React.FC<SimpleStringProps> = ({ onChange, ...prop
     }, [onChange, props, value]);
 
     const handleOnSelect = useCallback((option: ISuggestion<string>) => {
-        console.log(option)
         if (option.value !== value && onChange) {
             onChange({ ...props, value: option.value });
             setValue(option.value);
@@ -36,6 +37,13 @@ export const InputExpression: React.FC<SimpleStringProps> = ({ onChange, ...prop
             setValue(option.value);
         }
     }, [onChange, props, value]);
+
+    const hadleOnKeyPress = useCallback((e: React.KeyboardEvent<HTMLInputElement>) => {
+        if (e.key === 'Enter' && onChange) {
+            onChange({ ...props, value: e.currentTarget.value });
+            setValue(e.currentTarget.value);
+        }
+    }, [onChange, props]);
 
     return (
         <FieldWrapper
@@ -54,6 +62,7 @@ export const InputExpression: React.FC<SimpleStringProps> = ({ onChange, ...prop
                     onSelectSuggest={handleOnSelect}
                     autoFocus={props.focusOnRender}
                     suggestions={props.suggestions}
+                    onKeyPress={hadleOnKeyPress}
                     onChange={handleOnChange}
                     onBlur={handleOnBlur}
                     value={value}

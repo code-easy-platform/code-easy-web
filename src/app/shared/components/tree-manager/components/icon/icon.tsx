@@ -27,9 +27,9 @@ export const Icon: React.FC<IconProps> = ({ onClick, onDoubleClick, icon, iconNa
             width={iconSize}
             height={iconSize}
             onClick={onClick}
-            alt={"TreeItem" + iconName}
+            alt={"TreeItem_" + iconName}
             onDoubleClick={onDoubleClick}
-            style={{ margin: 4, marginRight: 10 }}
+            style={{ marginRight: 4 }}
         />
     );
 }

@@ -2,7 +2,7 @@ import { Utils, IconWarning, IconError } from "code-easy-components";
 
 import { IProperty } from "../components/properties-editor/shared/interfaces";
 import { DefaultPropsHelper } from '../services/helpers/DefaultPropsHelper';
-import { TreeInterface } from "../components/tree-manager/shared/models";
+import { ITreeItem } from "../components/tree-manager";
 import { ComponentType } from "../enuns/ComponentType";
 import { ItemFlowComplete } from "./ItemFlowComponent";
 import { EItemType } from "../components/flow-editor";
@@ -140,8 +140,8 @@ export class ItemComponent implements IItemComponent {
     /**
      * Encontra as possíveis inconsistências que poderão em erros no código fonte final
      */
-    public getProblems(): TreeInterface[] {
-        let problems: TreeInterface[] = [];
+    public getProblems(): ITreeItem[] {
+        let problems: ITreeItem[] = [];
 
         const addProblem = (label: string, type: 'warning' | 'error') => {
             problems.push({
@@ -152,7 +152,6 @@ export class ItemComponent implements IItemComponent {
                 id: undefined,
                 iconSize: 15,
                 type: "ITEM",
-                childs: [],
                 label,
             });
         };

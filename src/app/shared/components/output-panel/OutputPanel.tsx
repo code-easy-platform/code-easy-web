@@ -1,8 +1,7 @@
 import React, { useState, memo } from 'react';
 
-import { TreeInterface } from '../tree-manager/shared/models/TreeInterface';
 import { TabGroup, TabButton } from '../tab-button/TabButton';
-import { TreeManager } from '../tree-manager/TreeManager';
+import { TreeManager, ITreeItem } from '../tree-manager';
 import { NewsMD } from './NewsMD/NewsMD';
 
 enum OutputTab {
@@ -14,9 +13,9 @@ enum OutputTab {
 }
 
 interface OutputPanelProps {
-    notification?: TreeInterface[];
-    problems?: TreeInterface[];
-    output?: TreeInterface[];
+    notification?: ITreeItem[];
+    problems?: ITreeItem[];
+    output?: ITreeItem[];
 }
 export const OutputPanel: React.FC<OutputPanelProps> = memo(({ notification, output, problems }) => {
     const [currTab, setCurrtab] = useState(OutputTab.problems);
@@ -38,21 +37,20 @@ export const OutputPanel: React.FC<OutputPanelProps> = memo(({ notification, out
                 {currTab === OutputTab.problems && <>
                     <TreeManager
                         onContextMenu={() => { }}
-                        onDoubleClick={() => { }}
                         items={problems || []}
-                        onClick={() => { }}
+                        configs={{}}
                     />
                 </>}
                 {currTab === OutputTab.output && <>
                     <TreeManager
                         onContextMenu={() => { }}
-                        onDoubleClick={() => { }}
                         items={output || []}
-                        onClick={() => { }}
+                        configs={{}}
                     />
                 </>}
                 {currTab === OutputTab.notifications && <>
                     <TreeManager
+                        onContextMenu={() => { }}
                         items={notification || [{
                             label: "No notifications have been detected",
                             isDisabledSelect: true,
@@ -60,11 +58,8 @@ export const OutputPanel: React.FC<OutputPanelProps> = memo(({ notification, out
                             isSelected: false,
                             id: undefined,
                             type: "ITEM",
-                            childs: [],
                         }]}
-                        onContextMenu={() => { }}
-                        onDoubleClick={() => { }}
-                        onClick={() => { }}
+                        configs={{}}
                     />
                 </>}
                 {currTab === OutputTab.whatsnew && <NewsMD />}

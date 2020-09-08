@@ -2,18 +2,20 @@ import React, { useCallback } from 'react';
 
 import { IFlowItem } from '../../../shared/interfaces/FlowItemInterfaces';
 import { useConfigs, useSelectItemById } from '../../../shared/hooks';
-import { SelectionBox, TextOverItem, ImageView} from './components';
+import { SelectionBox, TextOverItem, ImageView } from './components';
 import NewConnectionBox from '../line/NewConnectionBox';
 
 interface FlowComponentProps {
     item: IFlowItem;
+
+    useEvents?: boolean;
 
     /** Used in parent component to move this element in the screen */
     onMouseDown?(event: React.MouseEvent<SVGGElement, MouseEvent>): void;
     /** Used to start the context menu for this específic component */
     onContextMenu?(event: React.MouseEvent<SVGGElement, MouseEvent>): void;
 }
-export const Acorn: React.FC<FlowComponentProps> = ({ item, onContextMenu, onMouseDown }) => {
+export const Acorn: React.FC<FlowComponentProps> = ({ item, useEvents, onContextMenu, onMouseDown }) => {
     const { flowItemErrorColor, flowItemTextColor, flowItemWarningColor, flowItemSelectedColor, lineWidth, backgroundColor } = useConfigs();
     const selectItemById = useSelectItemById();
 
@@ -41,6 +43,7 @@ export const Acorn: React.FC<FlowComponentProps> = ({ item, onContextMenu, onMou
         <g
             role={item.flowItemType}
             onContextMenu={contextMenu}
+            style={{ pointerEvents: (useEvents === undefined || useEvents) ? undefined : 'none' }}
         >
             {item.isEnabledNewConnetion && <NewConnectionBox
                 onMouseDown={e => selectItemById(item.id, e.ctrlKey)}

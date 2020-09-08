@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useState, useEffect } from 'react';
 
 import { IProperty, ISuggestion } from './../../../interfaces';
 import { useConfigs } from '../../../contexts';
@@ -10,8 +10,12 @@ interface IAssignProps extends IProperty<string> {
 }
 export const Assign: React.FC<IAssignProps> = (props) => {
     const { inputBorderError, inputBorderWarning, inputBorderDefault, inputTextError, inputTextWarning, inputTextDefault } = useConfigs();
+
     const [value, setValue] = useState(props.value);
+    useEffect(() => setValue(props.value), [props.value]);
+
     const [name, setName] = useState(props.name);
+    useEffect(() => setName(props.name), [props.name]);
 
     const css_prop_item_input_name: React.CSSProperties = {
         border: props.nameHasError ? inputBorderError : props.nameHasWarning ? inputBorderWarning : inputBorderDefault,
@@ -77,6 +81,20 @@ export const Assign: React.FC<IAssignProps> = (props) => {
         }
     }, [props, value]);
 
+    const hadleNameOnKeyPress = useCallback((e: React.KeyboardEvent<HTMLInputElement>) => {
+        if (e.key === 'Enter' && props.onChange) {
+            props.onChange({ ...props, name: e.currentTarget.value });
+            setName(e.currentTarget.value);
+        }
+    }, [props]);
+
+    const hadleValueOnKeyPress = useCallback((e: React.KeyboardEvent<HTMLInputElement>) => {
+        if (e.key === 'Enter' && props.onChange) {
+            props.onChange({ ...props, value: e.currentTarget.value });
+            setValue(e.currentTarget.value);
+        }
+    }, [props]);
+
     return (
         <div className="flex-column padding-s padding-bottom-none">
             <ExpressionInput
@@ -87,6 +105,7 @@ export const Assign: React.FC<IAssignProps> = (props) => {
                 id={'name_prop_id_' + props.id}
                 autoFocus={props.focusOnRender}
                 style={css_prop_item_input_name}
+                onKeyPress={hadleNameOnKeyPress}
                 disabled={props.editNameDisabled}
                 key={'name_prop_key_' + props.id}
                 suggestions={props.nameSuggestions}
@@ -107,6 +126,7 @@ export const Assign: React.FC<IAssignProps> = (props) => {
                     onChange={handleOnChangeValue}
                     suggestions={props.suggestions}
                     id={'value_prop_id_' + props.id}
+                    onKeyPress={hadleValueOnKeyPress}
                     style={css_prop_item_input_value}
                     key={'value_prop_key_' + props.id}
                     disabled={props.editValueDisabled}

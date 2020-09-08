@@ -1,15 +1,12 @@
-import { TreeInterface } from "../../components/tree-manager/shared/models/TreeInterface";
+import { ITreeItem } from "../../components/tree-manager";
 import { Project } from "../../interfaces/Aplication";
 
 class OutputHelperService {
     /**
      * Get all problems in a project
      */
-    public getOutput(project: Project): TreeInterface[] {
-        let res: TreeInterface[] = [];
-
-        
-
+    public getOutput(project: Project): ITreeItem[] {
+        let res: ITreeItem[] = [];
 
         if (res.length === 0) {
             res.push({
@@ -19,7 +16,6 @@ class OutputHelperService {
                 isSelected: false,
                 id: undefined,
                 type: "ITEM",
-                childs: [],
             });
         }
 

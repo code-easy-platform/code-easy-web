@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useEffect } from 'react';
 
 import { IProperty } from '../../../interfaces';
 import { useConfigs } from '../../../contexts';
@@ -14,7 +14,9 @@ interface InputFullBigStringProps extends IProperty<string> {
 }
 export const InputFullBigString: React.FC<InputFullBigStringProps> = ({ onChange, ...props }) => {
     const { inputBorderError, inputBorderWarning, inputBorderDefault, inputTextError, inputTextWarning, inputTextDefault } = useConfigs();
+    
     const [value, setValue] = useState(props.value);
+    useEffect(() => setValue(props.value), [props.value]);
 
     const handleOnChange = useCallback((e: React.ChangeEvent<HTMLTextAreaElement>) => {
         if (props.useOnChange && onChange) {
@@ -31,12 +33,20 @@ export const InputFullBigString: React.FC<InputFullBigStringProps> = ({ onChange
         }
     }, [onChange, props, value]);
 
+    const hadleOnKeyPress = useCallback((e: React.KeyboardEvent<HTMLTextAreaElement>) => {
+        if (e.ctrlKey && e.key === 'Enter' && onChange) {
+            onChange({ ...props, value: e.currentTarget.value });
+            setValue(e.currentTarget.value);
+        }
+    }, [onChange, props]);
+
     return (
         <div style={css_prop_item} className="padding-s padding-bottom-none">
             <textarea
                 className={"full-width background-bars"}
                 disabled={props.editValueDisabled}
                 autoFocus={props.focusOnRender}
+                onKeyPress={hadleOnKeyPress}
                 id={'prop_id_' + props.id}
                 onChange={handleOnChange}
                 onBlur={handleOnBlur}

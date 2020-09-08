@@ -37,7 +37,12 @@ export const ExpressionInput: React.FC<ExpressionInputProps> = ({ onPickerClick,
 
     return (
         <div className="flex1" style={{ alignItems: 'center', justifyContent: 'flex-end', position: "relative" }}>
-            <input {...props} autoComplete='off' style={{ ...props.style, width: '100%' }} className={`${(suggestions || []).length > 0 && "padding-right-g"}`} />
+            <input
+                {...props}
+                autoComplete='off'
+                style={{ ...props.style, width: '100%' }}
+                className={`${(suggestions || []).length > 0 && "padding-right-g"}`}
+            />
             {(!props.disabled && (suggestions || []).length > 0) && (
                 <img
                     alt={"open-suggestions"}
