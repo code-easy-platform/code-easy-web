@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useEffect } from 'react';
 
 import { IProperty, IFileContent } from '../../../interfaces';
 import { FieldWrapper } from '../field-wrapper/FieldWrapper';
@@ -11,6 +11,7 @@ interface InputImportFileProps extends IProperty<IFileContent> {
 export const InputImportFile: React.FC<InputImportFileProps> = ({ onChange, ...props }) => {
     const { inputBorderError, inputBorderWarning, inputBorderDefault, inputTextError, inputTextWarning, inputTextDefault } = useConfigs();
     const [value, setValue] = useState(props.value);
+    useEffect(() => setValue(props.value), [props.value]);
 
     const handleOnChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
         if (e.target.files && e.target.files[0]) {

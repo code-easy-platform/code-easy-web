@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useState, useEffect } from 'react';
 
 import { IProperty, ISuggestion } from './../../../interfaces';
 import { useConfigs } from '../../../contexts';
@@ -10,8 +10,12 @@ interface IAssignProps extends IProperty<string> {
 }
 export const Assign: React.FC<IAssignProps> = (props) => {
     const { inputBorderError, inputBorderWarning, inputBorderDefault, inputTextError, inputTextWarning, inputTextDefault } = useConfigs();
+
     const [value, setValue] = useState(props.value);
+    useEffect(() => setValue(props.value), [props.value]);
+
     const [name, setName] = useState(props.name);
+    useEffect(() => setName(props.name), [props.name]);
 
     const css_prop_item_input_name: React.CSSProperties = {
         border: props.nameHasError ? inputBorderError : props.nameHasWarning ? inputBorderWarning : inputBorderDefault,

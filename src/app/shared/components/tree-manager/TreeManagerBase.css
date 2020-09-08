@@ -1,0 +1,122 @@
+:root {
+    --selected-item-color: #1f724320;
+    --focused-item-color: #1f724320;
+    --editing-item-color: #1f724340;
+    /*  */
+    --warning-item-text-color: yellow;
+    --error-item-text-color: red;
+}
+
+/* Estiliza a base da árvore*/
+
+.tree-base {
+    scroll-behavior: smooth;
+    flex-direction: column;
+    overflow: auto;
+    flex: 1;
+}
+
+.tree-base:focus {
+    outline: none;
+}
+
+.tree-base::-webkit-scrollbar {
+    width: 10px;
+    height: 20px;
+}
+
+.tree-base::-webkit-scrollbar-thumb {
+    background-color: #ffffff10;
+}
+
+.tree-base:hover::-webkit-scrollbar-thumb {
+    background-color: #ffffff40;
+}
+
+.tree-base::-webkit-scrollbar-thumb:hover {
+    background-color: #ffffff50;
+}
+
+.tree-base::-webkit-scrollbar-thumb:active {
+    background-color: #ffffff70;
+}
+
+.tree-base::-webkit-scrollbar-corner {
+    background-color: transparent;
+}
+
+/* Configure tree item */
+
+.tree-item input {
+    opacity: 0;
+    height: 0;
+    width: 0;
+}
+
+.tree-item label {
+    flex: 1;
+    padding: 4px;
+    display: flex;
+    cursor: pointer;
+    text-align: start;
+    align-items: center;
+    white-space: nowrap;
+    word-break: keep-all;
+}
+
+.tree-item label:hover {
+    background-color: var(--focused-item-color);
+}
+
+.tree-item label.error {
+    color: var(--error-item-text-color);
+    text-decoration: underline wavy;
+}
+
+.tree-item label.warning {
+    color: var(--warning-item-text-color);
+    text-decoration: underline wavy;
+}
+
+.tree-item.disabled label {
+    filter: brightness(0.6);
+}
+
+.tree-item.selected label {
+    background-color: var(--selected-item-color);
+}
+
+.tree-item.dragging label {
+    filter: brightness(0.4);
+    background-color: #ffffff10;
+}
+
+.tree-item.dragging-over label {
+    animation-name: animation-dragging-over;
+    animation-iteration-count: infinite;
+    background-color: #ffffff10;
+    animation-duration: 1s;
+    border-radius: 50px;
+}
+
+.tree-item :checked:focus+label {
+    background-color: var(--focused-item-color);
+}
+
+.tree-item.editing label,
+.tree-item.editing.selected label,
+.tree-item.editing.selected :checked:focus+label label {
+    background-color: var(--editing-item-color);
+}
+
+@keyframes animation-dragging-over {
+    0% {
+        opacity: 0.2;
+    }
+    50% {
+        opacity: 1;
+    }
+    100% {
+        opacity: 0.2;
+    }
+}

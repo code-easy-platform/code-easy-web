@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useEffect } from 'react';
 
 import { ExpressionInput } from '../../expression-input/ExpressionInput';
 import { IProperty, ISuggestion } from '../../../interfaces';
@@ -10,7 +10,9 @@ interface SimpleStringProps extends IProperty<string> {
 }
 export const InputExpression: React.FC<SimpleStringProps> = ({ onChange, ...props }) => {
     const { inputBorderError, inputBorderWarning, inputBorderDefault, inputTextError, inputTextWarning, inputTextDefault } = useConfigs();
+
     const [value, setValue] = useState(props.value);
+    useEffect(() => setValue(props.value), [props.value]);
 
     const handleOnChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
         if (props.useOnChange && onChange) {

@@ -1,8 +1,8 @@
-export interface TreeInterface {
+export interface ITreeItem {
     /**
      * Current item type
      */
-    type: any;
+    type: string;
     /**
      * Custom Icon
      */
@@ -20,9 +20,17 @@ export interface TreeInterface {
      */
     hasError?: boolean;
     /**
+     * Leaves item text in yellow to indicate an error
+     */
+    hasWarning?: boolean;
+    /**
      * Indicates that the current feature is being edited
      */
     isEditing?: boolean;
+    /**
+     * Used to be found by the item that comes before, your igniter.
+     */
+    ascendantId?: string;
     /**
      * Indicates that the current element is being selected
      */
@@ -47,10 +55,6 @@ export interface TreeInterface {
      * Unique identifier
      */
     id: string | undefined;
-    /**
-     * Items that will be displayed when the current item's node is expanded
-     */
-    childs: TreeInterface[];
     /**
      * Property that controls whether the expand and shrink node icon is displayed or not
      */
@@ -84,4 +88,3 @@ export interface TreeInterface {
      */
     isAllowedToggleNodeExpand?: boolean;
 }
-

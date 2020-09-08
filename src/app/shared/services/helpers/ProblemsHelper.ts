@@ -1,18 +1,18 @@
 import { Utils, IconWarning, IconError } from "code-easy-components";
 
-import { TreeInterface } from "../../components/tree-manager/shared/models/TreeInterface";
 import { Project, IProjectConfigs } from "../../interfaces/Aplication";
 import { PropertieTypes } from "../../enuns/PropertieTypes";
+import { ITreeItem } from "../../components/tree-manager";
 import { ComponentType } from "../../enuns/ComponentType";
 import { EItemType } from "../../components/flow-editor";
 
 class ProblemsHelperService {
-    private _problems: TreeInterface[] = [];
+    private _problems: ITreeItem[] = [];
 
     /**
      * Get all problems in a project
      */
-    public getProblems(project: Project): { problems: TreeInterface[]; project: Project } {
+    public getProblems(project: Project): { problems: ITreeItem[]; project: Project } {
         this._problems = [];
 
         // Valida possiveis erros nas configurações
@@ -93,7 +93,6 @@ class ProblemsHelperService {
                 isSelected: false,
                 id: undefined,
                 type: "ITEM",
-                childs: [],
             });
         }
 
@@ -109,7 +108,6 @@ class ProblemsHelperService {
             id: undefined,
             iconSize: 15,
             type: "ITEM",
-            childs: [],
             label,
         });
     }

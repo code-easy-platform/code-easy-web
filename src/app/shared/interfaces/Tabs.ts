@@ -1,7 +1,8 @@
-import { ItemComponent, ComponentConfigs } from "./ItemTreeComponent";
-import { TreeInterface } from "../components/tree-manager/shared/models";
 import { IconWarning, IconError } from "code-easy-components";
-import { ComponentType } from "../enuns/ComponentType";
+
+import { ItemComponent, ComponentConfigs } from "./ItemTreeComponent";
+import { ITreeItem } from "../components/tree-manager";
+import { ComponentType } from "../enuns";
 
 export class Tab {
     public configs: ComponentConfigs;
@@ -17,8 +18,8 @@ export class Tab {
         this.items = this._fields.items.map(item => new ItemComponent(item));
     }
 
-    public getProblems(): TreeInterface[] {
-        let problems: TreeInterface[] = [];
+    public getProblems(): ITreeItem[] {
+        let problems: ITreeItem[] = [];
 
         const addProblem = (label: string, type: 'warning' | 'error') => {
             problems.push({
@@ -29,7 +30,6 @@ export class Tab {
                 id: undefined,
                 iconSize: 15,
                 type: "ITEM",
-                childs: [],
                 label,
             });
         }

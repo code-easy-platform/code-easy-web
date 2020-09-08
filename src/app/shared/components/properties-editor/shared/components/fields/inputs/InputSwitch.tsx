@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useEffect } from 'react';
 
 import { FieldWrapper } from './../field-wrapper/FieldWrapper';
 import { Switch } from '../../toggle-swicth/Switch';
@@ -10,7 +10,9 @@ interface InputSwitchProps extends IProperty<boolean> {
 }
 export const InputSwitch: React.FC<InputSwitchProps> = ({ onChange, ...props }) => {
     const { inputBorderError, inputBorderWarning, inputBorderDefault } = useConfigs();
+    
     const [value, setValue] = useState(props.value);
+    useEffect(() => setValue(props.value), [props.value]);
 
     const handleOnChange = useCallback((value: boolean) => {
         if (onChange) {

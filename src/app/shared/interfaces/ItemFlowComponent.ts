@@ -1,9 +1,10 @@
+import { Utils, IconWarning, IconError } from "code-easy-components";
+
 import { ContextModalListService } from "../components/context-modais/ContextModalListService";
 import { IProperty, TypeOfValues } from "../components/properties-editor";
-import { TreeInterface } from '../components/tree-manager/shared/models/TreeInterface';
 import { DefaultPropsHelper } from '../services/helpers/DefaultPropsHelper';
-import { Utils, IconWarning, IconError } from "code-easy-components";
 import { PropertieTypes } from "../enuns/PropertieTypes";
+import { ITreeItem } from '../components/tree-manager';
 
 import { IFlowItem, IConnection, EItemType, EFlowItemType } from "../components/flow-editor";
 
@@ -68,8 +69,8 @@ export class ItemFlowComplete implements IItemFlowComplete {
         this.getProblems();
     }
 
-    public getProblems(): TreeInterface[] {
-        let problems: TreeInterface[] = [];
+    public getProblems(): ITreeItem[] {
+        let problems: ITreeItem[] = [];
         this.hasWarning = false;
         this.hasError = false;
 
@@ -82,7 +83,6 @@ export class ItemFlowComplete implements IItemFlowComplete {
                 id: undefined,
                 iconSize: 15,
                 type: "ITEM",
-                childs: [],
                 label,
             });
         }
@@ -191,19 +191,21 @@ export class ItemFlowComplete implements IItemFlowComplete {
         if (problems.length <= 1) {
             return problems;
         } else {
-            return [{
-                // icon: this.hasError ? IconError : IconWarning,
-                label: `Inconsistences in flow item "${this.name}"`,
-                isDisabledSelect: true,
-                nodeExpanded: true,
-                isSelected: false,
-                childs: problems,
-                id: undefined,
-                iconSize: 15,
-                type: "ITEM",
-            }];
+            const newId = Utils.getUUID();
+            return [
+                ...problems.map(problem => ({ ...problem, ascendantId: newId })),
+                {
+                    // icon: this.hasError ? IconError : IconWarning,
+                    label: `Inconsistences in flow item "${this.name}"`,
+                    isDisabledSelect: true,
+                    nodeExpanded: true,
+                    isSelected: false,
+                    id: newId,
+                    iconSize: 15,
+                    type: "ITEM",
+                },
+            ];
         }
-
     }
 
     private _updateProperties(properties: IProperty[], type: EItemType) {

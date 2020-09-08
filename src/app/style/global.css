@@ -200,17 +200,6 @@ input[type="checkbox"]:checked {
   opacity: 0.5;
 }
 
-.dragging {
-  border-radius: 50px;
-  width: fit-content;
-}
-
-.dragging-over {
-  background-color: var(--main-background-highlighted) !important;
-  border-radius: 50px !important;
-  width: fit-content !important;
-}
-
 .text-underline-error {
   text-decoration: var(--text-underline-error);
 }
