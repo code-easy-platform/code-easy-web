@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useEffect } from 'react';
+import React, { useState, useCallback, useEffect, useRef } from 'react';
 
 import { FieldWrapper } from '../field-wrapper/FieldWrapper';
 import { IProperty } from '../../../interfaces';
@@ -9,6 +9,13 @@ interface InputSelectionYesNoProps extends IProperty<boolean> {
 }
 export const InputSelectionYesNo: React.FC<InputSelectionYesNoProps> = ({ onChange, ...props }) => {
     const { inputBorderError, inputBorderWarning, inputBorderDefault, inputTextError, inputTextWarning, inputTextDefault } = useConfigs();
+
+    const inputRef = useRef<HTMLSelectElement>(null);
+    useEffect(() => {
+        if (inputRef.current && props.focusOnRender) {
+            inputRef.current.focus();
+        }
+    }, [props]);
     
     const [value, setValue] = useState(props.value);
     useEffect(() => setValue(props.value), [props.value]);
@@ -44,6 +51,7 @@ export const InputSelectionYesNo: React.FC<InputSelectionYesNoProps> = ({ onChan
                     className={"background-bars"}
                     onChange={handleOnChange}
                     value={String(value)}
+                    ref={inputRef}
                     id={inputId}
                     style={{
                         textDecoration: props.valueHasError ? inputTextError : props.valueHasWarning ? inputTextWarning : inputTextDefault,

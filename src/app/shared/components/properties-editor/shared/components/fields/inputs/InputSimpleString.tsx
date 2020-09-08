@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useEffect } from 'react';
+import React, { useState, useCallback, useEffect, useRef } from 'react';
 
 import { FieldWrapper } from '../field-wrapper/FieldWrapper';
 import { IProperty } from '../../../interfaces';
@@ -9,6 +9,13 @@ interface SimpleStringProps extends IProperty<string> {
 }
 export const SimpleString: React.FC<SimpleStringProps> = ({ onChange, ...props }) => {
     const { inputBorderError, inputBorderWarning, inputBorderDefault, inputTextError, inputTextWarning, inputTextDefault } = useConfigs();
+
+    const inputRef = useRef<HTMLInputElement>(null);
+    useEffect(() => {
+        if (inputRef.current && props.focusOnRender) {
+            inputRef.current.focus();
+        }
+    }, [props]);
     
     const [value, setValue] = useState(props.value);
     useEffect(() => setValue(props.value), [props.value]);
@@ -53,6 +60,7 @@ export const SimpleString: React.FC<SimpleStringProps> = ({ onChange, ...props }
                     onChange={handleOnChange}
                     onBlur={handleOnBlur}
                     autoComplete={'off'}
+                    ref={inputRef}
                     value={value}
                     id={inputId}
                     style={{

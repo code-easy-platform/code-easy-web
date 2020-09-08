@@ -38,14 +38,20 @@ export const OutputPanel: React.FC<OutputPanelProps> = memo(({ notification, out
                     <TreeManager
                         onContextMenu={() => { }}
                         items={problems || []}
-                        configs={{}}
+                        configs={{
+                            isUseDrag: false,
+                            isUseDrop: false,
+                        }}
                     />
                 </>}
                 {currTab === OutputTab.output && <>
                     <TreeManager
                         onContextMenu={() => { }}
                         items={output || []}
-                        configs={{}}
+                        configs={{
+                            isUseDrag: false,
+                            isUseDrop: false,
+                        }}
                     />
                 </>}
                 {currTab === OutputTab.notifications && <>
@@ -59,7 +65,10 @@ export const OutputPanel: React.FC<OutputPanelProps> = memo(({ notification, out
                             id: undefined,
                             type: "ITEM",
                         }]}
-                        configs={{}}
+                        configs={{
+                            isUseDrag: false,
+                            isUseDrop: false,
+                        }}
                     />
                 </>}
                 {currTab === OutputTab.whatsnew && <NewsMD />}

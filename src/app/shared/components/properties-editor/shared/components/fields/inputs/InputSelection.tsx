@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useEffect } from 'react';
+import React, { useState, useCallback, useEffect, useRef } from 'react';
 
 import { FieldWrapper } from '../field-wrapper/FieldWrapper';
 import { IProperty } from '../../../interfaces';
@@ -9,6 +9,13 @@ interface InputSelectionProps extends IProperty<string> {
 }
 export const InputSelection: React.FC<InputSelectionProps> = ({ onChange, ...props }) => {
     const { inputBorderError, inputBorderWarning, inputBorderDefault, inputTextError, inputTextWarning, inputTextDefault } = useConfigs();
+
+    const inputRef = useRef<HTMLSelectElement>(null);
+    useEffect(() => {
+        if (inputRef.current && props.focusOnRender) {
+            inputRef.current.focus();
+        }
+    }, [props]);
     
     const [value, setValue] = useState(props.value);
     useEffect(() => setValue(props.value), [props.value]);
@@ -35,6 +42,7 @@ export const InputSelection: React.FC<InputSelectionProps> = ({ onChange, ...pro
                     autoFocus={props.focusOnRender}
                     className={"background-bars"}
                     onChange={handleOnChange}
+                    ref={inputRef}
                     value={value}
                     id={inputId}
                     style={{

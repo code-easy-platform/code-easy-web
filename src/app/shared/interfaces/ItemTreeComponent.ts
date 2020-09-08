@@ -196,6 +196,10 @@ export class ItemComponent implements IItemComponent {
     }
 
     private _updateProperties(properties: IProperty[], type: ComponentType) {
+
+        // Remove o auto focus caso exista em alguma prop
+        this.properties.forEach(prop => prop.focusOnRender = false);
+
         const originalProperties = DefaultPropsHelper.getNewProps(type, this.label, (this.type === ComponentType.routerConsume || this.type === ComponentType.routerExpose));
 
         originalProperties.forEach(originalProp => {
@@ -206,5 +210,4 @@ export class ItemComponent implements IItemComponent {
 
         this.properties = properties;
     }
-
 }

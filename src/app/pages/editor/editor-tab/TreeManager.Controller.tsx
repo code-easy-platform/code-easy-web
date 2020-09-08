@@ -99,6 +99,10 @@ export const TreeManagerController: React.FC = () => {
                     if (item.id === inputItemId) {
                         tabIndex = indexTab;
                     }
+                    // Garante não existirá duas tabs sendo editadas ao mesmo tempo.
+                    tab.items.forEach(item => {
+                        item.isSelected = false;
+                    });
                 });
             });
 
