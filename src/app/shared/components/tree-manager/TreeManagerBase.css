@@ -12,6 +12,7 @@
 .tree-base {
     scroll-behavior: smooth;
     flex-direction: column;
+    font-size: smaller;
     overflow: auto;
     flex: 1;
 }

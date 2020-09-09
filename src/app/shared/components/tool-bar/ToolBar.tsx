@@ -21,7 +21,7 @@ export const ToolBar: React.FC = memo(() => {
                     id="tabMenu"
                     title="Menu"
                     to="/projects"
-                    className=" btn btn-open-menu-tab outline-none"
+                    className=" btn background-transparent btn-open-menu-tab outline-none"
                 />
                 <hr className="hr hr-vertical" />
                 <TabButton

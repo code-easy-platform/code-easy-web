@@ -227,10 +227,10 @@ export const Modal: React.FC<ModalProps> = ({ children, extraButtoms = [], prima
             <div onMouseDown={risizers.modalMove.mouseDown} onDoubleClick={toggleMaximize} className={`modal-top-bar margin-bottom-xs flex-row`}>
                 <div className="flex1 flex-items-center padding-horizontal-s opacity-9">{title}</div>
                 <div>
-                    <button onClick={toggleMaximize} onMouseDown={e => e.stopPropagation()} className="btn border-radius-soft outline-none modal-btn">
+                    <button onClick={toggleMaximize} onMouseDown={e => e.stopPropagation()} className="btn background-transparent border-radius-soft outline-none modal-btn">
                         <img height={30} width={30} src={IconMaximize} alt="Toggle maximize modal" draggable={false} />
                     </button>
-                    <button onClick={close} onMouseDown={e => e.stopPropagation()} className="btn border-radius-soft outline-none modal-btn" title="Close(Esc)">
+                    <button onClick={close} onMouseDown={e => e.stopPropagation()} className="btn background-transparent border-radius-soft outline-none modal-btn" title="Close(Esc)">
                         <img height={30} width={30} src={IconClose} alt="Close modal" draggable={false} />
                     </button>
                 </div>
@@ -241,9 +241,9 @@ export const Modal: React.FC<ModalProps> = ({ children, extraButtoms = [], prima
             </div>
 
             <div className={`modal-top-footer padding-top-xs flex-row modal-top-footer`}>
-                {extraButtoms.map(btn => <button onClick={btn.onClick} children={btn.text || "Cancel"} className="btn padding-s padding-left-m padding-right-m margin-right-s outline-none border-radius-soft" />)}
-                <button onClick={onClickSecondary} className="btn padding-s padding-left-m padding-right-m margin-right-s outline-none border-radius-soft">{secondaryButtomText || "Cancel"}</button>
-                <button onClick={onClickPrimary} style={{ backgroundColor: 'var(--color-primary)' }} className="btn padding-s padding-left-m padding-right-m outline-none border-radius-soft">{primaryButtomText || "Save"}</button>
+                {extraButtoms.map(btn => <button onClick={btn.onClick} children={btn.text || "Cancel"} className="btn background-transparent padding-s padding-left-m padding-right-m margin-right-s outline-none border-radius-soft" />)}
+                <button onClick={onClickSecondary} className="btn background-transparent padding-s padding-left-m padding-right-m margin-right-s outline-none border-radius-soft">{secondaryButtomText || "Cancel"}</button>
+                <button onClick={onClickPrimary} className="btn padding-s padding-left-m padding-right-m outline-none border-radius-soft background-primary">{primaryButtomText || "Save"}</button>
             </div>
 
         </div>

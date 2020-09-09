@@ -1,16 +1,23 @@
-import React, { useState } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { IconCollapsedFolder } from 'code-easy-components';
 
 import { SearchAutocomplete } from '../auto-complete/SearchAutocomplete';
 import { ISuggestion } from '../../interfaces';
 import './ExpressionInput.css';
 
-interface ExpressionInputProps extends React.DetailedHTMLProps<React.InputHTMLAttributes<HTMLInputElement>, HTMLInputElement> {
+interface ExpressionInputProps extends React.InputHTMLAttributes<HTMLInputElement> {
     onPickerClick?(e: React.MouseEvent<HTMLInputElement, MouseEvent>): void;
     onSelectSuggest(option: ISuggestion): void;
     suggestions?: ISuggestion[];
 }
 export const ExpressionInput: React.FC<ExpressionInputProps> = ({ onPickerClick, suggestions, onSelectSuggest, ...props }) => {
+
+    const inputRef = useRef<HTMLInputElement>(null);
+    useEffect(() => {
+        if (inputRef.current && props.autoFocus) {
+            inputRef.current.focus();
+        }
+    }, [props]);
 
     const [showAutoComplete, setAutoComplete] = useState(false);
 
@@ -39,6 +46,7 @@ export const ExpressionInput: React.FC<ExpressionInputProps> = ({ onPickerClick,
         <div className="flex1" style={{ alignItems: 'center', justifyContent: 'flex-end', position: "relative" }}>
             <input
                 {...props}
+                ref={inputRef}
                 autoComplete='off'
                 style={{ ...props.style, width: '100%' }}
                 className={`${(suggestions || []).length > 0 && "padding-right-g"}`}
@@ -48,8 +56,8 @@ export const ExpressionInput: React.FC<ExpressionInputProps> = ({ onPickerClick,
                     alt={"open-suggestions"}
                     onClick={openSuggestions}
                     src={IconCollapsedFolder}
-                    className={`btn border-radius open-suggestions`}
-                    style={{ paddingBottom: 0, paddingTop: 0, minHeight: 32, zIndex: 1, outline: 'none' }}
+                    className={`btn background-transparent border-radius open-suggestions`}
+                    style={{ paddingLeft: 6, paddingRight: 6, paddingBottom: 0, paddingTop: 0, minHeight: 32, zIndex: 1, outline: 'none' }}
                     onKeyDown={e => {
                         if (e.keyCode === 13 || e.keyCode === 32) {
                             openSuggestions();

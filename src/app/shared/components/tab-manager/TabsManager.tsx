@@ -13,6 +13,7 @@ interface TabsManagerProps {
 export const TabsManager: React.FC<TabsManagerProps> = memo(({ tabs, onChange, onContextWindowTab, onCloseWindowTab }) => {
 
     const closeTab = useCallback((e: React.MouseEvent<HTMLDivElement, MouseEvent>, tabId: string) => {
+        e.preventDefault();
         e.stopPropagation();
         onCloseWindowTab && onCloseWindowTab(tabId);
     }, [onCloseWindowTab]);
@@ -43,11 +44,17 @@ export const TabsManager: React.FC<TabsManagerProps> = memo(({ tabs, onChange, o
                             title={description}
                             onMouseDown={e => onClick(e, id)}
                             onKeyDown={e => { if (e.keyCode === 32) { onClick(e as any, id); } }}
-                            className={`window-tab-item ${isSelected ? "window-tab-selected" : ""} ${className}`}
+                            className={`window-tab-item flex-items-center outline-none opacity-6 cursor-pointer border-none ${isSelected ? "window-tab-selected" : ""} ${className}`}
                             onContextMenu={e => { e.preventDefault(); onContextWindowTab && onContextWindowTab(id); }}
                         >
-                            <div className={`padding-m text-ellipsis ${hasError ? "main-text-error-color" : hasWarning ? "main-text-warning-color" : ""}`}>{title}</div>
-                            <img onClick={e => closeTab(e, id)} className="btn btn-close" src={IconClose} alt="btn-close" />
+                            <div className={`padding-s padding-horizontal-m text-ellipsis ${hasError ? "main-text-error-color" : hasWarning ? "main-text-warning-color" : ""}`}>{title}</div>
+                            <img
+                                className="btn background-transparent btn-close no-draggable outline-none opacity-0 margin-right-xs"
+                                onMouseDown={e => e.stopPropagation()}
+                                onClick={e => closeTab(e, id)}
+                                src={IconClose}
+                                alt="btn-close"
+                            />
                         </div>
                         <hr className="hr hr-vertical opacity-5" />
                     </Fragment>

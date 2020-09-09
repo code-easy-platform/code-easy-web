@@ -431,11 +431,11 @@ export const FlowEditorController: React.FC = memo(() => {
                 </div>
             }
             configs={{
-                selectionBorderColor: 'var(--color-botton-bar)',
+                selectionBorderColor: 'var(--selection-border-color)',
                 selectionBackgroundColor: '#ffffff11',
 
                 flowItemWarningColor: 'var(--main-warning-color)',
-                flowItemSelectedColor: 'var(--color-botton-bar)',
+                flowItemSelectedColor: 'var(--selection-border-color)',
                 flowItemErrorColor: 'var(--main-error-color)',
                 commentTextColor: '#ffffff',
 

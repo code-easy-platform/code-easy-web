@@ -1,3 +1,16 @@
+/* =============================== *
+ * Margins                         *
+ * =============================== */
+
+:root {
+    --margin-xxs: var(--size-xxs);
+    --margin-xs: var(--size-xs);
+    --margin-s: var(--size-s);
+    --margin-m: var(--size-m);
+    --margin-g: var(--size-g);
+    --margin-xg: var(--size-xg);
+}
+
 .margin-none {
     margin: none;
 }

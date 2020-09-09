@@ -2,6 +2,7 @@
 @import "./variables.css";
 @import "./paddings.css";
 @import "./margins.css";
+@import "./shadows.css";
 @import "./opacity.css";
 @import "./colors.css";
 @import "./fonts.css";
@@ -75,10 +76,10 @@ input,
 textarea,
 select {
   background-color: var(--main-background-bars);
-  padding: var(--size-2);
-  border-radius: var(--size-1);
-  padding-right: var(--size-1);
-  padding-left: var(--size-1);
+  padding: var(--size-s);
+  border-radius: var(--size-xs);
+  padding-right: var(--size-xs);
+  padding-left: var(--size-xs);
   border: var(--input-border);
   color: var(--color-white);
 }
@@ -113,9 +114,9 @@ input[type="checkbox"] {
   all: unset;
   background-color: var(--main-background-bars);
   margin-right: var(--margin-s);
-  border-radius: var(--size-1);
+  border-radius: var(--size-xs);
   border: var(--input-border);
-  padding: var(--size-0-5);
+  padding: var(--size-xs);
   height: var(--size-m);
   width: var(--size-m);
   cursor: pointer;
@@ -159,26 +160,19 @@ input[type="checkbox"]:checked {
 }
 
 .border-radius {
-  border-radius: var(--size-1);
+  border-radius: var(--size-xs);
 }
+
 .border-radius-soft {
-  border-radius: var(--size-0-5);
+  border-radius: var(--size-xs);
 }
 
 .border-default {
   border: thin solid var(--main-background-highlighted);
 }
 
-.box-shadow-small {
-  box-shadow: var(--box-shadow-small);
-}
-
-.box-shadow-small-center {
-  box-shadow: var(--box-shadow-small-center);
-}
-
-.box-shadow-medium-center {
-  box-shadow: var(--box-shadow-medium-center);
+.border-none {
+  border: none;
 }
 
 .no-events {
@@ -186,8 +180,8 @@ input[type="checkbox"]:checked {
 }
 
 .input-medium {
-  height: var(--size-5);
-  padding: var(--size-1);
+  height: var(--size-g);
+  padding: var(--size-xs);
 }
 
 .disabled {
@@ -200,10 +194,6 @@ input[type="checkbox"]:checked {
   opacity: 0.5;
 }
 
-.text-underline-error {
-  text-decoration: var(--text-underline-error);
-}
-
 .full-width {
   width: var(--size-fill);
 }
@@ -214,6 +204,10 @@ input[type="checkbox"]:checked {
 
 .absolute {
   position: absolute;
+}
+
+.cursor-pointer {
+  cursor: pointer;
 }
 
 .display-block {
@@ -237,24 +231,24 @@ input[type="checkbox"]:checked {
 }
 
 .main-header {
-  font-size: var(--font-size-6);
+  font-size: var(--font-size-g);
   color: var(--color-gray-5);
   font-weight: 500;
 }
 
-.color-primary {
-  background-color: var(--color-primary);
-}
-
 .hr {
   background-color: var(--main-background);
-  height: var(--border-size-1);
+  height: var(--size-xxs);
   border: none;
 }
 
 .hr.hr-vertical {
-  width: var(--border-size-1);
-  height: 100%;
+  min-height: var(--size-fill);
+  max-height: var(--size-fill);
+  min-width: var(--size-xxs);
+  max-width: var(--size-xxs);
+  height: var(--size-fill);
+  width: var(--size-xxs);
 }
 
 .hr.hr-white {
@@ -263,19 +257,16 @@ input[type="checkbox"]:checked {
 }
 
 .hr.divider {
-  margin-bottom: var(--size-2);
-  margin-top: var(--size-2);
+  margin-bottom: var(--size-s);
+  margin-top: var(--size-s);
 }
 
 .btn {
   border: var(--size-none) solid var(--color-white);
   color: var(--font-color-input-propertie-editor);
-  background-color: var(--color-transparent);
+  padding: var(--size-xs);
   width: fit-content;
   cursor: pointer;
-  padding: var(--size-1-5);
-  padding-right: var(--size-1-5);
-  padding-left: var(--size-1-5);
 }
 
 .btn:hover {
@@ -352,7 +343,7 @@ input[type="checkbox"]:checked {
 }
 
 ::-webkit-scrollbar:horizontal {
-  height: var(--size-x-scroll-bar-horizontal);
+  height: var(--size-scroll-bar-horizontal);
 }
 
 ::-webkit-scrollbar-button {

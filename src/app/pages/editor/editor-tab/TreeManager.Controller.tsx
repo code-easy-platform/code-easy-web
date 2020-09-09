@@ -45,7 +45,12 @@ export const TreeManagerController: React.FC = () => {
             });
         });
 
-        if (indexItemToRemove !== undefined && indexItemToRemove !== undefined) {
+        if (indexItemToRemove !== undefined && indexTabToRemove !== undefined) {
+
+            // Select a new item
+            if ((indexItemToRemove - 1) >= 0) {
+                project.tabs[indexTabToRemove].items[indexItemToRemove - 1].isSelected = true;
+            }
 
             // Remove o item e retorna ele mesmo para que possa ser removido os seus dependentes
             const deletedItem = project.tabs[indexTabToRemove].items.splice(indexItemToRemove, 1)[0];
@@ -94,6 +99,10 @@ export const TreeManagerController: React.FC = () => {
                     if (item.id === inputItemId) {
                         tabIndex = indexTab;
                     }
+                    // Garante não existirá duas tabs sendo editadas ao mesmo tempo.
+                    tab.items.forEach(item => {
+                        item.isSelected = false;
+                    });
                 });
             });
 
@@ -124,13 +133,11 @@ export const TreeManagerController: React.FC = () => {
                     if (tab.configs.isEditing) {
                         tabIndex = indexTab;
                     }
-                    if (routerType === ComponentType.routerExpose) {
-                        // Garante não existirá duas tabs sendo editadas ao mesmo tempo.
-                        tab.items.forEach(item => {
-                            item.isEditing = false;
-                            item.isSelected = false;
-                        });
-                    }
+                    // Garante não existirá duas tabs sendo editadas ao mesmo tempo.
+                    tab.items.forEach(item => {
+                        item.isEditing = false;
+                        item.isSelected = false;
+                    });
                 });
 
                 if (tabIndex !== undefined) {
@@ -200,8 +207,8 @@ export const TreeManagerController: React.FC = () => {
                 if (tab.configs.type === ComponentType.tabRoutes) {
 
                     options.push({
-                        icon: AssetsService.getIcon(ComponentType.routerExpose),
                         action: () => addRoute(itemId, ComponentType.routerExpose),
+                        icon: AssetsService.getIcon(ComponentType.routerExpose),
                         disabled: itemId !== undefined,
                         label: 'Expose a new router'
                     });
@@ -348,7 +355,6 @@ export const TreeManagerController: React.FC = () => {
     }
 
     const handleOnChange = useCallback((updatedItems: ITreeItem[]) => {
-        changeFocus();
 
         project.tabs.forEach((tab: Tab) => {
             if (tab.configs.isEditing) {
@@ -379,7 +385,8 @@ export const TreeManagerController: React.FC = () => {
             }
         });
 
-        onChangeState()
+        changeFocus();
+        onChangeState();
     }, [project.tabs, onChangeState, changeFocus]);
 
     /** Monta a estrutura da árvore e devolve no return */
@@ -434,7 +441,9 @@ export const TreeManagerController: React.FC = () => {
             if (tab.configs.isEditing) {
                 items = tab.items.map(item => ({
                     ...item,
-                    icon: item.properties.find(prop => prop.propertieType === PropertieTypes.icon)?.value.content,
+                    icon: item.properties.find(prop => prop.propertieType === PropertieTypes.icon)?.value.content || AssetsService.getIcon(item.type),
+                    hasWarning: item.items.some(itemFlow => itemFlow.properties.some(prop => (prop.valueHasWarning || prop.nameHasWarning))),
+                    hasError: item.items.some(itemFlow => itemFlow.properties.some(prop => (prop.valueHasError || prop.nameHasError))),
                     isDisabledDoubleClick: cannotPerformDoubleClick(item.type),
                     canDropList: getCanDropList(item.type),
                     ascendantId: item.itemPaiId,
@@ -451,10 +460,10 @@ export const TreeManagerController: React.FC = () => {
                 id: 'Inspector',
                 isUseDrag: true,
                 isUseDrop: true,
-                editingItemBackgroundColor: '#ffffff10',
-                focusedItemBackgroundColor: '#ffffff05',
                 activeItemBackgroundColor: '#ffffff05',
-                showEmptyMessage: treeManagerItems.length < 1,
+                focusedItemBackgroundColor: '#ffffff05',
+                editingItemBackgroundColor: '#ffffff10',
+                showEmptyMessage: treeManagerItems.length === 0,
                 customDragLayer: (item) => (
                     <CustomDragLayer children={item} />
                 )

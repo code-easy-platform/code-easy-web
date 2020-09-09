@@ -49,7 +49,7 @@ export const CardItem = memo(({ listMode, ...props }: CardItemProps) => {
                 onClick={() => props.onClick(item)}
                 onKeyDown={e => (e.keyCode === 13 || e.keyCode === 32) ? props.onClick(item) : {}
                 }
-                className={`${!listMode && "margin-right-m"} margin-bottom-m border-radius btn padding-none flex-column outline-none`}
+                className={`${!listMode && "margin-right-m"} margin-bottom-m border-radius btn background-transparent padding-none flex-column outline-none`}
                 style={{
                     border: 'var(--input-border)',
                     width: listMode ? 'auto' : 200,
@@ -98,12 +98,11 @@ export const CardItem = memo(({ listMode, ...props }: CardItemProps) => {
                 <div className="margin-top-m" style={{ justifyContent: 'flex-end' }}>
                     <button
                         onClick={props.onCancel}
-                        className="btn padding-s padding-left-m padding-right-m margin-right-s border-radius outline-none"
+                        className="btn background-transparent padding-s padding-left-m padding-right-m margin-right-s border-radius outline-none"
                     >Cancel</button>
                     <button
                         onClick={() => props.onClick(item)}
-                        style={{ backgroundColor: 'var(--color-primary)' }}
-                        className="btn padding-s padding-left-m padding-right-m border-radius outline-none"
+                        className="btn padding-s padding-left-m padding-right-m border-radius outline-none background-primary"
                     >Save</button>
                 </div>
             </div>

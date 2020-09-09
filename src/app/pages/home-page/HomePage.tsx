@@ -47,7 +47,7 @@ export const HomePage = memo(() => {
                         id="tabMenu"
                         title="Menu"
                         style={{ outline: 'none' }}
-                        className={" btn btn-open-menu-tab"}
+                        className={" btn background-transparent btn-open-menu-tab"}
                     />
                     <hr className="hr hr-vertical" />
                 </div>
@@ -60,7 +60,7 @@ export const HomePage = memo(() => {
                         <div>
                             <button
                                 title={"Configurations"}
-                                className="btn outline-none padding-s"
+                                className="btn background-transparent outline-none padding-s"
                                 onClick={() => setOpenConfig(true)}
                                 style={{ height: 'var(--tool-bar-height)' }}
                                 children={<img src={IconConfig} className="full-height" alt={IconConfig} draggable="false" />}
@@ -68,14 +68,14 @@ export const HomePage = memo(() => {
                         </div>
                         <div>
                             <button
-                                className="btn outline-none padding-s"
+                                className="btn background-transparent outline-none padding-s"
                                 onClick={() => setOpenImportProjects(true)}
                                 style={{ height: 'var(--tool-bar-height)' }}
                                 title={"Import a list of projects from your files"}
                                 children={<img src={IconImport} className="full-height" alt={IconOpenGithub} draggable="false" />}
                             />
                             <button
-                                className="btn outline-none padding-s"
+                                className="btn background-transparent outline-none padding-s"
                                 title={"Download your projects"}
                                 style={{ height: 'var(--tool-bar-height)' }}
                                 children={<img src={IconDownload} className="full-height" alt={IconOpenGithub} draggable="false" />}
@@ -83,7 +83,7 @@ export const HomePage = memo(() => {
                             />
                             <button
                                 title={"Open on github"}
-                                className="btn outline-none padding-s"
+                                className="btn background-transparent outline-none padding-s"
                                 style={{ height: 'var(--tool-bar-height)' }}
                                 onClick={() => window.open('https://github.com/code-easy-platform')}
                                 children={<img src={IconOpenGithub} className="full-height" alt={IconOpenGithub} draggable="false" />}
@@ -127,8 +127,7 @@ export const HomePage = memo(() => {
                             disabled={isAdding}
                             children="New project"
                             onClick={() => setIsAdding(true)}
-                            style={{ backgroundColor: 'var(--color-primary)' }}
-                            className={`btn outline-none padding-m padding-horizontal-xg margin-top-m margin-left-s border-radius ${isAdding ? 'opacity-5' : ''}`}
+                            className={`btn outline-none padding-m background-primary padding-horizontal-xg margin-top-m margin-left-s border-radius ${isAdding ? 'opacity-5' : ''}`}
                         />
                     </div>
                     <hr className="hr margin-bottom-s margin-top-s" style={{ backgroundColor: 'var(--main-background-highlighted)' }} />
