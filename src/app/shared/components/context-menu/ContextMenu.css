@@ -10,13 +10,13 @@
 
 .context-menu-title {
     font-weight: bold;
-    padding: var(--size-3);
-    padding-left: var(--size-2);
+    padding: var(--size-sm);
+    padding-left: var(--size-s);
     background-color: var(--color-context-menu-background-title);
 }
 
 .context-menu-list-item {
-    padding: var(--size-2);
+    padding: var(--size-s);
     font-size: small;
     cursor: pointer;
 }

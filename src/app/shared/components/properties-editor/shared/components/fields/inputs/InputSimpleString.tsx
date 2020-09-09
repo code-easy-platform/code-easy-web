@@ -16,7 +16,7 @@ export const SimpleString: React.FC<SimpleStringProps> = ({ onChange, ...props }
             inputRef.current.focus();
         }
     }, [props]);
-    
+
     const [value, setValue] = useState(props.value);
     useEffect(() => setValue(props.value), [props.value]);
 

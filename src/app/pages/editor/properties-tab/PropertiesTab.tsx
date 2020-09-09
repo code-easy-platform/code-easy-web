@@ -72,7 +72,7 @@ export const PropertiesTab = () => {
 
                 <div className='flex-column margin-top-m'>
                     <button
-                        className='btn border-radius'
+                        className='btn background-transparent border-radius'
                         style={{ border: '1px solid var(--main-error-color)' }}
                         onClick={() => {
                             if (window.confirm('Really want to delete the project?')) {

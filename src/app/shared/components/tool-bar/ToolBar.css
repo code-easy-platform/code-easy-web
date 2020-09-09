@@ -7,7 +7,7 @@
 
 .btn-open-menu-user-tab {
   content: url(./../../../assets/icons/btn-menu-user.svg);
-  padding: var(--size-0-75);
+  padding: var(--size-xs);
 }
 
 .btn-open-menu-tab {
@@ -16,17 +16,17 @@
 }
 
 .btn-open-editor-tab {
-  padding: var(--size-0-75);
+  padding: var(--size-xs);
   content: url(./../../../assets/icons/btn-open-editor-tab.svg);
 }
 
 .btn-open-plugins-tab {
-  padding: var(--size-0-75);
+  padding: var(--size-xs);
   content: url(./../../../assets/icons/btn-open-plugins-tab.svg);
 }
 
 .btn-open-properties-tab {
-  padding: var(--size-0-75);
+  padding: var(--size-xs);
   content: url(./../../../assets/icons/btn-open-properties-tab.svg);
 }
 
@@ -36,6 +36,6 @@
 .btn-open-plugins-tab:hover,
 .btn-open-menu-user-tab:hover,
 .btn-open-properties-tab:hover {
-  background-color: var(--color-top-bar-button-maximizar);
+  background-color: var(--modal-button-hover-color);
   cursor: pointer;
 }

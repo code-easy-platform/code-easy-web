@@ -24,19 +24,18 @@ export const OutputPanel: React.FC<OutputPanelProps> = memo(({ notification, out
         <div className="flex1 background-panels flex-column">
             <div className="background-bars">
                 <TabGroup className="flex-justfy-start">
-                    <TabButton id="problems" onClick={() => setCurrtab(OutputTab.problems)} isSelected={currTab === OutputTab.problems} content={"Problems"} style={{ height: 'var(--size-xs)' }} />
-                    <TabButton onClick={() => setCurrtab(OutputTab.output)} isSelected={currTab === OutputTab.output} id="output" content="Output" style={{ height: 'var(--size-xs)' }} />
-                    <TabButton onClick={() => setCurrtab(OutputTab.notifications)} isSelected={currTab === OutputTab.notifications} id="notifications" content="Notifications" style={{ height: 'var(--size-xs)' }} />
+                    <TabButton id="problems" onClick={() => setCurrtab(OutputTab.problems)} isSelected={currTab === OutputTab.problems} content={"Problems"} />
+                    <TabButton onClick={() => setCurrtab(OutputTab.output)} isSelected={currTab === OutputTab.output} id="output" content="Output" />
+                    <TabButton onClick={() => setCurrtab(OutputTab.notifications)} isSelected={currTab === OutputTab.notifications} id="notifications" content="Notifications" />
                     <div className="full-width" />
-                    <TabButton onClick={() => setCurrtab(OutputTab.whatsnew)} isSelected={currTab === OutputTab.whatsnew} id="news" content="News" style={{ height: 'var(--size-xs)' }} />
-                    <TabButton onClick={() => setCurrtab(OutputTab.figma)} isSelected={currTab === OutputTab.figma} id="figma" content="Figma" style={{ height: 'var(--size-xs)' }} />
+                    <TabButton onClick={() => setCurrtab(OutputTab.whatsnew)} isSelected={currTab === OutputTab.whatsnew} id="news" content="News" />
+                    <TabButton onClick={() => setCurrtab(OutputTab.figma)} isSelected={currTab === OutputTab.figma} id="figma" content="Figma" />
                 </TabGroup>
             </div>
             <hr className="hr" />
             <div className="flex1 overflow-auto">
                 {currTab === OutputTab.problems && <>
                     <TreeManager
-                        onContextMenu={() => { }}
                         items={problems || []}
                         configs={{
                             isUseDrag: false,
@@ -46,7 +45,6 @@ export const OutputPanel: React.FC<OutputPanelProps> = memo(({ notification, out
                 </>}
                 {currTab === OutputTab.output && <>
                     <TreeManager
-                        onContextMenu={() => { }}
                         items={output || []}
                         configs={{
                             isUseDrag: false,
@@ -56,19 +54,17 @@ export const OutputPanel: React.FC<OutputPanelProps> = memo(({ notification, out
                 </>}
                 {currTab === OutputTab.notifications && <>
                     <TreeManager
-                        onContextMenu={() => { }}
+                        configs={{
+                            isUseDrag: false,
+                            isUseDrop: false,
+                        }}
                         items={notification || [{
                             label: "No notifications have been detected",
-                            isDisabledSelect: true,
                             nodeExpanded: false,
                             isSelected: false,
                             id: undefined,
                             type: "ITEM",
                         }]}
-                        configs={{
-                            isUseDrag: false,
-                            isUseDrop: false,
-                        }}
                     />
                 </>}
                 {currTab === OutputTab.whatsnew && <NewsMD />}

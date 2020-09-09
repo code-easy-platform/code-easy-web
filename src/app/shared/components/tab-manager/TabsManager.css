@@ -10,27 +10,11 @@
 }
 
 .window-tabs-manager .window-tab-item {
-    background-color: #00000010;
-    justify-content: center;
-    align-items: center;
     max-width: 200px;
-    outline: none;
-    border: none;
-    opacity: 0.6;
-}
-
-.window-tabs-manager .window-tab-item:hover {
-    cursor: pointer;
 }
 
 .window-tabs-manager .window-tab-item:focus {
-    background-color: #00000005;
     opacity: 1;
-}
-
-.window-tabs-manager .window-tab-item:active {
-    color: var(--color-white);
-    opacity: 0.5;
 }
 
 .window-tabs-manager .window-tab-item:hover .btn-close {
@@ -38,14 +22,9 @@
 }
 
 .window-tabs-manager .window-tab-item .btn-close {
-    background-color: transparent;
-    margin-right: var(--size-xs);
-    text-transform: uppercase;
     height: var(--size-g);
     width: var(--size-g);
-    outline: none;
     padding: unset;
-    opacity: 0;
 }
 
 .window-tabs-manager .window-tab-item.window-tab-selected {
@@ -60,5 +39,10 @@
 
 .window-tabs-manager .window-tab-item:hover .btn-close:hover,
 .window-tabs-manager .window-tab-item.window-tab-selected .btn-close:hover {
+    opacity: 1;
+}
+
+.window-tabs-manager .btn-close:active {
+    transform: scale(1.2);
     opacity: 1;
 }

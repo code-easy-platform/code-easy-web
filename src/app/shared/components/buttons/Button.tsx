@@ -9,7 +9,7 @@ interface ButtonProps extends React.DetailedHTMLProps<React.ButtonHTMLAttributes
 export const Button = memo((props: ButtonProps) => {
 
     return (
-        <button {...props} className={`btn outline-none btn-${props.size || 'm'}`}>
+        <button {...props} className={`btn background-transparent outline-none btn-${props.size || 'm'}`}>
             {props.icon && <img src={props.icon} className="icon-button" alt={props.icon} />}
             {props.children}
         </button>

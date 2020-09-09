@@ -14,7 +14,7 @@ interface InputFullBigStringProps extends IProperty<string> {
 }
 export const InputFullBigString: React.FC<InputFullBigStringProps> = ({ onChange, ...props }) => {
     const { inputBorderError, inputBorderWarning, inputBorderDefault, inputTextError, inputTextWarning, inputTextDefault } = useConfigs();
-    
+
     const [value, setValue] = useState(props.value);
     useEffect(() => setValue(props.value), [props.value]);
 

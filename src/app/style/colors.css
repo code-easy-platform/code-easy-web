@@ -1,3 +1,33 @@
+/* =============================== *
+ * Colors                          *
+ * =============================== */
+
+:root {
+    /* Main base colors */
+    --main-background: #1e1e1e;
+    --main-background-bars: #2d2d2d;
+    --main-background-info: #414141;
+    --main-background-panels: #252527;
+    --main-background-highlighted: #3c3c3c;
+    --main-background-input-focus: #3c3c3c;
+    /* Others */
+    --main-select-color: #1f724340;
+    --main-editing-color: #1f724320;
+    --main-error-color: #f00;
+    --main-warning-color: #b99803;
+    --main-border-width: 2px;
+    --main-grapper-size: var(--size-s);
+    --color-primary: #1c5334;
+    --color-transparent: transparent;
+    --color-white: white;
+    --color-gray-5: #e0e0e0;
+    --color-black: black;
+    /* Flow editor selection color */
+    --selection-border-color: #0f77bf;
+    /* Modal */
+    --modal-button-hover-color: #4d4848;
+}
+
 .main-error-color {
     background-color: var(--main-error-color);
 }
@@ -14,6 +44,10 @@
     color: var(--main-warning-color);
 }
 
-.color-background-primary {
+.background-primary {
     background-color: var(--color-primary);
+}
+
+.background-transparent {
+    background-color: transparent;
 }

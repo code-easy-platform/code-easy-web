@@ -56,8 +56,8 @@ export const ExpressionInput: React.FC<ExpressionInputProps> = ({ onPickerClick,
                     alt={"open-suggestions"}
                     onClick={openSuggestions}
                     src={IconCollapsedFolder}
-                    className={`btn border-radius open-suggestions`}
-                    style={{ paddingBottom: 0, paddingTop: 0, minHeight: 32, zIndex: 1, outline: 'none' }}
+                    className={`btn background-transparent border-radius open-suggestions`}
+                    style={{ paddingLeft: 6, paddingRight: 6, paddingBottom: 0, paddingTop: 0, minHeight: 32, zIndex: 1, outline: 'none' }}
                     onKeyDown={e => {
                         if (e.keyCode === 13 || e.keyCode === 32) {
                             openSuggestions();

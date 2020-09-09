@@ -1,3 +1,31 @@
+/* =============================== *
+ * Fonts                           *
+ * =============================== */
+
+:root {
+    --font-size-xxs: 2px;
+    --font-size-xs: 4px;
+    --font-size-s: 8px;
+    --font-size-sm: 12px;
+    --font-size-m: 16px;
+    --font-size-g: 24px;
+    --font-size-xg: 32px;
+    /* Font family */
+    --font-family-normal: Roboto, Verdana, Geneva, Tahoma, sans-serif;
+    --font-family-vs-code: "Droid Sans Mono", "monospace", monospace, "Droid Sans Fallback";
+    /* Font colors */
+    --font-color-label-propertie-editor: #adadad;
+    --font-color-input-propertie-editor: #d8d8d8;
+    --font-color-input-propertie-editor-focus: #f3f3f3;
+    --font-color-icon-add-remove-propertie-editor: #adadad;
+    /* Link colors */
+    --font-color-link: #007bff;
+    --font-color-link-hover: #c4c4ff;
+    /* Erros */
+    --text-underline-error: underline wavy var(--main-error-color);
+    --text-underline-warning: underline wavy var(--main-warning-color);
+}
+
 .font-size-xs {
     font-size: var(--font-size-xs);
 }
@@ -16,4 +44,16 @@
 
 .font-size-xg {
     font-size: var(--font-size-xg);
+}
+
+.text-underline-error {
+    text-decoration: var(--text-underline-error);
+}
+
+.text-underline-warning {
+    text-decoration: var(--text-underline-warning);
+}
+
+.text-uppercase {
+    text-transform: uppercase;
 }

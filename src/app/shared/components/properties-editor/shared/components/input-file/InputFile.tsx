@@ -29,9 +29,6 @@ export const InputFile = React.forwardRef(({ fileName, fileMaxSize = 1048576, fi
     const css_input_file: React.CSSProperties = {
         ...props.style,
         opacity: props.disabled ? 0.7 : undefined,
-        padding: 'var(--size-2)',
-        paddingRight: 'var(--size-1)',
-        paddingLeft: 'var(--size-1)',
         textOverflow: 'ellipsis',
         display: 'inline-block',
         whiteSpace: 'nowrap',
@@ -66,7 +63,7 @@ export const InputFile = React.forwardRef(({ fileName, fileMaxSize = 1048576, fi
             onClick={e => { input.current.click() }}
             tabIndex={!props.disabled ? 0 : undefined}
             onKeyPress={e => { input.current.click() }}
-            className={props.className + " input-file-view"}
+            className={props.className + " input-file-view padding-s padding-horizontal-xs"}
         >
             <div>
                 {fileContent && <img src={String(fileContent)} height={16} alt="" className="padding-right-xs" />}

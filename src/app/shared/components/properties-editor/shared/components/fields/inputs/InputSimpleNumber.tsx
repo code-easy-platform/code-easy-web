@@ -16,7 +16,7 @@ export const InputSimpleNumber: React.FC<InputSimpleNumberProps> = ({ onChange, 
             inputRef.current.focus();
         }
     }, [props]);
-    
+
     const [value, setValue] = useState(props.value);
     useEffect(() => setValue(props.value), [props.value]);
 

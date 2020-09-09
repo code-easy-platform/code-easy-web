@@ -1,5 +1,18 @@
+/* =============================== *
+ * Paddings                        *
+ * =============================== */
+
+:root {
+  --padding-xxs: var(--size-xxs);
+  --padding-xs: var(--size-xs);
+  --padding-s: var(--size-s);
+  --padding-m: var(--size-m);
+  --padding-g: var(--size-g);
+  --padding-xg: var(--size-xg);
+}
+
 .padding-none {
-  padding: unset;
+  padding: 0;
 }
 
 .padding-xxs {

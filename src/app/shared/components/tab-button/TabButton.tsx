@@ -33,7 +33,7 @@ export const TabButton: React.FC<ITabButtonProps> = memo(({ to, ...props }) => {
             onDragEnter={props.onClick}
             onFocus={!to ? props.onFocus : () => history.push(to)}
             onClick={!to ? props.onClick : () => history.push(to)}
-            className={"btn-tab outline-none padding-m " + (props.isSelected ? "btn-tab-selected " : "") + props.className}
+            className={`border-none cursor-pointer background-transparent flex-justfy-center flex-items-center outline-none padding-s opacity-7${props.isSelected ? " btn-tab-selected opacity-10" : ""} ${props.className}`}
         />
     );
 });
