@@ -127,7 +127,7 @@ export const HomePage = memo(() => {
                             disabled={isAdding}
                             children="New project"
                             onClick={() => setIsAdding(true)}
-                            className={`btn outline-none padding-m background-primary padding-horizontal-xg margin-top-m margin-left-s border-radius ${isAdding ? 'opacity-5' : ''}`}
+                            className={`outline-none padding-m background-primary border-none margin-top-m margin-left-s border-radius cursor-pointer text-white hover active ${isAdding ? 'opacity-5' : ''}`}
                         />
                     </div>
                     <hr className="hr margin-bottom-s margin-top-s" style={{ backgroundColor: 'var(--main-background-highlighted)' }} />

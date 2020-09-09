@@ -51,3 +51,7 @@
 .background-transparent {
     background-color: transparent;
 }
+
+.text-white {
+    color: var(--color-white);
+}

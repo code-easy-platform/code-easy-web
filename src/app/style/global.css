@@ -7,7 +7,6 @@
 @import "./colors.css";
 @import "./fonts.css";
 @import "./flexs.css";
-
 * {
   font-family: var(--font-family-normal);
   -moz-user-select: -moz-none;
@@ -23,8 +22,7 @@
   outline: var(--outline-padrao);
 }
 
-.selected,
-*[selected="true"] {
+.selected, *[selected="true"] {
   background-color: var(--main-select-color);
 }
 
@@ -32,15 +30,11 @@
   background-color: var(--main-editing-color);
 }
 
-.selected,
-*[selected="true"]:hover {
+.selected, *[selected="true"]:hover {
   background-color: var(--main-select-color) !important;
 }
 
-html,
-body,
-#root,
-.App {
+html, body, #root, .App {
   background-color: var(--main-background);
   height: var(--size-window-vh-fill);
   width: var(--size-window-vw-fill);
@@ -49,7 +43,7 @@ body,
   display: flex;
 }
 
-div {
+div, nav {
   display: flex;
   background-color: var(--color-transparent);
 }
@@ -72,9 +66,7 @@ label {
   cursor: pointer;
 }
 
-input,
-textarea,
-select {
+input, textarea, select {
   background-color: var(--main-background-bars);
   padding: var(--size-s);
   border-radius: var(--size-xs);
@@ -84,28 +76,26 @@ select {
   color: var(--color-white);
 }
 
-input:disabled,
-textarea:disabled,
-select:disabled {
+input:disabled, textarea:disabled, select:disabled {
   opacity: 0.7;
 }
 
-input:focus,
-textarea:focus,
-select:focus {
+input:focus, textarea:focus, select:focus {
   background-color: var(--main-background-input-focus);
   outline: var(--outline-none);
 }
 
 /* Remove os botões da input de texto */
+
 /* Chrome, Safari, Edge, Opera */
-input::-webkit-outer-spin-button,
-input::-webkit-inner-spin-button {
+
+input::-webkit-outer-spin-button, input::-webkit-inner-spin-button {
   -webkit-appearance: none;
   margin: 0;
 }
 
 /* Firefox */
+
 input[type="number"] {
   -moz-appearance: textfield;
 }
@@ -135,6 +125,7 @@ input[type="checkbox"]:checked {
 }
 
 /* Backgrounds base */
+
 .background {
   background-color: var(--main-background);
 }
@@ -184,6 +175,14 @@ input[type="checkbox"]:checked {
   padding: var(--size-xs);
 }
 
+.hover:hover {
+  opacity: 0.7;
+}
+
+.active:active {
+  opacity: 0.5;
+}
+
 .disabled {
   background-color: unset;
   opacity: 0.5;
@@ -231,7 +230,7 @@ input[type="checkbox"]:checked {
 }
 
 .main-header {
-  font-size: var(--font-size-g);
+  font-size: var(--font-size-h3);
   color: var(--color-gray-5);
   font-weight: 500;
 }
@@ -333,6 +332,7 @@ input[type="checkbox"]:checked {
 }
 
 /* Ajusta o scroll de todos os elementos. */
+
 ::-webkit-scrollbar {
   width: var(--size-x-scroll-bar);
   height: var(--size-x-scroll-bar);

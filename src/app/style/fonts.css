@@ -5,11 +5,19 @@
 :root {
     --font-size-xxs: 2px;
     --font-size-xs: 4px;
-    --font-size-s: 8px;
-    --font-size-sm: 12px;
-    --font-size-m: 16px;
-    --font-size-g: 24px;
-    --font-size-xg: 32px;
+    --font-size-s: 6px;
+    --font-size-sm: 8px;
+    --font-size-m: 10px;
+    --font-size-g: 12px;
+    --font-size-xg: 14px;
+    --font-size-xxg: 16px;
+    --font-size-h6: 18px;
+    --font-size-h4: 22px;
+    --font-size-h5: 20px;
+    --font-size-h3: 26px;
+    --font-size-h2: 28px;
+    --font-size-h1: 32px;
+    --font-size-display: 36px;
     /* Font family */
     --font-family-normal: Roboto, Verdana, Geneva, Tahoma, sans-serif;
     --font-family-vs-code: "Droid Sans Mono", "monospace", monospace, "Droid Sans Fallback";
@@ -26,12 +34,20 @@
     --text-underline-warning: underline wavy var(--main-warning-color);
 }
 
+.font-size-xxs {
+    font-size: var(--font-size-xxs);
+}
+
 .font-size-xs {
     font-size: var(--font-size-xs);
 }
 
 .font-size-s {
     font-size: var(--font-size-s);
+}
+
+.font-size-sm {
+    font-size: var(--font-size-sm);
 }
 
 .font-size-m {
