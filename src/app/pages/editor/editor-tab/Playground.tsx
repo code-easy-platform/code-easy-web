@@ -7,8 +7,8 @@ import { ProblemsHelper } from '../../../shared/services/helpers/ProblemsHelper'
 import { OutputHelper } from '../../../shared/services/helpers/OutputHelper';
 import { PropertiesEditorController } from './PropertiesEditor.Controller';
 import { TreeManagerController } from './TreeManager.Controller';
-import { useEditorContext } from '../../../shared/contexts';
 import { FlowEditorController } from './FlowEditor.Controller';
+import { useEditorContext } from '../../../shared/contexts';
 
 export const Playground: React.FC = memo(() => {
     return (

@@ -1,3 +1,7 @@
+/* ================================= *
+ * Tabs manager                      *
+ * ================================= */
+
 .window-tabs-manager {
     overflow-y: hidden;
     overflow-x: auto;
@@ -37,12 +41,27 @@
     opacity: 0.7;
 }
 
-.window-tabs-manager .window-tab-item:hover .btn-close:hover,
-.window-tabs-manager .window-tab-item.window-tab-selected .btn-close:hover {
+.window-tabs-manager .window-tab-item:hover .btn-close:hover, .window-tabs-manager .window-tab-item.window-tab-selected .btn-close:hover {
     opacity: 1;
 }
 
 .window-tabs-manager .btn-close:active {
     transform: scale(1.2);
     opacity: 1;
+}
+
+/* ================================= *
+ * Simple tabs                       *
+ * ================================= */
+
+.tab-group {
+    min-height: 32px;
+}
+
+.tab-group div:hover {
+    opacity: 1;
+}
+
+.btn-tab-selected {
+    background-color: var(--main-background-panels);
 }

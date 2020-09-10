@@ -1,8 +1,7 @@
 import React, { useState, memo } from 'react';
 
-import { TabGroup, TabButton } from '../tab-button/TabButton';
 import { TreeManager, ITreeItem } from '../tree-manager';
-import { NewsMD } from './NewsMD/NewsMD';
+import { TabGroup, TabButton } from '../tabs';
 
 enum OutputTab {
     notifications = "Notifications",
@@ -28,7 +27,6 @@ export const OutputPanel: React.FC<OutputPanelProps> = memo(({ notification, out
                     <TabButton onClick={() => setCurrtab(OutputTab.output)} isSelected={currTab === OutputTab.output} id="output" content="Output" />
                     <TabButton onClick={() => setCurrtab(OutputTab.notifications)} isSelected={currTab === OutputTab.notifications} id="notifications" content="Notifications" />
                     <div className="full-width" />
-                    <TabButton onClick={() => setCurrtab(OutputTab.whatsnew)} isSelected={currTab === OutputTab.whatsnew} id="news" content="News" />
                     <TabButton onClick={() => setCurrtab(OutputTab.figma)} isSelected={currTab === OutputTab.figma} id="figma" content="Figma" />
                 </TabGroup>
             </div>
@@ -59,7 +57,7 @@ export const OutputPanel: React.FC<OutputPanelProps> = memo(({ notification, out
                             isUseDrop: false,
                         }}
                         items={notification || [{
-                            label: "No notifications have been detected",
+                            label: "No notifications detected",
                             nodeExpanded: false,
                             isSelected: false,
                             id: undefined,
@@ -67,7 +65,6 @@ export const OutputPanel: React.FC<OutputPanelProps> = memo(({ notification, out
                         }]}
                     />
                 </>}
-                {currTab === OutputTab.whatsnew && <NewsMD />}
                 {currTab === OutputTab.figma && <>
                     <iframe
                         title={"IFrame figma"}

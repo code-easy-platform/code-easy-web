@@ -147,8 +147,8 @@ export const TreeManagerController: React.FC = () => {
                         items: (
                             routerType === ComponentType.routerExpose
                                 ? [
-                                    new ItemFlowComplete({ id: '1', name: "START", icon: IconFlowStart, itemType: EItemType.START, left: 188, top: 128, isSelected: false, connections: [{ id: Utils.getUUID(), targetId: '2', originId: '1', isSelected: false }], properties: [] }),
-                                    new ItemFlowComplete({ id: '2', name: "END", icon: IconFlowEnd, itemType: EItemType.END, left: 188, top: 384, isSelected: false, connections: [], properties: [] })
+                                    new ItemFlowComplete({ id: '1', name: EItemType.START, icon: IconFlowStart, itemType: EItemType.START, left: 188, top: 128, isSelected: false, connections: [{ id: Utils.getUUID(), targetId: '2', originId: '1', isSelected: false }], properties: [] }),
+                                    new ItemFlowComplete({ id: '2', name: EItemType.END, icon: IconFlowEnd, itemType: EItemType.END, left: 188, top: 384, isSelected: false, connections: [], properties: [] })
                                 ]
                                 : []
                         ),
@@ -210,14 +210,14 @@ export const TreeManagerController: React.FC = () => {
                         action: () => addRoute(itemId, ComponentType.routerExpose),
                         icon: AssetsService.getIcon(ComponentType.routerExpose),
                         disabled: itemId !== undefined,
-                        label: 'Expose a new router'
+                        label: 'Expose a new route'
                     });
 
                     options.push({
                         icon: AssetsService.getIcon(ComponentType.routerConsume),
                         action: () => addRoute(itemId, ComponentType.routerConsume),
                         disabled: itemId !== undefined,
-                        label: 'Consume a new router'
+                        label: 'Consume a new route'
                     });
 
                 } else if (tab.configs.type === ComponentType.tabActions) {

@@ -1,7 +1,7 @@
 import {
     IconAction, IconInputParam, IconLocalParam, IconFolder, IconOutpuParam,
     IconFlowAction, IconFlowAssign, IconFlowComment, IconFlowEnd, IconFlowForeach,
-    IconFlowIf, IconFlowStart, IconFlowSwitch, IconRouterConsume, IconRouterExpose
+    IconFlowIf, IconFlowStart, IconFlowSwitch, IconRouterConsume, IconRouterExpose, IconRouter
 } from 'code-easy-components';
 
 import { ComponentType } from "../enuns/ComponentType";
@@ -58,6 +58,12 @@ class Assets {
 
             case ComponentType.outputVariable:
                 return IconOutpuParam;
+
+            case ComponentType.tabActions:
+                return IconAction;
+
+            case ComponentType.tabRoutes:
+                return IconRouter;
 
             default:
                 return '';

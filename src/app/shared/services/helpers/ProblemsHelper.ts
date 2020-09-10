@@ -87,7 +87,7 @@ class ProblemsHelperService {
 
         if (this._problems.length === 0) {
             this._problems.push({
-                label: "No problems have been detected",
+                label: "No problems detected",
                 isDisabledSelect: true,
                 nodeExpanded: false,
                 isSelected: false,

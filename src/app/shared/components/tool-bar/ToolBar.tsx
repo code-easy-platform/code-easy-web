@@ -2,16 +2,16 @@ import React, { useState, memo } from 'react';
 
 import { PropertiesTab } from '../../../pages/editor/properties-tab/PropertiesTab';
 import { ProjectsStorage } from '../../services/storage/ProjectsStorage';
-import { TabButton, TabGroup } from '../tab-button/TabButton';
-import { TabsManager } from '../tab-manager/TabsManager';
+import { TabButton, TabGroup, TabsManager } from '../tabs';
 import { useEditorContext } from '../../contexts';
+import { AssetsService } from '../../services';
 import { Tab } from '../../interfaces/Tabs';
 import { Modal } from '../modal/Modal';
 import './ToolBar.css';
 
 export const ToolBar: React.FC = memo(() => {
     const [isOpenModalProps, setIsOpenModalProps] = useState(false);
-    const { project, setProject } = useEditorContext();
+    const { project, setProject, getIconByItemId } = useEditorContext();
     const tabs: Tab[] = (project?.tabs || []);
 
     return (<>
@@ -33,7 +33,12 @@ export const ToolBar: React.FC = memo(() => {
             </div>
             <hr className="hr hr-vertical" />
             <TabsManager
-                tabs={project.openWindows || []}
+                tabs={
+                    project.openWindows.map(tab => ({
+                        ...tab,
+                        icon: getIconByItemId(tab.id)
+                    }))
+                }
                 onChange={windowId => {
                     if (project.projectConfigs.id) {
                         setProject(ProjectsStorage.selectWindowById(project, windowId));
@@ -53,10 +58,13 @@ export const ToolBar: React.FC = memo(() => {
                             <TabButton
                                 id={tab.configs.name}
                                 key={tab.configs.name}
-                                content={tab.configs.label}
+                                content={<>
+                                    <img height="90%" className="padding-right-s" src={AssetsService.getIcon(tab.configs.type)} alt={tab.configs.type} />
+                                    {tab.configs.label}
+                                </>}
                                 title={tab.configs.description}
                                 isSelected={tab.configs.isEditing}
-                                className="btn-open-routers-tab flex1"
+                                className="btn-open-routers-tab flex1 padding-horizontal-sm"
                                 onClick={() => {
                                     project.tabs.forEach(currentTab => currentTab.configs.isEditing = false);
                                     project.tabs[index].configs.isEditing = true;

@@ -10,7 +10,7 @@ class OutputHelperService {
 
         if (res.length === 0) {
             res.push({
-                label: "No output have been detected",
+                label: "No output detected",
                 isDisabledSelect: true,
                 nodeExpanded: false,
                 isSelected: false,

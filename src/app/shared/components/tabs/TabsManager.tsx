@@ -2,15 +2,21 @@ import React, { useCallback, memo } from 'react';
 
 import { OpenWindow } from '../../interfaces/OpenedWindow';
 import { TabButton } from './components/TabButton';
-import './TabsManager.css';
+import { FontSize } from '../../types';
+import './Tabs.css';
+
+interface OpenWindowWithIcon extends OpenWindow {
+    icon?: any;
+}
 
 interface TabsManagerProps {
-    tabs: OpenWindow[],
-    onChange?(tabId: string): void,
+    tabs: OpenWindowWithIcon[];
+    fontSize?: FontSize;
+    onChange?(tabId: string): void;
     onCloseWindowTab?(tabId: string): void;
     onContextWindowTab?(tabId: string): void;
 }
-export const TabsManager: React.FC<TabsManagerProps> = memo(({ tabs, onChange, onContextWindowTab, onCloseWindowTab }) => {
+export const TabsManager: React.FC<TabsManagerProps> = memo(({ tabs, fontSize = 'xg', onChange, onContextWindowTab, onCloseWindowTab }) => {
 
     const onWeel = useCallback((e: React.WheelEvent<HTMLElement>) => {
         if (e.deltaY > 0) {
@@ -21,7 +27,7 @@ export const TabsManager: React.FC<TabsManagerProps> = memo(({ tabs, onChange, o
     }, []);
 
     return (
-        <nav role="tablist" className="window-tabs-manager font-size-xg" onWheel={onWeel}>
+        <nav role="tablist" className={`window-tabs-manager font-size-${fontSize}`} onWheel={onWeel}>
             {tabs.map((tab, index) => (
                 <TabButton
                     {...tab}
