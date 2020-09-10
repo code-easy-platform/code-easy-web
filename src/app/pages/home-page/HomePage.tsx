@@ -5,9 +5,9 @@ import dataformat from 'dateformat';
 
 import { BottonStatusBar } from '../../shared/components/botton-status-bar/BottonStatusBar';
 import { ProjectsStorage } from '../../shared/services/storage/ProjectsStorage';
-import { TabButton } from '../../shared/components/tab-button/TabButton';
 import { Project } from '../../shared/interfaces/Aplication';
 import { ProjectType } from '../../shared/enuns/ProjectType';
+import { TabButton } from '../../shared/components/tabs';
 import { ImportProjects } from './ImportFiles';
 import { IdeConfigs } from './Configs';
 import { CardItem } from './CardItem';
@@ -42,7 +42,6 @@ export const HomePage = memo(() => {
     return (
         <div className="main-page">
             <div className="tool-bar background-bars">
-                <div>
                     <TabButton
                         id="tabMenu"
                         title="Menu"
@@ -50,7 +49,6 @@ export const HomePage = memo(() => {
                         className={" btn background-transparent btn-open-menu-tab"}
                     />
                     <hr className="hr hr-vertical" />
-                </div>
             </div>
             <hr className="hr" />
 
@@ -127,7 +125,7 @@ export const HomePage = memo(() => {
                             disabled={isAdding}
                             children="New project"
                             onClick={() => setIsAdding(true)}
-                            className={`btn outline-none padding-m background-primary padding-horizontal-xg margin-top-m margin-left-s border-radius ${isAdding ? 'opacity-5' : ''}`}
+                            className={`outline-none padding-m background-primary border-none margin-top-m margin-left-s border-radius cursor-pointer text-white hover active ${isAdding ? 'opacity-5' : ''}`}
                         />
                     </div>
                     <hr className="hr margin-bottom-s margin-top-s" style={{ backgroundColor: 'var(--main-background-highlighted)' }} />

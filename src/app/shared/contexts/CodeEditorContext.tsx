@@ -5,7 +5,8 @@ import { CenterLoadingIndicator } from '../components/loading-indicator/LoadingI
 import { ProjectsStorage } from '../services/storage/ProjectsStorage';
 import { ProblemsHelper } from '../services/helpers/ProblemsHelper';
 import { Project, ItemComponent } from '../interfaces';
-import { ComponentType } from '../enuns';
+import { ComponentType, PropertieTypes } from '../enuns';
+import { AssetsService } from '../services';
 
 export interface ICodeEditorContext {
     project: Project,
@@ -106,6 +107,22 @@ export const useEditorContext = () => {
         }
     }, [project.tabs]);
 
+    const handleGetIconByItemId = useCallback((id: string): ItemComponent | null => {
+        let icon: any = undefined;
+
+        project.tabs.forEach(tab => {
+            const resItemTree = tab.items.find(itemTree => itemTree.id === id);
+            if (resItemTree) {
+                icon = resItemTree.properties.find(prop => prop.propertieType === PropertieTypes.icon)?.value.content;
+                if (!icon){
+                    icon = AssetsService.getIcon(resItemTree.type);
+                }
+            }
+        });
+
+        return icon;
+    }, [project.tabs]);
+
     return {
         /**
          * @returns `ItemComponent` | `null` - Returns the tree element that is currently being edited or null
@@ -118,6 +135,7 @@ export const useEditorContext = () => {
          * @param type Tab where the item is. Can be: `tabActions`, `tabDates` and `tabRoutes`.
          */
         getItemTreeById: handleGetItemTreeById,
+        getIconByItemId: handleGetIconByItemId,
         setProject,
         project,
     };
