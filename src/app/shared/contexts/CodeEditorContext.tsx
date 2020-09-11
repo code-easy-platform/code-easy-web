@@ -108,6 +108,29 @@ export const useEditorContext = () => {
         }
     }, [project.tabs]);
 
+    const handleGetItemTreeByName = useCallback((name: string, type?: EComponentType): TreeItemComponent | null => {
+        if (type) {
+            const tab = project.tabs.find(tab => tab.configs.type === type);
+            if (!tab) return null;
+
+            const itemTree = tab.items.find(itemTree => itemTree.name === name);
+            if (!itemTree) return null;
+
+            return itemTree;
+        } else {
+            let itemTree: TreeItemComponent | null = null;
+
+            project.tabs.forEach(tab => {
+                const resItemTree = tab.items.find(itemTree => itemTree.name === name);
+                if (resItemTree) {
+                    itemTree = resItemTree;
+                }
+            });
+
+            return itemTree;
+        }
+    }, [project.tabs]);
+
     const handleGetIconByItemId = useCallback((id: string): TreeItemComponent | null => {
         let icon: any = undefined;
 
@@ -136,6 +159,13 @@ export const useEditorContext = () => {
          * @param type Tab where the item is. Can be: `tabActions`, `tabDates` and `tabRoutes`.
          */
         getItemTreeById: handleGetItemTreeById,
+        /**
+         * Return a item tree by there name and type
+         * 
+         * @param name Name of the item tree 
+         * @param type Tab where the item is. Can be: `tabActions`, `tabDates` and `tabRoutes`.
+         */
+        getItemTreeByName: handleGetItemTreeByName,
         getIconByItemId: handleGetIconByItemId,
         setProject,
         project,

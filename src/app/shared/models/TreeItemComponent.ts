@@ -1,12 +1,12 @@
 import { Utils, IconWarning, IconError } from "code-easy-components";
 
 import { IProperty } from "../components/properties-editor";
+import { EComponentType, PropertieTypes } from "../enuns";
 import { FlowItemComponent } from "./FlowItemComponent";
 import { ITreeItem } from "../components/tree-manager";
 import { EItemType } from "../components/flow-editor";
 import { ITreeItemComponent } from "../interfaces";
 import { DefaultPropsHelper } from "../services";
-import { EComponentType } from "../enuns";
 
 export class TreeItemComponent implements ITreeItemComponent {
     public name: string;
@@ -144,6 +144,25 @@ export class TreeItemComponent implements ITreeItemComponent {
             }
         });
 
+        switch (this.type) {
+            case EComponentType.globalAction:
+                this._globalAction();
+                break;
+        
+            default:
+                break;
+        }
+
         this.properties = properties;
+    }
+
+    private _globalAction() {
+
+        /** Define o nome da label encontrado nas properties do componente */
+        const propLabel = this.properties.find(prop => prop.propertieType === PropertieTypes.label);
+        if (propLabel) {
+            this.name = Utils.getNormalizedString(propLabel.value);
+        }
+
     }
 }

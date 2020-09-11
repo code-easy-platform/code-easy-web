@@ -215,17 +215,16 @@ export class FlowItemComponent implements IFlowItemComponent {
         const originalProperties = DefaultPropsHelper.getNewProps(type, this.name);
 
         originalProperties.forEach(originalProp => {
-
             if (!properties.some(prop => prop.propertieType === originalProp.propertieType)) {
                 properties.push(originalProp);
             }
-
         });
 
         /** Define o nome da label encontrado nas properties do componente */
         const propLabel = this.properties.find(prop => prop.propertieType === PropertieTypes.label);
         if (propLabel) {
-            this.name = propLabel.value;
+            this.name = Utils.getNormalizedString(propLabel.value);
+            this.label = propLabel.value;
         }
 
         switch (type) {
@@ -235,6 +234,7 @@ export class FlowItemComponent implements IFlowItemComponent {
                 break;
 
             case EItemType.ACTION:
+                console.log('log')
                 this._propertiesFromAction();
                 break;
 
@@ -317,6 +317,13 @@ export class FlowItemComponent implements IFlowItemComponent {
             this.isEnabledNewConnetion = true;
         } else {
             this.isEnabledNewConnetion = false;
+        }
+
+        /** Define o nome da label encontrado nas properties do componente */
+        const propLabel = this.properties.find(prop => prop.propertieType === PropertieTypes.label);
+        if (propLabel) {
+            this.name = Utils.getNormalizedString(propLabel.value);
+            this.label = propLabel.value;
         }
     }
 
