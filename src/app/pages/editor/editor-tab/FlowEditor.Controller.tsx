@@ -4,23 +4,18 @@ import { IconTrash, Utils, IconFlowStart, IconFlowAction, IconFlowIf, IconFlowFo
 import { FlowEditor, IFlowItem, IBreadCrumbButton, EItemType, EFlowItemType, parseEItemType, EItemTypeList } from '../../../shared/components/flow-editor';
 import { BackgroundEmpty, BackgroundEmptyLeft, BackgroundEmptyLeftToTop } from '../../../assets';
 import { ContextMenuService } from '../../../shared/components/context-menu/ContextMenuService';
-import { DefaultPropsHelper } from '../../../shared/services/helpers/DefaultPropsHelper';
 import { IContextItemList } from '../../../shared/components/context-menu/ContextMenu';
-import { ItemFlowComplete } from '../../../shared/interfaces/ItemFlowComponent';
-import { ItemComponent } from '../../../shared/interfaces/ItemTreeComponent';
+import { PropertieTypes, EComponentType, ECurrentFocus } from '../../../shared/enuns';
+import { TreeItemComponent, FlowItemComponent, Tab } from '../../../shared/models';
+import { DefaultPropsHelper, AssetsService } from '../../../shared/services';
 import { useIdeConfigs, useEditorContext } from '../../../shared/contexts';
-import { AssetsService } from '../../../shared/services/AssetsService';
-import { PropertieTypes } from '../../../shared/enuns/PropertieTypes';
-import { ComponentType } from '../../../shared/enuns/ComponentType';
-import { CurrentFocus } from '../../../shared/enuns/CurrentFocus';
-import { Tab } from '../../../shared/interfaces/Tabs';
 
 export const FlowEditorController: React.FC = memo(() => {
     const { flowBackgroundType, snapGridWhileDragging } = useIdeConfigs();
     const { project, setProject } = useEditorContext();
 
     /** Atualiza o foco do editor de propriedades */
-    const changeFocus = useCallback(() => project.currentComponentFocus = CurrentFocus.flow, [project]);
+    const changeFocus = useCallback(() => project.currentComponentFocus = ECurrentFocus.flow, [project]);
 
     const handleOnChangeItems = useCallback((updatedItems: IFlowItem[]) => {
 
@@ -35,7 +30,7 @@ export const FlowEditorController: React.FC = memo(() => {
                 if (!item.isEditing) {
                     item.items.forEach(flowItem => flowItem.isSelected = false);
                 } else {
-                    let newItems: ItemFlowComplete[] = [];
+                    let newItems: FlowItemComponent[] = [];
 
                     // Atualiza os items do item da arvore.
                     updatedItems.forEach(updatedItem => {
@@ -43,7 +38,7 @@ export const FlowEditorController: React.FC = memo(() => {
 
                             const index = item.items.findIndex(item => updatedItem.id === item.id);
                             if (index >= 0) {
-                                newItems.push(new ItemFlowComplete({
+                                newItems.push(new FlowItemComponent({
                                     itemType: parseEItemType(String(updatedItem.itemType)),
                                     isSelected: updatedItem.isSelected || false,
                                     connections: updatedItem.connections || [],
@@ -59,7 +54,7 @@ export const FlowEditorController: React.FC = memo(() => {
                                     id: updatedItem.id,
                                 }));
                             } else {
-                                newItems.push(new ItemFlowComplete({
+                                newItems.push(new FlowItemComponent({
                                     itemType: parseEItemType(String(updatedItem.itemType)),
                                     isSelected: updatedItem.isSelected || false,
                                     connections: updatedItem.connections || [],
@@ -99,7 +94,7 @@ export const FlowEditorController: React.FC = memo(() => {
         console.log('newItem', newItem)
 
         // Action
-        if (newItem.itemType?.toString() === ComponentType.globalAction.toString() || newItem.itemType?.toString() === ComponentType.localAction.toString()) {
+        if (newItem.itemType?.toString() === EComponentType.globalAction.toString() || newItem.itemType?.toString() === EComponentType.localAction.toString()) {
             newItem.isEnabledNewConnetion = true;
             newItem.itemType = EItemType.ACTION;
             newItem.icon = IconFlowAction;
@@ -119,7 +114,7 @@ export const FlowEditorController: React.FC = memo(() => {
                             }
                         });
 
-                        let completeItem = new ItemFlowComplete({
+                        let completeItem = new FlowItemComponent({
                             itemType: parseEItemType(String(newItem.itemType)),
                             isSelected: newItem.isSelected || false,
                             connections: newItem.connections || [],
@@ -143,9 +138,9 @@ export const FlowEditorController: React.FC = memo(() => {
 
             // Some var type
         } else if (
-            newItem.itemType?.toString() === ComponentType.outputVariable.toString() ||
-            newItem.itemType?.toString() === ComponentType.inputVariable.toString() ||
-            newItem.itemType?.toString() === ComponentType.localVariable.toString()
+            newItem.itemType?.toString() === EComponentType.outputVariable.toString() ||
+            newItem.itemType?.toString() === EComponentType.inputVariable.toString() ||
+            newItem.itemType?.toString() === EComponentType.localVariable.toString()
         ) {
             newItem.isEnabledNewConnetion = true;
             newItem.itemType = EItemType.ASSIGN;
@@ -235,7 +230,7 @@ export const FlowEditorController: React.FC = memo(() => {
                                 item_tree.items.forEach(item_flow => item_flow.isSelected = false);
 
                                 // Adiciona a tab com os items alterados
-                                item_tree.items.push(new ItemFlowComplete({
+                                item_tree.items.push(new FlowItemComponent({
                                     icon: AssetsService.getIcon(item.itemType),
                                     itemType: item.itemType,
                                     id: Utils.getUUID(),
@@ -277,13 +272,14 @@ export const FlowEditorController: React.FC = memo(() => {
                         label: tab.configs.label,
                         onClick: () => {
                             project.tabs.forEach((tab: Tab) => tab.configs.isEditing = false);
-                            project.currentComponentFocus = CurrentFocus.tree;
+                            project.currentComponentFocus = ECurrentFocus.tree;
                             tab.configs.isEditing = true;
                             setProject(project);
                         }
                     });
 
                     breadcamps.push({
+                        label: item.label,
                         onClick: (() => {
                             project.tabs.forEach((tab: Tab) => tab.configs.isEditing = false);
 
@@ -293,13 +289,12 @@ export const FlowEditorController: React.FC = memo(() => {
                                 });
                             });
 
-                            project.currentComponentFocus = CurrentFocus.tree;
+                            project.currentComponentFocus = ECurrentFocus.tree;
                             tab.configs.isEditing = true;
                             item.isSelected = true;
                             setProject(project);
 
                         }),
-                        label: item.label
                     });
 
                 }
@@ -313,7 +308,7 @@ export const FlowEditorController: React.FC = memo(() => {
     const flowEditorItems = useCallback((): { hasSomethingEditing: boolean, hasSomethingToEdit: boolean, flowItems: IFlowItem[] } => {
 
         // Action, Router are you editing
-        let itemEditing: ItemComponent | undefined;
+        let itemEditing: TreeItemComponent | undefined;
 
         /** Return if the project has some action, table or route to allow edit */
         const hasSomethingToEdit = project.tabs.some(tab => tab.items.length > 0);
@@ -439,7 +434,7 @@ export const FlowEditorController: React.FC = memo(() => {
                 flowItemErrorColor: 'var(--main-error-color)',
                 commentTextColor: '#ffffff',
 
-                typesAllowedToDrop: [...EItemTypeList, ComponentType.globalAction, ComponentType.localAction, ComponentType.localVariable, ComponentType.inputVariable, ComponentType.outputVariable],
+                typesAllowedToDrop: [...EItemTypeList, EComponentType.globalAction, EComponentType.localAction, EComponentType.localVariable, EComponentType.inputVariable, EComponentType.outputVariable],
                 snapGridWhileDragging: snapGridWhileDragging,
                 backgroundType: flowBackgroundType,
                 lineWidth: 1,

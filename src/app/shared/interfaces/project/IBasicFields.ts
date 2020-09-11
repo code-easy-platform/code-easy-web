@@ -1,4 +1,4 @@
-export interface BaseFields {
+export interface IBasicFields {
     /**
      * Usado como identificador do registro
      * 

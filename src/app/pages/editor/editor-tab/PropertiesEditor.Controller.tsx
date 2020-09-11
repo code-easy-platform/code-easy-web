@@ -1,16 +1,15 @@
 import React from 'react';
 import { Utils } from 'code-easy-components';
 
-import { ContextModalListService } from '../../../shared/components/context-modais/ContextModalListService';
 import { PropertiesEditor, IProperty, TypeOfValues, IItem } from '../../../shared/components/properties-editor';
-import { ItemFlowComplete } from '../../../shared/interfaces/ItemFlowComponent';
-import { ItemComponent } from '../../../shared/interfaces/ItemTreeComponent';
+import { ContextModalListService } from '../../../shared/components/context-modais/ContextModalListService';
+import { TreeItemComponent, FlowItemComponent } from '../../../shared/models';
 import { PropertieTypes } from '../../../shared/enuns/PropertieTypes';
-import { ComponentType } from '../../../shared/enuns/ComponentType';
 import { EItemType } from '../../../shared/components/flow-editor';
-import { CurrentFocus } from '../../../shared/enuns/CurrentFocus';
+import { ECurrentFocus } from '../../../shared/enuns/ECurrentFocus';
 import { useEditorContext } from '../../../shared/contexts';
-import { Tab } from '../../../shared/interfaces/Tabs';
+import { EComponentType } from '../../../shared/enuns';
+import { Tab } from '../../../shared/models/Tabs';
 
 export const PropertiesEditorController: React.FC = () => {
 
@@ -23,7 +22,7 @@ export const PropertiesEditorController: React.FC = () => {
     /** O editor de propriedades emite a lista de propriedades alteradas */
     const handleOnChangeItems = (item: IItem) => {
 
-        if (project.currentComponentFocus === CurrentFocus.tree) {
+        if (project.currentComponentFocus === ECurrentFocus.tree) {
 
             if (item.id) {
                 project.tabs.forEach((tab: Tab) => {
@@ -31,7 +30,7 @@ export const PropertiesEditorController: React.FC = () => {
                         if (itemTree.isSelected && itemTree.id === item.id) {
 
                             // Este block garante que se a label de uma routa muda o seu path será alterado junto.
-                            if (itemTree.type === ComponentType.routerConsume || itemTree.type === ComponentType.routerExpose) {
+                            if (itemTree.type === EComponentType.routerConsume || itemTree.type === EComponentType.routerExpose) {
                                 const newLabel = item.properties.find(prop => prop.propertieType === PropertieTypes.label);
                                 item.properties.forEach(prop => {
                                     if (prop.propertieType === PropertieTypes.url) {
@@ -60,9 +59,9 @@ export const PropertiesEditorController: React.FC = () => {
                 onChangeState();
             }
 
-        } else if (project.currentComponentFocus === CurrentFocus.flow) {
+        } else if (project.currentComponentFocus === ECurrentFocus.flow) {
 
-            let treeItemEditing: ItemComponent | undefined;
+            let treeItemEditing: TreeItemComponent | undefined;
             project.tabs.forEach((tab: Tab) => {
                 tab.items.forEach(item => {
                     if (item.isEditing) {
@@ -73,7 +72,7 @@ export const PropertiesEditorController: React.FC = () => {
 
             if (treeItemEditing) {
 
-                let indexItemFlow = treeItemEditing.items.findIndex((oldItem: ItemFlowComplete) => oldItem.id === item.id);
+                let indexItemFlow = treeItemEditing.items.findIndex((oldItem: FlowItemComponent) => oldItem.id === item.id);
                 if (indexItemFlow && (indexItemFlow < 0)) { return; };
 
 
@@ -122,7 +121,7 @@ export const PropertiesEditorController: React.FC = () => {
                 }
 
                 // Reinstancia a classe para revalidar as propriedade e mais
-                treeItemEditing.items[indexItemFlow] = new ItemFlowComplete({
+                treeItemEditing.items[indexItemFlow] = new FlowItemComponent({
                     ...treeItemEditing.items[indexItemFlow],
                     properties: item.properties,
                 });
@@ -134,7 +133,7 @@ export const PropertiesEditorController: React.FC = () => {
     }
 
     /** Devolve para o editor de propriedades as propriedades do item selecionado no momento. */
-    const propertiesEditorGetSelectedItem = (currentFocus: CurrentFocus): IItem => {
+    const propertiesEditorGetSelectedItem = (currentFocus: ECurrentFocus): IItem => {
         const nullRes = {
             id: '',
             name: '',
@@ -143,7 +142,7 @@ export const PropertiesEditorController: React.FC = () => {
         }
 
         // Map a selected tree item.
-        if (currentFocus === CurrentFocus.tree) {
+        if (currentFocus === ECurrentFocus.tree) {
 
             const tab = project.tabs.find((tab: Tab) => tab.items.find(item => item.isSelected));
             if (!tab) { return nullRes; }
@@ -163,7 +162,7 @@ export const PropertiesEditorController: React.FC = () => {
                 };
             }
 
-        } else if (currentFocus === CurrentFocus.flow) { // Mapeia os items de fluxo
+        } else if (currentFocus === ECurrentFocus.flow) { // Mapeia os items de fluxo
 
             /** Get editing item tree */
             const editingItemTree = getItemTreeEditing();
@@ -206,9 +205,9 @@ export const PropertiesEditorController: React.FC = () => {
             const allVariablesToProps = currentTab.items.filter(treeItemToParams => (
                 (treeItemToParams.itemPaiId === selectedItem.id) &&
                 (
-                    treeItemToParams.type === ComponentType.inputVariable ||
-                    treeItemToParams.type === ComponentType.localVariable ||
-                    treeItemToParams.type === ComponentType.outputVariable
+                    treeItemToParams.type === EComponentType.inputVariable ||
+                    treeItemToParams.type === EComponentType.localVariable ||
+                    treeItemToParams.type === EComponentType.outputVariable
                 )
             ));
 
@@ -230,7 +229,7 @@ export const PropertiesEditorController: React.FC = () => {
                                 tab.items.forEach(tabItem => {
 
                                     // Filtra todas as actions globais ou extensions
-                                    if (tabItem.id && (tabItem.type === ComponentType.globalAction || tabItem.type === ComponentType.extension)) {
+                                    if (tabItem.id && (tabItem.type === EComponentType.globalAction || tabItem.type === EComponentType.extension)) {
                                         mappedItemProp = {
                                             ...mappedItemProp,
                                             suggestions: [
@@ -248,7 +247,7 @@ export const PropertiesEditorController: React.FC = () => {
 
                                     // Pega os parâmetros da action ou extension selecionada
                                     if (tabItem.name === mappedItemProp.value) {
-                                        const params = tab.items.filter(tabItemChild => (tabItemChild.itemPaiId === tabItem.id && tabItemChild.type === ComponentType.inputVariable));
+                                        const params = tab.items.filter(tabItemChild => (tabItemChild.itemPaiId === tabItem.id && tabItemChild.type === EComponentType.inputVariable));
 
                                         // Adiciona cada parâmetro como uma prop da action atual
                                         params.forEach(param => {

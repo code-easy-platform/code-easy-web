@@ -1,18 +1,14 @@
-import { Utils, IconWarning, IconError } from "code-easy-components";
+import { IconWarning, IconError, Utils } from "code-easy-components";
 
 import { ContextModalListService } from "../components/context-modais/ContextModalListService";
+import { EFlowItemType, EItemType, IConnection } from "../components/flow-editor";
 import { IProperty, TypeOfValues } from "../components/properties-editor";
-import { DefaultPropsHelper } from '../services/helpers/DefaultPropsHelper';
-import { PropertieTypes } from "../enuns/PropertieTypes";
-import { ITreeItem } from '../components/tree-manager';
+import { ITreeItem } from "../components/tree-manager";
+import { IFlowItemComponent } from "../interfaces";
+import { DefaultPropsHelper } from "../services";
+import { PropertieTypes } from "../enuns";
 
-import { IFlowItem, IConnection, EItemType, EFlowItemType } from "../components/flow-editor";
-
-interface IItemFlowComplete extends IFlowItem {
-    properties: IProperty[];
-    name: string;
-}
-export class ItemFlowComplete implements IItemFlowComplete {
+export class FlowItemComponent implements IFlowItemComponent {
     public flowItemType: EFlowItemType = EFlowItemType.acorn;
     public isEnabledNewConnetion: boolean = false;
     public itemType: EItemType = EItemType.START;

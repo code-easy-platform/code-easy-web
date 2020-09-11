@@ -1,10 +1,11 @@
 import { Utils, IconWarning, IconError } from "code-easy-components";
 
-import { Project, IProjectConfigs } from "../../interfaces/Aplication";
-import { PropertieTypes } from "../../enuns/PropertieTypes";
+import { IProjectConfigurations } from "../../interfaces";
 import { ITreeItem } from "../../components/tree-manager";
-import { ComponentType } from "../../enuns/ComponentType";
+import { EComponentType } from "../../enuns/ComponentType";
 import { EItemType } from "../../components/flow-editor";
+import { PropertieTypes } from "../../enuns";
+import { Project } from "../../models";
 
 class ProblemsHelperService {
     private _problems: ITreeItem[] = [];
@@ -42,7 +43,7 @@ class ProblemsHelperService {
 
                             if (prop.propertieType === PropertieTypes.action && prop.value !== "") {
 
-                                const tabActions = project.tabs.find(tab => tab.configs.type === ComponentType.tabActions);
+                                const tabActions = project.tabs.find(tab => tab.configs.type === EComponentType.tabActions);
                                 if (!tabActions) return;
 
                                 if (!tabActions.items.some(item => item.id === prop.value)) {
@@ -112,7 +113,7 @@ class ProblemsHelperService {
         });
     }
 
-    private _getProjectConfigsProblems(configs: IProjectConfigs) {
+    private _getProjectConfigsProblems(configs: IProjectConfigurations) {
 
         // Valida a versão digitada no projeto para que seja compatível com os package.json que será gerado 
         if (Utils.isValidVersion(configs.version)) {

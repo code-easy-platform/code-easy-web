@@ -1,7 +1,10 @@
-export * from './ItemFlowComponent';
-export * from './ItemTreeComponent';
+export * from './project/IProjectConfigurations';
+export * from './project/IProjectOpenedWindow';
+export * from './project/ITreeItemComponent';
+export * from './project/IFlowItemComponent';
+export * from './project/IOpenedWindow';
+export * from './project/IBasicFields';
+export * from './project/IProject';
 export * from './IConfigurations';
-export * from './OpenedWindow';
-export * from './Aplication';
-export * from './BaseFields';
-export * from './Tabs';
+export * from './project/ITab';
+// export * from './Aplication';

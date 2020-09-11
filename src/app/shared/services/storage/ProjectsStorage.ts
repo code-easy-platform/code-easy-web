@@ -1,15 +1,11 @@
-import { ComponentConfigs } from "../../interfaces/ItemTreeComponent";
-import { ComponentType } from "./../../enuns/ComponentType";
-import { OpenWindow } from "../../interfaces/OpenedWindow";
-import { Project } from "./../../interfaces/Aplication";
-import { ProjectType } from "./../../enuns/ProjectType";
-import { CurrentFocus } from "../../enuns/CurrentFocus";
 import { Utils } from "code-easy-components";
+
+import { EComponentType, ProjectType, ECurrentFocus } from "./../../enuns";
+import { Project, Tab, BasicConfigs } from "../../models";
 import { StorageEnum } from "./StorageEnum";
-import { Tab } from "../../interfaces/Tabs";
 
 const newProject = (name: string, version: string, type: ProjectType, description: string) => new Project({
-    currentComponentFocus: CurrentFocus.tree,
+    currentComponentFocus: ECurrentFocus.tree,
     projectConfigs: {
         type,
         version,
@@ -25,37 +21,37 @@ const newProject = (name: string, version: string, type: ProjectType, descriptio
     },
     tabs: [
         new Tab({
-            configs: new ComponentConfigs({
+            configs: new BasicConfigs({
                 name: "routes",
                 label: "Routes",
                 isEditing: true,
                 isExpanded: true,
                 id: `${Utils.getUUID()}`,
                 description: "Routes tab",
-                type: ComponentType.tabRoutes,
+                type: EComponentType.tabRoutes,
             }),
             items: []
         }),
         new Tab({
-            configs: new ComponentConfigs({
+            configs: new BasicConfigs({
                 name: 'actions',
                 label: 'Actions',
                 isEditing: false,
                 isExpanded: false,
                 id: `${Utils.getUUID()}`,
                 description: 'Actions tab',
-                type: ComponentType.tabActions,
+                type: EComponentType.tabActions,
             }),
             items: [],
         }),
         /* new Tab({
-            configs: new ComponentConfigs({
+            configs: new BasicConfigs({
                 id: `${Utils.getUUID()}`,
                 name: 'data',
                 label: 'Data',
                 isEditing: false,
                 isExpanded: false,
-                type: ComponentType.tabDates,
+                type: EComponentType.tabDates,
                 description: 'Data tab',
             }),
             items: [],
@@ -81,7 +77,7 @@ export class ProjectsStorage {
         let res = localStorage.getItem(StorageEnum.projectsStorage);
 
         if (res !== null && res !== "" && res) {
-            projects = Project.stringToProjects(res);
+            projects = Project.parseProjects(res);
             if (projects === []) {
                 ProjectsStorage.setProjects([]);
             }
@@ -95,7 +91,7 @@ export class ProjectsStorage {
 
     /** Salva no localstorage uma lista de projetos */
     public static setProjects(projects: Project[]): Project[] {
-        localStorage.setItem(StorageEnum.projectsStorage, Project.projectsToString(projects));
+        localStorage.setItem(StorageEnum.projectsStorage, Project.stringifyProjects(projects));
         return projects;
     }
 
@@ -160,99 +156,4 @@ export class ProjectsStorage {
         localStorage.setItem(id, size.toString());
         return size;
     }
-
-    public static selectWindowById(project: Project, windowId: string): Project {
-
-        project.openWindows.forEach(windowTab => {
-            if (windowTab.id === windowId) {
-                windowTab.isSelected = true;
-
-                project.tabs.forEach(tab => {
-                    tab.items.forEach(item => {
-
-                        if (item.id === windowId) {
-                            item.isEditing = true;
-                        } else {
-                            item.isEditing = false;
-                        }
-
-                    });
-                });
-
-            } else {
-                windowTab.isSelected = false;
-            }
-        });
-
-        return project;
-    }
-
-    public static removeWindowById(project: Project, windowId: string): Project {
-
-        const indexToRemove = project.openWindows.findIndex(windowTab => windowTab.id === windowId);
-        if (indexToRemove === -1) { return project; }
-
-        project.openWindows.splice(indexToRemove, 1);
-
-        if (project.openWindows.length > 0) {
-            project = ProjectsStorage.selectWindowById(project, project.openWindows[project.openWindows.length - 1].id);
-        }
-
-        project.tabs.forEach(tab => {
-            tab.items.forEach(item => {
-                if (item.id === windowId) {
-                    item.isEditing = false;
-                }
-            });
-        });
-
-        return project;
-    }
-
-    public static updateWindowTabs(project: Project): Project {
-
-        const addWindowTab = (winTab: OpenWindow) => {
-
-            if (!project.openWindows.some(windowTab => windowTab.id === winTab.id)) {
-                project.openWindows.push(winTab);
-            }
-
-            project.openWindows.forEach(windowTab => {
-                if (windowTab.id === winTab.id) {
-                    windowTab.isSelected = true;
-                    windowTab.title = winTab.title;
-                    windowTab.hasError = winTab.hasError;
-                    windowTab.hasWarning = winTab.hasWarning;
-                    windowTab.description = winTab.description;
-                } else {
-                    windowTab.isSelected = false;
-                }
-            });
-
-        };
-
-        let indexToRemove = project.openWindows.findIndex(windowTab => !project.tabs.some(tab => tab.items.some(item => item.id === windowTab.id)));
-        while (indexToRemove >= 0) {
-            project.openWindows.splice(indexToRemove, 1);
-            indexToRemove = project.openWindows.findIndex(windowTab => !project.tabs.some(tab => tab.items.some(item => item.id === windowTab.id)));
-        }
-
-        project.tabs.forEach(tab => {
-            tab.items.forEach(item => {
-                if (item.isEditing && item.id) {
-                    addWindowTab({
-                        id: item.id,
-                        title: item.label,
-                        isSelected: item.isSelected,
-                        description: item.description,
-                        hasError: item.items.some(itemFlow => itemFlow.hasError),
-                        hasWarning: item.items.some(itemFlow => itemFlow.hasWarning)
-                    });
-                }
-            });
-        });
-
-        return project;
-    }
-
 }

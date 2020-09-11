@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 
 import { ProjectsStorage } from '../../shared/services/storage/ProjectsStorage';
-import { Project } from '../../shared/interfaces/Aplication';
 import { Modal } from '../../shared/components/modal/Modal';
+import { Project } from '../../shared/models';
 import { CardItem } from './CardItem';
 
 export const ImportProjects = ({ open, close }: { open: boolean, close: Function }) => {
@@ -18,7 +18,7 @@ export const ImportProjects = ({ open, close }: { open: boolean, close: Function
         const file = new FileReader();
 
         file.onload = (e: any) => {
-            const projs = Project.stringToProjects(e.target.result);
+            const projs = Project.parseProjects(e.target.result);
 
             // Valida se o conteúdo se é uma lista.
             if (projs.length === 0) {

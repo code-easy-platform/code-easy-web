@@ -1,4 +1,4 @@
-import { FlowBackgroundType } from "../services/storage/IdeConfigStorage";
+import { FlowBackgroundType } from "../services";
 
 /**
  * 

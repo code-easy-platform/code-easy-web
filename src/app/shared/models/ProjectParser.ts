@@ -1,58 +1,16 @@
-import { ItemFlowComplete } from "./ItemFlowComponent";
-import { CurrentFocus } from "../enuns/CurrentFocus";
-import { ItemComponent } from "./ItemTreeComponent";
-import { ProjectType } from "../enuns/ProjectType";
-import { OpenWindow } from "./OpenedWindow";
-import { BaseFields } from "./BaseFields";
+import { TreeItemComponent } from "./TreeItemComponent";
+import { FlowItemComponent } from "./FlowItemComponent";
+import { IProject } from "../interfaces";
+import { Project } from "./Project";
 import { Tab } from "./Tabs";
 
-/**
- * Exclusivamente utilizada na configuração do projeto,
- * em informações que definem o tipo de projeto.
- * 
- * Representa: "Nome do projeto", "version", "autor" e etc...
- */
-export interface IProjectConfigs extends BaseFields {
-    id: string | undefined;
-    name: string;
-    label: string;
-    autor: string;
-    version: string;
-    type: ProjectType;
-    createdDate: Date;
-    updatedDate: Date;
-    description: string;
-    currentProcess: string;
-    currentPlatformVersion: string;
-}
-
-interface IProject {
-    currentComponentFocus: CurrentFocus;
-    projectConfigs: IProjectConfigs;
-    openWindows: OpenWindow[];
-    tabs: Tab[];
-}
-export class Project implements IProject {
-    public currentComponentFocus: CurrentFocus;
-    public projectConfigs: IProjectConfigs;
-    public openWindows: OpenWindow[];
-    public tabs: Tab[];
-
-    constructor(private fields: {
-        currentComponentFocus: CurrentFocus;
-        projectConfigs: IProjectConfigs;
-        openWindows?: OpenWindow[];
-        tabs: Tab[];
-    }) {
-        this.currentComponentFocus = this.fields.currentComponentFocus;
-        this.tabs = this.fields.tabs.map(tab => new Tab(tab));
-        this.projectConfigs = this.fields.projectConfigs;
-        this.openWindows = this.fields.openWindows || [];
-    }
-
-    /** Transforma a classe do projeto em uma string para possibilitar ser salvo mais facilmente no local storage. */
-    public static projectToString(project: Project): string {
-        const res = {
+export class ProjectParser {
+    /**
+     * Turns the project class into a string to make it easier to save to local storage.
+     *  @param project Project that will be transformed into a string
+     */
+    public static stringify(project: Project): string {
+        const res: IProject = {
             currentComponentFocus: project.currentComponentFocus,
             projectConfigs: project.projectConfigs,
             openWindows: project.openWindows,
@@ -95,7 +53,11 @@ export class Project implements IProject {
         return JSON.stringify(res);
     }
 
-    public static stringToProject(value: string): Project {
+    /**
+     * Transform a string into a structure
+     * @param value Content that will be transformed into a Project
+     */
+    public static parse(value: string): Project {
         const json = JSON.parse(value);
 
         return new Project({
@@ -104,7 +66,7 @@ export class Project implements IProject {
             openWindows: json.openWindows,
             tabs: json.tabs.map((tab: any) => new Tab({
                 configs: tab.configs,
-                items: tab.items.map((item: any) => new ItemComponent({
+                items: tab.items.map((item: any) => new TreeItemComponent({
                     nodeExpanded: item.nodeExpanded,
                     description: item.description,
                     isSelected: item.isSelected,
@@ -116,7 +78,7 @@ export class Project implements IProject {
                     name: item.name,
                     type: item.type,
                     id: item.id,
-                    items: item.items.map((itemFlow: any) => new ItemFlowComplete({
+                    items: item.items.map((itemFlow: any) => new FlowItemComponent({
                         connections: itemFlow.connections,
                         description: itemFlow.description,
                         isDisabled: itemFlow.isDisabled,
@@ -135,18 +97,25 @@ export class Project implements IProject {
                 }))
             }))
         });
-
     }
 
-    public static projectsToString(projects: Project[]): string {
-        return JSON.stringify(projects.map(project => Project.projectToString(project)));
+    /**
+     * Turns a list of Projects class into a string to make it easier to save to local storage.
+     *  @param projects Projects that will be transformed into a string
+     */
+    public static stringifyProjects(projects: Project[]): string {
+        return JSON.stringify(projects.map(project => Project.stringify(project)));
     }
 
-    public static stringToProjects(projectsInString: string): Project[] {
+    /**
+     * Transform a string into a list of structure
+     * @param value Content that will be transformed into a Project
+     */
+    public static parseProjects(projectsInString: string): Project[] {
         try {
             const listString: string[] | undefined = JSON.parse(projectsInString);
             if (listString) {
-                return listString.map(projectString => Project.stringToProject(projectString));
+                return listString.map(projectString => Project.parse(projectString));
             } else {
                 return [];
             }
@@ -156,5 +125,4 @@ export class Project implements IProject {
         }
 
     }
-
 }

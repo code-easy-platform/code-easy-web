@@ -1,5 +1,5 @@
 import { ITreeItem } from "../../components/tree-manager";
-import { Project } from "../../interfaces/Aplication";
+import { Project } from "../../models";
 
 class OutputHelperService {
     /**

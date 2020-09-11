@@ -1,94 +1,30 @@
 import { Utils, IconWarning, IconError } from "code-easy-components";
 
-import { IProperty } from "../components/properties-editor/shared/interfaces";
-import { DefaultPropsHelper } from '../services/helpers/DefaultPropsHelper';
+import { IProperty } from "../components/properties-editor";
+import { FlowItemComponent } from "./FlowItemComponent";
 import { ITreeItem } from "../components/tree-manager";
-import { ComponentType } from "../enuns/ComponentType";
-import { ItemFlowComplete } from "./ItemFlowComponent";
 import { EItemType } from "../components/flow-editor";
-import { BaseFields } from "./BaseFields";
+import { ITreeItemComponent } from "../interfaces";
+import { DefaultPropsHelper } from "../services";
+import { EComponentType } from "../enuns";
 
-
-/**
- * Compõem as configurações dos seguintes items: "Items de fluxo", "pasta" e "Abas internas(as de cima da arvorê)".
- */
-export class ComponentConfigs implements BaseFields {
-    public id: string | undefined;
-    public label: string;
-    public name: string;
-    public ordem?: number;
-    public description: string;
-    public type: ComponentType;
-    public isEditing: boolean;
-    public isExpanded?: boolean;
-
-    constructor(
-        private fields: {
-            id: string | undefined,
-            /**
-            * Usado para identificar um registro dentro do sistema.
-            * 
-            *  * Não pode ter espaço
-            *  * Não pode ter caracteres especiais
-            *  * Não pode ser vazio
-            */
-            name: string;
-            /**
-             * Usado para nomear um registro apenas de forma visual
-             */
-            label: string;
-            ordem?: number;
-            isEditing: boolean;
-            description: string,
-            type: ComponentType,
-            isExpanded?: boolean;
-        }
-    ) {
-        this.id = this.fields.id;
-        this.type = this.fields.type;
-        this.name = this.fields.name;
-        this.label = this.fields.label;
-        this.isEditing = this.fields.isEditing;
-        this.isExpanded = this.fields.isExpanded;
-        this.description = this.fields.description;
-        this.ordem = this.fields.ordem;
-    }
-
-}
-
-interface IItemComponent extends BaseFields {
-    /** Usado para conter os items de um fluxo */
-    items: ItemFlowComplete[];
-    /** Usado para poder indicar ao fluxo de items qual items de uma árvore está sendo editado no momento */
-    isEditing: boolean;
-    /** Indica onde o item está selecionado na árvore. */
-    isSelected: boolean;
-    /** Usado para arvore ajuda a sabe se o item é uma pasta ou um arquivo */
-    type: ComponentType;
-    /** Indica se um node(nó) de uma arvore está aberto ou fechado. */
-    nodeExpanded: boolean;
-    /** Usado para fazer auto referência usado para construir árvores */
-    itemPaiId: string | undefined;
-    /** Usado para lista todas as propriedades de um item */
-    properties: IProperty[];
-}
-export class ItemComponent implements IItemComponent {
-    public id: string | undefined;
+export class TreeItemComponent implements ITreeItemComponent {
     public name: string;
     public label: string;
     public ordem?: number;
     public description: string;
+    public id: string | undefined;
 
-    /** Usado para conter os items de um fluxo */
-    public items: ItemFlowComplete[];
     /** Usado para poder indicar ao fluxo de items qual items de uma árvore está sendo editado no momento */
     public isEditing: boolean;
     /** Indica onde o item está selecionado na árvore. */
     public isSelected: boolean;
     /** Usado para arvore ajuda a sabe se o item é uma pasta ou um arquivo */
-    public type: ComponentType;
+    public type: EComponentType;
     /** Indica se um node(nó) de uma arvore está aberto ou fechado. */
     public nodeExpanded: boolean;
+    /** Usado para conter os items de um fluxo */
+    public items: FlowItemComponent[];
     /** Usado para fazer auto referência usado para construir árvores */
     public itemPaiId: string | undefined;
     /** Usado para lista todas as propriedades de um item */
@@ -113,11 +49,11 @@ export class ItemComponent implements IItemComponent {
             isEditing: boolean;
             isSelected: boolean;
             description: string;
-            type: ComponentType;
+            type: EComponentType;
             nodeExpanded: boolean;
             /** Usado para lista todas as propriedades de um item */
             properties?: IProperty[];
-            items: ItemFlowComplete[];
+            items: FlowItemComponent[];
             itemPaiId: string | undefined;
         }
     ) {
@@ -132,7 +68,7 @@ export class ItemComponent implements IItemComponent {
         this.nodeExpanded = this._fields.nodeExpanded;
         this.properties = this._fields.properties || [];
         this.name = Utils.getNormalizedString(this._fields.name || '');
-        this.items = this._fields.items.map(item => new ItemFlowComplete(item));
+        this.items = this._fields.items.map(item => new FlowItemComponent(item));
 
         this._updateProperties(this._fields.properties || [], this._fields.type);
     }
@@ -165,7 +101,7 @@ export class ItemComponent implements IItemComponent {
             addProblem(`Field Label cannot exceed 50 characters in "${this.label}"`, 'error');
         }
 
-        if (this.type !== ComponentType.routerConsume) {
+        if (this.type !== EComponentType.routerConsume) {
 
             // Valida o numero de starts na tela
             let numStarts = this.items.filter(itemFlow => itemFlow.itemType === EItemType.START);
@@ -177,7 +113,7 @@ export class ItemComponent implements IItemComponent {
             }
 
             // Valida se encontra um start e um end na tela
-            if (this.type === ComponentType.globalAction || this.type === ComponentType.localAction || this.type === ComponentType.routerExpose) {
+            if (this.type === EComponentType.globalAction || this.type === EComponentType.localAction || this.type === EComponentType.routerExpose) {
                 if (!(this.items.some(comp => comp.itemType === EItemType.START) && this.items.some(comp => comp.itemType === EItemType.END))) {
                     addProblem(`A "${this.type}" must be have a "Start" and an "End" item in "${this.label}"`, 'error');
                 }
@@ -195,12 +131,12 @@ export class ItemComponent implements IItemComponent {
         return problems;
     }
 
-    private _updateProperties(properties: IProperty[], type: ComponentType) {
+    private _updateProperties(properties: IProperty[], type: EComponentType) {
 
         // Remove o auto focus caso exista em alguma prop
         this.properties.forEach(prop => prop.focusOnRender = false);
 
-        const originalProperties = DefaultPropsHelper.getNewProps(type, this.label, (this.type === ComponentType.routerConsume || this.type === ComponentType.routerExpose));
+        const originalProperties = DefaultPropsHelper.getNewProps(type, this.label, (this.type === EComponentType.routerConsume || this.type === EComponentType.routerExpose));
 
         originalProperties.forEach(originalProp => {
             if (!properties.some(prop => prop.propertieType === originalProp.propertieType)) {

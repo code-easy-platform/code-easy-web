@@ -1,21 +1,23 @@
 import { IconWarning, IconError } from "code-easy-components";
 
-import { ItemComponent, ComponentConfigs } from "./ItemTreeComponent";
+import { TreeItemComponent } from "./TreeItemComponent";
 import { ITreeItem } from "../components/tree-manager";
-import { ComponentType } from "../enuns";
+import { BasicConfigs } from "./BasicConfigs";
+import { EComponentType } from "../enuns";
+import { ITab } from "../interfaces";
 
-export class Tab {
-    public configs: ComponentConfigs;
-    public items: ItemComponent[];
+export class Tab implements ITab {
+    public items: TreeItemComponent[];
+    public configs: BasicConfigs;
 
     constructor(
         private _fields: {
-            configs: ComponentConfigs;
-            items: ItemComponent[];
+            configs: BasicConfigs;
+            items: TreeItemComponent[];
         }
     ) {
+        this.items = this._fields.items.map(item => new TreeItemComponent(item));
         this.configs = this._fields.configs;
-        this.items = this._fields.items.map(item => new ItemComponent(item));
     }
 
     public getProblems(): ITreeItem[] {
@@ -34,11 +36,10 @@ export class Tab {
             });
         }
 
-        if (this.items.length === 0 && this.configs.type === ComponentType.tabRoutes) {
+        if (this.items.length === 0 && this.configs.type === EComponentType.tabRoutes) {
             addProblem(`Add at least one route to your app`, 'error');
         }
 
         return problems;
     }
-
 }

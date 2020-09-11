@@ -2,7 +2,7 @@
 /**
  * Tipos possíveis de item, pode ser uma "action", uma "pasta" ou uma "rota" por exemplo!
  */
-export enum ComponentType {
+export enum EComponentType {
     /**
      * Usado em items que tem apenas a função de agrupar items
      * 

@@ -4,9 +4,10 @@ import { useParams, useHistory } from 'react-router-dom';
 import { CenterLoadingIndicator } from '../components/loading-indicator/LoadingIndicator';
 import { ProjectsStorage } from '../services/storage/ProjectsStorage';
 import { ProblemsHelper } from '../services/helpers/ProblemsHelper';
-import { Project, ItemComponent } from '../interfaces';
-import { ComponentType, PropertieTypes } from '../enuns';
+import { EComponentType, PropertieTypes } from '../enuns';
+import { TreeItemComponent } from '../models';
 import { AssetsService } from '../services';
+import { Project } from '../models';
 
 export interface ICodeEditorContext {
     project: Project,
@@ -26,7 +27,7 @@ export const CodeEditorProvider: React.FC = ({ children }) => {
         project = ProblemsHelper.getProblems(project).project;
 
         // WindowsTabsManager
-        project = ProjectsStorage.updateWindowTabs(project);
+        project.updateWindowTabs();
 
         // Salva a nova versão do projeto no local storage
         ProjectsStorage.setProjectById(project);
@@ -71,8 +72,8 @@ export const useEditorContext = () => {
 
     const { project, setProject } = useContext<ICodeEditorContext>(CodeEditorContext);
 
-    const handleGetItemTreeEditing = useCallback((): ItemComponent | null => {
-        let itemTree: ItemComponent | null = null;
+    const handleGetItemTreeEditing = useCallback((): TreeItemComponent | null => {
+        let itemTree: TreeItemComponent | null = null;
 
         project.tabs.forEach(tab => {
             const resItemTree = tab.items.find(itemTree => itemTree.isEditing);
@@ -84,7 +85,7 @@ export const useEditorContext = () => {
         return itemTree;
     }, [project.tabs]);
 
-    const handleGetItemTreeById = useCallback((id: string, type?: ComponentType): ItemComponent | null => {
+    const handleGetItemTreeById = useCallback((id: string, type?: EComponentType): TreeItemComponent | null => {
         if (type) {
             const tab = project.tabs.find(tab => tab.configs.type === type);
             if (!tab) return null;
@@ -94,7 +95,7 @@ export const useEditorContext = () => {
 
             return itemTree;
         } else {
-            let itemTree: ItemComponent | null = null;
+            let itemTree: TreeItemComponent | null = null;
 
             project.tabs.forEach(tab => {
                 const resItemTree = tab.items.find(itemTree => itemTree.id === id);
@@ -107,14 +108,14 @@ export const useEditorContext = () => {
         }
     }, [project.tabs]);
 
-    const handleGetIconByItemId = useCallback((id: string): ItemComponent | null => {
+    const handleGetIconByItemId = useCallback((id: string): TreeItemComponent | null => {
         let icon: any = undefined;
 
         project.tabs.forEach(tab => {
             const resItemTree = tab.items.find(itemTree => itemTree.id === id);
             if (resItemTree) {
                 icon = resItemTree.properties.find(prop => prop.propertieType === PropertieTypes.icon)?.value.content;
-                if (!icon){
+                if (!icon) {
                     icon = AssetsService.getIcon(resItemTree.type);
                 }
             }

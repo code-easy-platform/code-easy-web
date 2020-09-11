@@ -1,11 +1,10 @@
 import React, { useState, memo } from 'react';
 
 import { PropertiesTab } from '../../../pages/editor/properties-tab/PropertiesTab';
-import { ProjectsStorage } from '../../services/storage/ProjectsStorage';
 import { TabButton, TabGroup, TabsManager } from '../tabs';
 import { useEditorContext } from '../../contexts';
 import { AssetsService } from '../../services';
-import { Tab } from '../../interfaces/Tabs';
+import { Tab } from '../../models/Tabs';
 import { Modal } from '../modal/Modal';
 import './ToolBar.css';
 
@@ -34,19 +33,25 @@ export const ToolBar: React.FC = memo(() => {
             <hr className="hr hr-vertical" />
             <TabsManager
                 tabs={
-                    project.openWindows.map(tab => ({
+                    project.getOpenedWindows().map(tab => ({
                         ...tab,
                         icon: getIconByItemId(tab.id)
                     }))
                 }
                 onChange={windowId => {
                     if (project.projectConfigs.id) {
-                        setProject(ProjectsStorage.selectWindowById(project, windowId));
+
+                        project.selectWindowById(windowId);
+
+                        setProject(project);
                     }
                 }}
                 onCloseWindowTab={windowId => {
                     if (project.projectConfigs.id) {
-                        setProject(ProjectsStorage.removeWindowById(project, windowId));
+
+                        project.removeWindowById(windowId);
+
+                        setProject(project);
                     }
                 }}
             />

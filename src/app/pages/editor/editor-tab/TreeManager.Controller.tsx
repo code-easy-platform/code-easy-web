@@ -4,15 +4,13 @@ import { IconTrash, Utils, IconFlowStart, IconFlowEnd } from 'code-easy-componen
 import { TreeManager, ITreeItem, CustomDragLayer } from '../../../shared/components/tree-manager';
 import { ContextMenuService } from '../../../shared/components/context-menu/ContextMenuService';
 import { IContextItemList } from '../../../shared/components/context-menu/ContextMenu';
-import { ItemFlowComplete } from '../../../shared/interfaces/ItemFlowComponent';
-import { ItemComponent } from '../../../shared/interfaces/ItemTreeComponent';
+import { TreeItemComponent, FlowItemComponent } from '../../../shared/models';
+import { PropertieTypes, ECurrentFocus } from '../../../shared/enuns';
 import { AssetsService } from '../../../shared/services/AssetsService';
-import { ComponentType } from '../../../shared/enuns/ComponentType';
+import { EComponentType } from '../../../shared/enuns/ComponentType';
 import { EItemType } from '../../../shared/components/flow-editor';
-import { CurrentFocus } from '../../../shared/enuns/CurrentFocus';
 import { useEditorContext } from '../../../shared/contexts';
-import { PropertieTypes } from '../../../shared/enuns';
-import { Tab } from '../../../shared/interfaces/Tabs';
+import { Tab } from '../../../shared/models/Tabs';
 
 export const TreeManagerController: React.FC = () => {
 
@@ -22,7 +20,7 @@ export const TreeManagerController: React.FC = () => {
     const onChangeState = useCallback(() => setProject(project), [project, setProject]);
 
     /** Atualiza o foco do editor de propriedades */
-    const changeFocus = useCallback(() => project.currentComponentFocus = CurrentFocus.tree, [project.currentComponentFocus]);
+    const changeFocus = useCallback(() => project.currentComponentFocus = ECurrentFocus.tree, [project.currentComponentFocus]);
 
     /** Remove items da árvore */
     const treeManagerRemoveItem = (inputItemId: string | undefined) => {
@@ -70,7 +68,7 @@ export const TreeManagerController: React.FC = () => {
 
     const treeManagerOnKeyDowm = (e: React.FocusEvent<HTMLDivElement> | any) => {
         if (e.key === 'Delete') {
-            let items: ItemComponent[] = [];
+            let items: TreeItemComponent[] = [];
             project.tabs.forEach((tab: Tab) => {
                 if (tab.configs.isEditing) {
                     items = tab.items;
@@ -92,7 +90,7 @@ export const TreeManagerController: React.FC = () => {
 
         let options: IContextItemList[] = [];
 
-        const addParam = (inputItemId: string | undefined, paramType: ComponentType.inputVariable | ComponentType.localVariable | ComponentType.outputVariable) => {
+        const addParam = (inputItemId: string | undefined, paramType: EComponentType.inputVariable | EComponentType.localVariable | EComponentType.outputVariable) => {
             let tabIndex: number | undefined;
             project.tabs.forEach((tab: Tab, indexTab) => {
                 tab.items.forEach(item => {
@@ -109,7 +107,7 @@ export const TreeManagerController: React.FC = () => {
             if (tabIndex !== undefined) {
                 const newName = Utils.newName('NewParam', project.tabs[tabIndex].items.map(item => item.label));
 
-                project.tabs[tabIndex].items.push(new ItemComponent({
+                project.tabs[tabIndex].items.push(new TreeItemComponent({
                     items: [],
                     name: newName,
                     label: newName,
@@ -126,7 +124,7 @@ export const TreeManagerController: React.FC = () => {
             onChangeState();
         }
 
-        const addRoute = (inputItemId: string | undefined, routerType: ComponentType.routerConsume | ComponentType.routerExpose) => {
+        const addRoute = (inputItemId: string | undefined, routerType: EComponentType.routerConsume | EComponentType.routerExpose) => {
             if (inputItemId === undefined) {
                 let tabIndex: number | undefined;
                 project.tabs.forEach((tab: Tab, indexTab) => {
@@ -143,12 +141,12 @@ export const TreeManagerController: React.FC = () => {
                 if (tabIndex !== undefined) {
                     const newName = Utils.newName('NewRouter', project.tabs[tabIndex].items.map(item => item.label));
 
-                    project.tabs[tabIndex].items.push(new ItemComponent({
+                    project.tabs[tabIndex].items.push(new TreeItemComponent({
                         items: (
-                            routerType === ComponentType.routerExpose
+                            routerType === EComponentType.routerExpose
                                 ? [
-                                    new ItemFlowComplete({ id: '1', name: EItemType.START, icon: IconFlowStart, itemType: EItemType.START, left: 188, top: 128, isSelected: false, connections: [{ id: Utils.getUUID(), targetId: '2', originId: '1', isSelected: false }], properties: [] }),
-                                    new ItemFlowComplete({ id: '2', name: EItemType.END, icon: IconFlowEnd, itemType: EItemType.END, left: 188, top: 384, isSelected: false, connections: [], properties: [] })
+                                    new FlowItemComponent({ id: '1', name: EItemType.START, icon: IconFlowStart, itemType: EItemType.START, left: 188, top: 128, isSelected: false, connections: [{ id: Utils.getUUID(), targetId: '2', originId: '1', isSelected: false }], properties: [] }),
+                                    new FlowItemComponent({ id: '2', name: EItemType.END, icon: IconFlowEnd, itemType: EItemType.END, left: 188, top: 384, isSelected: false, connections: [], properties: [] })
                                 ]
                                 : []
                         ),
@@ -159,7 +157,7 @@ export const TreeManagerController: React.FC = () => {
                         nodeExpanded: true,
                         id: Utils.getUUID(),
                         itemPaiId: inputItemId,
-                        isEditing: routerType === ComponentType.routerExpose,
+                        isEditing: routerType === EComponentType.routerExpose,
                     }));
                 }
             }
@@ -183,7 +181,7 @@ export const TreeManagerController: React.FC = () => {
                 if (tabIndex !== undefined) {
                     const newName = Utils.newName('NewAction', project.tabs[tabIndex].items.map(item => item.label));
 
-                    project.tabs[tabIndex].items.push(new ItemComponent({
+                    project.tabs[tabIndex].items.push(new TreeItemComponent({
                         id: Utils.getUUID(),
                         label: newName,
                         description: '',
@@ -191,10 +189,10 @@ export const TreeManagerController: React.FC = () => {
                         isSelected: true,
                         nodeExpanded: true,
                         itemPaiId: inputItemId,
-                        type: ComponentType.globalAction,
+                        type: EComponentType.globalAction,
                         items: [
-                            new ItemFlowComplete({ id: '1', name: "START", icon: IconFlowStart, itemType: EItemType.START, left: 188, top: 128, isSelected: false, connections: [{ id: Utils.getUUID(), targetId: '2', originId: '1', isSelected: false }], properties: [] }),
-                            new ItemFlowComplete({ id: '2', name: "END", icon: IconFlowEnd, itemType: EItemType.END, left: 188, top: 384, isSelected: false, connections: [], properties: [] })
+                            new FlowItemComponent({ id: '1', name: "START", icon: IconFlowStart, itemType: EItemType.START, left: 188, top: 128, isSelected: false, connections: [{ id: Utils.getUUID(), targetId: '2', originId: '1', isSelected: false }], properties: [] }),
+                            new FlowItemComponent({ id: '2', name: "END", icon: IconFlowEnd, itemType: EItemType.END, left: 188, top: 384, isSelected: false, connections: [], properties: [] })
                         ],
                     }));
                 }
@@ -204,125 +202,125 @@ export const TreeManagerController: React.FC = () => {
 
         project.tabs.forEach((tab: Tab) => {
             if (tab.configs.isEditing) {
-                if (tab.configs.type === ComponentType.tabRoutes) {
+                if (tab.configs.type === EComponentType.tabRoutes) {
 
                     options.push({
-                        action: () => addRoute(itemId, ComponentType.routerExpose),
-                        icon: AssetsService.getIcon(ComponentType.routerExpose),
+                        action: () => addRoute(itemId, EComponentType.routerExpose),
+                        icon: AssetsService.getIcon(EComponentType.routerExpose),
                         disabled: itemId !== undefined,
                         label: 'Expose a new route'
                     });
 
                     options.push({
-                        icon: AssetsService.getIcon(ComponentType.routerConsume),
-                        action: () => addRoute(itemId, ComponentType.routerConsume),
+                        icon: AssetsService.getIcon(EComponentType.routerConsume),
+                        action: () => addRoute(itemId, EComponentType.routerConsume),
                         disabled: itemId !== undefined,
                         label: 'Consume a new route'
                     });
 
-                } else if (tab.configs.type === ComponentType.tabActions) {
+                } else if (tab.configs.type === EComponentType.tabActions) {
 
                     options.push({
-                        icon: AssetsService.getIcon(ComponentType.globalAction),
+                        icon: AssetsService.getIcon(EComponentType.globalAction),
                         action: () => addAction(itemId),
                         disabled: itemId !== undefined,
                         label: 'Add new action'
                     });
 
-                } else if (tab.configs.type === ComponentType.tabDates) {
+                } else if (tab.configs.type === EComponentType.tabDates) {
 
                 }
 
                 tab.items.forEach(item => {
                     if (item.id === itemId) {
                         switch (item.type) {
-                            case ComponentType.globalAction:
+                            case EComponentType.globalAction:
                                 options.push({
                                     action: () => { },
                                     label: '-',
                                 });
 
                                 options.push({
-                                    action: () => addParam(itemId, ComponentType.inputVariable),
-                                    icon: AssetsService.getIcon(ComponentType.inputVariable),
+                                    action: () => addParam(itemId, EComponentType.inputVariable),
+                                    icon: AssetsService.getIcon(EComponentType.inputVariable),
                                     disabled: itemId === undefined,
                                     label: 'Add input variable',
                                 });
                                 options.push({
-                                    action: () => addParam(itemId, ComponentType.outputVariable),
-                                    icon: AssetsService.getIcon(ComponentType.outputVariable),
+                                    action: () => addParam(itemId, EComponentType.outputVariable),
+                                    icon: AssetsService.getIcon(EComponentType.outputVariable),
                                     disabled: itemId === undefined,
                                     label: 'Add output variable'
                                 });
                                 options.push({
-                                    action: () => addParam(itemId, ComponentType.localVariable),
-                                    icon: AssetsService.getIcon(ComponentType.localVariable),
+                                    action: () => addParam(itemId, EComponentType.localVariable),
+                                    icon: AssetsService.getIcon(EComponentType.localVariable),
                                     disabled: itemId === undefined,
                                     label: 'Add local variable'
                                 });
                                 break;
 
-                            case ComponentType.localAction:
+                            case EComponentType.localAction:
                                 options.push({
                                     action: () => { },
                                     label: '-',
                                 });
 
                                 options.push({
-                                    action: () => addParam(itemId, ComponentType.inputVariable),
-                                    icon: AssetsService.getIcon(ComponentType.inputVariable),
+                                    action: () => addParam(itemId, EComponentType.inputVariable),
+                                    icon: AssetsService.getIcon(EComponentType.inputVariable),
                                     disabled: itemId === undefined,
                                     label: 'Add input variable'
                                 });
                                 options.push({
-                                    action: () => addParam(itemId, ComponentType.outputVariable),
-                                    icon: AssetsService.getIcon(ComponentType.outputVariable),
+                                    action: () => addParam(itemId, EComponentType.outputVariable),
+                                    icon: AssetsService.getIcon(EComponentType.outputVariable),
                                     disabled: itemId === undefined,
                                     label: 'Add output variable'
                                 });
                                 options.push({
-                                    action: () => addParam(itemId, ComponentType.localVariable),
-                                    icon: AssetsService.getIcon(ComponentType.localVariable),
+                                    action: () => addParam(itemId, EComponentType.localVariable),
+                                    icon: AssetsService.getIcon(EComponentType.localVariable),
                                     disabled: itemId === undefined,
                                     label: 'Add local variable'
                                 });
                                 break;
 
-                            case ComponentType.routerExpose:
+                            case EComponentType.routerExpose:
                                 options.push({
                                     action: () => { },
                                     label: '-',
                                 });
 
                                 options.push({
-                                    action: () => addParam(itemId, ComponentType.inputVariable),
-                                    icon: AssetsService.getIcon(ComponentType.inputVariable),
+                                    action: () => addParam(itemId, EComponentType.inputVariable),
+                                    icon: AssetsService.getIcon(EComponentType.inputVariable),
                                     disabled: itemId === undefined,
                                     label: 'Add input param'
                                 });
                                 options.push({
-                                    action: () => addParam(itemId, ComponentType.outputVariable),
-                                    icon: AssetsService.getIcon(ComponentType.outputVariable),
+                                    action: () => addParam(itemId, EComponentType.outputVariable),
+                                    icon: AssetsService.getIcon(EComponentType.outputVariable),
                                     disabled: itemId === undefined,
                                     label: 'Add output param'
                                 });
                                 options.push({
-                                    action: () => addParam(itemId, ComponentType.localVariable),
-                                    icon: AssetsService.getIcon(ComponentType.localVariable),
+                                    action: () => addParam(itemId, EComponentType.localVariable),
+                                    icon: AssetsService.getIcon(EComponentType.localVariable),
                                     disabled: itemId === undefined,
                                     label: 'Add local variable'
                                 });
                                 break;
 
-                            case ComponentType.routerConsume:
+                            case EComponentType.routerConsume:
                                 options.push({
                                     action: () => { },
                                     label: '-',
                                 });
 
                                 options.push({
-                                    action: () => addParam(itemId, ComponentType.inputVariable),
-                                    icon: AssetsService.getIcon(ComponentType.inputVariable),
+                                    action: () => addParam(itemId, EComponentType.inputVariable),
+                                    icon: AssetsService.getIcon(EComponentType.inputVariable),
                                     disabled: itemId === undefined,
                                     label: 'Add input param'
                                 });
@@ -363,7 +361,7 @@ export const TreeManagerController: React.FC = () => {
                     const updatedItem = updatedItems.find(updatedItem => updatedItem.id === item.id);
                     if (!updatedItem) return item;
 
-                    return new ItemComponent({
+                    return new TreeItemComponent({
                         ...item,
                         isEditing: updatedItem.isEditing || false,
                         nodeExpanded: updatedItem.nodeExpanded,
@@ -392,17 +390,17 @@ export const TreeManagerController: React.FC = () => {
     /** Monta a estrutura da árvore e devolve no return */
     const treeManagerItems = ((): ITreeItem[] => {
 
-        const cannotPerformDoubleClick = (type: ComponentType) => {
+        const cannotPerformDoubleClick = (type: EComponentType) => {
             switch (type) {
-                case ComponentType.inputVariable:
+                case EComponentType.inputVariable:
                     return true;
-                case ComponentType.grouper:
+                case EComponentType.grouper:
                     return true;
-                case ComponentType.localVariable:
+                case EComponentType.localVariable:
                     return true;
-                case ComponentType.outputVariable:
+                case EComponentType.outputVariable:
                     return true;
-                case ComponentType.routerConsume:
+                case EComponentType.routerConsume:
                     return true;
 
                 default:
@@ -410,26 +408,26 @@ export const TreeManagerController: React.FC = () => {
             }
         }
 
-        const getCanDropList = (type: ComponentType) => {
+        const getCanDropList = (type: EComponentType) => {
             switch (type) {
-                case ComponentType.inputVariable:
+                case EComponentType.inputVariable:
                     return [];
-                case ComponentType.localAction:
-                    return [ComponentType.inputVariable, ComponentType.localVariable, ComponentType.outputVariable];
-                case ComponentType.localVariable:
+                case EComponentType.localAction:
+                    return [EComponentType.inputVariable, EComponentType.localVariable, EComponentType.outputVariable];
+                case EComponentType.localVariable:
                     return [];
-                case ComponentType.outputVariable:
+                case EComponentType.outputVariable:
                     return [];
-                case ComponentType.routerConsume:
-                    return [ComponentType.inputVariable];
-                case ComponentType.extension:
-                    return [ComponentType.inputVariable, ComponentType.outputVariable];
-                case ComponentType.globalAction:
-                    return [ComponentType.inputVariable, ComponentType.localVariable, ComponentType.outputVariable];
-                case ComponentType.grouper:
-                    return [ComponentType.localAction, ComponentType.globalAction, ComponentType.extension, ComponentType.routerConsume, ComponentType.routerExpose];
-                case ComponentType.routerExpose:
-                    return [ComponentType.inputVariable, ComponentType.localVariable, ComponentType.outputVariable];
+                case EComponentType.routerConsume:
+                    return [EComponentType.inputVariable];
+                case EComponentType.extension:
+                    return [EComponentType.inputVariable, EComponentType.outputVariable];
+                case EComponentType.globalAction:
+                    return [EComponentType.inputVariable, EComponentType.localVariable, EComponentType.outputVariable];
+                case EComponentType.grouper:
+                    return [EComponentType.localAction, EComponentType.globalAction, EComponentType.extension, EComponentType.routerConsume, EComponentType.routerExpose];
+                case EComponentType.routerExpose:
+                    return [EComponentType.inputVariable, EComponentType.localVariable, EComponentType.outputVariable];
                 default:
                     return [];
             }
