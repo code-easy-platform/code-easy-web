@@ -11,7 +11,7 @@ export interface IProject {
     tabs: ITab[];
 }
 
-export interface IProjectOpenedWindows {
+export interface IProjectManageWindows {
     selectWindowById(windowId: string): void;
     removeWindowById(windowId: string): void;
     getOpenedWindows(): IOpenedWindow[];

@@ -1,23 +1,20 @@
 import { IconWarning, IconError } from "code-easy-components";
 
+import { ItemComponentConfigs } from "./ItemComponentConfigs";
 import { TreeItemComponent } from "./TreeItemComponent";
 import { ITreeItem } from "../components/tree-manager";
-import { BasicConfigs } from "./BasicConfigs";
 import { EComponentType } from "../enuns";
 import { ITab } from "../interfaces";
 
 export class Tab implements ITab {
+    public configs: ItemComponentConfigs;
     public items: TreeItemComponent[];
-    public configs: BasicConfigs;
 
     constructor(
-        private _fields: {
-            configs: BasicConfigs;
-            items: TreeItemComponent[];
-        }
+        private _fields: ITab
     ) {
         this.items = this._fields.items.map(item => new TreeItemComponent(item));
-        this.configs = this._fields.configs;
+        this.configs = new ItemComponentConfigs(this._fields.configs);
     }
 
     public getProblems(): ITreeItem[] {

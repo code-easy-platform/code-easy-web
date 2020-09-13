@@ -25,6 +25,14 @@ export interface IBasicFields {
      * Campo usado para controlar a onder dos items
      */
     ordem?: number;
+    /**
+     * Field used to store criation date
+     */
+    createdDate?: Date;
+    /**
+     * Field used to store updated date
+     */
+    updatedDate?: Date;
 
     // Aqui vai o campo para a lista de proriedades.
 }

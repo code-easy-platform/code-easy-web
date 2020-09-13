@@ -11,53 +11,24 @@ import { DefaultPropsHelper } from "../services";
 export class TreeItemComponent implements ITreeItemComponent {
     public name: string;
     public label: string;
-    public ordem?: number;
-    public description: string;
-    public id: string | undefined;
-
-    /** Usado para poder indicar ao fluxo de items qual items de uma árvore está sendo editado no momento */
+    public ordem: number;
     public isEditing: boolean;
-    /** Indica onde o item está selecionado na árvore. */
     public isSelected: boolean;
-    /** Usado para arvore ajuda a sabe se o item é uma pasta ou um arquivo */
+    public isExpanded: boolean;
+    public description: string;
     public type: EComponentType;
-    /** Indica se um node(nó) de uma arvore está aberto ou fechado. */
-    public nodeExpanded: boolean;
-    /** Usado para conter os items de um fluxo */
+    public id: string | undefined;
+    public properties: IProperty[];
     public items: FlowItemComponent[];
-    /** Usado para fazer auto referência usado para construir árvores */
     public itemPaiId: string | undefined;
-    /** Usado para lista todas as propriedades de um item */
-    public properties: IProperty[] = [];
+    public updatedDate: Date = new Date();
+    public createdDate: Date = new Date();
 
     constructor(
-        private _fields: {
-            id: string | undefined;
-            /**
-            * Usado para identificar um registro dentro do sistema.
-            * 
-            *  * Não pode ter espaço
-            *  * Não pode ter caracteres especiais
-            *  * Não pode ser vazio
-            */
-            name?: string;
-            /**
-             * Usado para nomear um registro apenas de forma visual
-             */
-            label: string;
-            ordem?: number;
-            isEditing: boolean;
-            isSelected: boolean;
-            description: string;
-            type: EComponentType;
-            nodeExpanded: boolean;
-            /** Usado para lista todas as propriedades de um item */
-            properties?: IProperty[];
-            items: FlowItemComponent[];
-            itemPaiId: string | undefined;
-        }
+        private _fields: ITreeItemComponent
     ) {
         this.id = this._fields.id;
+        this.updatedDate = new Date();
         this.type = this._fields.type;
         this.label = this._fields.label;
         this.ordem = this._fields.ordem || 0;
@@ -65,9 +36,10 @@ export class TreeItemComponent implements ITreeItemComponent {
         this.isEditing = this._fields.isEditing;
         this.isSelected = this._fields.isSelected;
         this.description = this._fields.description;
-        this.nodeExpanded = this._fields.nodeExpanded;
         this.properties = this._fields.properties || [];
+        this.isExpanded = Boolean(this._fields.isExpanded);
         this.name = Utils.getNormalizedString(this._fields.name || '');
+        this.createdDate = this._fields.createdDate || this.createdDate;
         this.items = this._fields.items.map(item => new FlowItemComponent(item));
 
         this._updateProperties(this._fields.properties || [], this._fields.type);
@@ -148,7 +120,7 @@ export class TreeItemComponent implements ITreeItemComponent {
             case EComponentType.globalAction:
                 this._globalAction();
                 break;
-        
+
             default:
                 break;
         }

@@ -4,13 +4,11 @@ import { IconTrash, Utils, IconFlowStart, IconFlowEnd } from 'code-easy-componen
 import { TreeManager, ITreeItem, CustomDragLayer } from '../../../shared/components/tree-manager';
 import { ContextMenuService } from '../../../shared/components/context-menu/ContextMenuService';
 import { IContextItemList } from '../../../shared/components/context-menu/ContextMenu';
-import { TreeItemComponent, FlowItemComponent } from '../../../shared/models';
-import { PropertieTypes, ECurrentFocus } from '../../../shared/enuns';
-import { AssetsService } from '../../../shared/services/AssetsService';
-import { EComponentType } from '../../../shared/enuns/ComponentType';
+import { PropertieTypes, ECurrentFocus, EComponentType } from '../../../shared/enuns';
+import { TreeItemComponent, FlowItemComponent, Tab } from '../../../shared/models';
 import { EItemType } from '../../../shared/components/flow-editor';
 import { useEditorContext } from '../../../shared/contexts';
-import { Tab } from '../../../shared/models/Tabs';
+import { AssetsService } from '../../../shared/services';
 
 export const TreeManagerController: React.FC = () => {
 
@@ -115,8 +113,8 @@ export const TreeManagerController: React.FC = () => {
                     description: '',
                     isSelected: true,
                     isEditing: false,
+                    isExpanded: false,
                     id: Utils.getUUID(),
-                    nodeExpanded: false,
                     itemPaiId: inputItemId,
                 }));
             }
@@ -150,11 +148,12 @@ export const TreeManagerController: React.FC = () => {
                                 ]
                                 : []
                         ),
+                        name: newName,
                         label: newName,
                         description: '',
                         type: routerType,
                         isSelected: true,
-                        nodeExpanded: true,
+                        isExpanded: true,
                         id: Utils.getUUID(),
                         itemPaiId: inputItemId,
                         isEditing: routerType === EComponentType.routerExpose,
@@ -182,17 +181,18 @@ export const TreeManagerController: React.FC = () => {
                     const newName = Utils.newName('NewAction', project.tabs[tabIndex].items.map(item => item.label));
 
                     project.tabs[tabIndex].items.push(new TreeItemComponent({
-                        id: Utils.getUUID(),
+                        name: newName,
                         label: newName,
                         description: '',
                         isEditing: true,
                         isSelected: true,
-                        nodeExpanded: true,
+                        id: Utils.getUUID(),
+                        isExpanded: true,
                         itemPaiId: inputItemId,
                         type: EComponentType.globalAction,
                         items: [
-                            new FlowItemComponent({ id: '1', name: "START", icon: IconFlowStart, itemType: EItemType.START, left: 188, top: 128, isSelected: false, connections: [{ id: Utils.getUUID(), targetId: '2', originId: '1', isSelected: false }], properties: [] }),
-                            new FlowItemComponent({ id: '2', name: "END", icon: IconFlowEnd, itemType: EItemType.END, left: 188, top: 384, isSelected: false, connections: [], properties: [] })
+                            new FlowItemComponent({ id: '1', name: EItemType.START, icon: IconFlowStart, itemType: EItemType.START, left: 188, top: 128, isSelected: false, connections: [{ id: Utils.getUUID(), targetId: '2', originId: '1', isSelected: false }], properties: [] }),
+                            new FlowItemComponent({ id: '2', name: EItemType.END, icon: IconFlowEnd, itemType: EItemType.END, left: 188, top: 384, isSelected: false, connections: [], properties: [] })
                         ],
                     }));
                 }
@@ -364,7 +364,7 @@ export const TreeManagerController: React.FC = () => {
                     return new TreeItemComponent({
                         ...item,
                         isEditing: updatedItem.isEditing || false,
-                        nodeExpanded: updatedItem.nodeExpanded,
+                        isExpanded: updatedItem.nodeExpanded,
                         isSelected: updatedItem.isSelected,
                         itemPaiId: updatedItem.ascendantId,
                     });
@@ -443,7 +443,9 @@ export const TreeManagerController: React.FC = () => {
                     hasWarning: item.items.some(itemFlow => itemFlow.properties.some(prop => (prop.valueHasWarning || prop.nameHasWarning))),
                     hasError: item.items.some(itemFlow => itemFlow.properties.some(prop => (prop.valueHasError || prop.nameHasError))),
                     isDisabledDoubleClick: cannotPerformDoubleClick(item.type),
+                    isDisabledDrag: item.type === EComponentType.routerExpose,
                     canDropList: getCanDropList(item.type),
+                    nodeExpanded: item.isExpanded,
                     ascendantId: item.itemPaiId,
                 }));
             }

@@ -1,7 +1,7 @@
 import { Utils } from "code-easy-components";
 
 import { EComponentType, ProjectType, ECurrentFocus } from "./../../enuns";
-import { Project, Tab, BasicConfigs } from "../../models";
+import { Project, Tab, ItemComponentConfigs } from "../../models";
 import { StorageEnum } from "./StorageEnum";
 
 const newProject = (name: string, version: string, type: ProjectType, description: string) => new Project({
@@ -12,35 +12,37 @@ const newProject = (name: string, version: string, type: ProjectType, descriptio
         description,
         label: name,
         currentProcess: '',
+        id: Utils.getUUID(),
         createdDate: new Date(),
         updatedDate: new Date(),
-        id: `${Utils.getUUID()}`,
         autor: ProjectsStorage.getAuthorName(),
         name: Utils.getNormalizedString(name.toLowerCase()),
         currentPlatformVersion: `${process.env.REACT_APP_VERSION}`,
     },
     tabs: [
         new Tab({
-            configs: new BasicConfigs({
+            configs: new ItemComponentConfigs({
                 name: "routes",
                 label: "Routes",
                 isEditing: true,
                 isExpanded: true,
-                id: `${Utils.getUUID()}`,
-                description: "Routes tab",
+                isSelected: false,
+                id: Utils.getUUID(),
                 type: EComponentType.tabRoutes,
+                description: EComponentType.tabRoutes,
             }),
             items: []
         }),
         new Tab({
-            configs: new BasicConfigs({
+            configs: new ItemComponentConfigs({
                 name: 'actions',
                 label: 'Actions',
                 isEditing: false,
                 isExpanded: false,
-                id: `${Utils.getUUID()}`,
-                description: 'Actions tab',
+                isSelected: false,
+                id: Utils.getUUID(),
                 type: EComponentType.tabActions,
+                description: EComponentType.tabActions,
             }),
             items: [],
         }),

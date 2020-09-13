@@ -1,9 +1,12 @@
-import { IProject, IProjectConfigurations, IProjectOpenedWindow, IOpenedWindow, IProjectOpenedWindows } from "../interfaces";
+import { IProject, IProjectConfigurations, IProjectOpenedWindow, IOpenedWindow, IProjectManageWindows } from "../interfaces";
 import { ProjectParser } from "./ProjectParser";
 import { ECurrentFocus } from "../enuns";
 import { Tab } from "./Tabs";
 
-export class Project extends ProjectParser implements IProject, IProjectOpenedWindows {
+/**
+ * Represents a project
+ */
+export class Project extends ProjectParser implements IProject, IProjectManageWindows {
     projectConfigs: IProjectConfigurations;
     currentComponentFocus: ECurrentFocus;
     openWindows: IProjectOpenedWindow[];

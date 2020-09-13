@@ -1,7 +1,7 @@
+import { IItemComponentConfigs } from "./IItemComponentConfigs";
 import { ITreeItemComponent } from "./ITreeItemComponent";
-import { IBasicFields } from "./IBasicFields";
 
 export interface ITab {
+    configs: IItemComponentConfigs;
     items: ITreeItemComponent[];
-    configs: IBasicFields;
 }

@@ -8,58 +8,47 @@ import { IFlowItemComponent } from "../interfaces";
 import { DefaultPropsHelper } from "../services";
 import { PropertieTypes } from "../enuns";
 
+
+type OmitInContructor = "flowItemType" | "isEnabledNewConnetion" | "height" | "width";
+
 export class FlowItemComponent implements IFlowItemComponent {
     public flowItemType: EFlowItemType = EFlowItemType.acorn;
     public isEnabledNewConnetion: boolean = false;
-    public itemType: EItemType = EItemType.START;
-    public connections: IConnection[] = [];
-    public properties: IProperty[] = [];
-    public isSelected: boolean = false;
-    public hasWarning: boolean = false;
-    public isDisabled: boolean = false;
-    public hasError: boolean = false;
-    public description: string = '';
-    public id: string | undefined;
-    public icon: any = undefined;
     public height: number = 40;
-    public label: string = '';
     public width: number = 40;
-    public name: string = "";
-    public left: number = 0;
-    public top: number = 0;
+
+    public connections: IConnection[];
+    public properties: IProperty[];
+    public id: string | undefined;
+    public itemType: EItemType;
+    public isSelected: boolean;
+    public hasWarning: boolean;
+    public isDisabled: boolean;
+    public description: string;
+    public hasError: boolean;
+    public label: string;
+    public name: string;
+    public left: number;
+    public top: number;
+    public icon: any;
 
     constructor(
-        private _fields: {
-            connections: IConnection[],
-            properties?: IProperty[],
-            id: string | undefined,
-            description?: string,
-            isDisabled?: boolean,
-            hasWarning?: boolean,
-            isSelected: boolean,
-            itemType: EItemType,
-            hasError?: boolean,
-            label?: string,
-            name: string,
-            left: number,
-            top: number,
-            icon?: any,
-        },
+        private _fields: Omit<IFlowItemComponent, OmitInContructor>,
     ) {
-        this.isDisabled = _fields.isDisabled || false;
-        this.hasWarning = _fields.hasWarning || false;
-        this.description = _fields.description || '';
-        this.properties = _fields.properties || [];
-        this.hasError = _fields.hasError || false;
-        this.connections = _fields.connections;
-        this.isSelected = _fields.isSelected;
-        this.itemType = _fields.itemType;
-        this.label = _fields.label || '';
-        this.name = _fields.name;
-        this.icon = _fields.icon;
-        this.left = _fields.left;
-        this.top = _fields.top;
-        this.id = _fields.id;
+        this.isDisabled = this._fields.isDisabled || false;
+        this.isSelected = Boolean(this._fields.isSelected);
+        this.hasWarning = this._fields.hasWarning || false;
+        this.description = this._fields.description || '';
+        this.connections = this._fields.connections || [];
+        this.properties = this._fields.properties || [];
+        this.hasError = Boolean(this._fields.hasError);
+        this.label = this._fields.label || '';
+        this.itemType = this._fields.itemType;
+        this.name = this._fields.name;
+        this.icon = this._fields.icon;
+        this.left = this._fields.left;
+        this.top = this._fields.top;
+        this.id = this._fields.id;
 
         this._updateProperties(this._fields.properties || [], this._fields.itemType);
         this.getProblems();
@@ -205,6 +194,9 @@ export class FlowItemComponent implements IFlowItemComponent {
     }
 
     private _updateProperties(properties: IProperty[], type: EItemType) {
+
+        // Update the type of item in flow editor
+        this.flowItemType = this._fields.itemType === EItemType.COMMENT ? EFlowItemType.comment : EFlowItemType.acorn;
 
         // Remove o auto focus caso exista em algum componente
         this.properties.forEach(prop => prop.focusOnRender = false);

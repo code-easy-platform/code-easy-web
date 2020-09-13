@@ -1,4 +1,5 @@
 export * from './project/IProjectConfigurations';
+export * from './project/IItemComponentConfigs';
 export * from './project/IProjectOpenedWindow';
 export * from './project/ITreeItemComponent';
 export * from './project/IFlowItemComponent';

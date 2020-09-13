@@ -1,6 +1,7 @@
+import { ItemComponentConfigs } from "./ItemComponentConfigs";
 import { TreeItemComponent } from "./TreeItemComponent";
 import { FlowItemComponent } from "./FlowItemComponent";
-import { IProject } from "../interfaces";
+import { IProject, ITab } from "../interfaces";
 import { Project } from "./Project";
 import { Tab } from "./Tabs";
 
@@ -15,10 +16,24 @@ export class ProjectParser {
             projectConfigs: project.projectConfigs,
             openWindows: project.openWindows,
             tabs: project.tabs.map(tab => ({
-                configs: tab.configs,
+                configs: {
+                    createdDate: tab.configs.createdDate,
+                    description: tab.configs.description,
+                    updatedDate: tab.configs.updatedDate,
+                    isSelected: tab.configs.isSelected,
+                    isExpanded: tab.configs.isExpanded,
+                    isEditing: tab.configs.isEditing,
+                    ordem: tab.configs.ordem,
+                    label: tab.configs.label,
+                    name: tab.configs.label,
+                    type: tab.configs.type,
+                    id: tab.configs.id,
+                },
                 items: tab.items.map(itemTree => ({
-                    nodeExpanded: itemTree.nodeExpanded,
                     description: itemTree.description,
+                    createdDate: itemTree.createdDate,
+                    updatedDate: itemTree.updatedDate,
+                    isExpanded: itemTree.isExpanded,
                     properties: itemTree.properties,
                     isSelected: itemTree.isSelected,
                     isEditing: itemTree.isEditing,
@@ -64,36 +79,11 @@ export class ProjectParser {
             currentComponentFocus: json.currentComponentFocus,
             projectConfigs: json.projectConfigs,
             openWindows: json.openWindows,
-            tabs: json.tabs.map((tab: any) => new Tab({
-                configs: tab.configs,
-                items: tab.items.map((item: any) => new TreeItemComponent({
-                    nodeExpanded: item.nodeExpanded,
-                    description: item.description,
-                    isSelected: item.isSelected,
-                    properties: item.properties,
-                    isEditing: item.isEditing,
-                    itemPaiId: item.itemPaiId,
-                    label: item.label,
-                    ordem: item.ordem,
-                    name: item.name,
-                    type: item.type,
-                    id: item.id,
-                    items: item.items.map((itemFlow: any) => new FlowItemComponent({
-                        connections: itemFlow.connections,
-                        description: itemFlow.description,
-                        isDisabled: itemFlow.isDisabled,
-                        hasWarning: itemFlow.hasWarning,
-                        properties: itemFlow.properties,
-                        isSelected: itemFlow.isSelected,
-                        itemType: itemFlow.itemType,
-                        hasError: itemFlow.hasError,
-                        label: itemFlow.label,
-                        left: itemFlow.left,
-                        name: itemFlow.name,
-                        icon: itemFlow.icon,
-                        top: itemFlow.top,
-                        id: itemFlow.id,
-                    })),
+            tabs: json.tabs.map((tab: ITab) => new Tab({
+                configs: new ItemComponentConfigs(tab.configs),
+                items: tab.items.map(item => new TreeItemComponent({
+                    ...item,
+                    items: item.items.map(itemFlow => new FlowItemComponent(itemFlow)),
                 }))
             }))
         });

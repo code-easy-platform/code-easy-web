@@ -67,6 +67,7 @@ export const FlowEditorController: React.FC = memo(() => {
                                     left: updatedItem.left,
                                     top: updatedItem.top,
                                     id: updatedItem.id,
+                                    properties: [],
                                 }));
                             }
                         }
