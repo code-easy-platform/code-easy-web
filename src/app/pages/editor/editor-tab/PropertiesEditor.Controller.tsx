@@ -20,103 +20,107 @@ export const PropertiesEditorController: React.FC = () => {
 
         if (project.currentComponentFocus === ECurrentFocus.tree) {
 
-            if (item.id) {
-                project.tabs.forEach((tab: Tab) => {
-                    tab.items.forEach(itemTree => {
-                        if (itemTree.isSelected && itemTree.id === item.id) {
+            if (item.id) return;
 
-                            // Este block garante que se a label de uma routa muda o seu path será alterado junto.
-                            if (itemTree.type === EComponentType.routerConsume || itemTree.type === EComponentType.routerExpose) {
-                                const newLabel = item.properties.find(prop => prop.propertieType === PropertieTypes.label);
-                                item.properties.forEach(prop => {
-                                    if (prop.propertieType === PropertieTypes.url) {
-                                        prop.value = `/${Utils.getNormalizedString(newLabel ? newLabel.value : prop.value).toLowerCase()}`;
-                                    }
-                                });
-                            }
+            project.tabs.forEach((tab: Tab) => {
+                tab.items.forEach(itemTree => {
+                    if (itemTree && itemTree.isSelected && itemTree.id === item.id) {
 
-                            if (itemTree) {
-                                const nameProp = item.properties.find(prop => prop.propertieType === PropertieTypes.name);
-                                const labelProp = item.properties.find(prop => prop.propertieType === PropertieTypes.label);
-                                const descriptionProp = item.properties.find(prop => prop.propertieType === PropertieTypes.description);
-
-                                if (labelProp) { itemTree.label = labelProp.value; }
-                                if (descriptionProp) { itemTree.description = descriptionProp.value; }
-                                if (nameProp) { itemTree.name = Utils.getNormalizedString(nameProp.value); }
-
-                                // Atualizas as props
-                                itemTree.properties = item.properties;
-
-                            }
-
+                        // Este bloco garante que se a label de uma routa muda o seu path será alterado junto.
+                        if (itemTree.type === EComponentType.routerConsume || itemTree.type === EComponentType.routerExpose) {
+                            const newLabel = item.properties.find(prop => prop.propertieType === PropertieTypes.label);
+                            item.properties.forEach(prop => {
+                                if (prop.propertieType === PropertieTypes.url) {
+                                    prop.value = `/${Utils.getNormalizedString(newLabel ? newLabel.value : prop.value).toLowerCase()}`;
+                                }
+                            });
                         }
-                    });
+
+                        // Atualizas as props
+                        itemTree.properties = item.properties;
+                    }
                 });
-            }
+            });
 
         } else if (project.currentComponentFocus === ECurrentFocus.flow) {
 
             project.tabs.forEach(tab => {
-                let treeItemEditing = tab.items.find(treeItem => treeItem.isEditing);
-                if (treeItemEditing) {
 
-                    let editingFlowItem = treeItemEditing.items.find(flowItem => flowItem.id === item.id);
-                    if (!editingFlowItem) return;
+                /** Tree item on is the flow item being edited */
+                let treeItemEditing = tab.items.find(treeItem => treeItem.items.some(flowItem => flowItem.id === item.id));
+                if (!treeItemEditing) return;
 
-                    if (editingFlowItem.itemType === EItemType.ACTION) {
+                /** Flow item being edited */
+                let editingFlowItem = treeItemEditing.items.find(flowItem => flowItem.id === item.id);
+                if (!editingFlowItem) return;
 
-                        // Pega a antiga action
-                        const oldActionProp = editingFlowItem.properties.find(itemOld => itemOld.propertieType === PropertieTypes.action);
+                if (editingFlowItem.itemType === EItemType.ACTION) {
 
-                        // Pega a nova action
-                        const newSelectedActionProp = item.properties.find(itemNew => itemNew.propertieType === PropertieTypes.action);
+                    // Pega a antiga action
+                    const oldActionProp = editingFlowItem.properties.find(itemOld => itemOld.propertieType === PropertieTypes.action);
+                    if (!oldActionProp) return;
 
-                        // Compara os dois nomes, se mudou apaga todos os parâmetro da action anterior.
-                        if ((oldActionProp?.value !== '') && (oldActionProp?.value !== newSelectedActionProp?.value)) {
-                            // Encontra o promeiro parametro e remove, depois encontra os outros e irá remover eté não restar mais parâmetros
-                            let indexToRemove = item.properties.findIndex(itemOld => itemOld.propertieType === PropertieTypes.param);
-                            while (indexToRemove >= 0) {
-                                item.properties.splice(indexToRemove, 1);
-                                indexToRemove = item.properties.findIndex(itemOld => itemOld.propertieType === PropertieTypes.param);
-                            }
-                        }
+                    // Pega a nova action
+                    const newSelectedActionProp = item.properties.find(itemNew => itemNew.propertieType === PropertieTypes.action);
+                    if (!newSelectedActionProp) return;
 
-                        /** Action selectionada */
-                        const actionSelected = getItemTreeByName(newSelectedActionProp?.value);
-                        if (actionSelected) {
-
-                            // Altera a label do componente de fluxo
-                            item.properties.forEach(prop => {
-                                if (prop.propertieType === PropertieTypes.label) {
-
-                                    // Pega prop label da action selecionada
-                                    const actionLabelProp = actionSelected.properties.find(propAction => propAction.propertieType === PropertieTypes.label);
-                                    if (actionLabelProp) {
-
-                                        // Altera o valor da label
-                                        prop.value = actionLabelProp.value || prop.value;
-                                    }
-                                }
-                            });
+                    // Compara os dois nomes, se mudou apaga todos os parâmetro da action anterior.
+                    if ((oldActionProp?.value !== '') && (oldActionProp?.value !== newSelectedActionProp?.value)) {
+                        // Encontra o promeiro parametro e remove, depois encontra os outros e irá remover eté não restar mais parâmetros
+                        let indexToRemove = item.properties.findIndex(itemOld => itemOld.propertieType === PropertieTypes.param);
+                        while (indexToRemove >= 0) {
+                            item.properties.splice(indexToRemove, 1);
+                            indexToRemove = item.properties.findIndex(itemOld => itemOld.propertieType === PropertieTypes.param);
                         }
                     }
 
-                    // Reinstancia a classe para revalidar as propriedade e mais
-                    editingFlowItem = new FlowItemComponent({
-                        ...editingFlowItem,
-                        properties: item.properties,
+                    // Altera a label do componente de fluxo
+                    item.properties.forEach(prop => {
+                        if (prop.propertieType === PropertieTypes.label) {
+
+                            // Pega a action selecionada pelo seu nome
+                            let actionByName: TreeItemComponent | undefined;
+                            project.tabs.forEach(currentTab => {
+                                actionByName = currentTab.items.find(treeItem => treeItem.name === newSelectedActionProp?.value);
+                            });
+                            if (!actionByName) return;
+
+                            // Pega prop label da action selecionada
+                            const actionLabelProp = actionByName.properties.find(propAction => propAction.propertieType === PropertieTypes.label);
+                            if (!actionLabelProp) return;
+
+                            // Altera o valor da label
+                            prop.value = actionLabelProp.value || prop.value;
+                        }
                     });
-
                 }
-            });
 
+                // Reinstancia a classe para revalidar as propriedade e mais
+                editingFlowItem = new FlowItemComponent({
+                    ...editingFlowItem,
+                    properties: item.properties,
+                });
+
+                treeItemEditing = new TreeItemComponent({
+                    ...treeItemEditing,
+                    items: [
+                        ...treeItemEditing.items.filter(flowItem => flowItem.id !== editingFlowItem?.id),
+                        editingFlowItem,
+                    ]
+                });
+
+                tab.items = [
+                    ...tab.items.filter(flowItem => flowItem.id !== treeItemEditing?.id),
+                    treeItemEditing,
+                ];
+            });
         };
 
         onChangeState();
-    }, [project, onChangeState, getItemTreeByName]);
+    }, [project, onChangeState]);
 
     /** Devolve para o editor de propriedades as propriedades do item selecionado no momento. */
-    const propertiesEditorGetSelectedItem = useCallback((currentFocus: ECurrentFocus): IItem => {
+    const getSelectedItem = useCallback((currentFocus: ECurrentFocus): IItem => {
         const nullRes = {
             id: '',
             name: '',
@@ -128,14 +132,14 @@ export const PropertiesEditorController: React.FC = () => {
         if (currentFocus === ECurrentFocus.tree) {
 
             const tab = project.tabs.find((tab: Tab) => tab.items.find(item => item.isSelected));
-            if (!tab) { return nullRes; }
+            if (!tab) return nullRes;
             const res = tab.items.find(item => item.isSelected);
-            if (!res) { return nullRes; }
+            if (!res) return nullRes;
             else {
                 return {
                     id: res.id,
-                    name: res.label,
                     subname: res.type,
+                    name: res.properties.find(prop => prop.propertieType === PropertieTypes.label)?.value,
                     properties: res.properties.map(prop => {
                         if (prop.id && prop.name) {
                             prop.onPickerValueClick = () => ContextModalListService.showModal({ editingId: prop.id || '' });
@@ -172,9 +176,9 @@ export const PropertiesEditorController: React.FC = () => {
             // Start mapped item
             let mappedItem: IItem = {
                 id: selectedItem.id,
-                name: selectedItem.name,
                 subname: selectedItem.itemType,
                 properties: selectedItem.properties,
+                name: selectedItem.properties.find(prop => prop.propertieType === PropertieTypes.label)?.value,
             };
 
             /**
@@ -323,7 +327,7 @@ export const PropertiesEditorController: React.FC = () => {
     return (
         <PropertiesEditor
             onChange={handleOnChangeItems}
-            item={propertiesEditorGetSelectedItem(project.currentComponentFocus)}
+            item={getSelectedItem(project.currentComponentFocus)}
         />
     );
 }

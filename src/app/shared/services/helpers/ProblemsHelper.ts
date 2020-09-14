@@ -46,7 +46,7 @@ class ProblemsHelperService {
                                 const tabActions = project.tabs.find(tab => tab.configs.type === EComponentType.tabActions);
                                 if (!tabActions) return;
 
-                                if (!tabActions.items.some(item => item.id === prop.value)) {
+                                if (!tabActions.items.some(item => item.name === prop.value)) {
                                     this._addProblem(`In "${treeItem.label}" the flow item "${flowItem.name}" must have a valid value in the "${prop.name}" field.`, 'error');
                                     prop.valueHasError = true;
                                 }

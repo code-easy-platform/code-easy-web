@@ -85,14 +85,20 @@ export class FlowItemComponent implements IFlowItemComponent {
             this.hasError = true;
         } else if (this.name.length < 3) {
             addProblem(`A suitable name for a stream item must be longer than 3 characters in "${this.name}"`, 'warning');
-            this.properties.filter(prop => prop.propertieType === PropertieTypes.label).forEach(prop => { prop.valueHasWarning = true; prop.valueHasError = false });
             this.hasWarning = true;
+            this.properties
+                .filter(prop => prop.propertieType === PropertieTypes.label)
+                .forEach(prop => { prop.valueHasWarning = true; prop.valueHasError = false });
         } else if (this.name.length > 20 && this.itemType !== EItemType.COMMENT) {
             addProblem(`A suitable name for a stream item must be less than 20 characters in "${this.name}"`, 'warning');
-            this.properties.filter(prop => prop.propertieType === PropertieTypes.label).forEach(prop => { prop.valueHasWarning = true; prop.valueHasError = false });
             this.hasWarning = true;
+            this.properties
+                .filter(prop => prop.propertieType === PropertieTypes.label)
+                .forEach(prop => { prop.valueHasWarning = true; prop.valueHasError = false });
         } else {
-            this.properties.filter(prop => prop.propertieType === PropertieTypes.label).forEach(prop => { prop.valueHasWarning = false; prop.valueHasError = false });
+            this.properties
+                .filter(prop => prop.propertieType === PropertieTypes.label)
+                .forEach(prop => { prop.valueHasWarning = false; prop.valueHasError = false });
         }
 
         // Valida condições para itens específico
@@ -185,9 +191,9 @@ export class FlowItemComponent implements IFlowItemComponent {
                     isDisabledSelect: true,
                     nodeExpanded: true,
                     isSelected: false,
-                    id: newId,
                     iconSize: 15,
                     type: "ITEM",
+                    id: newId,
                 },
             ];
         }
@@ -317,6 +323,13 @@ export class FlowItemComponent implements IFlowItemComponent {
             this.name = Utils.getNormalizedString(propLabel.value);
             this.label = propLabel.value;
         }
+
+        /** Define se pode modificar o nome caso tenha uma action selecionada */
+        const propAction = this.properties.find(prop => prop.propertieType === PropertieTypes.label);
+        if (propAction) {
+            propAction.editValueDisabled = propAction?.value !== '';
+        }
+
     }
 
     private _propertiesFromForeach() {
