@@ -1,8 +1,8 @@
 import React from 'react';
 
 import { ContextMenu } from './shared/components/context-menu/ContextMenu';
-import { Routes } from './pages/Routes';
 import { IdeConfigurationProvider } from './shared/contexts';
+import { Routes } from './pages/Routes';
 
 function App() {
   return (

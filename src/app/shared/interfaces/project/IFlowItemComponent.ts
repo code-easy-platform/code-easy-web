@@ -5,4 +5,12 @@ export interface IFlowItemComponent extends IFlowItem {
     properties: IProperty[];
     itemType: EItemType;
     name: string;
+    /**
+     * Field used to store criation date
+     */
+    createdDate?: Date;
+    /**
+     * Field used to store updated date
+     */
+    updatedDate?: Date;
 }

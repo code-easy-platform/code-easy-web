@@ -17,6 +17,8 @@ export class FlowItemComponent implements IFlowItemComponent {
     public height: number = 40;
     public width: number = 40;
 
+    public updatedDate: Date = new Date();
+    public createdDate: Date = new Date();
     public connections: IConnection[];
     public properties: IProperty[];
     public id: string | undefined;
@@ -35,6 +37,7 @@ export class FlowItemComponent implements IFlowItemComponent {
     constructor(
         private _fields: Omit<IFlowItemComponent, OmitInContructor>,
     ) {
+        this.createdDate = this._fields.createdDate || this.createdDate;
         this.isDisabled = this._fields.isDisabled || false;
         this.isSelected = Boolean(this._fields.isSelected);
         this.hasWarning = this._fields.hasWarning || false;
@@ -44,6 +47,7 @@ export class FlowItemComponent implements IFlowItemComponent {
         this.hasError = Boolean(this._fields.hasError);
         this.label = this._fields.label || '';
         this.itemType = this._fields.itemType;
+        this.updatedDate = new Date();
         this.name = this._fields.name;
         this.icon = this._fields.icon;
         this.left = this._fields.left;

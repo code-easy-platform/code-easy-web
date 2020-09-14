@@ -1,7 +1,6 @@
 .container-field-wrapper {
     justify-content: space-between;
     height: min-content;
-    align-items: center;
     position: relative;
 }
 

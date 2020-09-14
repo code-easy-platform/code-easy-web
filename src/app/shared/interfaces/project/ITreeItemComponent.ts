@@ -1,5 +1,5 @@
-import { IProperty } from "./../../components/properties-editor/shared/interfaces";
 import { IFlowItemComponent, IItemComponentConfigs } from "./../../interfaces";
+import { IProperty } from "./../../components/properties-editor";
 
 export interface ITreeItemComponent extends IItemComponentConfigs {
     /**Usado para lista todas as propriedades de um item */

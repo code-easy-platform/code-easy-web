@@ -8,15 +8,11 @@ import { ProjectType } from "./../../enuns";
  * Representa: "Nome do projeto", "version", "autor" e etc...
  */
 export interface IProjectConfigurations extends IBasicFields {
-    id: string | undefined;
-    name: string;
-    label: string;
-    autor: string;
+    author: string;
     version: string;
     type: ProjectType;
     createdDate: Date;
     updatedDate: Date;
-    description: string;
     currentProcess: string;
     currentPlatformVersion: string;
 }

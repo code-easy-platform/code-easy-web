@@ -18,7 +18,7 @@ export const FieldGroup: React.FC<FieldGroupProps> = ({ children, group }) => {
         <div className="flex-column">
             <hr className="hr hr-white margin-top-m " />
             <div
-                className="padding-m padding-left-s flex-space-between"
+                className="padding-top-m padding-bottom-m padding-horizontal-s flex-space-between"
                 style={{ cursor: 'pointer' }}
                 onClick={handleOnClick}
             >

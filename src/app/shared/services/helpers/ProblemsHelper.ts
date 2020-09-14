@@ -130,11 +130,11 @@ class ProblemsHelperService {
         }
 
         // Valida o name
-        if (configs.autor === '') {
+        if (configs.author === '') {
             this._addProblem('Project Author name field cannot be empty', 'warning');
-        } else if (configs.autor.length < 3) {
+        } else if (configs.author.length < 3) {
             this._addProblem('Project Author name field cannot be less than 3 characters', 'warning');
-        } else if (configs.autor.length > 50) {
+        } else if (configs.author.length > 50) {
             this._addProblem('Project Author name field cannot exceed 50 characters', 'warning');
         }
 

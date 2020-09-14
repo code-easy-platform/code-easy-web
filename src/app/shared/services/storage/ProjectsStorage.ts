@@ -15,7 +15,7 @@ const newProject = (name: string, version: string, type: ProjectType, descriptio
         id: Utils.getUUID(),
         createdDate: new Date(),
         updatedDate: new Date(),
-        autor: ProjectsStorage.getAuthorName(),
+        author: ProjectsStorage.getAuthorName(),
         name: Utils.getNormalizedString(name.toLowerCase()),
         currentPlatformVersion: `${process.env.REACT_APP_VERSION}`,
     },

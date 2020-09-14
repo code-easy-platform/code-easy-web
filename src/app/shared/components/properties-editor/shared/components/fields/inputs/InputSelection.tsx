@@ -51,7 +51,7 @@ export const InputSelection: React.FC<InputSelectionProps> = ({ onChange, ...pro
                         width: '100%',
                     }}
                 >
-                    <option value={undefined}>Select</option>
+                    <option value={""}>Select</option>
                     {props.suggestions?.map((item, index) => {
                         return (
                             <option

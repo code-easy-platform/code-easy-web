@@ -73,7 +73,7 @@ export class ProjectParser {
      * @param value Content that will be transformed into a Project
      */
     public static parse(value: string): Project {
-        const json = JSON.parse(value);
+        const json: IProject = JSON.parse(value);
 
         return new Project({
             currentComponentFocus: json.currentComponentFocus,

@@ -41,7 +41,7 @@ export const FieldWrapper: React.FC<FieldWrapperProps> = ({ children, id, name, 
     }
 
     return (
-        <div ref={containerWidth} className={"padding-s padding-bottom-none container-field-wrapper"} >
+        <div ref={containerWidth} className={"padding-top-s padding-horizontal-s flex-items-center container-field-wrapper"} >
             <label
                 htmlFor={'prop_id_' + id}
                 onDoubleClick={onDoubleClick}

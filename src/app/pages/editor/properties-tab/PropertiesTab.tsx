@@ -45,12 +45,12 @@ export const PropertiesTab = () => {
                 <div className='flex-column margin-top-m'>
                     <label htmlFor='project-author-name'>Author name</label>
                     <input
-                        value={project.projectConfigs.autor}
+                        value={project.projectConfigs.author}
                         id='project-author-name'
                         className='input-medium'
                         type='text'
                         onChange={(e) => {
-                            project.projectConfigs.autor = e.target.value;
+                            project.projectConfigs.author = e.target.value;
                             setProject(project);
                         }}
                     />

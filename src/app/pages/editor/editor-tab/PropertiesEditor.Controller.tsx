@@ -20,7 +20,7 @@ export const PropertiesEditorController: React.FC = () => {
 
         if (project.currentComponentFocus === ECurrentFocus.tree) {
 
-            if (item.id) return;
+            if (!item.id) return;
 
             project.tabs.forEach((tab: Tab) => {
                 tab.items.forEach(itemTree => {
@@ -32,6 +32,8 @@ export const PropertiesEditorController: React.FC = () => {
                             item.properties.forEach(prop => {
                                 if (prop.propertieType === PropertieTypes.url) {
                                     prop.value = `/${Utils.getNormalizedString(newLabel ? newLabel.value : prop.value).toLowerCase()}`;
+                                } else if (prop.propertieType === PropertieTypes.name) {
+                                    prop.value = Utils.getNormalizedString(newLabel ? newLabel.value : prop.value).toLowerCase();
                                 }
                             });
                         }
