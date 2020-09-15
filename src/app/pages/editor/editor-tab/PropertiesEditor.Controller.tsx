@@ -1,92 +1,75 @@
-import React from 'react';
+import React, { useCallback } from 'react';
 import { Utils } from 'code-easy-components';
 
-import { ContextModalListService } from '../../../shared/components/context-modais/ContextModalListService';
 import { PropertiesEditor, IProperty, TypeOfValues, IItem } from '../../../shared/components/properties-editor';
-import { ItemFlowComplete } from '../../../shared/interfaces/ItemFlowComponent';
-import { ItemComponent } from '../../../shared/interfaces/ItemTreeComponent';
-import { PropertieTypes } from '../../../shared/enuns/PropertieTypes';
-import { ComponentType } from '../../../shared/enuns/ComponentType';
+import { ContextModalListService } from '../../../shared/components/context-modais/ContextModalListService';
+import { EComponentType, ECurrentFocus, PropertieTypes } from '../../../shared/enuns';
+import { FlowItemComponent, TreeItemComponent, Tab } from '../../../shared/models';
 import { EItemType } from '../../../shared/components/flow-editor';
-import { CurrentFocus } from '../../../shared/enuns/CurrentFocus';
 import { useEditorContext } from '../../../shared/contexts';
-import { Tab } from '../../../shared/interfaces/Tabs';
 
 export const PropertiesEditorController: React.FC = () => {
 
-    const { project, setProject } = useEditorContext();
+    const { project, setProject, getItemTreeEditing, getItemTreeByName } = useEditorContext();
 
     /** Atualiza o contexto do projeto */
-    const onChangeState = () => setProject(project);
-
+    const onChangeState = useCallback(() => setProject(project), [project, setProject]);
 
     /** O editor de propriedades emite a lista de propriedades alteradas */
-    const propertiesEditorOutputItems = (item: IItem) => {
+    const handleOnChangeItems = useCallback((item: IItem) => {
 
-        if (project.currentComponentFocus === CurrentFocus.tree) {
+        if (project.currentComponentFocus === ECurrentFocus.tree) {
 
-            if (item.id) {
-                project.tabs.forEach((tab: Tab) => {
-                    tab.items.forEach(itemTree => {
-                        if (itemTree.isSelected && itemTree.id === item.id) {
+            if (!item.id) return;
 
-                            // Este block garante que se a label de uma routa muda o seu path será alterado junto.
-                            if (itemTree.type === ComponentType.routerConsume || itemTree.type === ComponentType.routerExpose) {
-                                const newLabel = item.properties.find(prop => prop.propertieType === PropertieTypes.label);
-                                item.properties.forEach(prop => {
-                                    if (prop.propertieType === PropertieTypes.url) {
-                                        prop.value = `/${Utils.getNormalizedString(newLabel ? newLabel.value : prop.value).toLowerCase()}`;
-                                    }
-                                });
-                            }
+            project.tabs.forEach((tab: Tab) => {
+                tab.items.forEach(itemTree => {
+                    if (itemTree && itemTree.isSelected && itemTree.id === item.id) {
 
-                            if (itemTree) {
-                                const nameProp = item.properties.find(prop => prop.propertieType === PropertieTypes.name);
-                                const labelProp = item.properties.find(prop => prop.propertieType === PropertieTypes.label);
-                                const descriptionProp = item.properties.find(prop => prop.propertieType === PropertieTypes.description);
+                        const newLabel = item.properties.find(prop => prop.propertieType === PropertieTypes.label);
 
-                                if (labelProp) { itemTree.label = labelProp.value; }
-                                if (descriptionProp) { itemTree.description = descriptionProp.value; }
-                                if (nameProp) { itemTree.name = Utils.getNormalizedString(nameProp.value); }
-
-                                // Atualizas as props
-                                itemTree.properties = item.properties;
-
-                            }
+                        // Este bloco garante que se a label de uma routa muda o seu path será alterado junto.
+                        if (itemTree.type === EComponentType.routerConsume || itemTree.type === EComponentType.routerExpose) {
+                            item.properties.forEach(prop => {
+                                if (prop.propertieType === PropertieTypes.url) {
+                                    prop.value = `/${Utils.getNormalizedString(newLabel ? newLabel.value : prop.value).toLowerCase()}`;
+                                } else if (prop.propertieType === PropertieTypes.name) {
+                                    prop.value = Utils.getNormalizedString(newLabel ? newLabel.value : prop.value).toLowerCase();
+                                }
+                            });
 
                         }
-                    });
-                });
-                onChangeState();
-            }
 
-        } else if (project.currentComponentFocus === CurrentFocus.flow) {
-
-            let treeItemEditing: ItemComponent | undefined;
-            project.tabs.forEach((tab: Tab) => {
-                tab.items.forEach(item => {
-                    if (item.isEditing) {
-                        treeItemEditing = item;
+                        // Atualizas as props
+                        itemTree.properties = item.properties;
                     }
                 });
             });
 
-            if (treeItemEditing) {
+        } else if (project.currentComponentFocus === ECurrentFocus.flow) {
 
-                let indexItemFlow = treeItemEditing.items.findIndex((oldItem: ItemFlowComplete) => oldItem.id === item.id);
-                if (indexItemFlow && (indexItemFlow < 0)) { return; };
+            project.tabs.forEach(tab => {
 
+                /** Tree item on is the flow item being edited */
+                let treeItemEditing = tab.items.find(treeItem => treeItem.items.some(flowItem => flowItem.id === item.id));
+                if (!treeItemEditing) return;
 
-                if (treeItemEditing.items[indexItemFlow].itemType === EItemType.ACTION) {
+                /** Flow item being edited */
+                let editingFlowItem = treeItemEditing.items.find(flowItem => flowItem.id === item.id);
+                if (!editingFlowItem) return;
 
-                    // Pega a antiga action ID
-                    const oldActionId = treeItemEditing.items[indexItemFlow].properties.find(itemOld => itemOld.propertieType === PropertieTypes.action)?.value;
+                if (editingFlowItem.itemType === EItemType.ACTION) {
 
-                    // Pega a nova action ID
-                    const newSelectedActionId = item.properties.find(itemNew => itemNew.propertieType === PropertieTypes.action)?.value;
+                    // Pega a antiga action
+                    const oldActionProp = editingFlowItem.properties.find(itemOld => itemOld.propertieType === PropertieTypes.action);
+                    if (!oldActionProp) return;
 
-                    // Compara os dois IDs, se mudou apaga todos os parâmetro da action anterior.
-                    if ((oldActionId !== '') && (oldActionId !== newSelectedActionId)) {
+                    // Pega a nova action
+                    const newSelectedActionProp = item.properties.find(itemNew => itemNew.propertieType === PropertieTypes.action);
+                    if (!newSelectedActionProp) return;
+
+                    // Compara os dois nomes, se mudou apaga todos os parâmetro da action anterior.
+                    if ((oldActionProp?.value !== '') && (oldActionProp?.value !== newSelectedActionProp?.value)) {
                         // Encontra o promeiro parametro e remove, depois encontra os outros e irá remover eté não restar mais parâmetros
                         let indexToRemove = item.properties.findIndex(itemOld => itemOld.propertieType === PropertieTypes.param);
                         while (indexToRemove >= 0) {
@@ -96,45 +79,56 @@ export const PropertiesEditorController: React.FC = () => {
                     }
 
                     // Altera a label do componente de fluxo
-                    const tab = project.tabs.find((tab: Tab) => tab.items.some(itemTree => itemTree.id === newSelectedActionId));
-                    if (tab) {
+                    item.properties.forEach(prop => {
+                        if (prop.propertieType === PropertieTypes.label) {
 
-                        /** Action selectionada */
-                        const actionSelected = tab.items.find(itemTree => itemTree.id === newSelectedActionId);
-                        if (actionSelected) {
-
-                            item.properties.forEach(prop => {
-                                if (prop.propertieType === PropertieTypes.label) {
-
-                                    // Pega prop label da action selecionada
-                                    const actionLabelProp = actionSelected.properties.find(propAction => propAction.propertieType === PropertieTypes.label);
-                                    if (actionLabelProp) {
-
-                                        // Altera o valor da label
-                                        prop.value = actionSelected ? actionLabelProp.value || prop.value : prop.value;
-                                    }
-                                }
+                            // Pega a action selecionada pelo seu nome
+                            let actionByName: TreeItemComponent | undefined;
+                            project.tabs.forEach(currentTab => {
+                                actionByName = currentTab.items.find(treeItem => treeItem.name === newSelectedActionProp?.value);
                             });
-                            item.name = actionSelected.label;
-                        }
-                    }
+                            if (!actionByName) return;
 
+                            // Pega prop label da action selecionada
+                            const actionLabelProp = actionByName.properties.find(propAction => propAction.propertieType === PropertieTypes.label);
+                            if (!actionLabelProp) return;
+
+                            // Altera o valor da label
+                            prop.value = actionLabelProp.value || prop.value;
+                        }
+                    });
                 }
 
                 // Reinstancia a classe para revalidar as propriedade e mais
-                treeItemEditing.items[indexItemFlow] = new ItemFlowComplete({
-                    ...treeItemEditing.items[indexItemFlow],
+                editingFlowItem = new FlowItemComponent({
+                    ...editingFlowItem,
                     properties: item.properties,
                 });
 
-            }
+                treeItemEditing = new TreeItemComponent({
+                    ...treeItemEditing,
+                    description: treeItemEditing.description,
+                    properties: treeItemEditing.properties,
+                    label: treeItemEditing.label,
+                    name: treeItemEditing.name,
+                    items: [
+                        ...treeItemEditing.items.filter(flowItem => flowItem.id !== editingFlowItem?.id),
+                        editingFlowItem,
+                    ]
+                });
 
-            onChangeState();
+                tab.items = [
+                    ...tab.items.filter(flowItem => flowItem.id !== treeItemEditing?.id),
+                    treeItemEditing,
+                ];
+            });
         };
-    }
+
+        onChangeState();
+    }, [project, onChangeState]);
 
     /** Devolve para o editor de propriedades as propriedades do item selecionado no momento. */
-    const propertiesEditorGetSelectedItem = (currentFocus: CurrentFocus) => {
+    const getSelectedItem = useCallback((currentFocus: ECurrentFocus): IItem => {
         const nullRes = {
             id: '',
             name: '',
@@ -142,18 +136,18 @@ export const PropertiesEditorController: React.FC = () => {
             isHeader: false,
         }
 
-        if (currentFocus === CurrentFocus.tree) { // Mapeia os items da árvore.
+        // Map a selected tree item.
+        if (currentFocus === ECurrentFocus.tree) {
 
             const tab = project.tabs.find((tab: Tab) => tab.items.find(item => item.isSelected));
-            if (!tab) { return nullRes; }
+            if (!tab) return nullRes;
             const res = tab.items.find(item => item.isSelected);
-            if (!res) { return nullRes; }
+            if (!res) return nullRes;
             else {
                 return {
                     id: res.id,
-                    isHeader: true,
-                    name: res.label,
                     subname: res.type,
+                    name: res.properties.find(prop => prop.propertieType === PropertieTypes.label)?.value,
                     properties: res.properties.map(prop => {
                         if (prop.id && prop.name) {
                             prop.onPickerValueClick = () => ContextModalListService.showModal({ editingId: prop.id || '' });
@@ -163,171 +157,185 @@ export const PropertiesEditorController: React.FC = () => {
                 };
             }
 
-        } else if (currentFocus === CurrentFocus.flow) { // Mapeia os items de fluxo
-            const itemsLogica: ItemFlowComplete[] = codeEditorGetItemsLogica();
-            const itemsFiltereds = itemsLogica.filter(flowItem => flowItem.isSelected);
+        } else if (currentFocus === ECurrentFocus.flow) { // Mapeia os items de fluxo
 
-            if (itemsFiltereds.length > 1) {
+            /** Get editing item tree */
+            const editingItemTree = getItemTreeEditing();
+
+            /** Get all selected items in the flow editor */
+            const selectedItems = editingItemTree?.items.filter(flowItem => flowItem.isSelected);
+
+            // Found nothing to edit or selected
+            if (!editingItemTree || !selectedItems || selectedItems.length === 0) return nullRes;
+
+            // If more than one is selected, returns the selected quantity
+            if (selectedItems.length > 1) {
                 return {
-                    name: `${itemsFiltereds.length} items selecteds`,
+                    name: `${selectedItems.length} items selecteds`,
                     subname: 'Selection',
                     properties: [],
-                    isHeader: true,
                     id: undefined,
                 }
             }
 
-            const mappedItems: IItem[] = [];
-            itemsFiltereds.forEach(filteredItem => {
-                let paramsProps: IProperty[] = [];
+            /** Item selected in the flow */
+            const selectedItem = selectedItems[0];
 
-                /**
-                 * Pega as variáveis do item que está sendo editado atualmente para colocar como sugestão nas expressions
-                 * 
-                 * Pode ser usado para sugerir para o assign e outros componentes
+            // Start mapped item
+            let mappedItem: IItem = {
+                id: selectedItem.id,
+                subname: selectedItem.itemType,
+                properties: selectedItem.properties,
+                name: selectedItem.properties.find(prop => prop.propertieType === PropertieTypes.label)?.value,
+            };
+
+            /**
+             * Return all local variables as suggestions.
+             */
+            const getAllLocalVariablesAsSuggestion = () => {
+
+                /** Current tab from editing item */
+                const currentTab = project.tabs.find(tab => tab.items.some(tabItem => tabItem.items.some(tabItemFlowItem => tabItemFlowItem.id === selectedItem.id)));
+                if (!currentTab) return [];
+
+                /** 
+                 * Take all variables from the tree item that is currently being
+                 * edited to put as suggestions of the item being mapped
                  */
-                let paramsSuggestion: ItemComponent[] = [];
-                project.tabs.forEach(tab => {
-                    tab.items.forEach(tree_item => {
-                        if (tree_item.isEditing) {
-                            paramsSuggestion = tab.items.filter(treeItemToParams => (
-                                (treeItemToParams.itemPaiId === tree_item.id) &&
-                                (
-                                    treeItemToParams.type === ComponentType.inputVariable ||
-                                    treeItemToParams.type === ComponentType.localVariable ||
-                                    treeItemToParams.type === ComponentType.outputVariable
-                                )
-                            ));
-                        }
-                    })
-                });
+                const allVariablesToSuggestions = currentTab.items.filter(treeItemToParams => (
+                    (treeItemToParams.itemPaiId === editingItemTree.id) &&
+                    (
+                        treeItemToParams.type === EComponentType.inputVariable ||
+                        treeItemToParams.type === EComponentType.localVariable ||
+                        treeItemToParams.type === EComponentType.outputVariable
+                    )
+                ));
 
-                // Adicionar sugestões nos assigns
-                filteredItem.properties.forEach(prop => {
-                    if (prop.propertieType === PropertieTypes.action) {
-
-                        /** Tranforma a action atual em tipo de campo selection */
-                        prop.type = TypeOfValues.selection;
-                        prop.suggestions = [];
-
-                        // Encontra as action e adiciona como sugestions
-                        project.tabs.forEach(tab => {
-                            if (tab.configs.type === ComponentType.tabActions) {
-                                tab.items.forEach(item => {
-                                    if (item.id && item.type === ComponentType.globalAction) {
-                                        prop.suggestions?.push({
-                                            description: item.description,
-                                            label: item.label,
-                                            value: item.id,
-                                            name: item.name,
-                                            disabled: false,
-                                        });
-                                    }
-                                });
-                            }
-                        });
-
-                        // Encontra os parametros e adiona como props
-                        project.tabs.forEach(tab => {
-                            if (tab.configs.type === ComponentType.tabActions) {
-
-                                // Encontra os parâmetros da action selecionada na combo
-                                const params = tab.items.filter(item => (item.itemPaiId === prop.value) && item.type === ComponentType.inputVariable);
-
-                                // Adiciona cada parâmetro como uma prop da action atual
-                                params.forEach(param => {
-
-                                    // Se a prop/param já estiver no fluxo não acontece nada
-                                    if (!filteredItem.properties.some(propertie => propertie.id === param.id)) {
-                                        paramsProps.push({
-                                            value: '',
-                                            id: param.id,
-                                            group: 'Params',
-                                            name: param.label,
-                                            type: TypeOfValues.expression,
-                                            propertieType: PropertieTypes.param,
-                                            information: param.description !== '' ? param.description : undefined,
-                                            onPickerValueClick: () => {
-                                                if (param.id)
-                                                    ContextModalListService.showModal({ editingId: param.id });
-                                            },
-                                            suggestions: paramsSuggestion.map(suggest => {
-                                                return {
-                                                    disabled: false,
-                                                    name: suggest.name,
-                                                    value: suggest.name,
-                                                    label: suggest.label,
-                                                    description: suggest.description,
-                                                };
-                                            }),
-                                        });
-                                    }
-
-                                });
-                            }
-                        });
-
-                    }
-                    if (prop.propertieType === PropertieTypes.assigns) {
-                        // Adicionar código aqui para mapear sugestões e mais no assing 
-                    }
-                });
-
-                // Mapea os items para modal
-                filteredItem.properties.map(prop => {
-                    if (prop.id && prop.name) {
-                        prop.onPickerValueClick = () => ContextModalListService.showModal({ editingId: prop.id || '' });
-                    };
-                    return prop;
-                });
-
-                mappedItems.push({
-                    id: filteredItem.id,
-                    name: filteredItem.name,
-                    subname: filteredItem.itemType,
-                    properties: [...filteredItem.properties, ...paramsProps], // Adiciona os parâmetros da action selecionada como props
-                });
-
-            });
-
-            if (mappedItems.length > 0) {
-                return mappedItems[0];
-            } else {
-                return nullRes;
+                return allVariablesToSuggestions;
             }
 
+            /**
+             * Return all input params by action name
+             * @param actionName Action name
+             */
+            const getAllInputParamsFromActionByName = (actionName: string) => {
+
+                /** Action selected */
+                const action = getItemTreeByName(actionName);
+                if (!action) return [];
+
+                const res: IProperty[] = [];
+
+                /** Get all input params from action selected */
+                let inputParams: TreeItemComponent[] = [];
+                project.tabs.forEach(tab => {
+                    inputParams = [
+                        ...inputParams,
+                        ...tab.items.filter(treeItem => (treeItem.itemPaiId === action.id && treeItem.type === EComponentType.inputVariable)),
+                    ];
+                });
+
+                // Adiciona cada parâmetro como uma prop da action atual
+                inputParams.forEach(param => {
+
+                    // Se a prop/param já estiver no fluxo não acontece nada
+                    if (!mappedItem.properties.some(propertie => propertie.id === param.id)) {
+                        res.push({
+                            value: '',
+                            id: param.id,
+                            group: 'Params',
+                            name: param.label,
+                            type: TypeOfValues.expression,
+                            propertieType: PropertieTypes.param,
+                            information: param.description !== '' ? param.description : undefined,
+                            onPickerValueClick: () => !param.id ? null : ContextModalListService.showModal({ editingId: param.id }),
+                            suggestions: getAllLocalVariablesAsSuggestion()
+                                .map(suggest => ({
+                                    disabled: false,
+                                    name: suggest.name,
+                                    value: suggest.name,
+                                    label: suggest.label,
+                                    description: suggest.description,
+                                })),
+                        });
+                    }
+                });
+
+                return res;
+            }
+
+            /**
+             * Pega todos os parâmetros de entrada da action selecionada e adiciona como props
+             */
+            let allParamsToProps: IProperty[] = [];
+            mappedItem.properties = [
+                ...mappedItem.properties.map(mappedItemProp => {
+                    switch (mappedItemProp.propertieType) {
+                        case PropertieTypes.action:
+
+                            /** Tranforma a action atual em tipo de campo selection */
+                            mappedItemProp.type = TypeOfValues.selection;
+                            mappedItemProp.suggestions = [];
+
+                            project.tabs.forEach(tab => {
+                                tab.items.forEach(tabItem => {
+
+                                    // Filtra todas as actions globais ou extensions para criar as sugestões para a action.
+                                    if (tabItem.id && (tabItem.type === EComponentType.globalAction || tabItem.type === EComponentType.extension)) {
+                                        mappedItemProp = {
+                                            ...mappedItemProp,
+                                            suggestions: [
+                                                ...mappedItemProp.suggestions || [],
+                                                {
+                                                    disabled: false,
+                                                    name: tabItem.name,
+                                                    value: tabItem.name,
+                                                    label: tabItem.label,
+                                                    description: tabItem.description,
+                                                }
+                                            ]
+                                        }
+                                    }
+
+                                });
+                            });
+
+                            allParamsToProps = getAllInputParamsFromActionByName(mappedItemProp.value);
+
+                            break;
+
+                        default:
+                            break;
+                    }
+
+                    return mappedItemProp;
+                })
+            ];
+
+            // Adiciona nas props os parâmetros encontrados acima
+            mappedItem.properties = [
+                ...mappedItem.properties,
+                ...allParamsToProps,
+            ];
+
+            // Mapea os items para modal
+            mappedItem.properties.map(prop => {
+                if (prop.id && prop.name) {
+                    prop.onPickerValueClick = () => ContextModalListService.showModal({ editingId: prop.id || '' });
+                };
+                return prop;
+            });
+
+            return mappedItem;
         }
 
         return nullRes;
-    }
-
-    /** Usando o state pode pegar os items que devem ser editados pelo fluxo. */
-    const codeEditorGetItemsLogica = () => {
-
-        let itemEditing: ItemComponent | undefined;
-
-        project.tabs.forEach((tab: Tab) => {
-            tab.items.forEach(item => {
-                if (item.isEditing) {
-                    itemEditing = item;
-                }
-            });
-        });
-
-        if (itemEditing) {
-            itemEditing.items.sort((a, b) => (a.top - b.top));
-            return itemEditing.items; // Se for o completo já retorna para evitar processamento.
-        } else {
-            return [];
-        }
-
-    }
-
+    }, [getItemTreeByName, getItemTreeEditing, project.tabs]);
 
     return (
         <PropertiesEditor
-            onChange={propertiesEditorOutputItems}
-            item={propertiesEditorGetSelectedItem(project.currentComponentFocus)}
+            onChange={handleOnChangeItems}
+            item={getSelectedItem(project.currentComponentFocus)}
         />
     );
 }

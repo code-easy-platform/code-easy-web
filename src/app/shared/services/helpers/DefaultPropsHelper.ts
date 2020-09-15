@@ -5,13 +5,13 @@ import { IProperty, TypeOfValues } from "../../components/properties-editor";
 import { MethodsApi, MethodsApiList } from "../../enuns/ApiMethods";
 import { DataTypes, DataTypesList } from "../../enuns/DataType";
 import { PropertieTypes } from "../../enuns/PropertieTypes";
-import { ComponentType } from "../../enuns/ComponentType";
+import { EComponentType } from "../../enuns/ComponentType";
 import { EItemType } from "../../components/flow-editor";
 
 class DefaultPropsService {
 
     /** Devolve uma lista de propriedades para ser adicionado em novos items de fluxo ou da árvore. */
-    public getNewProps(itemType: EItemType | ComponentType, name: string, inARouter: boolean = false): IProperty[] {
+    public getNewProps(itemType: EItemType | EComponentType, name: string, inARouter: boolean = false): IProperty[] {
         switch (itemType) {
             case EItemType.START:
                 return [
@@ -57,7 +57,7 @@ class DefaultPropsService {
                     { id: Utils.getUUID(), name: 'Label', type: TypeOfValues.viewOnly, value: name, propertieType: PropertieTypes.label },
                 ];
 
-            case ComponentType.routerExpose:
+            case EComponentType.routerExpose:
                 return [
                     { id: Utils.getUUID(), name: 'Label', value: name, type: TypeOfValues.string, propertieType: PropertieTypes.label, focusOnRender: true },
                     { id: Utils.getUUID(), name: 'Description', type: TypeOfValues.bigstring, value: "", propertieType: PropertieTypes.description },
@@ -75,7 +75,7 @@ class DefaultPropsService {
                     }
                 ];
 
-            case ComponentType.routerConsume:
+            case EComponentType.routerConsume:
                 return [
                     { id: Utils.getUUID(), name: 'Label', value: name, type: TypeOfValues.string, propertieType: PropertieTypes.label, focusOnRender: true },
                     { id: Utils.getUUID(), name: 'Description', type: TypeOfValues.bigstring, value: "", propertieType: PropertieTypes.description },
@@ -93,21 +93,21 @@ class DefaultPropsService {
                     { id: Utils.getUUID(), name: 'Url', type: TypeOfValues.string, value: "https://www.yourdomain.com/api/v1/hello", propertieType: PropertieTypes.url },
                 ];
 
-            case ComponentType.globalAction:
+            case EComponentType.globalAction:
                 return [
                     { id: Utils.getUUID(), name: 'Label', value: name, type: TypeOfValues.string, propertieType: PropertieTypes.label, focusOnRender: true },
                     { id: Utils.getUUID(), name: 'Description', type: TypeOfValues.bigstring, value: "", propertieType: PropertieTypes.description },
                     { id: Utils.getUUID(), name: 'Icon', type: TypeOfValues.binary, value: "Default", propertieType: PropertieTypes.icon },
                 ];
 
-            case ComponentType.localAction:
+            case EComponentType.localAction:
                 return [
                     { id: Utils.getUUID(), name: 'Label', value: name, type: TypeOfValues.string, propertieType: PropertieTypes.label, focusOnRender: true },
                     { id: Utils.getUUID(), name: 'Description', type: TypeOfValues.bigstring, value: "", propertieType: PropertieTypes.description },
                     { id: Utils.getUUID(), name: 'Icon', type: TypeOfValues.binary, value: "Default", propertieType: PropertieTypes.icon },
                 ];
 
-            case ComponentType.inputVariable:
+            case EComponentType.inputVariable:
                 return [
                     { id: Utils.getUUID(), name: 'Label', value: name, type: TypeOfValues.string, propertieType: PropertieTypes.label, focusOnRender: true },
                     { id: Utils.getUUID(), name: 'Description', type: TypeOfValues.bigstring, value: "", propertieType: PropertieTypes.description },
@@ -140,7 +140,7 @@ class DefaultPropsService {
                     { id: Utils.getUUID(), name: 'Default value', type: TypeOfValues.expression, value: "", propertieType: PropertieTypes.defaultValue },
                 ];
 
-            case ComponentType.localVariable:
+            case EComponentType.localVariable:
                 return [
                     { id: Utils.getUUID(), name: 'Label', value: name, type: TypeOfValues.string, propertieType: PropertieTypes.label, focusOnRender: true },
                     { id: Utils.getUUID(), name: 'Description', type: TypeOfValues.bigstring, value: "", propertieType: PropertieTypes.description },
@@ -158,7 +158,7 @@ class DefaultPropsService {
                     { id: Utils.getUUID(), name: 'Default value', type: TypeOfValues.expression, value: "", propertieType: PropertieTypes.defaultValue },
                 ];
 
-            case ComponentType.outputVariable:
+            case EComponentType.outputVariable:
                 return [
                     { id: Utils.getUUID(), name: 'Label', value: name, type: TypeOfValues.string, propertieType: PropertieTypes.label, focusOnRender: true },
                     { id: Utils.getUUID(), name: 'Description', type: TypeOfValues.bigstring, value: "", propertieType: PropertieTypes.description },

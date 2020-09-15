@@ -1,9 +1,7 @@
-export interface OpenWindow {
+export interface IOpenedWindow {
     id: string;
     title: string;
     hasError?: boolean;
-    className?: string;
-    useClose?: boolean;
     description?: string;
     hasWarning?: boolean;
     isSelected?: boolean;

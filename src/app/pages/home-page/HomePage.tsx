@@ -5,10 +5,10 @@ import dataformat from 'dateformat';
 
 import { BottonStatusBar } from '../../shared/components/botton-status-bar/BottonStatusBar';
 import { ProjectsStorage } from '../../shared/services/storage/ProjectsStorage';
-import { Project } from '../../shared/interfaces/Aplication';
 import { ProjectType } from '../../shared/enuns/ProjectType';
 import { TabButton } from '../../shared/components/tabs';
 import { ImportProjects } from './ImportFiles';
+import { Project } from '../../shared/models';
 import { IdeConfigs } from './Configs';
 import { CardItem } from './CardItem';
 
@@ -42,13 +42,13 @@ export const HomePage = memo(() => {
     return (
         <div className="main-page">
             <div className="tool-bar background-bars">
-                    <TabButton
-                        id="tabMenu"
-                        title="Menu"
-                        style={{ outline: 'none' }}
-                        className={" btn background-transparent btn-open-menu-tab"}
-                    />
-                    <hr className="hr hr-vertical" />
+                <TabButton
+                    id="tabMenu"
+                    title="Menu"
+                    style={{ outline: 'none' }}
+                    className={" btn background-transparent btn-open-menu-tab"}
+                />
+                <hr className="hr hr-vertical" />
             </div>
             <hr className="hr" />
 
@@ -61,7 +61,7 @@ export const HomePage = memo(() => {
                                 className="btn background-transparent outline-none padding-s"
                                 onClick={() => setOpenConfig(true)}
                                 style={{ height: 'var(--tool-bar-height)' }}
-                                children={<img src={IconConfig} className="full-height" alt={IconConfig} draggable="false" />}
+                                children={<img src={IconConfig} style={{ height: "70%" }} alt={IconConfig} draggable="false" />}
                             />
                         </div>
                         <div>
@@ -70,21 +70,21 @@ export const HomePage = memo(() => {
                                 onClick={() => setOpenImportProjects(true)}
                                 style={{ height: 'var(--tool-bar-height)' }}
                                 title={"Import a list of projects from your files"}
-                                children={<img src={IconImport} className="full-height" alt={IconOpenGithub} draggable="false" />}
+                                children={<img src={IconImport} style={{ height: "70%" }} alt={IconOpenGithub} draggable="false" />}
                             />
                             <button
                                 className="btn background-transparent outline-none padding-s"
                                 title={"Download your projects"}
                                 style={{ height: 'var(--tool-bar-height)' }}
-                                children={<img src={IconDownload} className="full-height" alt={IconOpenGithub} draggable="false" />}
-                                onClick={() => Utils.downloadFile('MyProjects', 'json', Project.projectsToString(projects))}
+                                children={<img src={IconDownload} style={{ height: "70%" }} alt={IconOpenGithub} draggable="false" />}
+                                onClick={() => Utils.downloadFile('MyProjects', 'json', Project.stringifyProjects(projects))}
                             />
                             <button
                                 title={"Open on github"}
                                 className="btn background-transparent outline-none padding-s"
                                 style={{ height: 'var(--tool-bar-height)' }}
                                 onClick={() => window.open('https://github.com/code-easy-platform')}
-                                children={<img src={IconOpenGithub} className="full-height" alt={IconOpenGithub} draggable="false" />}
+                                children={<img src={IconOpenGithub} style={{ height: "70%" }} alt={IconOpenGithub} draggable="false" />}
                             />
                         </div>
                     </div>

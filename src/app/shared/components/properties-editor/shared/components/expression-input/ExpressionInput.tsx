@@ -73,7 +73,7 @@ export const ExpressionInput: React.FC<ExpressionInputProps> = ({ onPickerClick,
                     !props.disabled && onSelectSuggest(opt);
                 }}
             />
-            {!props.disabled && <input type="button" className="full-height background-bars" style={css_picker_editor} onClick={!props.disabled && onPickerClick} />}
+            {!props.disabled && <input type="button" tabIndex={-1} className="full-height background-bars" style={css_picker_editor} onClick={!props.disabled && onPickerClick} />}
         </div>
     );
 }

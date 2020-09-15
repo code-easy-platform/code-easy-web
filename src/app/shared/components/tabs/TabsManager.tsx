@@ -1,11 +1,11 @@
 import React, { useCallback, memo } from 'react';
 
-import { OpenWindow } from '../../interfaces/OpenedWindow';
 import { TabButton } from './components/TabButton';
+import { IOpenedWindow } from '../../interfaces';
 import { FontSize } from '../../types';
 import './Tabs.css';
 
-interface OpenWindowWithIcon extends OpenWindow {
+interface OpenWindowWithIcon extends IOpenedWindow {
     icon?: any;
 }
 

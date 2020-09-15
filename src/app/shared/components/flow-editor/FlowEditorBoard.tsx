@@ -26,7 +26,7 @@ export const FlowEditorBoard: React.FC<IFlowEditorBoardProps> = (props) => {
         selectionBackgroundColor, selectionBorderColor, useElevation,
     } = useConfigs();
     const { id, childrenWhenItemsEmpty = "Nothing here to edit", breadcrumbs = [], toolItems = [] } = props;
-    const { onMouseEnter, onMouseLeave, onContextMenu, onDropItem } = props;
+    const { onMouseEnter, onMouseLeave, onContextMenu, onDropItem, onFocus } = props;
     const duplicateSelectedItems = useDuplicateSelecteds();
     const pasteSelectedItems = usePasteSelecteds();
     const lines = useFlowItemsConnetionsSelector();
@@ -319,14 +319,16 @@ export const FlowEditorBoard: React.FC<IFlowEditorBoardProps> = (props) => {
         target.focus();
     });
 
+    console.log(showToolbar)
+
     return (
         <div style={{ width: '100%', height: '100%', display: 'flex' }} onMouseEnter={onMouseEnter} onMouseLeave={onMouseLeave}>
             <Toolbar
-                itemsLogica={toolItems}
+                items={toolItems}
                 itemWidth={toolbarItemWidth}
+                isShow={Boolean(showToolbar)}
                 borderColor={toolbarBorderColor}
                 backgroundColor={toolbarBackgroundColor}
-                isShow={(showToolbar === undefined ? true : showToolbar) && (toolItems.length > 0)}
             />
             <main key={id} style={{ flex: 1, overflow: 'auto' }}>
                 <BreandCrumbs
@@ -340,6 +342,7 @@ export const FlowEditorBoard: React.FC<IFlowEditorBoardProps> = (props) => {
                 <EditorPanel
                     ref={boardRef}
                     id={`${id}_SVG`}
+                    onFocus={onFocus}
                     dotColor={dotColor}
                     dottedSize={dottedSize}
                     onDropItem={handleDroptem}

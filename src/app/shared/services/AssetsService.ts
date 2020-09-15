@@ -4,12 +4,12 @@ import {
     IconFlowIf, IconFlowStart, IconFlowSwitch, IconRouterConsume, IconRouterExpose, IconRouter
 } from 'code-easy-components';
 
-import { ComponentType } from "../enuns/ComponentType";
 import { EItemType } from '../components/flow-editor';
+import { EComponentType } from "../enuns";
 
 
 class Assets {
-    public getIcon(type: ComponentType | EItemType): string {
+    public getIcon(type: EComponentType | EItemType): string {
         switch (type) {
             case EItemType.ACTION:
                 return IconFlowAction;
@@ -35,34 +35,34 @@ class Assets {
             case EItemType.SWITCH:
                 return IconFlowSwitch;
 
-            case ComponentType.routerConsume:
+            case EComponentType.routerConsume:
                 return IconRouterConsume;
 
-            case ComponentType.routerExpose:
+            case EComponentType.routerExpose:
                 return IconRouterExpose;
 
-            case ComponentType.globalAction:
+            case EComponentType.globalAction:
                 return IconAction;
 
-            case ComponentType.localAction:
+            case EComponentType.localAction:
                 return IconAction;
 
-            case ComponentType.grouper:
+            case EComponentType.grouper:
                 return IconFolder;
 
-            case ComponentType.inputVariable:
+            case EComponentType.inputVariable:
                 return IconInputParam;
 
-            case ComponentType.localVariable:
+            case EComponentType.localVariable:
                 return IconLocalParam;
 
-            case ComponentType.outputVariable:
+            case EComponentType.outputVariable:
                 return IconOutpuParam;
 
-            case ComponentType.tabActions:
+            case EComponentType.tabActions:
                 return IconAction;
 
-            case ComponentType.tabRoutes:
+            case EComponentType.tabRoutes:
                 return IconRouter;
 
             default:

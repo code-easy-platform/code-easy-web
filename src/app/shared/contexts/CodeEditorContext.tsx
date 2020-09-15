@@ -4,9 +4,10 @@ import { useParams, useHistory } from 'react-router-dom';
 import { CenterLoadingIndicator } from '../components/loading-indicator/LoadingIndicator';
 import { ProjectsStorage } from '../services/storage/ProjectsStorage';
 import { ProblemsHelper } from '../services/helpers/ProblemsHelper';
-import { Project, ItemComponent } from '../interfaces';
-import { ComponentType, PropertieTypes } from '../enuns';
+import { EComponentType, PropertieTypes } from '../enuns';
+import { TreeItemComponent } from '../models';
 import { AssetsService } from '../services';
+import { Project } from '../models';
 
 export interface ICodeEditorContext {
     project: Project,
@@ -16,8 +17,8 @@ const CodeEditorContext = React.createContext<ICodeEditorContext>({} as ICodeEdi
 
 export const CodeEditorProvider: React.FC = ({ children }) => {
 
+    const { id } = useParams<{ id: string }>();
     const history = useHistory();
-    const { id } = useParams();
 
     /** Usada para atualizar o state global do projeto e para atualizar o localstorage */
     const handleSetProject = useCallback((project: Project) => {
@@ -26,7 +27,7 @@ export const CodeEditorProvider: React.FC = ({ children }) => {
         project = ProblemsHelper.getProblems(project).project;
 
         // WindowsTabsManager
-        project = ProjectsStorage.updateWindowTabs(project);
+        project.updateWindowTabs();
 
         // Salva a nova versão do projeto no local storage
         ProjectsStorage.setProjectById(project);
@@ -71,8 +72,8 @@ export const useEditorContext = () => {
 
     const { project, setProject } = useContext<ICodeEditorContext>(CodeEditorContext);
 
-    const handleGetItemTreeEditing = useCallback((): ItemComponent | null => {
-        let itemTree: ItemComponent | null = null;
+    const handleGetItemTreeEditing = useCallback((): TreeItemComponent | null => {
+        let itemTree: TreeItemComponent | null = null;
 
         project.tabs.forEach(tab => {
             const resItemTree = tab.items.find(itemTree => itemTree.isEditing);
@@ -84,7 +85,7 @@ export const useEditorContext = () => {
         return itemTree;
     }, [project.tabs]);
 
-    const handleGetItemTreeById = useCallback((id: string, type?: ComponentType): ItemComponent | null => {
+    const handleGetItemTreeById = useCallback((id: string, type?: EComponentType): TreeItemComponent | null => {
         if (type) {
             const tab = project.tabs.find(tab => tab.configs.type === type);
             if (!tab) return null;
@@ -94,7 +95,7 @@ export const useEditorContext = () => {
 
             return itemTree;
         } else {
-            let itemTree: ItemComponent | null = null;
+            let itemTree: TreeItemComponent | null = null;
 
             project.tabs.forEach(tab => {
                 const resItemTree = tab.items.find(itemTree => itemTree.id === id);
@@ -107,14 +108,37 @@ export const useEditorContext = () => {
         }
     }, [project.tabs]);
 
-    const handleGetIconByItemId = useCallback((id: string): ItemComponent | null => {
+    const handleGetItemTreeByName = useCallback((name: string, type?: EComponentType): TreeItemComponent | null => {
+        if (type) {
+            const tab = project.tabs.find(tab => tab.configs.type === type);
+            if (!tab) return null;
+
+            const itemTree = tab.items.find(itemTree => itemTree.name === name);
+            if (!itemTree) return null;
+
+            return itemTree;
+        } else {
+            let itemTree: TreeItemComponent | null = null;
+
+            project.tabs.forEach(tab => {
+                const resItemTree = tab.items.find(itemTree => itemTree.name === name);
+                if (resItemTree) {
+                    itemTree = resItemTree;
+                }
+            });
+
+            return itemTree;
+        }
+    }, [project.tabs]);
+
+    const handleGetIconByItemId = useCallback((id: string): TreeItemComponent | null => {
         let icon: any = undefined;
 
         project.tabs.forEach(tab => {
             const resItemTree = tab.items.find(itemTree => itemTree.id === id);
             if (resItemTree) {
                 icon = resItemTree.properties.find(prop => prop.propertieType === PropertieTypes.icon)?.value.content;
-                if (!icon){
+                if (!icon) {
                     icon = AssetsService.getIcon(resItemTree.type);
                 }
             }
@@ -135,6 +159,13 @@ export const useEditorContext = () => {
          * @param type Tab where the item is. Can be: `tabActions`, `tabDates` and `tabRoutes`.
          */
         getItemTreeById: handleGetItemTreeById,
+        /**
+         * Return a item tree by there name and type
+         * 
+         * @param name Name of the item tree 
+         * @param type Tab where the item is. Can be: `tabActions`, `tabDates` and `tabRoutes`.
+         */
+        getItemTreeByName: handleGetItemTreeByName,
         getIconByItemId: handleGetIconByItemId,
         setProject,
         project,

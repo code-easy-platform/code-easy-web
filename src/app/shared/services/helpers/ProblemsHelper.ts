@@ -1,10 +1,11 @@
 import { Utils, IconWarning, IconError } from "code-easy-components";
 
-import { Project, IProjectConfigs } from "../../interfaces/Aplication";
-import { PropertieTypes } from "../../enuns/PropertieTypes";
+import { IProjectConfigurations } from "../../interfaces";
 import { ITreeItem } from "../../components/tree-manager";
-import { ComponentType } from "../../enuns/ComponentType";
+import { EComponentType } from "../../enuns/ComponentType";
 import { EItemType } from "../../components/flow-editor";
+import { PropertieTypes } from "../../enuns";
+import { Project } from "../../models";
 
 class ProblemsHelperService {
     private _problems: ITreeItem[] = [];
@@ -42,10 +43,10 @@ class ProblemsHelperService {
 
                             if (prop.propertieType === PropertieTypes.action && prop.value !== "") {
 
-                                const tabActions = project.tabs.find(tab => tab.configs.type === ComponentType.tabActions);
+                                const tabActions = project.tabs.find(tab => tab.configs.type === EComponentType.tabActions);
                                 if (!tabActions) return;
 
-                                if (!tabActions.items.some(item => item.id === prop.value)) {
+                                if (!tabActions.items.some(item => item.name === prop.value)) {
                                     this._addProblem(`In "${treeItem.label}" the flow item "${flowItem.name}" must have a valid value in the "${prop.name}" field.`, 'error');
                                     prop.valueHasError = true;
                                 }
@@ -112,7 +113,7 @@ class ProblemsHelperService {
         });
     }
 
-    private _getProjectConfigsProblems(configs: IProjectConfigs) {
+    private _getProjectConfigsProblems(configs: IProjectConfigurations) {
 
         // Valida a versão digitada no projeto para que seja compatível com os package.json que será gerado 
         if (Utils.isValidVersion(configs.version)) {
@@ -129,11 +130,11 @@ class ProblemsHelperService {
         }
 
         // Valida o name
-        if (configs.autor === '') {
+        if (configs.author === '') {
             this._addProblem('Project Author name field cannot be empty', 'warning');
-        } else if (configs.autor.length < 3) {
+        } else if (configs.author.length < 3) {
             this._addProblem('Project Author name field cannot be less than 3 characters', 'warning');
-        } else if (configs.autor.length > 50) {
+        } else if (configs.author.length > 50) {
             this._addProblem('Project Author name field cannot exceed 50 characters', 'warning');
         }
 
