@@ -5,17 +5,17 @@ import { IFlowItem } from '../../shared/interfaces';
 import './Toolbar.css';
 
 interface ToolbarProps {
-    itemsLogica: IFlowItem[];
     backgroundColor?: string;
     borderColor?: string;
+    items: IFlowItem[];
     itemWidth?: number;
     isShow: boolean;
 }
-const Toolbar: React.FC<ToolbarProps> = ({ itemsLogica, isShow, itemWidth, backgroundColor, borderColor }) => {
+const Toolbar: React.FC<ToolbarProps> = ({ items, isShow, itemWidth, backgroundColor, borderColor }) => {
     return (
-        isShow
+        (items.length > 0) && isShow
             ? <div className="toolbar" style={{ backgroundColor, borderColor }}>
-                {itemsLogica.map((item: IFlowItem, index) => {
+                {items.map((item: IFlowItem, index) => {
                     return <ListItemDraggable
                         flowItemType={item.flowItemType}
                         itemType={item.itemType}

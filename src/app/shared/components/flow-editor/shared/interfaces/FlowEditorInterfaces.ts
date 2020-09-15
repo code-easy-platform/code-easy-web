@@ -147,6 +147,11 @@ export interface IFlowEditorBoardEvents {
      */
     onChangeItems?(items: IFlowItem[]): void;
     /**
+     * Event executed when the the board is focused
+     * @param event React event
+     */
+    onFocus?(event: React.FocusEvent<SVGSVGElement>): void;
+    /**
      * Event executed when the context menu is triggered, by keyboard or by the mouse event
      * @param event React event
      */

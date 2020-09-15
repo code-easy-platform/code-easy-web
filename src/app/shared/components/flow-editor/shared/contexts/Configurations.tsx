@@ -18,7 +18,6 @@ export const ConfigurationProvider: React.FC<{ configs: IFlowEditorConfigs }> = 
     configs.backgroundType = configs.backgroundType ? configs.backgroundType : 'dotted';
     configs.elevationColor = configs.elevationColor ? configs.elevationColor : 'black';
     configs.useElevation = configs.useElevation ? configs.useElevation : false;
-    configs.showToolbar = configs.showToolbar ? configs.showToolbar : true;
     configs.dotColor = configs.dotColor ? configs.dotColor : '#484848';
     configs.dottedSize = configs.dottedSize ? configs.dottedSize : 15;
 
@@ -30,6 +29,7 @@ export const ConfigurationProvider: React.FC<{ configs: IFlowEditorConfigs }> = 
     // TOOLBAR
     configs.toolbarBackgroundColor = configs.toolbarBackgroundColor ? configs.toolbarBackgroundColor : '#232323';
     configs.toolbarBorderColor = configs.toolbarBorderColor ? configs.toolbarBorderColor : '#000';
+    configs.showToolbar = configs.showToolbar !== undefined ? configs.showToolbar : true;
     configs.toolbarItemWidth = configs.toolbarItemWidth ? configs.toolbarItemWidth : 30;
 
     // SELECION
@@ -56,7 +56,7 @@ export const ConfigurationProvider: React.FC<{ configs: IFlowEditorConfigs }> = 
     }, [configs]);
 
     return (
-        <ConfigurationContext.Provider value={state} >
+        <ConfigurationContext.Provider value={state}>
             {children}
         </ConfigurationContext.Provider>
     );

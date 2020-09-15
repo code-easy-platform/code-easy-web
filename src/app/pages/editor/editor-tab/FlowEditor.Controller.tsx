@@ -426,6 +426,16 @@ export const FlowEditorController: React.FC = memo(() => {
                     {getBackgroundEmpty()}
                 </div>
             }
+            onContextMenu={(e) => {
+                if (e) {
+                    e.preventDefault();
+                    ContextMenuService.showMenu(e.clientX, e.clientY, contextMenu(undefined, e));
+                }
+            }}
+            onFocus={() => {
+                changeFocus();
+                setProject(project);
+            }}
             configs={{
                 selectionBorderColor: 'var(--selection-border-color)',
                 selectionBackgroundColor: '#ffffff11',
@@ -439,12 +449,8 @@ export const FlowEditorController: React.FC = memo(() => {
                 snapGridWhileDragging: snapGridWhileDragging,
                 backgroundType: flowBackgroundType,
                 lineWidth: 1,
-            }}
-            onContextMenu={(e) => {
-                if (e) {
-                    e.preventDefault();
-                    ContextMenuService.showMenu(e.clientX, e.clientY, contextMenu(undefined, e));
-                }
+
+                showToolbar: flowEditorItemsResult.hasSomethingToEdit && flowEditorItemsResult.hasSomethingEditing,
             }}
         />
     );
