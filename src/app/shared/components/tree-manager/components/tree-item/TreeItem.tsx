@@ -123,7 +123,7 @@ export const TreeItem: React.FC<TreeItemProps> = (props) => {
     return (
         <div
             title={description}
-            onClick={handleOnClick}
+            onMouseDown={handleOnClick}
             onContextMenu={handleOnContext}
             onDoubleClick={handleOnDoubleClick}
             className={`tree-item${isDisabled ? ' disabled' : ''}${isEditing ? ' editing' : ''}${isSelected ? ' selected' : ''}${isDragging ? ' dragging' : ''}${(isDraggingOver && isUseDrop && !isDisabledDrop) ? ' dragging-over' : ''}`}

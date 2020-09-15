@@ -32,6 +32,9 @@ export const TreeManagerBase: React.FC<TreeManagerBaseProps> = ({ childrenWhenEm
                     onContextMenu={onContextMenu}
                 />
             ))}
+            {!((childrenWhenEmpty && baseItems.length === 0) || showEmptyMessage) &&
+                <div style={{ padding: 50 }} />
+            }
             <EmptyFeedback
                 children={childrenWhenEmpty}
                 onContextMenu={handleContextMenu}
