@@ -1,6 +1,6 @@
 import { Utils, IconWarning, IconError } from "code-easy-components";
 
-import { IProperty } from "../components/properties-editor";
+import { IProperty, TypeOfValues } from "../components/properties-editor";
 import { EComponentType, PropertieTypes } from "../enuns";
 import { FlowItemComponent } from "./FlowItemComponent";
 import { ITreeItem } from "../components/tree-manager";
@@ -21,6 +21,14 @@ export class TreeItemComponent implements ITreeItemComponent {
         let prop = this._properties?.find(prop => prop.propertieType === PropertieTypes.label);
         if (prop) {
             prop.value = value;
+        } else {
+            this._properties.push({
+                value,
+                id: Utils.getUUID(),
+                focusOnRender: true,
+                type: TypeOfValues.string,
+                name: PropertieTypes.label,
+            });
         }
     };
 
@@ -65,6 +73,7 @@ export class TreeItemComponent implements ITreeItemComponent {
     constructor(
         private _fields: ITreeItemComponent
     ) {
+
         this.id = this._fields.id;
         this.updatedDate = new Date();
         this.type = this._fields.type;

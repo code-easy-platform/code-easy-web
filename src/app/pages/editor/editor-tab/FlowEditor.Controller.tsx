@@ -9,6 +9,7 @@ import { PropertieTypes, EComponentType, ECurrentFocus } from '../../../shared/e
 import { TreeItemComponent, FlowItemComponent, Tab } from '../../../shared/models';
 import { DefaultPropsHelper, AssetsService } from '../../../shared/services';
 import { useIdeConfigs, useEditorContext } from '../../../shared/contexts';
+import { IProperty } from '../../../shared/components/properties-editor';
 
 export const FlowEditorController: React.FC = memo(() => {
     const { flowBackgroundType, snapGridWhileDragging } = useIdeConfigs();
@@ -344,11 +345,13 @@ export const FlowEditorController: React.FC = memo(() => {
             const actionProp = item.properties.find(prop => prop.propertieType === PropertieTypes.action);
 
             /** Bloco de código qu encontra o ícone que será usado no fluxo */
-            let icon: any;
+            let selectedActionIcon: any;
+            let selectedActionDescription: IProperty | undefined;
             project.tabs.forEach((tab: Tab) => {
                 tab.items.forEach(itemToIconFind => {
-                    if (itemToIconFind.id === actionProp?.value) {
-                        icon = itemToIconFind.properties.find(prop => prop.propertieType === PropertieTypes.icon);
+                    if (itemToIconFind.name === actionProp?.value) {
+                        selectedActionIcon = itemToIconFind.properties.find(prop => prop.propertieType === PropertieTypes.icon);
+                        selectedActionDescription = itemToIconFind.properties.find(prop => prop.propertieType === PropertieTypes.description);
                     }
                 });
             });
@@ -365,11 +368,13 @@ export const FlowEditorController: React.FC = memo(() => {
                 isDisabled: item.isDisabled,
                 connections: item.connections,
                 flowItemType: item.flowItemType,
-                icon: icon?.value?.content || item.icon,
                 isEnabledNewConnetion: item.isEnabledNewConnetion,
-                description: item.itemType !== EItemType.COMMENT ? item.description : item.name,
+                icon: selectedActionIcon?.value?.content || item.icon,
                 hasError: item.properties.some(prop => (prop.valueHasError || prop.nameHasError)),
                 hasWarning: item.properties.some(prop => (prop.valueHasWarning || prop.nameHasWarning)),
+                description: item.itemType !== EItemType.COMMENT
+                    ? selectedActionDescription?.value || item.description
+                    : item.name,
             });
         });
 
