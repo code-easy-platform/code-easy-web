@@ -26,9 +26,10 @@ export const PropertiesEditorController: React.FC = () => {
                 tab.items.forEach(itemTree => {
                     if (itemTree && itemTree.isSelected && itemTree.id === item.id) {
 
+                        const newLabel = item.properties.find(prop => prop.propertieType === PropertieTypes.label);
+
                         // Este bloco garante que se a label de uma routa muda o seu path será alterado junto.
                         if (itemTree.type === EComponentType.routerConsume || itemTree.type === EComponentType.routerExpose) {
-                            const newLabel = item.properties.find(prop => prop.propertieType === PropertieTypes.label);
                             item.properties.forEach(prop => {
                                 if (prop.propertieType === PropertieTypes.url) {
                                     prop.value = `/${Utils.getNormalizedString(newLabel ? newLabel.value : prop.value).toLowerCase()}`;
@@ -36,6 +37,7 @@ export const PropertiesEditorController: React.FC = () => {
                                     prop.value = Utils.getNormalizedString(newLabel ? newLabel.value : prop.value).toLowerCase();
                                 }
                             });
+
                         }
 
                         // Atualizas as props
@@ -105,6 +107,10 @@ export const PropertiesEditorController: React.FC = () => {
 
                 treeItemEditing = new TreeItemComponent({
                     ...treeItemEditing,
+                    description: treeItemEditing.description,
+                    properties: treeItemEditing.properties,
+                    label: treeItemEditing.label,
+                    name: treeItemEditing.name,
                     items: [
                         ...treeItemEditing.items.filter(flowItem => flowItem.id !== editingFlowItem?.id),
                         editingFlowItem,

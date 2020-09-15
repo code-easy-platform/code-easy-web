@@ -17,8 +17,8 @@ const CodeEditorContext = React.createContext<ICodeEditorContext>({} as ICodeEdi
 
 export const CodeEditorProvider: React.FC = ({ children }) => {
 
+    const { id } = useParams<{ id: string }>();
     const history = useHistory();
-    const { id } = useParams();
 
     /** Usada para atualizar o state global do projeto e para atualizar o localstorage */
     const handleSetProject = useCallback((project: Project) => {

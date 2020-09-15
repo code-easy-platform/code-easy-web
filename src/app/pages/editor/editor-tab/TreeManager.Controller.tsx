@@ -367,6 +367,10 @@ export const TreeManagerController: React.FC = () => {
                         isExpanded: updatedItem.nodeExpanded,
                         isSelected: updatedItem.isSelected,
                         itemPaiId: updatedItem.ascendantId,
+                        description: item.description,
+                        properties: item.properties,
+                        label: item.label,
+                        name: item.name,
                     });
                 });
 
@@ -390,6 +394,7 @@ export const TreeManagerController: React.FC = () => {
     /** Monta a estrutura da árvore e devolve no return */
     const treeManagerItems = ((): ITreeItem[] => {
 
+        /** Disable doucle click by type */
         const cannotPerformDoubleClick = (type: EComponentType) => {
             switch (type) {
                 case EComponentType.inputVariable:
@@ -408,6 +413,7 @@ export const TreeManagerController: React.FC = () => {
             }
         }
 
+        /** Allowed drop list by type */
         const getCanDropList = (type: EComponentType) => {
             switch (type) {
                 case EComponentType.inputVariable:
@@ -437,11 +443,14 @@ export const TreeManagerController: React.FC = () => {
 
         project.tabs.forEach((tab: Tab) => {
             if (tab.configs.isEditing) {
-                items = tab.items.map(item => ({
+                items = tab.items.map((item): ITreeItem => ({
                     ...item,
+                    label: item.label,
                     icon: item.properties.find(prop => prop.propertieType === PropertieTypes.icon)?.value.content || AssetsService.getIcon(item.type),
                     hasWarning: item.items.some(itemFlow => itemFlow.properties.some(prop => (prop.valueHasWarning || prop.nameHasWarning))),
+                    description: item.properties.find(prop => prop.propertieType === PropertieTypes.description)?.value || item.description,
                     hasError: item.items.some(itemFlow => itemFlow.properties.some(prop => (prop.valueHasError || prop.nameHasError))),
+                    //label: item.properties.find(prop => prop.propertieType === PropertieTypes.label)?.value || item.label,
                     isDisabledDoubleClick: cannotPerformDoubleClick(item.type),
                     isDisabledDrag: item.type === EComponentType.routerExpose,
                     canDropList: getCanDropList(item.type),

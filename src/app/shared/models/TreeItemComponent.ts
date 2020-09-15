@@ -9,16 +9,54 @@ import { ITreeItemComponent } from "../interfaces";
 import { DefaultPropsHelper } from "../services";
 
 export class TreeItemComponent implements ITreeItemComponent {
-    public name: string;
-    public label: string;
+
+    public get name(): string {
+        return Utils.getNormalizedString(this.label);
+    };
+
+    public get label(): string {
+        return this._properties.find(prop => prop.propertieType === PropertieTypes.label)?.value || '';
+    };
+    public set label(value: string) {
+        let prop = this._properties?.find(prop => prop.propertieType === PropertieTypes.label);
+        if (prop) {
+            prop.value = value;
+        }
+    };
+
+    public get description(): string {
+        return this._properties.find(prop => prop.propertieType === PropertieTypes.description)?.value || '';
+    };
+    public set description(value: string) {
+        let prop = this._properties?.find(prop => prop.propertieType === PropertieTypes.description);
+        if (prop) {
+            prop.value = value;
+        }
+    };
+
+    private _properties: IProperty[] = [];
+    public get properties(): IProperty[] { return this._properties };
+    public set properties(props: IProperty[]) {
+
+        // Remove o auto focus caso exista em alguma prop
+        props.forEach(prop => prop.focusOnRender = false);
+
+        const originalProperties = DefaultPropsHelper.getNewProps(this.type, this.label, (this.type === EComponentType.routerConsume || this.type === EComponentType.routerExpose));
+        originalProperties.forEach(originalProp => {
+            if (!props.some(prop => prop.propertieType === originalProp.propertieType)) {
+                props.push(originalProp);
+            }
+        });
+
+        this._properties = props;
+    }
+
     public ordem: number;
     public isEditing: boolean;
     public isSelected: boolean;
     public isExpanded: boolean;
-    public description: string;
     public type: EComponentType;
     public id: string | undefined;
-    public properties: IProperty[];
     public items: FlowItemComponent[];
     public itemPaiId: string | undefined;
     public updatedDate: Date = new Date();
@@ -38,11 +76,8 @@ export class TreeItemComponent implements ITreeItemComponent {
         this.description = this._fields.description;
         this.properties = this._fields.properties || [];
         this.isExpanded = Boolean(this._fields.isExpanded);
-        this.name = Utils.getNormalizedString(this._fields.name || '');
         this.createdDate = this._fields.createdDate || this.createdDate;
         this.items = this._fields.items.map(item => new FlowItemComponent(item));
-
-        this._updateProperties(this._fields.properties || [], this._fields.type);
     }
 
     /**
@@ -101,40 +136,5 @@ export class TreeItemComponent implements ITreeItemComponent {
         }
 
         return problems;
-    }
-
-    private _updateProperties(properties: IProperty[], type: EComponentType) {
-
-        // Remove o auto focus caso exista em alguma prop
-        this.properties.forEach(prop => prop.focusOnRender = false);
-
-        const originalProperties = DefaultPropsHelper.getNewProps(type, this.label, (this.type === EComponentType.routerConsume || this.type === EComponentType.routerExpose));
-
-        originalProperties.forEach(originalProp => {
-            if (!properties.some(prop => prop.propertieType === originalProp.propertieType)) {
-                properties.push(originalProp);
-            }
-        });
-
-        switch (this.type) {
-            case EComponentType.globalAction:
-                this._globalAction();
-                break;
-
-            default:
-                break;
-        }
-
-        this.properties = properties;
-    }
-
-    private _globalAction() {
-
-        /** Define o nome da label encontrado nas properties do componente */
-        const propLabel = this.properties.find(prop => prop.propertieType === PropertieTypes.label);
-        if (propLabel) {
-            this.name = Utils.getNormalizedString(propLabel.value);
-        }
-
     }
 }

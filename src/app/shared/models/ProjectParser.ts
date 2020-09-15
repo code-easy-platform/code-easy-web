@@ -84,6 +84,7 @@ export class ProjectParser {
                 items: tab.items.map(item => new TreeItemComponent({
                     ...item,
                     items: item.items.map(itemFlow => new FlowItemComponent(itemFlow)),
+                    properties: item.properties,
                 }))
             }))
         });
