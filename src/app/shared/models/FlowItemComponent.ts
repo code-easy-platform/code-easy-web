@@ -85,8 +85,10 @@ export class FlowItemComponent implements IFlowItemComponent {
         // Valida o name
         if (this.name === '') {
             addProblem(`We do not recommend that the flow item be empty in "${this.name}"`, 'error');
-            this.properties.filter(prop => prop.propertieType === PropertieTypes.label).forEach(prop => prop.valueHasError = true);
             this.hasError = true;
+            this.properties
+                .filter(prop => prop.propertieType === PropertieTypes.label)
+                .forEach(prop => prop.valueHasError = true);
         } else if (this.name.length < 3) {
             addProblem(`A suitable name for a stream item must be longer than 3 characters in "${this.name}"`, 'warning');
             this.hasWarning = true;
@@ -215,7 +217,6 @@ export class FlowItemComponent implements IFlowItemComponent {
         this.properties.forEach(prop => prop.onPickerValueClick = () => { prop.id && ContextModalListService.showModal({ editingId: prop.id }); });
 
         const originalProperties = DefaultPropsHelper.getNewProps(type, this.name);
-
         originalProperties.forEach(originalProp => {
             if (!properties.some(prop => prop.propertieType === originalProp.propertieType)) {
                 properties.push(originalProp);

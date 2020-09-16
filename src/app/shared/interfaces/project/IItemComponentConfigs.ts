@@ -11,11 +11,11 @@ export interface IItemComponentConfigs extends IBasicFields {
      */
     isSelected: boolean;
     /**
-     * Used for tree it helps to know if the item is a folder or a file
-     */
-    type: EComponentType;
-    /**
      * Used on the tree, it helps to know if the item is expanded or collapsed
      */
     isExpanded?: boolean;
+    /**
+     * Used for tree it helps to know if the item is a folder or a file
+     */
+    type: EComponentType;
 }
