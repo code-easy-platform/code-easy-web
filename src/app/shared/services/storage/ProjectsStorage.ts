@@ -1,10 +1,10 @@
 import { Utils } from "code-easy-components";
 
-import { EComponentType, ProjectType, ECurrentFocus } from "./../../enuns";
+import { EComponentType, EProjectType, ECurrentFocus } from "./../../enuns";
 import { Project, Tab, ItemComponentConfigs } from "../../models";
 import { StorageEnum } from "./StorageEnum";
 
-const newProject = (name: string, version: string, type: ProjectType, description: string) => new Project({
+const newProject = (name: string, version: string, type: EProjectType, description: string) => new Project({
     currentComponentFocus: ECurrentFocus.tree,
     projectConfigs: {
         type,
@@ -63,7 +63,7 @@ const newProject = (name: string, version: string, type: ProjectType, descriptio
 
 export class ProjectsStorage {
 
-    public static getNewProject(name: string, version: string, type: ProjectType, description: string) {
+    public static getNewProject(name: string, version: string, type: EProjectType, description: string) {
         return newProject(name, version, type, description);
     }
 
@@ -119,7 +119,7 @@ export class ProjectsStorage {
         let project = projects.find(proj => proj.projectConfigs.id === id);
 
         if (!project) {
-            return new Project(newProject('', '', ProjectType.api, ''));
+            return new Project(newProject('', '', EProjectType.api, ''));
         } else {
             return new Project(project);
         }

@@ -1,5 +1,5 @@
 import { IBasicFields } from "./IBasicFields";
-import { ProjectType } from "./../../enuns";
+import { EProjectType } from "./../../enuns";
 
 /**
  * Exclusivamente utilizada na configuração do projeto,
@@ -10,7 +10,7 @@ import { ProjectType } from "./../../enuns";
 export interface IProjectConfigurations extends IBasicFields {
     author: string;
     version: string;
-    type: ProjectType;
+    type: EProjectType;
     createdDate: Date;
     updatedDate: Date;
     currentProcess: string;

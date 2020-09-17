@@ -1,12 +1,12 @@
 import { IProperty } from "../../../components/properties-editor";
-import { EItemType } from "../../../components/flow-editor";
-import { EComponentType } from "../../../enuns";
+import { EComponentType, EProjectType } from "../../../enuns";
 import { ITreeItem } from "../../../components/tree-manager";
+import { EItemType } from "../../../components/flow-editor";
 
 /**
  * Common fields between the different project structures
  */
-export interface IBasicConfigurations<TYPE = EComponentType | EItemType> {
+export interface IBasicConfigurations<TYPE = EComponentType | EProjectType | EItemType> {
     /**
      * Used to visually represent the record
      */

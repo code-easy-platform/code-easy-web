@@ -9,8 +9,8 @@ import { DefaultPropsHelper } from "../../../services";
 import { EComponentType } from "../../../enuns";
 
 export class TreeItemComponent extends BasicConfigurations<EComponentType> implements ITreeItemComponent {
-    items: IFlowItemComponent[];
-    ascendantId?: string;
+    public items: IFlowItemComponent[];
+    public ascendantId?: string;
 
     public get properties(): IProperty[] { return super.properties; }
     public set properties(props: IProperty[]) {

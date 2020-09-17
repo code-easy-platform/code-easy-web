@@ -3,7 +3,7 @@ import { ITab, ITreeItemComponent } from "../interfaces";
 import { EComponentType } from "../../../enuns";
 
 export class Tab extends BasicConfigurations<EComponentType> implements ITab {
-    items: ITreeItemComponent[];
+    public items: ITreeItemComponent[];
 
     constructor(fields: ITab) {
         super(fields);
