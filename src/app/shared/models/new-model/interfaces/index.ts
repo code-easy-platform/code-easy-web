@@ -4,4 +4,5 @@ export * from './IProjectOpenedWindow';
 export * from './IFlowItemComponent';
 export * from './ITreeItemComponent';
 export * from './IOpenedWindow';
+export * from './IProject';
 export * from './ITab';
