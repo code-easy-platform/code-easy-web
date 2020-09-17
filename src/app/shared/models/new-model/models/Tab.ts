@@ -1,13 +1,17 @@
 import { BasicConfigurations } from "./BasicConfigurations";
-import { ITab, ITreeItemComponent } from "../interfaces";
+import { TreeItemComponent } from "./TreeItemComponent";
 import { EComponentType } from "../../../enuns";
+import { ITab } from "../interfaces";
+
+
+type OmitInConstructor = 'name' | 'problems';
 
 export class Tab extends BasicConfigurations<EComponentType> implements ITab {
-    public items: ITreeItemComponent[];
+    public items: TreeItemComponent[];
 
-    constructor(fields: ITab) {
+    constructor(fields: Omit<ITab, OmitInConstructor>) {
         super(fields);
 
-        this.items = fields.items;
+        this.items = fields.items.map(item => new TreeItemComponent(item));
     }
 }

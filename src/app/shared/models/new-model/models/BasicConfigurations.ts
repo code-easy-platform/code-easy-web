@@ -6,9 +6,9 @@ import { IBasicConfigurations } from "../interfaces";
 import { PropertieTypes } from "../../../enuns";
 
 
-type OmitInConstructor = 'name';
+type OmitInConstructor = 'name' | 'problems';
 
-export class BasicConfigurations<TYPE> implements IBasicConfigurations<TYPE> {
+export class BasicConfigurations<T> implements IBasicConfigurations<T> {
 
     private _id: string | undefined = undefined;
     public get id(): string | undefined {
@@ -114,8 +114,8 @@ export class BasicConfigurations<TYPE> implements IBasicConfigurations<TYPE> {
         this._properties = props;
     }
 
+    public type: T;
     public icon: any;
-    public type: TYPE;
     public ordem?: number;
     public isExpanded?: boolean;
     public hasError: boolean = false;
@@ -125,7 +125,7 @@ export class BasicConfigurations<TYPE> implements IBasicConfigurations<TYPE> {
     public updatedDate: Date = new Date();
     public createdDate: Date = new Date();
 
-    constructor(fields: Omit<IBasicConfigurations<TYPE>, OmitInConstructor>) {
+    constructor(fields: Omit<IBasicConfigurations<T>, OmitInConstructor>) {
         this.type = fields.type;
         this.updatedDate = new Date();
         this.id = fields.id || this.id;

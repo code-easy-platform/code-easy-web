@@ -14,7 +14,6 @@ export interface IProject {
 export interface IProjectManageWindows {
     selectWindowById(windowId: string): void;
     removeWindowById(windowId: string): void;
-    getOpenedWindows(): IOpenedWindow[];
-    updateWindowTabs(): void;
+    getWindows(): IOpenedWindow[];
 }
 

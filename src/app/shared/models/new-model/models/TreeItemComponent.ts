@@ -1,15 +1,19 @@
 import { IconError, IconWarning } from "code-easy-components";
 
-import { IFlowItemComponent, ITreeItemComponent } from "../interfaces";
 import { IProperty } from "../../../components/properties-editor";
 import { ITreeItem } from "../../../components/tree-manager";
 import { EItemType } from "../../../components/flow-editor";
 import { BasicConfigurations } from "./BasicConfigurations";
+import { FlowItemComponent } from "./FlowItemComponent";
 import { DefaultPropsHelper } from "../../../services";
+import { ITreeItemComponent } from "../interfaces";
 import { EComponentType } from "../../../enuns";
 
+
+type OmitInConstructor = 'name' | 'problems';
+
 export class TreeItemComponent extends BasicConfigurations<EComponentType> implements ITreeItemComponent {
-    public items: IFlowItemComponent[];
+    public items: FlowItemComponent[];
     public ascendantId?: string;
 
     public get properties(): IProperty[] { return super.properties; }
@@ -71,10 +75,10 @@ export class TreeItemComponent extends BasicConfigurations<EComponentType> imple
         return problems;
     }
 
-    constructor(fields: ITreeItemComponent) {
+    constructor(fields: Omit<ITreeItemComponent, OmitInConstructor>) {
         super(fields);
 
-        this.items = fields.items;
         this.properties = fields.properties || this.properties;
+        this.items = fields.items.map(item => new FlowItemComponent(item));
     }
 }

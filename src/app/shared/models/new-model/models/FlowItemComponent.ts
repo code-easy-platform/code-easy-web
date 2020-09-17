@@ -9,7 +9,7 @@ import { IFlowItemComponent } from "../interfaces";
 import { PropertieTypes } from "../../../enuns";
 
 
-type OmitInConstructor = 'flowItemType' | 'isEnabledNewConnetion' | 'height' | 'width' | 'name';
+type OmitInConstructor = 'flowItemType' | 'isEnabledNewConnetion' | 'height' | 'width' | 'name' | 'problems';
 
 export class FlowItemComponent extends BasicConfigurations<EItemType> implements IFlowItemComponent {
     public flowItemType: EFlowItemType = EFlowItemType.acorn;

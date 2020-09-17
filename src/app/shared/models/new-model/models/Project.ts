@@ -1,9 +1,10 @@
+import { IOpenedWindow, IProject, IProjectManageWindows, IProjectOpenedWindow } from "../interfaces";
 import { ProjectConfigurations } from "./ProjectConfigurations";
-import { IOpenedWindow, IProject, IProjectOpenedWindow } from "../interfaces";
+import { ProjectParser } from "./ProjectParser";
 import { ECurrentFocus } from "../../../enuns";
 import { Tab } from "./Tab";
 
-export class Project implements IProject {
+export class Project extends ProjectParser implements IProject, IProjectManageWindows {
     public configurations: ProjectConfigurations;
     public currentFocus: ECurrentFocus;
     public tabs: Tab[];
@@ -15,6 +16,8 @@ export class Project implements IProject {
     };
 
     constructor(fields: IProject) {
+        super();
+
         this.configurations = new ProjectConfigurations(fields.configurations);
         this.tabs = fields.tabs.map(tab => new Tab(tab));
         this.currentFocus = fields.currentFocus;
@@ -26,7 +29,7 @@ export class Project implements IProject {
      */
     public getWindows(): IOpenedWindow[] {
         let windows: IOpenedWindow[] = [];
-        
+
         // Update windows
         this._updateWindowTabs();
 
