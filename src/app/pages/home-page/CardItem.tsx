@@ -1,8 +1,8 @@
 import React, { useState, memo } from 'react';
-
-import { ProjectTypeList, ProjectType } from '../../shared/enuns/ProjectType';
-import { ContextMenuService } from '../../shared/components/context-menu/ContextMenuService';
 import { IconStar } from 'code-easy-components';
+
+import { ContextMenuService } from '../../shared/components/context-menu/ContextMenuService';
+import { ProjectTypeList, EProjectType } from '../../shared/enuns';
 
 interface CardItemProps {
     onDelete?(id: string): void;
@@ -12,7 +12,7 @@ interface CardItemProps {
         id: string;
         name: string;
         version: string;
-        type: ProjectType;
+        type: EProjectType;
         description: string;
     }): void;
     isAdding?: boolean;
@@ -21,7 +21,7 @@ interface CardItemProps {
         id: string;
         name: string;
         version: string;
-        type: ProjectType;
+        type: EProjectType;
         lastUpdate?: string;
         description: string;
     }

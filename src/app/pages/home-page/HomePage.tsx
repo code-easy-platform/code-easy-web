@@ -5,8 +5,8 @@ import dataformat from 'dateformat';
 
 import { BottonStatusBar } from '../../shared/components/botton-status-bar/BottonStatusBar';
 import { ProjectsStorage } from '../../shared/services/storage/ProjectsStorage';
-import { ProjectType } from '../../shared/enuns/ProjectType';
 import { TabButton } from '../../shared/components/tabs';
+import { EProjectType } from '../../shared/enuns';
 import { ImportProjects } from './ImportFiles';
 import { Project } from '../../shared/models';
 import { IdeConfigs } from './Configs';
@@ -135,7 +135,7 @@ export const HomePage = memo(() => {
                             isAdding={true}
                             onClick={addNewProject}
                             onCancel={() => setIsAdding(false)}
-                            item={{ id: '', name: '', version: '', description: '', type: ProjectType.api }}
+                            item={{ id: '', name: '', version: '', description: '', type: EProjectType.api }}
                         />}
                         {projects
                             .filter(item => (item.projectConfigs.label.toLowerCase().indexOf(filter.toLowerCase()) >= 0))
