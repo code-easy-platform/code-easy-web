@@ -30,10 +30,10 @@ export const ImportProjects = ({ open, close }: { open: boolean, close: Function
 
                 projs.forEach((proj: Project) => {
                     isProjetcs = (
-                        proj.projectConfigs !== undefined &&
-                        proj.projectConfigs.name !== undefined &&
-                        proj.projectConfigs.id !== undefined &&
-                        proj.projectConfigs.type !== undefined &&
+                        proj.configurations !== undefined &&
+                        proj.configurations.name !== undefined &&
+                        proj.configurations.id !== undefined &&
+                        proj.configurations.type !== undefined &&
                         proj.tabs !== undefined
                     );
                 });
@@ -83,14 +83,14 @@ export const ImportProjects = ({ open, close }: { open: boolean, close: Function
                     {projects.map(project => (
                         <CardItem
                             item={{
-                                id: project.projectConfigs.id || '',
-                                name: project.projectConfigs.label,
-                                type: project.projectConfigs.type,
-                                version: project.projectConfigs.version,
-                                description: project.projectConfigs.description,
+                                id: project.configurations.id || '',
+                                name: project.configurations.label,
+                                type: project.configurations.type,
+                                version: project.configurations.version,
+                                description: project.configurations.description,
                             }}
                             onClick={() => { }}
-                            key={project.projectConfigs.id}
+                            key={project.configurations.id}
                         />
                     ))}
                 </div>

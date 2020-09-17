@@ -1,16 +1,10 @@
-import { EItemType, IFlowItem } from "./../../components/flow-editor";
-import { IProperty } from "./../../components/properties-editor";
+import { EItemType, IConnection, IFlowItem } from "./../../components/flow-editor";
+import { IBasicConfigurations } from "./IBasicConfigurations";
 
-export interface IFlowItemComponent extends IFlowItem {
-    properties: IProperty[];
-    itemType: EItemType;
-    name: string;
-    /**
-     * Field used to store criation date
-     */
-    createdDate?: Date;
-    /**
-     * Field used to store updated date
-     */
-    updatedDate?: Date;
+/**
+ * Flow item representation with all its properties
+ */
+export interface IFlowItemComponent extends IBasicConfigurations<EItemType>, Omit<IFlowItem, 'itemType'> {
+    label: IBasicConfigurations['label'];
+    connections: IConnection[];
 }

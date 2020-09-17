@@ -1,38 +1,40 @@
-import { IProject, IProjectConfigurations, IProjectOpenedWindow, IOpenedWindow, IProjectManageWindows } from "../interfaces";
+import { IOpenedWindow, IProject, IProjectManageWindows, IProjectOpenedWindow } from "../interfaces";
+import { ProjectConfigurations } from "./ProjectConfigurations";
 import { ProjectParser } from "./ProjectParser";
-import { ECurrentFocus } from "../enuns";
-import { Tab } from "./Tabs";
+import { ECurrentFocus } from "./../enuns";
+import { Tab } from "./Tab";
 
-/**
- * Represents a project
- */
 export class Project extends ProjectParser implements IProject, IProjectManageWindows {
-    projectConfigs: IProjectConfigurations;
-    currentComponentFocus: ECurrentFocus;
-    openWindows: IProjectOpenedWindow[];
-    tabs: Tab[];
+    public configurations: ProjectConfigurations;
+    public currentFocus: ECurrentFocus;
+    public tabs: Tab[];
 
-    constructor(private fields: {
-        projectConfigs: IProjectConfigurations;
-        currentComponentFocus: ECurrentFocus;
-        openWindows?: IProjectOpenedWindow[];
-        tabs: Tab[];
-    }) {
+    private _windows: IProjectOpenedWindow[] = [];
+    public get windows(): IProjectOpenedWindow[] {
+        this._updateWindowTabs();
+        return this._windows;
+    };
+
+    constructor(fields: IProject) {
         super();
-        this.currentComponentFocus = this.fields.currentComponentFocus;
-        this.tabs = this.fields.tabs.map(tab => new Tab(tab));
-        this.projectConfigs = this.fields.projectConfigs;
-        this.openWindows = this.fields.openWindows || [];
+
+        this.configurations = new ProjectConfigurations(fields.configurations);
+        this.tabs = fields.tabs.map(tab => new Tab(tab));
+        this.currentFocus = fields.currentFocus;
+        this._windows = fields.windows;
     }
 
     /**
-     * Get all opened windows
+     * Get all openeds windows
      */
-    public getOpenedWindows(): IOpenedWindow[] {
+    public getWindows(): IOpenedWindow[] {
         let windows: IOpenedWindow[] = [];
 
+        // Update windows
+        this._updateWindowTabs();
+
         this.tabs.forEach(tab => {
-            this.openWindows.forEach(windowProps => {
+            this._windows.forEach(windowProps => {
 
                 const tabItem = tab.items.find(tabItem => tabItem.id === windowProps.id);
                 if (tabItem && tabItem.id) {
@@ -60,7 +62,7 @@ export class Project extends ProjectParser implements IProject, IProjectManageWi
      * @param windowId Window to select
      */
     public selectWindowById(windowId: string) {
-        this.openWindows.forEach(windowTab => {
+        this._windows.forEach(windowTab => {
             if (windowTab.id === windowId) {
                 windowTab.isSelected = true;
 
@@ -72,7 +74,6 @@ export class Project extends ProjectParser implements IProject, IProjectManageWi
                         } else {
                             item.isEditing = false;
                         }
-
                     });
                 });
 
@@ -87,13 +88,13 @@ export class Project extends ProjectParser implements IProject, IProjectManageWi
      * @param windowId window id to remove from openeds windows
      */
     public removeWindowById(windowId: string) {
-        const indexToRemove = this.openWindows.findIndex(windowTab => windowTab.id === windowId);
+        const indexToRemove = this._windows.findIndex(windowTab => windowTab.id === windowId);
         if (indexToRemove === -1) return;
 
-        this.openWindows.splice(indexToRemove, 1);
+        this._windows.splice(indexToRemove, 1);
 
-        if (this.openWindows.length > 0) {
-            this.selectWindowById(this.openWindows[this.openWindows.length - 1].id);
+        if (this._windows.length > 0) {
+            this.selectWindowById(this._windows[this._windows.length - 1].id);
         }
 
         this.tabs.forEach(tab => {
@@ -108,18 +109,21 @@ export class Project extends ProjectParser implements IProject, IProjectManageWi
     /**
      * Updated windows openeds
      */
-    public updateWindowTabs() {
+    private _updateWindowTabs() {
 
+        /** Add or select a tab */
         const addWindowTab = (winTab: IProjectOpenedWindow) => {
 
-            if (!this.openWindows.some(windowTab => windowTab.id === winTab.id)) {
-                this.openWindows.push({
+            // If the tab is not yet open add the list of tabs
+            if (!this._windows.some(windowTab => windowTab.id === winTab.id)) {
+                this._windows.push({
                     id: winTab.id,
                     isSelected: Boolean(winTab.isSelected),
                 });
             }
 
-            this.openWindows.forEach(windowTab => {
+            // If the tab is open, just select it
+            this._windows.forEach(windowTab => {
                 if (windowTab.id === winTab.id) {
                     windowTab.isSelected = true;
                 } else {
@@ -128,19 +132,22 @@ export class Project extends ProjectParser implements IProject, IProjectManageWi
             });
         };
 
+        // Searches for tabs that have been deleted to remove them from the list
+        let indexToRemove;
+        do {
+            indexToRemove = this._windows.findIndex(windowTab => !this.tabs.some(tab => tab.items.some(item => item.id === windowTab.id)));
+            if (indexToRemove >= 0) {
+                this._windows.splice(indexToRemove, 1);
+            }
+        } while (indexToRemove >= 0)
 
-        let indexToRemove = this.openWindows.findIndex(windowTab => !this.tabs.some(tab => tab.items.some(item => item.id === windowTab.id)));
-        while (indexToRemove >= 0) {
-            this.openWindows.splice(indexToRemove, 1);
-            indexToRemove = this.openWindows.findIndex(windowTab => !this.tabs.some(tab => tab.items.some(item => item.id === windowTab.id)));
-        }
-
+        // Search for new tabs being edited
         this.tabs.forEach(tab => {
             tab.items.forEach(item => {
                 if (item.isEditing && item.id) {
                     addWindowTab({
                         id: item.id,
-                        isSelected: item.isSelected,
+                        isSelected: true,
                     });
                 }
             });

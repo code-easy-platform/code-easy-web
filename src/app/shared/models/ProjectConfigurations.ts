@@ -1,9 +1,9 @@
 import { IconError, IconWarning, Utils } from "code-easy-components";
 
-import { ITreeItem } from "../../../components/tree-manager";
 import { BasicConfigurations } from "./BasicConfigurations";
+import { ITreeItem } from "./../components/tree-manager";
 import { IProjectConfigurations } from "../interfaces";
-import { EProjectType } from "../../../enuns";
+import { EProjectType } from "./../enuns";
 
 
 type OmitInConstructor = 'name' | 'problems';

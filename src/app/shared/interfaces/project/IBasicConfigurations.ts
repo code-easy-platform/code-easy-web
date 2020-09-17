@@ -1,12 +1,12 @@
-import { IProperty } from "../../../components/properties-editor";
-import { EComponentType, EProjectType } from "../../../enuns";
-import { ITreeItem } from "../../../components/tree-manager";
-import { EItemType } from "../../../components/flow-editor";
+import { IProperty } from "./../../components/properties-editor";
+import { EComponentType, EProjectType } from "./../../enuns";
+import { ITreeItem } from "./../../components/tree-manager";
+import { EItemType } from "./../../components/flow-editor";
 
 /**
  * Common fields between the different project structures
  */
-export interface IBasicConfigurations<TYPE = EComponentType | EProjectType | EItemType> {
+export interface IBasicConfigurations<T = EComponentType | EProjectType | EItemType> {
     /**
      * Used to visually represent the record
      */
@@ -14,7 +14,7 @@ export interface IBasicConfigurations<TYPE = EComponentType | EProjectType | EIt
     /**
      * Used for tree it helps to know if the item is a folder or a file
      */
-    type: TYPE;
+    type: T;
     /**
      * Used to name a record visually only
      */

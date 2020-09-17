@@ -1,9 +1,9 @@
 import { IconError, IconWarning, Utils } from "code-easy-components";
 
-import { IProperty, TypeOfValues } from "../../../components/properties-editor";
-import { ITreeItem } from "../../../components/tree-manager";
-import { IBasicConfigurations } from "../interfaces";
-import { PropertieTypes } from "../../../enuns";
+import { IProperty, TypeOfValues } from "./../components/properties-editor";
+import { ITreeItem } from "./../components/tree-manager";
+import { IBasicConfigurations } from "./../interfaces";
+import { PropertieTypes } from "./../enuns";
 
 
 type OmitInConstructor = 'name' | 'problems';

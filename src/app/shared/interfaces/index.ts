@@ -1,11 +1,2 @@
-export * from './project/IProjectConfigurations';
-export * from './project/IItemComponentConfigs';
-export * from './project/IProjectOpenedWindow';
-export * from './project/ITreeItemComponent';
-export * from './project/IFlowItemComponent';
-export * from './project/IOpenedWindow';
-export * from './project/IBasicFields';
-export * from './project/IProject';
 export * from './IConfigurations';
-export * from './project/ITab';
-// export * from './Aplication';
+export * from './project';

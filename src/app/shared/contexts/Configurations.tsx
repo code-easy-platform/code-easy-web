@@ -2,17 +2,16 @@ import React, { createContext, useState, useCallback, useContext } from 'react';
 
 import { IdeConfigStorage } from '../services/storage/IdeConfigStorage';
 import { IConfigurations } from "../interfaces/IConfigurations";
-import { Optional } from '../types';
 
 interface IConfigurationContextData {
     configs: IConfigurations;
-    setConfigs(configs: Optional<IConfigurations>): void
+    setConfigs(configs: Partial<IConfigurations>): void
 }
 export const IdeConfigurationContext = createContext<IConfigurationContextData>({} as IConfigurationContextData);
 
 export const IdeConfigurationProvider: React.FC = ({ children }) => {
 
-    const handleSetConfigs = useCallback((configs: Optional<IConfigurations>) => {
+    const handleSetConfigs = useCallback((configs: Partial<IConfigurations>) => {
         setState(oldState => {
             const newState = {
                 ...oldState,

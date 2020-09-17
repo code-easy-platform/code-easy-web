@@ -17,33 +17,33 @@ class ProblemsHelperService {
         this._problems = [];
 
         // Valida possiveis erros nas configurações
-        this._getProjectConfigsProblems(project.projectConfigs);
+        this._getProjectConfigsProblems(project.configurations);
 
         project.tabs.forEach(tab => {
 
             // Valida alguns detalhes da tab
-            this._problems = [...this._problems, ...tab.getProblems()];
+            this._problems = [...this._problems, ...tab.problems];
 
             // Valida os items da tab
             tab.items.forEach(treeItem => {
 
                 // Valida um tree item
-                this._problems = [...this._problems, ...treeItem.getProblems()];
+                this._problems = [...this._problems, ...treeItem.problems];
 
                 treeItem.items.forEach(flowItem => {
 
                     // Valida os problemas presentes no flow item
-                    this._problems = [...this._problems, ...flowItem.getProblems()];
+                    this._problems = [...this._problems, ...flowItem.problems];
 
                     // Valida as props da action
-                    if (flowItem.itemType === EItemType.ACTION) {
+                    if (flowItem.type === EItemType.ACTION) {
 
                         flowItem.properties.forEach(prop => {
                             prop.valueHasError = false;
 
                             if (prop.propertieType === PropertieTypes.action && prop.value !== "") {
 
-                                const tabActions = project.tabs.find(tab => tab.configs.type === EComponentType.tabActions);
+                                const tabActions = project.tabs.find(tab => tab.type === EComponentType.tabActions);
                                 if (!tabActions) return;
 
                                 if (!tabActions.items.some(item => item.name === prop.value)) {
@@ -139,7 +139,6 @@ class ProblemsHelperService {
         }
 
     }
-
 }
 
 export const ProblemsHelper = new ProblemsHelperService();

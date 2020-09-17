@@ -1,50 +1,44 @@
 import { Utils } from "code-easy-components";
 
 import { EComponentType, EProjectType, ECurrentFocus } from "./../../enuns";
-import { Project, Tab, ItemComponentConfigs } from "../../models";
+import { Project, Tab, ProjectConfigurations } from "../../models";
 import { StorageEnum } from "./StorageEnum";
 
 const newProject = (name: string, version: string, type: EProjectType, description: string) => new Project({
-    currentComponentFocus: ECurrentFocus.tree,
-    projectConfigs: {
+    currentFocus: ECurrentFocus.tree,
+    windows:[],
+    configurations: new ProjectConfigurations({
         type,
         version,
         description,
         label: name,
-        currentProcess: '',
         id: Utils.getUUID(),
         createdDate: new Date(),
         updatedDate: new Date(),
         author: ProjectsStorage.getAuthorName(),
-        name: Utils.getNormalizedString(name.toLowerCase()),
         currentPlatformVersion: `${process.env.REACT_APP_VERSION}`,
-    },
+        createdInPlatformVersion: `${process.env.REACT_APP_VERSION}`,
+    }),
     tabs: [
         new Tab({
-            configs: new ItemComponentConfigs({
-                name: "routes",
-                label: "Routes",
-                isEditing: true,
-                isExpanded: true,
-                isSelected: false,
-                id: Utils.getUUID(),
-                type: EComponentType.tabRoutes,
-                description: EComponentType.tabRoutes,
-            }),
-            items: []
+            items: [],
+            label: "Routes",
+            isEditing: true,
+            isExpanded: true,
+            isSelected: false,
+            id: Utils.getUUID(),
+            type: EComponentType.tabRoutes,
+            description: EComponentType.tabRoutes,
         }),
         new Tab({
-            configs: new ItemComponentConfigs({
-                name: 'actions',
-                label: 'Actions',
-                isEditing: false,
-                isExpanded: false,
-                isSelected: false,
-                id: Utils.getUUID(),
-                type: EComponentType.tabActions,
-                description: EComponentType.tabActions,
-            }),
             items: [],
+            label: 'Actions',
+            isEditing: false,
+            isExpanded: false,
+            isSelected: false,
+            id: Utils.getUUID(),
+            type: EComponentType.tabActions,
+            description: EComponentType.tabActions,
         }),
         /* new Tab({
             configs: new BasicConfigs({
@@ -102,10 +96,10 @@ export class ProjectsStorage {
 
         let projects: Project[] = ProjectsStorage.getProjects();
 
-        let itemIndex = projects.findIndex(itemProject => itemProject.projectConfigs.id === project.projectConfigs.id);
+        let itemIndex = projects.findIndex(itemProject => itemProject.configurations.id === project.configurations.id);
 
         if (itemIndex > -1) {
-            project.projectConfigs.updatedDate = new Date(Date.now());
+            project.configurations.updatedDate = new Date(Date.now());
             projects.splice(itemIndex, 1, project); // Remove elemento antigo e coloca um novo no lugar
         }
 
@@ -116,7 +110,7 @@ export class ProjectsStorage {
     public static getProjectById(id?: string): Project {
         const projects = ProjectsStorage.getProjects();
 
-        let project = projects.find(proj => proj.projectConfigs.id === id);
+        let project = projects.find(proj => proj.configurations.id === id);
 
         if (!project) {
             return new Project(newProject('', '', EProjectType.api, ''));
@@ -131,7 +125,7 @@ export class ProjectsStorage {
         let projects = ProjectsStorage.getProjects();
         if (!id) { return projects; }
 
-        const itemIndex = projects.findIndex(project => project.projectConfigs.id === id);
+        const itemIndex = projects.findIndex(project => project.configurations.id === id);
 
         if (itemIndex > -1) {
             projects.splice(itemIndex, 1); // Remove item

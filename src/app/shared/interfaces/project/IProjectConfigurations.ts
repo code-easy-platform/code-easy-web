@@ -1,18 +1,24 @@
-import { IBasicFields } from "./IBasicFields";
+import { IBasicConfigurations } from "./IBasicConfigurations";
 import { EProjectType } from "./../../enuns";
 
 /**
- * Exclusivamente utilizada na configuração do projeto,
- * em informações que definem o tipo de projeto.
- * 
- * Representa: "Nome do projeto", "version", "autor" e etc...
+ * Exclusively used in the project configuration.
  */
-export interface IProjectConfigurations extends IBasicFields {
+export interface IProjectConfigurations extends IBasicConfigurations<EProjectType> {
+    /**
+     * Project creator
+     */
     author: string;
+    /**
+     * Current version of the project
+     */
     version: string;
-    type: EProjectType;
-    createdDate: Date;
-    updatedDate: Date;
-    currentProcess: string;
+    /**
+     * Version of the platform on which the project was created
+     */
+    createdInPlatformVersion: string;
+    /**
+     * Platform version since last change
+     */
     currentPlatformVersion: string;
 }

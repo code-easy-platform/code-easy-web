@@ -1,4 +1,4 @@
-import { IConfigurations } from "../../interfaces/IConfigurations";
+import { IConfigurations } from "./../../interfaces";
 import { StorageEnum } from "./StorageEnum";
 
 export enum FlowBackgroundType {

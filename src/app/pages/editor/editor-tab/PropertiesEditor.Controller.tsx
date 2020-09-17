@@ -4,8 +4,8 @@ import { Utils } from 'code-easy-components';
 import { PropertiesEditor, IProperty, TypeOfValues, IItem } from '../../../shared/components/properties-editor';
 import { ContextModalListService } from '../../../shared/components/context-modais/ContextModalListService';
 import { EComponentType, ECurrentFocus, PropertieTypes } from '../../../shared/enuns';
-import { FlowItemComponent, TreeItemComponent, Tab } from '../../../shared/models';
 import { EItemType } from '../../../shared/components/flow-editor';
+import { TreeItemComponent, Tab } from '../../../shared/models';
 import { useEditorContext } from '../../../shared/contexts';
 
 export const PropertiesEditorController: React.FC = () => {
@@ -18,7 +18,7 @@ export const PropertiesEditorController: React.FC = () => {
     /** O editor de propriedades emite a lista de propriedades alteradas */
     const handleOnChangeItems = useCallback((item: IItem) => {
 
-        if (project.currentComponentFocus === ECurrentFocus.tree) {
+        if (project.currentFocus === ECurrentFocus.tree) {
 
             if (!item.id) return;
 
@@ -46,7 +46,7 @@ export const PropertiesEditorController: React.FC = () => {
                 });
             });
 
-        } else if (project.currentComponentFocus === ECurrentFocus.flow) {
+        } else if (project.currentFocus === ECurrentFocus.flow) {
 
             project.tabs.forEach(tab => {
 
@@ -58,7 +58,7 @@ export const PropertiesEditorController: React.FC = () => {
                 let editingFlowItem = treeItemEditing.items.find(flowItem => flowItem.id === item.id);
                 if (!editingFlowItem) return;
 
-                if (editingFlowItem.itemType === EItemType.ACTION) {
+                if (editingFlowItem.type === EItemType.ACTION) {
 
                     // Pega a antiga action
                     const oldActionProp = editingFlowItem.properties.find(itemOld => itemOld.propertieType === PropertieTypes.action);
@@ -99,23 +99,24 @@ export const PropertiesEditorController: React.FC = () => {
                     });
                 }
 
+                // TODO: Remover isso
+
                 // Reinstancia a classe para revalidar as propriedade e mais
-                editingFlowItem = new FlowItemComponent({
+                /* editingFlowItem = new FlowItemComponent({
                     ...editingFlowItem,
                     properties: item.properties,
-                });
+                }); */
 
-                treeItemEditing = new TreeItemComponent({
+                /* treeItemEditing = new TreeItemComponent({
                     ...treeItemEditing,
                     description: treeItemEditing.description,
                     properties: treeItemEditing.properties,
                     label: treeItemEditing.label,
-                    name: treeItemEditing.name,
                     items: [
                         ...treeItemEditing.items.filter(flowItem => flowItem.id !== editingFlowItem?.id),
                         editingFlowItem,
                     ]
-                });
+                }); */
 
                 tab.items = [
                     ...tab.items.filter(flowItem => flowItem.id !== treeItemEditing?.id),
@@ -184,7 +185,7 @@ export const PropertiesEditorController: React.FC = () => {
             // Start mapped item
             let mappedItem: IItem = {
                 id: selectedItem.id,
-                subname: selectedItem.itemType,
+                subname: selectedItem.type,
                 properties: selectedItem.properties,
                 name: selectedItem.properties.find(prop => prop.propertieType === PropertieTypes.label)?.value,
             };
@@ -203,7 +204,7 @@ export const PropertiesEditorController: React.FC = () => {
                  * edited to put as suggestions of the item being mapped
                  */
                 const allVariablesToSuggestions = currentTab.items.filter(treeItemToParams => (
-                    (treeItemToParams.itemPaiId === editingItemTree.id) &&
+                    (treeItemToParams.ascendantId === editingItemTree.id) &&
                     (
                         treeItemToParams.type === EComponentType.inputVariable ||
                         treeItemToParams.type === EComponentType.localVariable ||
@@ -231,7 +232,7 @@ export const PropertiesEditorController: React.FC = () => {
                 project.tabs.forEach(tab => {
                     inputParams = [
                         ...inputParams,
-                        ...tab.items.filter(treeItem => (treeItem.itemPaiId === action.id && treeItem.type === EComponentType.inputVariable)),
+                        ...tab.items.filter(treeItem => (treeItem.ascendantId === action.id && treeItem.type === EComponentType.inputVariable)),
                     ];
                 });
 
@@ -335,7 +336,7 @@ export const PropertiesEditorController: React.FC = () => {
     return (
         <PropertiesEditor
             onChange={handleOnChangeItems}
-            item={getSelectedItem(project.currentComponentFocus)}
+            item={getSelectedItem(project.currentFocus)}
         />
     );
 }

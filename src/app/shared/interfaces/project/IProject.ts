@@ -5,15 +5,15 @@ import { ECurrentFocus } from "./../../enuns";
 import { ITab } from "./ITab";
 
 export interface IProject {
-    projectConfigs: IProjectConfigurations;
-    currentComponentFocus: ECurrentFocus;
-    openWindows: IProjectOpenedWindow[];
+    configurations: IProjectConfigurations;
+    windows: IProjectOpenedWindow[];
+    currentFocus: ECurrentFocus;
     tabs: ITab[];
 }
 
 export interface IProjectManageWindows {
     selectWindowById(windowId: string): void;
     removeWindowById(windowId: string): void;
-    getOpenedWindows(): IOpenedWindow[];
-    updateWindowTabs(): void;
+    getWindows(): IOpenedWindow[];
 }
+
