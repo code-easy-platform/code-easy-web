@@ -1,4 +1,6 @@
 export enum PropertieTypes {
+    createdInPlatformVersion="Created in platform version",
+    platformVersion="Platform version",
     defaultValue="Default value",
     parametersIn="Parameters in",
     description="Description",
@@ -8,6 +10,8 @@ export enum PropertieTypes {
     required="Required",
     comment="Comment",
     assigns="Assigns",
+    version="Version",
+    author="Author",
     action="Action",
     param="Param",
     label="Label",

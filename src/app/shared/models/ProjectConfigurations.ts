@@ -1,18 +1,91 @@
 import { IconError, IconWarning, Utils } from "code-easy-components";
 
+import { TypeOfValues } from "../components/properties-editor";
 import { BasicConfigurations } from "./BasicConfigurations";
+import { EProjectType, PropertieTypes } from "./../enuns";
 import { ITreeItem } from "./../components/tree-manager";
 import { IProjectConfigurations } from "../interfaces";
-import { EProjectType } from "./../enuns";
 
 
 type OmitInConstructor = 'name' | 'problems';
 
 export class ProjectConfigurations extends BasicConfigurations<EProjectType> implements IProjectConfigurations {
-    public author: string;
-    public version: string;
-    public currentPlatformVersion: string;
-    public createdInPlatformVersion: string;
+
+    public get author(): string {
+        return this.properties.find(prop => prop.propertieType === PropertieTypes.author)?.value || '';
+    };
+    public set author(value: string) {
+        let prop = this.properties.find(prop => prop.propertieType === PropertieTypes.author);
+        if (prop) {
+            prop.value = value || prop.value;
+        } else {
+            this.properties.push({
+                value,
+                id: Utils.getUUID(),
+                focusOnRender: true,
+                type: TypeOfValues.string,
+                name: PropertieTypes.author,
+                propertieType: PropertieTypes.author,
+            });
+        }
+    };
+
+    public get version(): string {
+        return this.properties.find(prop => prop.propertieType === PropertieTypes.version)?.value || '';
+    };
+    public set version(value: string) {
+        let prop = this.properties?.find(prop => prop.propertieType === PropertieTypes.version);
+        if (prop) {
+            prop.value = value;
+        } else {
+            this.properties.push({
+                value,
+                id: Utils.getUUID(),
+                focusOnRender: true,
+                type: TypeOfValues.string,
+                name: PropertieTypes.version,
+                propertieType: PropertieTypes.version,
+            });
+        }
+    };
+
+    public get currentPlatformVersion(): string {
+        return this.properties.find(prop => prop.propertieType === PropertieTypes.platformVersion)?.value || '';
+    };
+    public set currentPlatformVersion(value: string) {
+        let prop = this.properties?.find(prop => prop.propertieType === PropertieTypes.platformVersion);
+        if (prop) {
+            prop.value = value;
+        } else {
+            this.properties.push({
+                value,
+                id: Utils.getUUID(),
+                focusOnRender: true,
+                type: TypeOfValues.string,
+                name: PropertieTypes.platformVersion,
+                propertieType: PropertieTypes.platformVersion,
+            });
+        }
+    };
+
+    public get createdInPlatformVersion(): string {
+        return this.properties.find(prop => prop.propertieType === PropertieTypes.createdInPlatformVersion)?.value || '';
+    };
+    public set createdInPlatformVersion(value: string) {
+        let prop = this.properties?.find(prop => prop.propertieType === PropertieTypes.createdInPlatformVersion);
+        if (prop) {
+            prop.value = value;
+        } else {
+            this.properties.push({
+                value,
+                id: Utils.getUUID(),
+                focusOnRender: true,
+                type: TypeOfValues.string,
+                name: PropertieTypes.createdInPlatformVersion,
+                propertieType: PropertieTypes.createdInPlatformVersion,
+            });
+        }
+    };
 
     public get problems(): ITreeItem[] {
         let problems = super.problems;
@@ -20,7 +93,6 @@ export class ProjectConfigurations extends BasicConfigurations<EProjectType> imp
         const addProblem = (label: string, type: 'warning' | 'error') => {
             problems.push({
                 icon: type === 'warning' ? IconWarning : IconError,
-                isDisabledSelect: true,
                 nodeExpanded: false,
                 isSelected: false,
                 id: undefined,

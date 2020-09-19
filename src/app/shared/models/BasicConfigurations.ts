@@ -1,8 +1,9 @@
 import { IconError, IconWarning, Utils } from "code-easy-components";
 
-import { IProperty, TypeOfValues } from "./../components/properties-editor";
+import { IFileContent, IProperty, TypeOfValues } from "./../components/properties-editor";
 import { ITreeItem } from "./../components/tree-manager";
 import { IBasicConfigurations } from "./../interfaces";
+import { AssetsService } from "../services";
 import { PropertieTypes } from "./../enuns";
 
 
@@ -36,6 +37,7 @@ export class BasicConfigurations<T> implements IBasicConfigurations<T> {
                 focusOnRender: true,
                 type: TypeOfValues.string,
                 name: PropertieTypes.label,
+                propertieType: PropertieTypes.label,
             });
         }
     };
@@ -51,8 +53,9 @@ export class BasicConfigurations<T> implements IBasicConfigurations<T> {
             this._properties.push({
                 value,
                 id: Utils.getUUID(),
-                name: PropertieTypes.label,
                 type: TypeOfValues.bigstring,
+                name: PropertieTypes.description,
+                propertieType: PropertieTypes.description,
             });
         }
     };
@@ -104,6 +107,30 @@ export class BasicConfigurations<T> implements IBasicConfigurations<T> {
         return problems;
     }
 
+    public get icon(): IFileContent {
+        return this._properties?.find(prop => prop.propertieType === PropertieTypes.icon)?.value || AssetsService.getIcon<T>(this.type);
+    }
+    public set icon(value: IFileContent) {
+        let prop = this._properties?.find(prop => prop.propertieType === PropertieTypes.icon);
+        if (prop) {
+            prop.value = value;
+        } else {
+            this._properties.push({
+                id: Utils.getUUID(),
+                editValueDisabled: true,
+                type: TypeOfValues.binary,
+                name: PropertieTypes.icon,
+                propertieType: PropertieTypes.icon,
+                value: {
+                    content: AssetsService.getIcon<T>(this.type),
+                    lastModified: new Date().getTime(),
+                    name: `Default`,
+                    type: 'image'
+                },
+            });
+        }
+    }
+
     private _properties: IProperty[] = [];
     public get properties(): IProperty[] { return this._properties };
     public set properties(props: IProperty[]) {
@@ -115,7 +142,6 @@ export class BasicConfigurations<T> implements IBasicConfigurations<T> {
     }
 
     public type: T;
-    public icon: any;
     public ordem?: number;
     public isExpanded?: boolean;
     public hasError: boolean = false;
@@ -129,7 +155,6 @@ export class BasicConfigurations<T> implements IBasicConfigurations<T> {
         this.type = fields.type;
         this.updatedDate = new Date();
         this.id = fields.id || this.id;
-        this.icon = fields.icon || this.icon;
         this.ordem = fields.ordem || this.ordem;
         this.label = fields.label || this.label;
         this.hasError = fields.hasError || this.hasError;

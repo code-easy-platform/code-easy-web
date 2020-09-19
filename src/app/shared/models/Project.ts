@@ -1,8 +1,14 @@
+import { IconError, IconWarning } from "code-easy-components";
+
 import { IOpenedWindow, IProject, IProjectManageWindows, IProjectOpenedWindow } from "../interfaces";
 import { ProjectConfigurations } from "./ProjectConfigurations";
+import { EComponentType, ECurrentFocus } from "./../enuns";
+import { ITreeItem } from "../components/tree-manager";
 import { ProjectParser } from "./ProjectParser";
-import { ECurrentFocus } from "./../enuns";
 import { Tab } from "./Tab";
+
+
+type OmitInConstructor = 'problems';
 
 export class Project extends ProjectParser implements IProject, IProjectManageWindows {
     public configurations: ProjectConfigurations;
@@ -13,9 +19,40 @@ export class Project extends ProjectParser implements IProject, IProjectManageWi
     public get windows(): IProjectOpenedWindow[] {
         this._updateWindowTabs();
         return this._windows;
-    };
+    }
 
-    constructor(fields: IProject) {
+    public get problems(): ITreeItem[] {
+        let problems: ITreeItem[] = [
+            ...this.configurations.problems,
+        ];
+
+        this.tabs.forEach(tab => {
+            problems = [
+                ...problems,
+                ...tab.problems,
+            ];
+        });
+
+        const addProblem = (label: string, type: 'warning' | 'error') => {
+            problems.push({
+                icon: type === 'warning' ? IconWarning : IconError,
+                nodeExpanded: false,
+                isSelected: false,
+                id: undefined,
+                iconSize: 15,
+                type: "ITEM",
+                label,
+            });
+        }
+
+        if (this.tabs.find(treeItem => treeItem.type === EComponentType.tabRoutes)?.items.length === 0) {
+            addProblem(`The project must be have last one route.`, 'error');
+        }
+
+        return problems;
+    }
+
+    constructor(fields: Omit<IProject, OmitInConstructor>) {
         super();
 
         this.configurations = new ProjectConfigurations(fields.configurations);

@@ -18,9 +18,16 @@ export class FlowItemComponent extends BasicConfigurations<EItemType> implements
     public width: number = 40;
 
     public isDisabled?: boolean | undefined;
-    public connections: IConnection[] = [];
     public left: number;
     public top: number;
+
+    private _connections: IConnection[] = [];
+    public get connections(): IConnection[] {
+        return this._connections || [];
+    }
+    public set connections(connects: IConnection[]) {
+        this._connections = connects;
+    }
 
     public get properties(): IProperty[] { return super.properties; }
     public set properties(props: IProperty[]) {
@@ -84,7 +91,6 @@ export class FlowItemComponent extends BasicConfigurations<EItemType> implements
         const addProblem = (label: string, type: 'warning' | 'error') => {
             problems.push({
                 icon: type === 'warning' ? IconWarning : IconError,
-                isDisabledSelect: true,
                 nodeExpanded: false,
                 isSelected: false,
                 id: undefined,
@@ -96,13 +102,7 @@ export class FlowItemComponent extends BasicConfigurations<EItemType> implements
 
         // Se for diferente de END e COMMENT valida se tem sucessores
         if ((this.type !== EItemType.END && this.type !== EItemType.COMMENT) && this.connections.length === 0) {
-            addProblem(`The flow item "${this.name}" is missing a connector`, 'error');
-            this.hasError = true;
-        }
-
-        // Validates if the item has another item connected to itself
-        if (!this.connections.some(connection => connection.targetId === this.id) && (this.type !== EItemType.START && this.type !== EItemType.COMMENT)) {
-            addProblem(`The flow item "${this.name}" must be connected to the flow.`, 'error');
+            addProblem(`The flow item "${this.name}" is missing a connector.`, 'error');
             this.hasError = true;
         }
 
@@ -114,10 +114,10 @@ export class FlowItemComponent extends BasicConfigurations<EItemType> implements
                     prop.nameHasError = false;
 
                     if (prop.name !== '' && prop.value === '') {
-                        addProblem(`In the "${this.name}" item, no value is being assigned to the "${prop.name}"`, 'error');
+                        addProblem(`In the "${this.name}" item, no value is being assigned to the "${prop.name}."`, 'error');
                         prop.valueHasError = true;
                     } else if (prop.name === '' && prop.value !== '') {
-                        addProblem(`In ${this.name} the value "${prop.value}" is not being assigned to any variable or parameter`, 'error');
+                        addProblem(`In ${this.name} the value "${prop.value}" is not being assigned to any variable or parameter.`, 'error');
                         prop.nameHasError = true;
                     }
                 });
@@ -128,7 +128,7 @@ export class FlowItemComponent extends BasicConfigurations<EItemType> implements
                     prop.valueHasError = false;
 
                     if (prop.value === '') {
-                        addProblem(`In the "${this.name}" item, the "${prop.name}" condition must have an informed expression`, 'error');
+                        addProblem(`In the "${this.name}" item, the "${prop.name}" condition must have an informed expression.`, 'error');
                         prop.valueHasError = true;
                     }
 
@@ -141,14 +141,14 @@ export class FlowItemComponent extends BasicConfigurations<EItemType> implements
                 this.properties.filter(prop => prop.propertieType === PropertieTypes.condition).forEach(prop => {
                     prop.valueHasError = false;
                     if (prop.value === '') {
-                        addProblem(`In the "${this.name}" item, the "${prop.name}" condition must have an informed expression`, 'error');
+                        addProblem(`In the "${this.name}" item, the "${prop.name}" condition must have an informed expression.`, 'error');
                         prop.valueHasError = true;
                         this.hasError = true;
                     }
                 });
                 // Valida as connection
                 if (this.connections.length >= 1 && this.connections.length < 2) {
-                    addProblem(`Flow item "${this.name}" is missing a connector`, 'error');
+                    addProblem(`Flow item "${this.name}" is missing a connector.`, 'error');
                     this.hasError = true;
                 }
 
@@ -178,7 +178,6 @@ export class FlowItemComponent extends BasicConfigurations<EItemType> implements
                         addProblem(`The flow item "${this.name}" must have a valid value in the "${prop.name}" field.`, 'error');
                         prop.valueHasError = true;
                     }
-
                 });
                 break;
 
@@ -192,7 +191,7 @@ export class FlowItemComponent extends BasicConfigurations<EItemType> implements
             return [
                 ...problems.map(problem => ({ ...problem, ascendantId: newId })),
                 {
-                    label: `Inconsistences in flow item "${this.name}"`,
+                    label: `Inconsistences in flow item "${this.name}."`,
                     nodeExpanded: true,
                     isSelected: false,
                     iconSize: 15,
@@ -253,6 +252,11 @@ export class FlowItemComponent extends BasicConfigurations<EItemType> implements
             this.isEnabledNewConnetion = false;
         }
 
+        let prop = this.properties?.find(prop => prop.propertieType === PropertieTypes.description);
+        if (prop) {
+            prop.type = TypeOfValues.viewOnly;
+        }
+
         return props;
     }
 
@@ -273,6 +277,11 @@ export class FlowItemComponent extends BasicConfigurations<EItemType> implements
             this.isEnabledNewConnetion = false;
         }
 
+        let prop = this.properties?.find(prop => prop.propertieType === PropertieTypes.description);
+        if (prop) {
+            prop.type = TypeOfValues.viewOnly;
+        }
+
         return props;
     }
 
@@ -285,6 +294,11 @@ export class FlowItemComponent extends BasicConfigurations<EItemType> implements
         const propLabel = props.find(prop => prop.propertieType === PropertieTypes.label);
         if (propLabel) {
             propLabel.value = propComment?.value || 'Write here your comment';
+        }
+
+        let prop = this.properties?.find(prop => prop.propertieType === PropertieTypes.description);
+        if (prop) {
+            prop.type = TypeOfValues.viewOnly;
         }
 
         return props;
@@ -304,6 +318,11 @@ export class FlowItemComponent extends BasicConfigurations<EItemType> implements
         const propLabel = props.find(prop => prop.propertieType === PropertieTypes.label);
         if (propLabel && propAction) {
             propLabel.editValueDisabled = propAction?.value !== '';
+        }
+
+        let prop = this.properties?.find(prop => prop.propertieType === PropertieTypes.description);
+        if (prop) {
+            prop.type = TypeOfValues.viewOnly;
         }
 
         return props;
@@ -347,6 +366,11 @@ export class FlowItemComponent extends BasicConfigurations<EItemType> implements
             indexToRemove = props.findIndex(prop => (prop.propertieType === PropertieTypes.condition && !this.connections.some(connection => connection.id === prop.id)));
         }
 
+        let prop = this.properties?.find(prop => prop.propertieType === PropertieTypes.description);
+        if (prop) {
+            prop.type = TypeOfValues.viewOnly;
+        }
+
         return props;
     }
 
@@ -359,12 +383,16 @@ export class FlowItemComponent extends BasicConfigurations<EItemType> implements
             this.isEnabledNewConnetion = false;
         }
 
+        this.properties.forEach(prop => prop.type = TypeOfValues.viewOnly);
+
         return props;
     }
 
     private _propertiesFromEnd(props: IProperty[]): IProperty[] {
 
         this.isEnabledNewConnetion = false;
+
+        this.properties.forEach(prop => prop.type = TypeOfValues.viewOnly);
 
         return props;
     }
@@ -393,6 +421,11 @@ export class FlowItemComponent extends BasicConfigurations<EItemType> implements
             this.isEnabledNewConnetion = true;
         } else {
             this.isEnabledNewConnetion = false;
+        }
+
+        let prop = this.properties?.find(prop => prop.propertieType === PropertieTypes.description);
+        if (prop) {
+            prop.type = TypeOfValues.viewOnly;
         }
 
         return props;

@@ -68,21 +68,13 @@ export class ProjectsStorage {
 
     /** Pega do localstorage uma lista de projetos */
     public static getProjects(): Project[] {
-
-        let projects: Project[];
         let res = localStorage.getItem(StorageEnum.projectsStorage);
 
         if (res !== null && res !== "" && res) {
-            projects = Project.parseProjects(res);
-            if (projects === []) {
-                ProjectsStorage.setProjects([]);
-            }
+            return Project.parseProjects(res);
         } else {
-            ProjectsStorage.setProjects([]);
-            projects = [];
+            return [];
         }
-
-        return projects;
     }
 
     /** Salva no localstorage uma lista de projetos */

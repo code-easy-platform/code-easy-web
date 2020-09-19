@@ -36,7 +36,6 @@ export class TreeItemComponent extends BasicConfigurations<EComponentType> imple
         const addProblem = (label: string, type: 'warning' | 'error') => {
             problems.push({
                 icon: type === 'warning' ? IconWarning : IconError,
-                isDisabledSelect: true,
                 nodeExpanded: false,
                 isSelected: false,
                 id: undefined,
@@ -71,6 +70,24 @@ export class TreeItemComponent extends BasicConfigurations<EComponentType> imple
                 unusedEnd.hasError = true;
             }
         }
+
+        this.items.forEach(flowItem => {
+
+            problems = [
+                ...problems,
+                ...flowItem.problems,
+            ];
+
+            // Validates if the item has another item connected to itself
+            if (!this.items.some(flowItemToValidate => flowItemToValidate.connections.some(connection => connection.targetId === flowItem.id))) {
+                if (flowItem.type !== EItemType.START && flowItem.type !== EItemType.COMMENT) {
+                    addProblem(`The flow item "${flowItem.label}" must be connected to the flow.`, 'error');
+                    flowItem.hasError = true;
+                    this.hasError = true;
+                }
+            }
+
+        });
 
         return problems;
     }

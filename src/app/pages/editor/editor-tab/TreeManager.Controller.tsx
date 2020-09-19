@@ -4,8 +4,8 @@ import { IconTrash, Utils, IconFlowStart, IconFlowEnd } from 'code-easy-componen
 import { TreeManager, ITreeItem, CustomDragLayer } from '../../../shared/components/tree-manager';
 import { ContextMenuService } from '../../../shared/components/context-menu/ContextMenuService';
 import { IContextItemList } from '../../../shared/components/context-menu/ContextMenu';
-import { PropertieTypes, ECurrentFocus, EComponentType } from '../../../shared/enuns';
 import { TreeItemComponent, FlowItemComponent, Tab } from '../../../shared/models';
+import { ECurrentFocus, EComponentType } from '../../../shared/enuns';
 import { EItemType } from '../../../shared/components/flow-editor';
 import { useEditorContext } from '../../../shared/contexts';
 import { AssetsService } from '../../../shared/services';
@@ -22,8 +22,6 @@ export const TreeManagerController: React.FC = () => {
 
     /** Remove items da árvore */
     const treeManagerRemoveItem = (inputItemId: string | undefined) => {
-
-        changeFocus();
 
         // Se for undefined não faz nada
         if (!inputItemId) return;
@@ -77,19 +75,16 @@ export const TreeManagerController: React.FC = () => {
             if (itemToEdit) {
                 treeManagerRemoveItem(itemToEdit.id);
             }
-
         }
     }
 
     /** Quando clicado com o botão esquerdo do mouse no interior da árvore esta função é acionada. */
     const treeManagerContextMenu = (itemId: string | undefined) => {
-
-        changeFocus();
-
         let options: IContextItemList[] = [];
 
         const addParam = (inputItemId: string | undefined, paramType: EComponentType.inputVariable | EComponentType.localVariable | EComponentType.outputVariable) => {
             let tabIndex: number | undefined;
+
             project.tabs.forEach((tab: Tab, indexTab) => {
                 tab.items.forEach(item => {
                     if (item.id === inputItemId) {
@@ -142,8 +137,8 @@ export const TreeManagerController: React.FC = () => {
                         items: (
                             routerType === EComponentType.routerExpose
                                 ? [
-                                    new FlowItemComponent({ id: '1', label: EItemType.START, icon: IconFlowStart, type: EItemType.START, left: 188, top: Math.round(128 / 15) * 15, isSelected: false, connections: [{ id: Utils.getUUID(), targetId: '2', originId: '1', isSelected: false }] }),
-                                    new FlowItemComponent({ id: '2', label: EItemType.END, icon: IconFlowEnd, type: EItemType.END, left: 188, top: Math.round(384 / 15) * 15, isSelected: false, connections: [], properties: [] })
+                                    new FlowItemComponent({ id: '1', label: EItemType.START, icon: IconFlowStart, type: EItemType.START, left: 188, top: Math.round(128 / 15) * 15, connections: [{ id: Utils.getUUID(), targetId: '2', originId: '1', isSelected: false }] }),
+                                    new FlowItemComponent({ id: '2', label: EItemType.END, icon: IconFlowEnd, type: EItemType.END, left: 188, top: Math.round(384 / 15) * 15, connections: [] })
                                 ]
                                 : []
                         ),
@@ -359,13 +354,13 @@ export const TreeManagerController: React.FC = () => {
 
                     return new TreeItemComponent({
                         ...item,
-                        items: item.items.map(flowItem => new FlowItemComponent(flowItem)),
                         isEditing: updatedItem.isEditing || false,
                         ascendantId: updatedItem.ascendantId,
                         isExpanded: updatedItem.nodeExpanded,
                         isSelected: updatedItem.isSelected,
                         description: item.description,
                         properties: item.properties,
+                        items: item.items,
                         label: item.label,
                         id: item.id,
                     });
@@ -380,7 +375,6 @@ export const TreeManagerController: React.FC = () => {
                     if (isSelected) item.isSelected = false;
                     if (isEditing) item.isEditing = false;
                 });
-
             }
         });
 
@@ -442,17 +436,16 @@ export const TreeManagerController: React.FC = () => {
             if (tab.isEditing) {
                 items = tab.items.map((item): ITreeItem => ({
                     ...item,
-                    label: item.label,
-                    icon: item.properties.find(prop => prop.propertieType === PropertieTypes.icon)?.value.content || AssetsService.getIcon(item.type),
-                    hasWarning: item.items.some(itemFlow => itemFlow.properties.some(prop => (prop.valueHasWarning || prop.nameHasWarning))),
-                    description: item.properties.find(prop => prop.propertieType === PropertieTypes.description)?.value || item.description,
-                    hasError: item.items.some(itemFlow => itemFlow.properties.some(prop => (prop.valueHasError || prop.nameHasError))),
-                    //label: item.properties.find(prop => prop.propertieType === PropertieTypes.label)?.value || item.label,
                     isDisabledDoubleClick: cannotPerformDoubleClick(item.type),
                     isDisabledDrag: item.type === EComponentType.routerExpose,
                     canDropList: getCanDropList(item.type),
                     nodeExpanded: Boolean(item.isExpanded),
+                    description: item.description,
                     ascendantId: item.ascendantId,
+                    hasWarning: item.hasWarning,
+                    icon: item.icon?.content,
+                    hasError: item.hasError,
+                    label: item.label,
                     id: item.id,
                 }));
             }
@@ -463,6 +456,10 @@ export const TreeManagerController: React.FC = () => {
 
     return (
         <TreeManager
+            onFocus={changeFocus}
+            items={treeManagerItems}
+            onChangeItems={handleOnChange}
+            onKeyDown={treeManagerOnKeyDowm}
             configs={{
                 id: 'Inspector',
                 isUseDrag: true,
@@ -475,9 +472,6 @@ export const TreeManagerController: React.FC = () => {
                     <CustomDragLayer children={item} />
                 )
             }}
-            items={treeManagerItems}
-            onChangeItems={handleOnChange}
-            onKeyDown={treeManagerOnKeyDowm}
             onContextMenu={(itemId, e) => {
                 e.preventDefault();
                 ContextMenuService.showMenu(e.clientX, e.clientY, treeManagerContextMenu(itemId));
