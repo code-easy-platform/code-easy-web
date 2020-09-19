@@ -61,9 +61,6 @@ export class Project extends ProjectParser implements IProject, IProjectManageWi
         this._windows = fields.windows;
     }
 
-    /**
-     * Get all openeds windows
-     */
     public getWindows(): IOpenedWindow[] {
         let windows: IOpenedWindow[] = [];
 
@@ -94,10 +91,6 @@ export class Project extends ProjectParser implements IProject, IProjectManageWi
         return windows;
     }
 
-    /**
-     * Select a window by id
-     * @param windowId Window to select
-     */
     public selectWindowById(windowId: string) {
         this._windows.forEach(windowTab => {
             if (windowTab.id === windowId) {
@@ -120,10 +113,6 @@ export class Project extends ProjectParser implements IProject, IProjectManageWi
         });
     }
 
-    /**
-     * Close a window
-     * @param windowId window id to remove from openeds windows
-     */
     public removeWindowById(windowId: string) {
         const indexToRemove = this._windows.findIndex(windowTab => windowTab.id === windowId);
         if (indexToRemove === -1) return;

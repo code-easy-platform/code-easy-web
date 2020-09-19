@@ -17,10 +17,7 @@ export const TreeManagerController: React.FC = () => {
     /** Atualiza o contexto do projeto */
     const onChangeState = useCallback(() => setProject(project), [project, setProject]);
 
-    /** Atualiza o foco do editor de propriedades */
-    const changeFocus = useCallback(() => project.currentFocus = ECurrentFocus.tree, [project.currentFocus]);
-
-    /** Remove items da árvore */
+    /** Remove tree items */
     const treeManagerRemoveItem = (inputItemId: string | undefined) => {
 
         // Se for undefined não faz nada
@@ -345,6 +342,8 @@ export const TreeManagerController: React.FC = () => {
 
     const handleOnChange = useCallback((updatedItems: ITreeItem[]) => {
 
+        project.currentFocus = ECurrentFocus.tree;
+
         project.tabs.forEach((tab: Tab) => {
             if (tab.isEditing) {
 
@@ -378,9 +377,8 @@ export const TreeManagerController: React.FC = () => {
             }
         });
 
-        changeFocus();
         onChangeState();
-    }, [project.tabs, onChangeState, changeFocus]);
+    }, [project, onChangeState]);
 
     /** Monta a estrutura da árvore e devolve no return */
     const treeManagerItems = ((): ITreeItem[] => {
@@ -443,7 +441,7 @@ export const TreeManagerController: React.FC = () => {
                     description: item.description,
                     ascendantId: item.ascendantId,
                     hasWarning: item.hasWarning,
-                    icon: item.icon?.content,
+                    icon: item.icon.content,
                     hasError: item.hasError,
                     label: item.label,
                     id: item.id,
@@ -456,10 +454,10 @@ export const TreeManagerController: React.FC = () => {
 
     return (
         <TreeManager
-            onFocus={changeFocus}
             items={treeManagerItems}
             onChangeItems={handleOnChange}
             onKeyDown={treeManagerOnKeyDowm}
+            onFocus={() => project.currentFocus = ECurrentFocus.tree}
             configs={{
                 id: 'Inspector',
                 isUseDrag: true,

@@ -29,8 +29,19 @@ export interface IProject {
 }
 
 export interface IProjectManageWindows {
+    /**
+     * Select a window by id
+     * @param windowId Window to select
+     */
     selectWindowById(windowId: string): void;
+    /**
+     * Close a window
+     * @param windowId window id to remove from openeds windows
+     */
     removeWindowById(windowId: string): void;
+    /**
+     * Get all openeds windows
+     */
     getWindows(): IOpenedWindow[];
 }
 

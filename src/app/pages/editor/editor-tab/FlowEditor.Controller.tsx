@@ -368,7 +368,7 @@ export const FlowEditorController: React.FC = memo(() => {
                 connections: item.connections,
                 flowItemType: item.flowItemType,
                 isEnabledNewConnetion: item.isEnabledNewConnetion,
-                icon: selectedActionIcon?.value?.content || item.icon,
+                icon: selectedActionIcon?.value?.content || item.icon.content,
                 hasError: item.properties.some(prop => (prop.valueHasError || prop.nameHasError)),
                 hasWarning: item.properties.some(prop => (prop.valueHasWarning || prop.nameHasWarning)),
                 description: item.type !== EItemType.COMMENT

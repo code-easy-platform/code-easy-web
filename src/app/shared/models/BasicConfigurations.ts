@@ -108,7 +108,16 @@ export class BasicConfigurations<T> implements IBasicConfigurations<T> {
     }
 
     public get icon(): IFileContent {
-        return this._properties?.find(prop => prop.propertieType === PropertieTypes.icon)?.value || AssetsService.getIcon<T>(this.type);
+        const icon = this._properties?.find(prop => prop.propertieType === PropertieTypes.icon)?.value;
+        if (icon && icon.content) {
+            return icon;
+        } else {
+            return {
+                content: AssetsService.getIcon<T>(this.type),
+                name: 'Default',
+                type: 'image',
+            };
+        }
     }
     public set icon(value: IFileContent) {
         let prop = this._properties?.find(prop => prop.propertieType === PropertieTypes.icon);
