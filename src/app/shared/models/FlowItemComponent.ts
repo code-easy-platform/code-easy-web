@@ -1,72 +1,96 @@
-import { IconWarning, IconError, Utils } from "code-easy-components";
+import { IconError, IconWarning, Utils } from "code-easy-components";
 
-import { ContextModalListService } from "../components/context-modais/ContextModalListService";
-import { EFlowItemType, EItemType, IConnection } from "../components/flow-editor";
-import { IProperty, TypeOfValues } from "../components/properties-editor";
-import { ITreeItem } from "../components/tree-manager";
-import { IFlowItemComponent } from "../interfaces";
-import { DefaultPropsHelper } from "../services";
-import { PropertieTypes } from "../enuns";
+import { EItemType, IConnection, EFlowItemType } from "./../components/flow-editor";
+import { IProperty, TypeOfValues } from "./../components/properties-editor";
+import { BasicConfigurations } from "./BasicConfigurations";
+import { ITreeItem } from "./../components/tree-manager";
+import { IFlowItemComponent } from "./../interfaces";
+import { DefaultPropsHelper } from "./../services";
+import { PropertieTypes } from "./../enuns";
 
 
-type OmitInContructor = "flowItemType" | "isEnabledNewConnetion" | "height" | "width";
+type OmitInConstructor = 'flowItemType' | 'isEnabledNewConnetion' | 'height' | 'width' | 'name' | 'problems';
 
-export class FlowItemComponent implements IFlowItemComponent {
+export class FlowItemComponent extends BasicConfigurations<EItemType> implements IFlowItemComponent {
     public flowItemType: EFlowItemType = EFlowItemType.acorn;
     public isEnabledNewConnetion: boolean = false;
     public height: number = 40;
     public width: number = 40;
 
-    public updatedDate: Date = new Date();
-    public createdDate: Date = new Date();
-    public connections: IConnection[];
-    public properties: IProperty[];
-    public id: string | undefined;
-    public itemType: EItemType;
-    public isSelected: boolean;
-    public hasWarning: boolean;
-    public isDisabled: boolean;
-    public description: string;
-    public hasError: boolean;
-    public label: string;
-    public name: string;
+    public isDisabled?: boolean | undefined;
     public left: number;
     public top: number;
-    public icon: any;
 
-    constructor(
-        private _fields: Omit<IFlowItemComponent, OmitInContructor>,
-    ) {
-        this.createdDate = this._fields.createdDate || this.createdDate;
-        this.isDisabled = this._fields.isDisabled || false;
-        this.isSelected = Boolean(this._fields.isSelected);
-        this.hasWarning = this._fields.hasWarning || false;
-        this.description = this._fields.description || '';
-        this.connections = this._fields.connections || [];
-        this.properties = this._fields.properties || [];
-        this.hasError = Boolean(this._fields.hasError);
-        this.label = this._fields.label || '';
-        this.itemType = this._fields.itemType;
-        this.updatedDate = new Date();
-        this.name = this._fields.name;
-        this.icon = this._fields.icon;
-        this.left = this._fields.left;
-        this.top = this._fields.top;
-        this.id = this._fields.id;
-
-        this._updateProperties(this._fields.properties || [], this._fields.itemType);
-        this.getProblems();
+    private _connections: IConnection[] = [];
+    public get connections(): IConnection[] {
+        return this._connections || [];
+    }
+    public set connections(connects: IConnection[]) {
+        this._connections = connects;
     }
 
-    public getProblems(): ITreeItem[] {
-        let problems: ITreeItem[] = [];
-        this.hasWarning = false;
-        this.hasError = false;
+    public get properties(): IProperty[] { return super.properties; }
+    public set properties(props: IProperty[]) {
+
+        // Update the type of item in flow editor
+        this.flowItemType = this.type === EItemType.COMMENT ? EFlowItemType.comment : EFlowItemType.acorn;
+
+        // Ensures that the original properties are present, and add to the list if any are not
+        const originalProperties = DefaultPropsHelper.getNewProps(this.type, this.name);
+        originalProperties.forEach(originalProp => {
+            if (!props.some(prop => prop.propertieType === originalProp.propertieType)) {
+                props.push(originalProp);
+            }
+        });
+
+        switch (this.type) {
+
+            case EItemType.ASSIGN:
+                props = this._propertiesFromAssigns(props);
+                break;
+
+            case EItemType.ACTION:
+                console.log('log')
+                props = this._propertiesFromAction(props);
+                break;
+
+            case EItemType.IF:
+                props = this._propertiesFromIf(props);
+                break;
+
+            case EItemType.SWITCH:
+                props = this._propertiesFromSwitch(props);
+                break;
+
+            case EItemType.FOREACH:
+                props = this._propertiesFromForeach(props);
+                break;
+
+            case EItemType.COMMENT:
+                props = this._propertiesFromComment(props);
+                break;
+
+            case EItemType.END:
+                props = this._propertiesFromEnd(props);
+                break;
+
+            case EItemType.START:
+                props = this._propertiesFromStart(props);
+                break;
+
+            default:
+                break;
+        }
+
+        super.properties = props;
+    }
+
+    public get problems(): ITreeItem[] {
+        let problems = super.problems;
 
         const addProblem = (label: string, type: 'warning' | 'error') => {
             problems.push({
                 icon: type === 'warning' ? IconWarning : IconError,
-                isDisabledSelect: true,
                 nodeExpanded: false,
                 isSelected: false,
                 id: undefined,
@@ -77,47 +101,23 @@ export class FlowItemComponent implements IFlowItemComponent {
         }
 
         // Se for diferente de END e COMMENT valida se tem sucessores
-        if ((this.itemType !== EItemType.END && this.itemType !== EItemType.COMMENT) && this.connections.length === 0) {
-            addProblem(`The flow item "${this.name}" is missing a connector`, 'error');
+        if ((this.type !== EItemType.END && this.type !== EItemType.COMMENT) && this.connections.length === 0) {
+            addProblem(`The flow item "${this.name}" is missing a connector.`, 'error');
             this.hasError = true;
         }
 
-        // Valida o name
-        if (this.name === '') {
-            addProblem(`We do not recommend that the flow item be empty in "${this.name}"`, 'error');
-            this.properties.filter(prop => prop.propertieType === PropertieTypes.label).forEach(prop => prop.valueHasError = true);
-            this.hasError = true;
-        } else if (this.name.length < 3) {
-            addProblem(`A suitable name for a stream item must be longer than 3 characters in "${this.name}"`, 'warning');
-            this.hasWarning = true;
-            this.properties
-                .filter(prop => prop.propertieType === PropertieTypes.label)
-                .forEach(prop => { prop.valueHasWarning = true; prop.valueHasError = false });
-        } else if (this.name.length > 20 && this.itemType !== EItemType.COMMENT) {
-            addProblem(`A suitable name for a stream item must be less than 20 characters in "${this.name}"`, 'warning');
-            this.hasWarning = true;
-            this.properties
-                .filter(prop => prop.propertieType === PropertieTypes.label)
-                .forEach(prop => { prop.valueHasWarning = true; prop.valueHasError = false });
-        } else {
-            this.properties
-                .filter(prop => prop.propertieType === PropertieTypes.label)
-                .forEach(prop => { prop.valueHasWarning = false; prop.valueHasError = false });
-        }
-
-        // Valida condições para itens específico
-        switch (this.itemType) {
-
+        // Validates for each item
+        switch (this.type) {
             case EItemType.ASSIGN:
                 this.properties.filter(prop => prop.propertieType === PropertieTypes.assigns).forEach(prop => {
                     prop.valueHasError = false;
                     prop.nameHasError = false;
 
                     if (prop.name !== '' && prop.value === '') {
-                        addProblem(`In the "${this.name}" item, no value is being assigned to the "${prop.name}"`, 'error');
+                        addProblem(`In the "${this.name}" item, no value is being assigned to the "${prop.name}."`, 'error');
                         prop.valueHasError = true;
                     } else if (prop.name === '' && prop.value !== '') {
-                        addProblem(`In ${this.name} the value "${prop.value}" is not being assigned to any variable or parameter`, 'error');
+                        addProblem(`In ${this.name} the value "${prop.value}" is not being assigned to any variable or parameter.`, 'error');
                         prop.nameHasError = true;
                     }
                 });
@@ -128,7 +128,7 @@ export class FlowItemComponent implements IFlowItemComponent {
                     prop.valueHasError = false;
 
                     if (prop.value === '') {
-                        addProblem(`In the "${this.name}" item, the "${prop.name}" condition must have an informed expression`, 'error');
+                        addProblem(`In the "${this.name}" item, the "${prop.name}" condition must have an informed expression.`, 'error');
                         prop.valueHasError = true;
                     }
 
@@ -141,47 +141,48 @@ export class FlowItemComponent implements IFlowItemComponent {
                 this.properties.filter(prop => prop.propertieType === PropertieTypes.condition).forEach(prop => {
                     prop.valueHasError = false;
                     if (prop.value === '') {
-                        addProblem(`In the "${this.name}" item, the "${prop.name}" condition must have an informed expression`, 'error');
+                        addProblem(`In the "${this.name}" item, the "${prop.name}" condition must have an informed expression.`, 'error');
                         prop.valueHasError = true;
                         this.hasError = true;
                     }
                 });
                 // Valida as connection
                 if (this.connections.length >= 1 && this.connections.length < 2) {
-                    addProblem(`Flow item "${this.name}" is missing a connector`, 'error');
+                    addProblem(`Flow item "${this.name}" is missing a connector.`, 'error');
                     this.hasError = true;
                 }
 
                 break;
 
             case EItemType.END:
-                // Nada para validar aqui
+                // Nothing to valid yet
                 break;
 
             case EItemType.ACTION:
-                // Nada para validar aqui ainda
+                this.properties.filter(prop => prop.propertieType === PropertieTypes.action).forEach(prop => {
+                    prop.valueHasError = false;
+
+                    if (prop.value === '') {
+                        addProblem(`The flow item "${this.name}" must have a valid value in the "${prop.name}" field.`, 'error');
+                        prop.valueHasError = true;
+                    }
+
+                });
                 break;
 
             case EItemType.FOREACH:
-                // Nada para validar aqui ainda
+                this.properties.filter(prop => prop.propertieType === PropertieTypes.sourceList).forEach(prop => {
+                    prop.valueHasError = false;
+
+                    if (prop.value === '') {
+                        addProblem(`The flow item "${this.name}" must have a valid value in the "${prop.name}" field.`, 'error');
+                        prop.valueHasError = true;
+                    }
+                });
                 break;
 
             default: break;
-
         }
-
-        // Valida as propriedades
-        this.properties.forEach(prop => {
-            prop.valueHasError = false;
-
-            // Valida se action está com o campo "action" vazio.
-            if (prop.propertieType === PropertieTypes.action && prop.value === "") {
-                addProblem(`The flow item "${this.name}" must have a valid value in the "${prop.name}" field.`, 'error');
-                prop.valueHasError = true;
-                this.hasError = true;
-            }
-
-        });
 
         if (problems.length <= 1) {
             return problems;
@@ -190,9 +191,7 @@ export class FlowItemComponent implements IFlowItemComponent {
             return [
                 ...problems.map(problem => ({ ...problem, ascendantId: newId })),
                 {
-                    // icon: this.hasError ? IconError : IconWarning,
-                    label: `Inconsistences in flow item "${this.name}"`,
-                    isDisabledSelect: true,
+                    label: `Inconsistences in flow item "${this.name}."`,
                     nodeExpanded: true,
                     isSelected: false,
                     iconSize: 15,
@@ -203,72 +202,13 @@ export class FlowItemComponent implements IFlowItemComponent {
         }
     }
 
-    private _updateProperties(properties: IProperty[], type: EItemType) {
+    constructor(fields: Omit<IFlowItemComponent, OmitInConstructor>) {
+        super(fields);
 
-        // Update the type of item in flow editor
-        this.flowItemType = this._fields.itemType === EItemType.COMMENT ? EFlowItemType.comment : EFlowItemType.acorn;
-
-        // Remove o auto focus caso exista em algum componente
-        this.properties.forEach(prop => prop.focusOnRender = false);
-
-        // Define a função que abre a modal para edição
-        this.properties.forEach(prop => prop.onPickerValueClick = () => { prop.id && ContextModalListService.showModal({ editingId: prop.id }); });
-
-        const originalProperties = DefaultPropsHelper.getNewProps(type, this.name);
-
-        originalProperties.forEach(originalProp => {
-            if (!properties.some(prop => prop.propertieType === originalProp.propertieType)) {
-                properties.push(originalProp);
-            }
-        });
-
-        /** Define o nome da label encontrado nas properties do componente */
-        const propLabel = this.properties.find(prop => prop.propertieType === PropertieTypes.label);
-        if (propLabel) {
-            this.name = Utils.getNormalizedString(propLabel.value);
-            this.label = propLabel.value;
-        }
-
-        switch (type) {
-
-            case EItemType.ASSIGN:
-                this._propertiesFromAssigns();
-                break;
-
-            case EItemType.ACTION:
-                console.log('log')
-                this._propertiesFromAction();
-                break;
-
-            case EItemType.IF:
-                this._propertiesFromIf();
-                break;
-
-            case EItemType.SWITCH:
-                this._propertiesFromSwitch();
-                break;
-
-            case EItemType.FOREACH:
-                this._propertiesFromForeach();
-                break;
-
-            case EItemType.COMMENT:
-                this._propertiesFromComment();
-                break;
-
-            case EItemType.END:
-                this._propertiesFromEnd();
-                break;
-
-            case EItemType.START:
-                this._propertiesFromStart();
-                break;
-
-            default:
-                break;
-        }
-
-        this.properties = properties;
+        this.top = fields.top;
+        this.left = fields.left;
+        this.properties = fields.properties || this.properties;
+        this.connections = fields.connections || this.connections;
     }
 
     /**
@@ -276,14 +216,15 @@ export class FlowItemComponent implements IFlowItemComponent {
      * * Validaçoes de erros
      * * Adição automática de novos assigments
      */
-    private _propertiesFromAssigns() {
+    private _propertiesFromAssigns(props: IProperty[]): IProperty[] {
+
         /** Essa sequência de código garante que sempre terá apenas um assigment vazio disponível */
-        const emptyAssigments = this.properties.filter(prop => (prop.name === '' && prop.value === ''));
+        const emptyAssigments = props.filter(prop => (prop.name === '' && prop.value === ''));
         if (emptyAssigments.length === 0) {
             const newId = Utils.getUUID();
 
             // Está adicionando items nos assigments
-            this.properties.push({
+            props.push({
                 name: '',
                 id: newId,
                 value: '',
@@ -296,9 +237,9 @@ export class FlowItemComponent implements IFlowItemComponent {
 
             // Está removendo items desnecessários do assigment
             emptyAssigments.forEach((empAssig, index) => {
-                let indexToRemove = this.properties.findIndex(prop => prop.id === empAssig.id);
+                let indexToRemove = props.findIndex(prop => prop.id === empAssig.id);
                 if (index < (emptyAssigments.length - 1)) {
-                    this.properties.splice(indexToRemove, 1);
+                    props.splice(indexToRemove, 1);
                 }
             });
 
@@ -310,33 +251,17 @@ export class FlowItemComponent implements IFlowItemComponent {
         } else {
             this.isEnabledNewConnetion = false;
         }
+
+        let prop = this.properties?.find(prop => prop.propertieType === PropertieTypes.description);
+        if (prop) {
+            prop.type = TypeOfValues.viewOnly;
+        }
+
+        return props;
     }
 
-    private _propertiesFromAction() {
+    private _propertiesFromForeach(props: IProperty[]): IProperty[] {
 
-        // Enable or disable new connections
-        if (this.connections.length === 0) {
-            this.isEnabledNewConnetion = true;
-        } else {
-            this.isEnabledNewConnetion = false;
-        }
-
-        /** Define o nome da label encontrado nas properties do componente */
-        const propLabel = this.properties.find(prop => prop.propertieType === PropertieTypes.label);
-        if (propLabel) {
-            this.name = Utils.getNormalizedString(propLabel.value);
-            this.label = propLabel.value;
-        }
-
-        /** Define se pode modificar o nome caso tenha uma action selecionada */
-        const propAction = this.properties.find(prop => prop.propertieType === PropertieTypes.label);
-        if (propAction) {
-            propAction.editValueDisabled = propAction?.value !== '';
-        }
-
-    }
-
-    private _propertiesFromForeach() {
         this.connections = this.connections.map((connection, index) => {
             // Renomeando a label da connection
             if (index === 0)
@@ -351,9 +276,128 @@ export class FlowItemComponent implements IFlowItemComponent {
         } else {
             this.isEnabledNewConnetion = false;
         }
+
+        let prop = this.properties?.find(prop => prop.propertieType === PropertieTypes.description);
+        if (prop) {
+            prop.type = TypeOfValues.viewOnly;
+        }
+
+        return props;
     }
 
-    private _propertiesFromIf() {
+    private _propertiesFromComment(props: IProperty[]): IProperty[] {
+
+        this.flowItemType = EFlowItemType.comment;
+        this.isEnabledNewConnetion = true;
+
+        const propComment = props.find(prop => prop.propertieType === PropertieTypes.comment);
+        const propLabel = props.find(prop => prop.propertieType === PropertieTypes.label);
+        if (propLabel) {
+            propLabel.value = propComment?.value || 'Write here your comment';
+        }
+
+        let prop = this.properties?.find(prop => prop.propertieType === PropertieTypes.description);
+        if (prop) {
+            prop.type = TypeOfValues.viewOnly;
+        }
+
+        return props;
+    }
+
+    private _propertiesFromAction(props: IProperty[]): IProperty[] {
+
+        // Enable or disable new connections
+        if (this.connections.length === 0) {
+            this.isEnabledNewConnetion = true;
+        } else {
+            this.isEnabledNewConnetion = false;
+        }
+
+        /** Define se pode modificar o nome caso tenha uma action selecionada */
+        const propAction = props.find(prop => prop.propertieType === PropertieTypes.action);
+        const propLabel = props.find(prop => prop.propertieType === PropertieTypes.label);
+        if (propLabel && propAction) {
+            propLabel.editValueDisabled = propAction?.value !== '';
+        }
+
+        let prop = this.properties?.find(prop => prop.propertieType === PropertieTypes.description);
+        if (prop) {
+            prop.type = TypeOfValues.viewOnly;
+        }
+
+        return props;
+    }
+
+    private _propertiesFromSwitch(props: IProperty[]): IProperty[] {
+
+        this.isEnabledNewConnetion = true;
+
+        this.connections = this.connections.map((connection, index) => {
+            if (index === 0) {
+                return { ...connection, connectionLabel: 'Default' };
+            } else {
+                // Renomeando a label da connection
+                connection = { ...connection, connectionLabel: 'Condition' + index };
+
+                // Encontra a connection adicionada préviamente
+                let existentProp = props.find(prop => prop.id === connection.id);
+                if (!existentProp) {
+                    props.push({
+                        value: '',
+                        id: connection.id,
+                        group: 'Conditions',
+                        name: 'Condition' + index,
+                        type: TypeOfValues.expression,
+                        propertieType: PropertieTypes.condition,
+                    });
+                } else {
+                    // Está atualizando direto no "props" por referência
+                    existentProp.name = 'Condition' + index;
+                }
+
+                return connection;
+            }
+        });
+
+        // Remove todos as props que não tiverem connections com o mesmo id
+        let indexToRemove = props.findIndex(prop => (prop.propertieType === PropertieTypes.condition && !this.connections.some(connection => connection.id === prop.id)));
+        while (indexToRemove >= 0) {
+            props.splice(indexToRemove, 1);
+            indexToRemove = props.findIndex(prop => (prop.propertieType === PropertieTypes.condition && !this.connections.some(connection => connection.id === prop.id)));
+        }
+
+        let prop = this.properties?.find(prop => prop.propertieType === PropertieTypes.description);
+        if (prop) {
+            prop.type = TypeOfValues.viewOnly;
+        }
+
+        return props;
+    }
+
+    private _propertiesFromStart(props: IProperty[]): IProperty[] {
+
+        // Enable or disable new connections
+        if (this.connections.length === 0) {
+            this.isEnabledNewConnetion = true;
+        } else {
+            this.isEnabledNewConnetion = false;
+        }
+
+        this.properties.forEach(prop => prop.type = TypeOfValues.viewOnly);
+
+        return props;
+    }
+
+    private _propertiesFromEnd(props: IProperty[]): IProperty[] {
+
+        this.isEnabledNewConnetion = false;
+
+        this.properties.forEach(prop => prop.type = TypeOfValues.viewOnly);
+
+        return props;
+    }
+
+    private _propertiesFromIf(props: IProperty[]): IProperty[] {
 
         this.connections = [
             ...this.connections.map((connection, index) => {
@@ -378,72 +422,12 @@ export class FlowItemComponent implements IFlowItemComponent {
         } else {
             this.isEnabledNewConnetion = false;
         }
-    }
 
-    private _propertiesFromSwitch() {
-
-        this.isEnabledNewConnetion = true;
-
-        this.connections = this.connections.map((connection, index) => {
-            if (index === 0) {
-                return { ...connection, connectionLabel: 'Default' };
-            } else {
-                // Renomeando a label da connection
-                connection = { ...connection, connectionLabel: 'Condition' + index };
-
-                // Encontra a connection adicionada préviamente
-                let existentProp = this.properties.find(prop => prop.id === connection.id);
-                if (!existentProp) {
-                    this.properties.push({
-                        value: '',
-                        id: connection.id,
-                        group: 'Conditions',
-                        name: 'Condition' + index,
-                        type: TypeOfValues.expression,
-                        propertieType: PropertieTypes.condition,
-                    });
-                } else {
-                    // Está atualizando direto no "this.properties" por referência
-                    existentProp.name = 'Condition' + index;
-                }
-
-                return connection;
-            }
-        });
-
-        // Remove todos as props que não tiverem connections com o mesmo id
-        let indexToRemove = this.properties.findIndex(prop => (prop.propertieType === PropertieTypes.condition && !this.connections.some(connection => connection.id === prop.id)));
-        while (indexToRemove >= 0) {
-            this.properties.splice(indexToRemove, 1);
-            indexToRemove = this.properties.findIndex(prop => (prop.propertieType === PropertieTypes.condition && !this.connections.some(connection => connection.id === prop.id)));
+        let prop = this.properties?.find(prop => prop.propertieType === PropertieTypes.description);
+        if (prop) {
+            prop.type = TypeOfValues.viewOnly;
         }
 
-    }
-
-    private _propertiesFromComment() {
-
-        this.flowItemType = EFlowItemType.comment;
-        this.isEnabledNewConnetion = true;
-
-        const propLabel = this.properties.find(prop => prop.propertieType === PropertieTypes.label);
-        const propComment = this.properties.find(prop => prop.propertieType === PropertieTypes.comment);
-        this.name = propComment?.value || 'Write here your comment';
-        if (propLabel) {
-            propLabel.value = propComment?.value || 'Write here your comment';
-        }
-    }
-
-    private _propertiesFromStart() {
-
-        // Enable or disable new connections
-        if (this.connections.length === 0) {
-            this.isEnabledNewConnetion = true;
-        } else {
-            this.isEnabledNewConnetion = false;
-        }
-    }
-
-    private _propertiesFromEnd() {
-        this.isEnabledNewConnetion = false;
+        return props;
     }
 }

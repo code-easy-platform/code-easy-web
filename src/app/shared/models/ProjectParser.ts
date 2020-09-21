@@ -1,9 +1,9 @@
-import { ItemComponentConfigs } from "./ItemComponentConfigs";
+import { IFlowItemComponent, IProject, ITab, ITreeItemComponent } from "../interfaces";
+import { ProjectConfigurations } from "./ProjectConfigurations";
 import { TreeItemComponent } from "./TreeItemComponent";
 import { FlowItemComponent } from "./FlowItemComponent";
-import { IProject, ITab } from "../interfaces";
 import { Project } from "./Project";
-import { Tab } from "./Tabs";
+import { Tab } from "./Tab";
 
 export class ProjectParser {
     /**
@@ -12,55 +12,91 @@ export class ProjectParser {
      */
     public static stringify(project: Project): string {
         const res: IProject = {
-            currentComponentFocus: project.currentComponentFocus,
-            projectConfigs: project.projectConfigs,
-            openWindows: project.openWindows,
-            tabs: project.tabs.map(tab => ({
-                configs: {
-                    createdDate: tab.configs.createdDate,
-                    description: tab.configs.description,
-                    updatedDate: tab.configs.updatedDate,
-                    isSelected: tab.configs.isSelected,
-                    isExpanded: tab.configs.isExpanded,
-                    isEditing: tab.configs.isEditing,
-                    ordem: tab.configs.ordem,
-                    label: tab.configs.label,
-                    name: tab.configs.label,
-                    type: tab.configs.type,
-                    id: tab.configs.id,
-                },
-                items: tab.items.map(itemTree => ({
+            problems: [],
+            windows: project.windows,
+            currentFocus: project.currentFocus,
+            configurations: {
+                problems: [],
+                id: project.configurations.id,
+                name: project.configurations.name,
+                type: project.configurations.type,
+                icon: project.configurations.icon,
+                label: project.configurations.label,
+                ordem: project.configurations.ordem,
+                author: project.configurations.author,
+                version: project.configurations.version,
+                hasError: project.configurations.hasError,
+                isEditing: project.configurations.isEditing,
+                hasWarning: project.configurations.hasWarning,
+                isExpanded: project.configurations.isExpanded,
+                isSelected: project.configurations.isSelected,
+                properties: project.configurations.properties,
+                createdDate: project.configurations.createdDate,
+                description: project.configurations.description,
+                updatedDate: project.configurations.updatedDate,
+                currentPlatformVersion: project.configurations.currentPlatformVersion,
+                createdInPlatformVersion: project.configurations.createdInPlatformVersion,
+            },
+            tabs: project.tabs.map((tab): ITab => ({
+                description: tab.description,
+                createdDate: tab.createdDate,
+                updatedDate: tab.updatedDate,
+                properties: tab.properties,
+                isSelected: tab.isSelected,
+                isExpanded: tab.isExpanded,
+                hasWarning: tab.hasWarning,
+                isEditing: tab.isEditing,
+                hasError: tab.hasError,
+                ordem: tab.ordem,
+                label: tab.label,
+                name: tab.label,
+                type: tab.type,
+                icon: tab.icon,
+                problems: [],
+                id: tab.id,
+                items: tab.items.map((itemTree): ITreeItemComponent => ({
+                    ascendantId: itemTree.ascendantId,
                     description: itemTree.description,
                     createdDate: itemTree.createdDate,
                     updatedDate: itemTree.updatedDate,
                     isExpanded: itemTree.isExpanded,
+                    hasWarning: itemTree.hasWarning,
                     properties: itemTree.properties,
                     isSelected: itemTree.isSelected,
                     isEditing: itemTree.isEditing,
-                    itemPaiId: itemTree.itemPaiId,
+                    hasError: itemTree.hasError,
                     ordem: itemTree.ordem,
                     label: itemTree.label,
+                    name: itemTree.label,
                     type: itemTree.type,
-                    name: itemTree.name,
+                    icon: itemTree.icon,
                     id: itemTree.id,
-                    items: itemTree.items.map(flowItem => ({
+                    problems: [],
+                    items: itemTree.items.map((flowItem): IFlowItemComponent => ({
+                        isEnabledNewConnetion: flowItem.isEnabledNewConnetion,
+                        connections: flowItem.connections || [],
                         flowItemType: flowItem.flowItemType,
                         description: flowItem.description,
-                        connections: flowItem.connections,
+                        updatedDate: flowItem.updatedDate,
+                        createdDate: flowItem.createdDate,
                         properties: flowItem.properties,
                         isSelected: flowItem.isSelected,
                         hasWarning: flowItem.hasWarning,
                         isDisabled: flowItem.isDisabled,
-                        itemType: flowItem.itemType,
+                        isExpanded: flowItem.isExpanded,
+                        isEditing: flowItem.isEditing,
                         hasError: flowItem.hasError,
                         height: flowItem.height,
+                        ordem: flowItem.ordem,
                         label: flowItem.label,
+                        name: flowItem.label,
                         width: flowItem.width,
+                        type: flowItem.type,
                         icon: flowItem.icon,
                         left: flowItem.left,
-                        name: flowItem.name,
                         top: flowItem.top,
                         id: flowItem.id,
+                        problems: [],
                     })),
                 })),
             })),
@@ -76,15 +112,19 @@ export class ProjectParser {
         const json: IProject = JSON.parse(value);
 
         return new Project({
-            currentComponentFocus: json.currentComponentFocus,
-            projectConfigs: json.projectConfigs,
-            openWindows: json.openWindows,
+            configurations: new ProjectConfigurations(json.configurations),
+            currentFocus: json.currentFocus,
+            windows: json.windows,
             tabs: json.tabs.map((tab: ITab) => new Tab({
-                configs: new ItemComponentConfigs(tab.configs),
+                ...tab,
                 items: tab.items.map(item => new TreeItemComponent({
                     ...item,
-                    items: item.items.map(itemFlow => new FlowItemComponent(itemFlow)),
                     properties: item.properties,
+                    items: item.items.map(itemFlow => new FlowItemComponent({
+                        ...itemFlow,
+                        connections: itemFlow.connections,
+                        properties: itemFlow.properties
+                    })),
                 }))
             }))
         });
@@ -95,7 +135,7 @@ export class ProjectParser {
      *  @param projects Projects that will be transformed into a string
      */
     public static stringifyProjects(projects: Project[]): string {
-        return JSON.stringify(projects.map(project => Project.stringify(project)));
+        return JSON.stringify(projects.map(project => ProjectParser.stringify(project)));
     }
 
     /**
@@ -114,6 +154,5 @@ export class ProjectParser {
             console.error(e);
             return [];
         }
-
     }
 }

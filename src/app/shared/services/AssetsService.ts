@@ -4,12 +4,12 @@ import {
     IconFlowIf, IconFlowStart, IconFlowSwitch, IconRouterConsume, IconRouterExpose, IconRouter
 } from 'code-easy-components';
 
+import { EComponentType, EProjectType } from "../enuns";
 import { EItemType } from '../components/flow-editor';
-import { EComponentType } from "../enuns";
 
 
 class Assets {
-    public getIcon(type: EComponentType | EItemType): string {
+    public getIcon<T = any>(type: EComponentType | EItemType | EProjectType | T): string {
         switch (type) {
             case EItemType.ACTION:
                 return IconFlowAction;

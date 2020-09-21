@@ -1,6 +1,5 @@
-import { Utils, IconWarning, IconError } from "code-easy-components";
+import { IconWarning, IconError } from "code-easy-components";
 
-import { IProjectConfigurations } from "../../interfaces";
 import { ITreeItem } from "../../components/tree-manager";
 import { EComponentType } from "../../enuns/ComponentType";
 import { EItemType } from "../../components/flow-editor";
@@ -17,33 +16,21 @@ class ProblemsHelperService {
         this._problems = [];
 
         // Valida possiveis erros nas configurações
-        this._getProjectConfigsProblems(project.projectConfigs);
+        this._problems = [...this._problems, ...project.problems];
 
         project.tabs.forEach(tab => {
-
-            // Valida alguns detalhes da tab
-            this._problems = [...this._problems, ...tab.getProblems()];
-
-            // Valida os items da tab
             tab.items.forEach(treeItem => {
-
-                // Valida um tree item
-                this._problems = [...this._problems, ...treeItem.getProblems()];
-
                 treeItem.items.forEach(flowItem => {
 
-                    // Valida os problemas presentes no flow item
-                    this._problems = [...this._problems, ...flowItem.getProblems()];
-
                     // Valida as props da action
-                    if (flowItem.itemType === EItemType.ACTION) {
+                    if (flowItem.type === EItemType.ACTION) {
 
                         flowItem.properties.forEach(prop => {
                             prop.valueHasError = false;
 
                             if (prop.propertieType === PropertieTypes.action && prop.value !== "") {
 
-                                const tabActions = project.tabs.find(tab => tab.configs.type === EComponentType.tabActions);
+                                const tabActions = project.tabs.find(tab => tab.type === EComponentType.tabActions);
                                 if (!tabActions) return;
 
                                 if (!tabActions.items.some(item => item.name === prop.value)) {
@@ -69,21 +56,14 @@ class ProblemsHelperService {
                                                 // Configura se o registro terá erro ou não
                                                 prop.valueHasError = (paramProp.value === true && prop.value === "");
                                             }
-
                                         });
                                     }
-
                                 });
                             }
-
                         });
-
                     }
-
                 });
-
             });
-
         });
 
         if (this._problems.length === 0) {
@@ -103,7 +83,6 @@ class ProblemsHelperService {
     private _addProblem(label: string, type: 'warning' | 'error') {
         this._problems.push({
             icon: type === 'warning' ? IconWarning : IconError,
-            isDisabledSelect: true,
             nodeExpanded: false,
             isSelected: false,
             id: undefined,
@@ -112,34 +91,6 @@ class ProblemsHelperService {
             label,
         });
     }
-
-    private _getProjectConfigsProblems(configs: IProjectConfigurations) {
-
-        // Valida a versão digitada no projeto para que seja compatível com os package.json que será gerado 
-        if (Utils.isValidVersion(configs.version)) {
-            this._addProblem('Project version field is not valid', 'error');
-        }
-
-        // Valida o name
-        if (configs.label === '') {
-            this._addProblem('Project Name field cannot be empty', 'error');
-        } else if (configs.label.length < 3) {
-            this._addProblem('Project Name field cannot be less than 3 characters', 'error');
-        } else if (configs.label.length > 50) {
-            this._addProblem('Project Name field cannot exceed 50 characters', 'error');
-        }
-
-        // Valida o name
-        if (configs.author === '') {
-            this._addProblem('Project Author name field cannot be empty', 'warning');
-        } else if (configs.author.length < 3) {
-            this._addProblem('Project Author name field cannot be less than 3 characters', 'warning');
-        } else if (configs.author.length > 50) {
-            this._addProblem('Project Author name field cannot exceed 50 characters', 'warning');
-        }
-
-    }
-
 }
 
 export const ProblemsHelper = new ProblemsHelperService();

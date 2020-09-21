@@ -2,8 +2,8 @@ import React, { Component, memo } from 'react';
 
 import { LoadingIndicator } from '../loading-indicator/LoadingIndicator';
 import { AlertService, AlertTypes } from './AlertService';
-import './BottonStatusBar.css';
 import { IdeVersion } from '../version/IdeVersion';
+import './BottonStatusBar.css';
 
 class _BottonStatusBar extends Component {
     private alertSubscrition: any;

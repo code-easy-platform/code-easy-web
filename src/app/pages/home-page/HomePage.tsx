@@ -5,8 +5,8 @@ import dataformat from 'dateformat';
 
 import { BottonStatusBar } from '../../shared/components/botton-status-bar/BottonStatusBar';
 import { ProjectsStorage } from '../../shared/services/storage/ProjectsStorage';
-import { ProjectType } from '../../shared/enuns/ProjectType';
 import { TabButton } from '../../shared/components/tabs';
+import { EProjectType } from '../../shared/enuns';
 import { ImportProjects } from './ImportFiles';
 import { Project } from '../../shared/models';
 import { IdeConfigs } from './Configs';
@@ -33,7 +33,7 @@ export const HomePage = memo(() => {
 
         projects.push(ProjectsStorage.getNewProject(item.name, item.version, item.type, item.description));
 
-        projects.sort((a, b) => a.projectConfigs.label.localeCompare(b.projectConfigs.label));
+        projects.sort((a, b) => a.configurations.label.localeCompare(b.configurations.label));
 
         setProjects(projects);
         ProjectsStorage.setProjects(projects);
@@ -58,31 +58,31 @@ export const HomePage = memo(() => {
                         <div>
                             <button
                                 title={"Configurations"}
-                                className="btn background-transparent outline-none padding-s"
                                 onClick={() => setOpenConfig(true)}
                                 style={{ height: 'var(--tool-bar-height)' }}
+                                className="btn background-transparent outline-none padding-s"
                                 children={<img src={IconConfig} style={{ height: "70%" }} alt={IconConfig} draggable="false" />}
                             />
                         </div>
                         <div>
                             <button
-                                className="btn background-transparent outline-none padding-s"
                                 onClick={() => setOpenImportProjects(true)}
                                 style={{ height: 'var(--tool-bar-height)' }}
                                 title={"Import a list of projects from your files"}
+                                className="btn background-transparent outline-none padding-s"
                                 children={<img src={IconImport} style={{ height: "70%" }} alt={IconOpenGithub} draggable="false" />}
                             />
                             <button
-                                className="btn background-transparent outline-none padding-s"
                                 title={"Download your projects"}
                                 style={{ height: 'var(--tool-bar-height)' }}
+                                className="btn background-transparent outline-none padding-s"
                                 children={<img src={IconDownload} style={{ height: "70%" }} alt={IconOpenGithub} draggable="false" />}
                                 onClick={() => Utils.downloadFile('MyProjects', 'json', Project.stringifyProjects(projects))}
                             />
                             <button
                                 title={"Open on github"}
-                                className="btn background-transparent outline-none padding-s"
                                 style={{ height: 'var(--tool-bar-height)' }}
+                                className="btn background-transparent outline-none padding-s"
                                 onClick={() => window.open('https://github.com/code-easy-platform')}
                                 children={<img src={IconOpenGithub} style={{ height: "70%" }} alt={IconOpenGithub} draggable="false" />}
                             />
@@ -92,22 +92,22 @@ export const HomePage = memo(() => {
                     <div className="flex1 padding-s padding-top-m flex-column overflow-auto overflow-contrast">
                         <div>Recents</div>
                         <div className="flex1 padding-top-s padding-top-m flex-column">
-                            {projects.sort((a, b) => Utils.compareDate(b.projectConfigs.updatedDate, a.projectConfigs.updatedDate)).map(card => {
+                            {projects.sort((a, b) => Utils.compareDate(b.configurations.updatedDate, a.configurations.updatedDate)).map(card => {
                                 return <CardItem
                                     listMode
-                                    key={card.projectConfigs.id}
-                                    onDelete={() => setProjects(ProjectsStorage.removeProjectById(card.projectConfigs.id))}
+                                    key={card.configurations.id}
+                                    onDelete={() => setProjects(ProjectsStorage.removeProjectById(card.configurations.id))}
                                     onClick={() => {
                                         ProjectsStorage.setProjectById(card);
-                                        history.push(`/editor/${card.projectConfigs.id}`);
+                                        history.push(`/editor/${card.configurations.id}`);
                                     }}
                                     item={{
-                                        type: card.projectConfigs.type,
-                                        name: card.projectConfigs.label,
-                                        id: card.projectConfigs.id || '',
-                                        version: card.projectConfigs.version,
-                                        description: card.projectConfigs.description,
-                                        lastUpdate: dataformat(new Date(card.projectConfigs.updatedDate), "yyyy-mm-dd hh:mm"),
+                                        type: card.configurations.type,
+                                        name: card.configurations.label,
+                                        id: card.configurations.id || '',
+                                        version: card.configurations.version,
+                                        description: card.configurations.description,
+                                        lastUpdate: dataformat(new Date(card.configurations.updatedDate), "yyyy-mm-dd hh:mm"),
                                     }}
                                 />
                             })}
@@ -135,26 +135,26 @@ export const HomePage = memo(() => {
                             isAdding={true}
                             onClick={addNewProject}
                             onCancel={() => setIsAdding(false)}
-                            item={{ id: '', name: '', version: '', description: '', type: ProjectType.api }}
+                            item={{ id: '', name: '', version: '', description: '', type: EProjectType.api }}
                         />}
                         {projects
-                            .filter(item => (item.projectConfigs.label.toLowerCase().indexOf(filter.toLowerCase()) >= 0))
-                            .sort((a, b) => a.projectConfigs.label.localeCompare(b.projectConfigs.label))
+                            .filter(item => (item.configurations.label.toLowerCase().indexOf(filter.toLowerCase()) >= 0))
+                            .sort((a, b) => a.configurations.label.localeCompare(b.configurations.label))
                             .map(card => {
                                 return <CardItem
-                                    key={card.projectConfigs.id}
-                                    onDelete={() => setProjects(ProjectsStorage.removeProjectById(card.projectConfigs.id))}
+                                    key={card.configurations.id}
+                                    onDelete={() => setProjects(ProjectsStorage.removeProjectById(card.configurations.id))}
                                     onClick={() => {
                                         ProjectsStorage.setProjectById(card);
-                                        history.push(`/editor/${card.projectConfigs.id}`);
+                                        history.push(`/editor/${card.configurations.id}`);
                                     }}
                                     item={{
-                                        type: card.projectConfigs.type,
-                                        name: card.projectConfigs.label,
-                                        id: card.projectConfigs.id || '',
-                                        version: card.projectConfigs.version,
-                                        description: card.projectConfigs.description,
-                                        lastUpdate: dataformat(new Date(card.projectConfigs.updatedDate), "yyyy-mm-dd hh:mm"),
+                                        type: card.configurations.type,
+                                        name: card.configurations.label,
+                                        id: card.configurations.id || '',
+                                        version: card.configurations.version,
+                                        description: card.configurations.description,
+                                        lastUpdate: dataformat(new Date(card.configurations.updatedDate), "yyyy-mm-dd hh:mm"),
                                     }}
                                 />
                             })

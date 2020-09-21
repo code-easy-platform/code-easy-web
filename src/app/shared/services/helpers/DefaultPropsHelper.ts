@@ -15,18 +15,18 @@ class DefaultPropsService {
         switch (itemType) {
             case EItemType.START:
                 return [
-                    { id: Utils.getUUID(), name: 'Label', type: TypeOfValues.viewOnly, value: name, propertieType: PropertieTypes.label },
+                    { id: Utils.getUUID(), name: PropertieTypes.label, type: TypeOfValues.viewOnly, value: name, propertieType: PropertieTypes.label },
                 ];
 
             case EItemType.ACTION:
                 return [
-                    { id: Utils.getUUID(), name: 'Label', type: TypeOfValues.string, value: name, propertieType: PropertieTypes.label },
+                    { id: Utils.getUUID(), name: PropertieTypes.label, type: TypeOfValues.string, value: name, propertieType: PropertieTypes.label },
                     { id: Utils.getUUID(), name: 'Action', type: TypeOfValues.expression, value: '', propertieType: PropertieTypes.action, focusOnRender: true },
                 ];
 
             case EItemType.ASSIGN:
                 return [
-                    { id: Utils.getUUID(), name: 'Label', type: TypeOfValues.string, value: name, propertieType: PropertieTypes.label, focusOnRender: true },
+                    { id: Utils.getUUID(), name: PropertieTypes.label, type: TypeOfValues.string, value: name, propertieType: PropertieTypes.label, focusOnRender: true },
                     { id: Utils.getUUID(), name: '', type: TypeOfValues.assign, value: '', group: 'Assigments', propertieType: PropertieTypes.assigns },
                 ];
 
@@ -37,29 +37,29 @@ class DefaultPropsService {
 
             case EItemType.FOREACH:
                 return [
-                    { id: Utils.getUUID(), name: 'Label', type: TypeOfValues.string, value: name, propertieType: PropertieTypes.label },
+                    { id: Utils.getUUID(), name: PropertieTypes.label, type: TypeOfValues.string, value: name, propertieType: PropertieTypes.label },
                     { id: Utils.getUUID(), name: 'SourceList', type: TypeOfValues.expression, value: name, propertieType: PropertieTypes.sourceList, focusOnRender: true },
                 ];
 
             case EItemType.IF:
                 return [
-                    { id: Utils.getUUID(), name: 'Label', type: TypeOfValues.string, value: name, propertieType: PropertieTypes.label },
+                    { id: Utils.getUUID(), name: PropertieTypes.label, type: TypeOfValues.string, value: name, propertieType: PropertieTypes.label },
                     { id: Utils.getUUID(), name: 'Condition', type: TypeOfValues.expression, value: '', propertieType: PropertieTypes.condition, focusOnRender: true },
                 ];
 
             case EItemType.SWITCH:
                 return [
-                    { id: Utils.getUUID(), name: 'Label', type: TypeOfValues.string, value: name, propertieType: PropertieTypes.label, focusOnRender: true },
+                    { id: Utils.getUUID(), name: PropertieTypes.label, type: TypeOfValues.string, value: name, propertieType: PropertieTypes.label, focusOnRender: true },
                 ];
 
             case EItemType.END:
                 return [
-                    { id: Utils.getUUID(), name: 'Label', type: TypeOfValues.viewOnly, value: name, propertieType: PropertieTypes.label },
+                    { id: Utils.getUUID(), name: PropertieTypes.label, type: TypeOfValues.viewOnly, value: name, propertieType: PropertieTypes.label },
                 ];
 
             case EComponentType.routerExpose:
                 return [
-                    { id: Utils.getUUID(), name: 'Label', value: name, type: TypeOfValues.string, propertieType: PropertieTypes.label, focusOnRender: true },
+                    { id: Utils.getUUID(), name: PropertieTypes.label, value: name, type: TypeOfValues.string, propertieType: PropertieTypes.label, focusOnRender: true },
                     { id: Utils.getUUID(), name: 'Description', type: TypeOfValues.bigstring, value: "", propertieType: PropertieTypes.description },
                     { id: Utils.getUUID(), name: 'Url', type: TypeOfValues.string, value: "/newroute", propertieType: PropertieTypes.url },
                     {
@@ -77,7 +77,7 @@ class DefaultPropsService {
 
             case EComponentType.routerConsume:
                 return [
-                    { id: Utils.getUUID(), name: 'Label', value: name, type: TypeOfValues.string, propertieType: PropertieTypes.label, focusOnRender: true },
+                    { id: Utils.getUUID(), name: PropertieTypes.label, value: name, type: TypeOfValues.string, propertieType: PropertieTypes.label, focusOnRender: true },
                     { id: Utils.getUUID(), name: 'Description', type: TypeOfValues.bigstring, value: "", propertieType: PropertieTypes.description },
                     {
                         id: Utils.getUUID(), name: 'Method http', type: TypeOfValues.selection, value: MethodsApi.post, propertieType: PropertieTypes.type, suggestions: MethodsApiList.map(value => {
@@ -95,21 +95,21 @@ class DefaultPropsService {
 
             case EComponentType.globalAction:
                 return [
-                    { id: Utils.getUUID(), name: 'Label', value: name, type: TypeOfValues.string, propertieType: PropertieTypes.label, focusOnRender: true },
+                    { id: Utils.getUUID(), name: PropertieTypes.label, value: name, type: TypeOfValues.string, propertieType: PropertieTypes.label, focusOnRender: true },
                     { id: Utils.getUUID(), name: 'Description', type: TypeOfValues.bigstring, value: "", propertieType: PropertieTypes.description },
                     { id: Utils.getUUID(), name: 'Icon', type: TypeOfValues.binary, value: "Default", propertieType: PropertieTypes.icon },
                 ];
 
             case EComponentType.localAction:
                 return [
-                    { id: Utils.getUUID(), name: 'Label', value: name, type: TypeOfValues.string, propertieType: PropertieTypes.label, focusOnRender: true },
+                    { id: Utils.getUUID(), name: PropertieTypes.label, value: name, type: TypeOfValues.string, propertieType: PropertieTypes.label, focusOnRender: true },
                     { id: Utils.getUUID(), name: 'Description', type: TypeOfValues.bigstring, value: "", propertieType: PropertieTypes.description },
                     { id: Utils.getUUID(), name: 'Icon', type: TypeOfValues.binary, value: "Default", propertieType: PropertieTypes.icon },
                 ];
 
             case EComponentType.inputVariable:
                 return [
-                    { id: Utils.getUUID(), name: 'Label', value: name, type: TypeOfValues.string, propertieType: PropertieTypes.label, focusOnRender: true },
+                    { id: Utils.getUUID(), name: PropertieTypes.label, value: name, type: TypeOfValues.string, propertieType: PropertieTypes.label, focusOnRender: true },
                     { id: Utils.getUUID(), name: 'Description', type: TypeOfValues.bigstring, value: "", propertieType: PropertieTypes.description },
                     ...(inARouter
                         ? [{
@@ -142,7 +142,7 @@ class DefaultPropsService {
 
             case EComponentType.localVariable:
                 return [
-                    { id: Utils.getUUID(), name: 'Label', value: name, type: TypeOfValues.string, propertieType: PropertieTypes.label, focusOnRender: true },
+                    { id: Utils.getUUID(), name: PropertieTypes.label, value: name, type: TypeOfValues.string, propertieType: PropertieTypes.label, focusOnRender: true },
                     { id: Utils.getUUID(), name: 'Description', type: TypeOfValues.bigstring, value: "", propertieType: PropertieTypes.description },
                     {
                         id: Utils.getUUID(), name: 'Data type', type: TypeOfValues.selection, value: DataTypes.string, propertieType: PropertieTypes.dataType, suggestions: DataTypesList.map(value => {
@@ -160,7 +160,7 @@ class DefaultPropsService {
 
             case EComponentType.outputVariable:
                 return [
-                    { id: Utils.getUUID(), name: 'Label', value: name, type: TypeOfValues.string, propertieType: PropertieTypes.label, focusOnRender: true },
+                    { id: Utils.getUUID(), name: PropertieTypes.label, value: name, type: TypeOfValues.string, propertieType: PropertieTypes.label, focusOnRender: true },
                     { id: Utils.getUUID(), name: 'Description', type: TypeOfValues.bigstring, value: "", propertieType: PropertieTypes.description },
                     {
                         id: Utils.getUUID(), name: 'Data type', type: TypeOfValues.selection, value: DataTypes.string, propertieType: PropertieTypes.dataType, suggestions: DataTypesList.map(value => {
@@ -178,7 +178,7 @@ class DefaultPropsService {
 
             default:
                 return [
-                    { id: Utils.getUUID(), name: 'Label', type: TypeOfValues.viewOnly, value: '<tipo de item não encontrado>', propertieType: PropertieTypes.label },
+                    { id: Utils.getUUID(), name: PropertieTypes.label, type: TypeOfValues.viewOnly, value: '<tipo de item não encontrado>', propertieType: PropertieTypes.label },
                 ];
         }
     }

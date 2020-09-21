@@ -26,15 +26,12 @@ export const CodeEditorProvider: React.FC = ({ children }) => {
         // Valida o projeto e encontra os problemas
         project = ProblemsHelper.getProblems(project).project;
 
-        // WindowsTabsManager
-        project.updateWindowTabs();
-
         // Salva a nova versão do projeto no local storage
         ProjectsStorage.setProjectById(project);
 
         // Atualiza o state do projeto para refletir as alterações na tela
         setState(oldState => {
-            const { label } = oldState.project.projectConfigs;
+            const { label } = oldState.project.configurations;
             document.title = label === '' ? 'Code Easy' : label + ' - Code Easy';
 
             return {
@@ -60,7 +57,7 @@ export const CodeEditorProvider: React.FC = ({ children }) => {
     return (
         <CodeEditorContext.Provider value={state}>
             {
-                state.project.projectConfigs
+                state.project.configurations
                     ? children
                     : <CenterLoadingIndicator />
             }
@@ -87,7 +84,7 @@ export const useEditorContext = () => {
 
     const handleGetItemTreeById = useCallback((id: string, type?: EComponentType): TreeItemComponent | null => {
         if (type) {
-            const tab = project.tabs.find(tab => tab.configs.type === type);
+            const tab = project.tabs.find(tab => tab.type === type);
             if (!tab) return null;
 
             const itemTree = tab.items.find(itemTree => itemTree.id === id);
@@ -110,7 +107,7 @@ export const useEditorContext = () => {
 
     const handleGetItemTreeByName = useCallback((name: string, type?: EComponentType): TreeItemComponent | null => {
         if (type) {
-            const tab = project.tabs.find(tab => tab.configs.type === type);
+            const tab = project.tabs.find(tab => tab.type === type);
             if (!tab) return null;
 
             const itemTree = tab.items.find(itemTree => itemTree.name === name);

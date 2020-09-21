@@ -4,8 +4,8 @@ import { IconTrash, Utils, IconFlowStart, IconFlowEnd } from 'code-easy-componen
 import { TreeManager, ITreeItem, CustomDragLayer } from '../../../shared/components/tree-manager';
 import { ContextMenuService } from '../../../shared/components/context-menu/ContextMenuService';
 import { IContextItemList } from '../../../shared/components/context-menu/ContextMenu';
-import { PropertieTypes, ECurrentFocus, EComponentType } from '../../../shared/enuns';
 import { TreeItemComponent, FlowItemComponent, Tab } from '../../../shared/models';
+import { ECurrentFocus, EComponentType } from '../../../shared/enuns';
 import { EItemType } from '../../../shared/components/flow-editor';
 import { useEditorContext } from '../../../shared/contexts';
 import { AssetsService } from '../../../shared/services';
@@ -14,16 +14,8 @@ export const TreeManagerController: React.FC = () => {
 
     const { project, setProject } = useEditorContext();
 
-    /** Atualiza o contexto do projeto */
-    const onChangeState = useCallback(() => setProject(project), [project, setProject]);
-
-    /** Atualiza o foco do editor de propriedades */
-    const changeFocus = useCallback(() => project.currentComponentFocus = ECurrentFocus.tree, [project.currentComponentFocus]);
-
-    /** Remove items da árvore */
-    const treeManagerRemoveItem = (inputItemId: string | undefined) => {
-
-        changeFocus();
+    /** Remove tree items */
+    const treeManagerRemoveItem = useCallback((inputItemId: string | undefined) => {
 
         // Se for undefined não faz nada
         if (!inputItemId) return;
@@ -52,23 +44,23 @@ export const TreeManagerController: React.FC = () => {
             const deletedItem = project.tabs[indexTabToRemove].items.splice(indexItemToRemove, 1)[0];
 
             // Busca para o caso de ter um dependente
-            let indexToRemove = project.tabs[indexTabToRemove].items.findIndex(item => item.itemPaiId === deletedItem.id);
+            let indexToRemove = project.tabs[indexTabToRemove].items.findIndex(item => item.ascendantId === deletedItem.id);
             while (indexToRemove > -1) {
                 //Remove o item dependente
                 project.tabs[indexTabToRemove].items.splice(indexToRemove, 1);
                 //Busca para o caso de ter outro item dependente
-                indexToRemove = project.tabs[indexTabToRemove].items.findIndex(item => item.itemPaiId === deletedItem.id);
+                indexToRemove = project.tabs[indexTabToRemove].items.findIndex(item => item.ascendantId === deletedItem.id);
             }
         }
 
-        onChangeState();
-    };
+        setProject(project);
+    }, [project, setProject]);
 
-    const treeManagerOnKeyDowm = (e: React.FocusEvent<HTMLDivElement> | any) => {
+    const treeManagerOnKeyDowm = useCallback((e: React.FocusEvent<HTMLDivElement> | any) => {
         if (e.key === 'Delete') {
             let items: TreeItemComponent[] = [];
             project.tabs.forEach((tab: Tab) => {
-                if (tab.configs.isEditing) {
+                if (tab.isEditing) {
                     items = tab.items;
                 }
             });
@@ -77,19 +69,16 @@ export const TreeManagerController: React.FC = () => {
             if (itemToEdit) {
                 treeManagerRemoveItem(itemToEdit.id);
             }
-
         }
-    }
+    }, [project.tabs, treeManagerRemoveItem])
 
     /** Quando clicado com o botão esquerdo do mouse no interior da árvore esta função é acionada. */
-    const treeManagerContextMenu = (itemId: string | undefined) => {
-
-        changeFocus();
-
+    const treeManagerContextMenu = useCallback((itemId: string | undefined) => {
         let options: IContextItemList[] = [];
 
         const addParam = (inputItemId: string | undefined, paramType: EComponentType.inputVariable | EComponentType.localVariable | EComponentType.outputVariable) => {
             let tabIndex: number | undefined;
+
             project.tabs.forEach((tab: Tab, indexTab) => {
                 tab.items.forEach(item => {
                     if (item.id === inputItemId) {
@@ -107,7 +96,6 @@ export const TreeManagerController: React.FC = () => {
 
                 project.tabs[tabIndex].items.push(new TreeItemComponent({
                     items: [],
-                    name: newName,
                     label: newName,
                     type: paramType,
                     description: '',
@@ -115,18 +103,18 @@ export const TreeManagerController: React.FC = () => {
                     isEditing: false,
                     isExpanded: false,
                     id: Utils.getUUID(),
-                    itemPaiId: inputItemId,
+                    ascendantId: inputItemId,
                 }));
             }
 
-            onChangeState();
+            setProject(project);
         }
 
         const addRoute = (inputItemId: string | undefined, routerType: EComponentType.routerConsume | EComponentType.routerExpose) => {
             if (inputItemId === undefined) {
                 let tabIndex: number | undefined;
                 project.tabs.forEach((tab: Tab, indexTab) => {
-                    if (tab.configs.isEditing) {
+                    if (tab.isEditing) {
                         tabIndex = indexTab;
                     }
                     // Garante não existirá duas tabs sendo editadas ao mesmo tempo.
@@ -143,31 +131,30 @@ export const TreeManagerController: React.FC = () => {
                         items: (
                             routerType === EComponentType.routerExpose
                                 ? [
-                                    new FlowItemComponent({ id: '1', name: EItemType.START, icon: IconFlowStart, itemType: EItemType.START, left: 188, top: 128, isSelected: false, connections: [{ id: Utils.getUUID(), targetId: '2', originId: '1', isSelected: false }], properties: [] }),
-                                    new FlowItemComponent({ id: '2', name: EItemType.END, icon: IconFlowEnd, itemType: EItemType.END, left: 188, top: 384, isSelected: false, connections: [], properties: [] })
+                                    new FlowItemComponent({ id: '1', label: EItemType.START, icon: IconFlowStart, type: EItemType.START, left: 188, top: Math.round(128 / 15) * 15, connections: [{ id: Utils.getUUID(), targetId: '2', originId: '1', isSelected: false }] }),
+                                    new FlowItemComponent({ id: '2', label: EItemType.END, icon: IconFlowEnd, type: EItemType.END, left: 188, top: Math.round(384 / 15) * 15, connections: [] })
                                 ]
                                 : []
                         ),
-                        name: newName,
                         label: newName,
                         description: '',
                         type: routerType,
                         isSelected: true,
                         isExpanded: true,
                         id: Utils.getUUID(),
-                        itemPaiId: inputItemId,
+                        ascendantId: inputItemId,
                         isEditing: routerType === EComponentType.routerExpose,
                     }));
                 }
             }
-            onChangeState();
+            setProject(project);
         }
 
         const addAction = (inputItemId: string | undefined) => {
             if (inputItemId === undefined) {
                 let tabIndex: number | undefined;
                 project.tabs.forEach((tab: Tab, indexTab) => {
-                    if (tab.configs.isEditing) {
+                    if (tab.isEditing) {
                         tabIndex = indexTab;
                     }
                     // Garante não existirá duas tabs sendo editadas ao mesmo tempo.
@@ -181,28 +168,28 @@ export const TreeManagerController: React.FC = () => {
                     const newName = Utils.newName('NewAction', project.tabs[tabIndex].items.map(item => item.label));
 
                     project.tabs[tabIndex].items.push(new TreeItemComponent({
-                        name: newName,
                         label: newName,
                         description: '',
                         isEditing: true,
                         isSelected: true,
-                        id: Utils.getUUID(),
                         isExpanded: true,
-                        itemPaiId: inputItemId,
+                        id: Utils.getUUID(),
+                        ascendantId: inputItemId,
                         type: EComponentType.globalAction,
                         items: [
-                            new FlowItemComponent({ id: '1', name: EItemType.START, icon: IconFlowStart, itemType: EItemType.START, left: 188, top: 128, isSelected: false, connections: [{ id: Utils.getUUID(), targetId: '2', originId: '1', isSelected: false }], properties: [] }),
-                            new FlowItemComponent({ id: '2', name: EItemType.END, icon: IconFlowEnd, itemType: EItemType.END, left: 188, top: 384, isSelected: false, connections: [], properties: [] })
+                            new FlowItemComponent({ id: '1', label: EItemType.START, icon: IconFlowStart, type: EItemType.START, left: 188, top: Math.round(128 / 15) * 15, isSelected: false, connections: [{ id: Utils.getUUID(), targetId: '2', originId: '1', isSelected: false }], properties: [] }),
+                            new FlowItemComponent({ id: '2', label: EItemType.END, icon: IconFlowEnd, type: EItemType.END, left: 188, top: Math.round(384 / 15) * 15, isSelected: false, connections: [], properties: [] })
                         ],
                     }));
                 }
             }
-            onChangeState()
+
+            setProject(project);
         }
 
         project.tabs.forEach((tab: Tab) => {
-            if (tab.configs.isEditing) {
-                if (tab.configs.type === EComponentType.tabRoutes) {
+            if (tab.isEditing) {
+                if (tab.type === EComponentType.tabRoutes) {
 
                     options.push({
                         action: () => addRoute(itemId, EComponentType.routerExpose),
@@ -218,7 +205,7 @@ export const TreeManagerController: React.FC = () => {
                         label: 'Consume a new route'
                     });
 
-                } else if (tab.configs.type === EComponentType.tabActions) {
+                } else if (tab.type === EComponentType.tabActions) {
 
                     options.push({
                         icon: AssetsService.getIcon(EComponentType.globalAction),
@@ -227,7 +214,7 @@ export const TreeManagerController: React.FC = () => {
                         label: 'Add new action'
                     });
 
-                } else if (tab.configs.type === EComponentType.tabDates) {
+                } else if (tab.type === EComponentType.tabDates) {
 
                 }
 
@@ -326,8 +313,7 @@ export const TreeManagerController: React.FC = () => {
                                 });
                                 break;
 
-                            default:
-                                break;
+                            default: break;
                         }
                     }
                 });
@@ -350,12 +336,12 @@ export const TreeManagerController: React.FC = () => {
         }
 
         return options;
-    }
+    }, [project, setProject, treeManagerRemoveItem]);
 
     const handleOnChange = useCallback((updatedItems: ITreeItem[]) => {
 
         project.tabs.forEach((tab: Tab) => {
-            if (tab.configs.isEditing) {
+            if (tab.isEditing) {
 
                 tab.items = tab.items.map(item => {
                     const updatedItem = updatedItems.find(updatedItem => updatedItem.id === item.id);
@@ -364,13 +350,14 @@ export const TreeManagerController: React.FC = () => {
                     return new TreeItemComponent({
                         ...item,
                         isEditing: updatedItem.isEditing || false,
+                        ascendantId: updatedItem.ascendantId,
                         isExpanded: updatedItem.nodeExpanded,
                         isSelected: updatedItem.isSelected,
-                        itemPaiId: updatedItem.ascendantId,
                         description: item.description,
                         properties: item.properties,
+                        items: item.items,
                         label: item.label,
-                        name: item.name,
+                        id: item.id,
                     });
                 });
 
@@ -383,13 +370,11 @@ export const TreeManagerController: React.FC = () => {
                     if (isSelected) item.isSelected = false;
                     if (isEditing) item.isEditing = false;
                 });
-
             }
         });
 
-        changeFocus();
-        onChangeState();
-    }, [project.tabs, onChangeState, changeFocus]);
+        setProject(project);
+    }, [project, setProject]);
 
     /** Monta a estrutura da árvore e devolve no return */
     const treeManagerItems = ((): ITreeItem[] => {
@@ -442,20 +427,20 @@ export const TreeManagerController: React.FC = () => {
         let items: ITreeItem[] = [];
 
         project.tabs.forEach((tab: Tab) => {
-            if (tab.configs.isEditing) {
+            if (tab.isEditing) {
                 items = tab.items.map((item): ITreeItem => ({
                     ...item,
-                    label: item.label,
-                    icon: item.properties.find(prop => prop.propertieType === PropertieTypes.icon)?.value.content || AssetsService.getIcon(item.type),
-                    hasWarning: item.items.some(itemFlow => itemFlow.properties.some(prop => (prop.valueHasWarning || prop.nameHasWarning))),
-                    description: item.properties.find(prop => prop.propertieType === PropertieTypes.description)?.value || item.description,
-                    hasError: item.items.some(itemFlow => itemFlow.properties.some(prop => (prop.valueHasError || prop.nameHasError))),
-                    //label: item.properties.find(prop => prop.propertieType === PropertieTypes.label)?.value || item.label,
                     isDisabledDoubleClick: cannotPerformDoubleClick(item.type),
                     isDisabledDrag: item.type === EComponentType.routerExpose,
                     canDropList: getCanDropList(item.type),
-                    nodeExpanded: item.isExpanded,
-                    ascendantId: item.itemPaiId,
+                    nodeExpanded: Boolean(item.isExpanded),
+                    description: item.description,
+                    ascendantId: item.ascendantId,
+                    hasWarning: item.hasWarning,
+                    icon: item.icon.content,
+                    hasError: item.hasError,
+                    label: item.label,
+                    id: item.id,
                 }));
             }
         });
@@ -465,6 +450,10 @@ export const TreeManagerController: React.FC = () => {
 
     return (
         <TreeManager
+            items={treeManagerItems}
+            onChangeItems={handleOnChange}
+            onKeyDown={treeManagerOnKeyDowm}
+            onFocus={() => project.currentFocus = ECurrentFocus.tree}
             configs={{
                 id: 'Inspector',
                 isUseDrag: true,
@@ -477,12 +466,10 @@ export const TreeManagerController: React.FC = () => {
                     <CustomDragLayer children={item} />
                 )
             }}
-            items={treeManagerItems}
-            onChangeItems={handleOnChange}
-            onKeyDown={treeManagerOnKeyDowm}
-            onContextMenu={(itemId, e) => {
+            onContextMenu={(treeItemId, e) => {
                 e.preventDefault();
-                ContextMenuService.showMenu(e.clientX, e.clientY, treeManagerContextMenu(itemId));
+                console.log(treeItemId)
+                ContextMenuService.showMenu(e.clientX, e.clientY, treeManagerContextMenu(treeItemId));
             }}
         />
     );

@@ -4,8 +4,8 @@ import { PropertiesTab } from '../../../pages/editor/properties-tab/PropertiesTa
 import { TabButton, TabGroup, TabsManager } from '../tabs';
 import { useEditorContext } from '../../contexts';
 import { AssetsService } from '../../services';
-import { Tab } from '../../models/Tabs';
 import { Modal } from '../modal/Modal';
+import { Tab } from '../../models';
 import './ToolBar.css';
 
 export const ToolBar: React.FC = memo(() => {
@@ -33,13 +33,13 @@ export const ToolBar: React.FC = memo(() => {
             <hr className="hr hr-vertical" />
             <TabsManager
                 tabs={
-                    project.getOpenedWindows().map(tab => ({
+                    project.getWindows().map(tab => ({
                         ...tab,
                         icon: getIconByItemId(tab.id)
                     }))
                 }
                 onChange={windowId => {
-                    if (project.projectConfigs.id) {
+                    if (project.configurations.id) {
 
                         project.selectWindowById(windowId);
 
@@ -47,7 +47,7 @@ export const ToolBar: React.FC = memo(() => {
                     }
                 }}
                 onCloseWindowTab={windowId => {
-                    if (project.projectConfigs.id) {
+                    if (project.configurations.id) {
 
                         project.removeWindowById(windowId);
 
@@ -61,23 +61,23 @@ export const ToolBar: React.FC = memo(() => {
                     {tabs.map((tab: Tab, index) => {
                         return (
                             <TabButton
-                                id={tab.configs.name}
-                                key={tab.configs.name}
+                                id={tab.name}
+                                key={tab.name}
                                 content={<>
-                                    <img height="90%" className="padding-right-s" src={AssetsService.getIcon(tab.configs.type)} alt={tab.configs.type} />
-                                    {tab.configs.label}
+                                    <img height="90%" className="padding-right-s" src={AssetsService.getIcon(tab.type)} alt={tab.type} />
+                                    {tab.label}
                                 </>}
-                                title={tab.configs.description}
-                                isSelected={tab.configs.isEditing}
+                                title={tab.description}
+                                isSelected={tab.isEditing}
                                 className="btn-open-routers-tab flex1 padding-horizontal-sm"
                                 onClick={() => {
-                                    project.tabs.forEach(currentTab => currentTab.configs.isEditing = false);
-                                    project.tabs[index].configs.isEditing = true;
+                                    project.tabs.forEach(currentTab => currentTab.isEditing = false);
+                                    project.tabs[index].isEditing = true;
                                     setProject(project)
                                 }}
                                 onFocus={() => {
-                                    project.tabs.forEach(currentTab => currentTab.configs.isEditing = false);
-                                    project.tabs[index].configs.isEditing = true;
+                                    project.tabs.forEach(currentTab => currentTab.isEditing = false);
+                                    project.tabs[index].isEditing = true;
                                     setProject(project)
                                 }}
                             />
@@ -95,7 +95,7 @@ export const ToolBar: React.FC = memo(() => {
             secondaryButtomText={"Close"}
             onClickPrimary={() => setIsOpenModalProps(false)}
             onClickSecondary={() => setIsOpenModalProps(false)}
-            onClose={(value) => { setIsOpenModalProps(false); return true; }}
+            onClose={() => { setIsOpenModalProps(false); return true; }}
         />
     </>);
 });
