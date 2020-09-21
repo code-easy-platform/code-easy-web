@@ -10,4 +10,5 @@ export enum TypeOfValues {
     number = 'number',
     binary = 'binary',
     assign = 'assign',
+    hidden = 'hidden',
 }
