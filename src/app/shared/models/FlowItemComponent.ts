@@ -254,7 +254,7 @@ export class FlowItemComponent extends BasicConfigurations<EItemType> implements
 
         let prop = this.properties?.find(prop => prop.propertieType === PropertieTypes.description);
         if (prop) {
-            prop.type = TypeOfValues.viewOnly;
+            prop.type = TypeOfValues.hidden;
         }
 
         return props;
@@ -279,7 +279,7 @@ export class FlowItemComponent extends BasicConfigurations<EItemType> implements
 
         let prop = this.properties?.find(prop => prop.propertieType === PropertieTypes.description);
         if (prop) {
-            prop.type = TypeOfValues.viewOnly;
+            prop.type = TypeOfValues.hidden;
         }
 
         return props;
@@ -298,7 +298,7 @@ export class FlowItemComponent extends BasicConfigurations<EItemType> implements
 
         let prop = this.properties?.find(prop => prop.propertieType === PropertieTypes.description);
         if (prop) {
-            prop.type = TypeOfValues.viewOnly;
+            prop.type = TypeOfValues.hidden;
         }
 
         return props;
@@ -322,7 +322,7 @@ export class FlowItemComponent extends BasicConfigurations<EItemType> implements
 
         let prop = this.properties?.find(prop => prop.propertieType === PropertieTypes.description);
         if (prop) {
-            prop.type = TypeOfValues.viewOnly;
+            prop.type = TypeOfValues.hidden;
         }
 
         return props;
@@ -368,7 +368,7 @@ export class FlowItemComponent extends BasicConfigurations<EItemType> implements
 
         let prop = this.properties?.find(prop => prop.propertieType === PropertieTypes.description);
         if (prop) {
-            prop.type = TypeOfValues.viewOnly;
+            prop.type = TypeOfValues.hidden;
         }
 
         return props;
@@ -383,7 +383,7 @@ export class FlowItemComponent extends BasicConfigurations<EItemType> implements
             this.isEnabledNewConnetion = false;
         }
 
-        this.properties.forEach(prop => prop.type = TypeOfValues.viewOnly);
+        this.properties.forEach(prop => prop.type = TypeOfValues.hidden);
 
         return props;
     }
@@ -392,7 +392,7 @@ export class FlowItemComponent extends BasicConfigurations<EItemType> implements
 
         this.isEnabledNewConnetion = false;
 
-        this.properties.forEach(prop => prop.type = TypeOfValues.viewOnly);
+        this.properties.forEach(prop => prop.type = TypeOfValues.hidden);
 
         return props;
     }
@@ -425,7 +425,7 @@ export class FlowItemComponent extends BasicConfigurations<EItemType> implements
 
         let prop = this.properties?.find(prop => prop.propertieType === PropertieTypes.description);
         if (prop) {
-            prop.type = TypeOfValues.viewOnly;
+            prop.type = TypeOfValues.hidden;
         }
 
         return props;
