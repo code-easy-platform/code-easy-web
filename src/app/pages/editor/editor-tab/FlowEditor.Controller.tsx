@@ -15,15 +15,9 @@ export const FlowEditorController: React.FC = memo(() => {
     const { flowBackgroundType, snapGridWhileDragging } = useIdeConfigs();
     const { project, setProject } = useEditorContext();
 
-    /** Atualiza o foco do editor de propriedades */
-    const changeFocus = useCallback(() => project.currentFocus = ECurrentFocus.flow, [project]);
-
     const handleOnChangeItems = useCallback((updatedItems: IFlowItem[]) => {
 
         /** Toda vez que houver uma alteração nos items de fluxo está função será executada. */
-
-        // Atualiza o currentFocus da tab
-        changeFocus();
 
         // Encontra a tab certa e atualiza os items
         project.tabs.forEach((tab: Tab) => {
@@ -82,7 +76,7 @@ export const FlowEditorController: React.FC = memo(() => {
 
         // Atualiza o context do projeto
         setProject(project);
-    }, [changeFocus, setProject, project]);
+    }, [setProject, project]);
 
     /**
      * Ao soltar um novo item permitido no editor está função será executada.
@@ -154,10 +148,8 @@ export const FlowEditorController: React.FC = memo(() => {
         newItem.flowItemType = EFlowItemType.acorn;
         newItem.label = newItem.itemType;
 
-        changeFocus();
-
         return newItem;
-    }, [changeFocus, project.tabs]);
+    }, [project.tabs]);
 
     /** Alimenta a toolbox, de onde pode ser arrastados items para o fluxo. */
     const toolBoxItems = useCallback((): IFlowItem[] => [
@@ -219,7 +211,7 @@ export const FlowEditorController: React.FC = memo(() => {
         toolBoxItems().forEach(item => {
             options.push({
                 label: 'Add ' + item.label,
-                 
+
                 action: () => {
 
                     // Encontra a tab certa e adiciona um item de fluxo aos items
@@ -437,7 +429,7 @@ export const FlowEditorController: React.FC = memo(() => {
                 }
             }}
             onFocus={() => {
-                changeFocus();
+                project.currentFocus = ECurrentFocus.flow;
                 setProject(project);
             }}
             configs={{

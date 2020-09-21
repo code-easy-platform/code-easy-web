@@ -12,9 +12,6 @@ export const PropertiesEditorController: React.FC = () => {
 
     const { project, setProject, getItemTreeEditing, getItemTreeByName } = useEditorContext();
 
-    /** Atualiza o contexto do projeto */
-    const onChangeState = useCallback(() => setProject(project), [project, setProject]);
-
     /** O editor de propriedades emite a lista de propriedades alteradas */
     const handleOnChangeItems = useCallback((item: IItem) => {
 
@@ -99,24 +96,8 @@ export const PropertiesEditorController: React.FC = () => {
                     });
                 }
 
-                // TODO: Remover isso
-
-                // Reinstancia a classe para revalidar as propriedade e mais
-                /* editingFlowItem = new FlowItemComponent({
-                    ...editingFlowItem,
-                    properties: item.properties,
-                }); */
-
-                /* treeItemEditing = new TreeItemComponent({
-                    ...treeItemEditing,
-                    description: treeItemEditing.description,
-                    properties: treeItemEditing.properties,
-                    label: treeItemEditing.label,
-                    items: [
-                        ...treeItemEditing.items.filter(flowItem => flowItem.id !== editingFlowItem?.id),
-                        editingFlowItem,
-                    ]
-                }); */
+                // Update flow item with the new properties
+                editingFlowItem.properties = item.properties;
 
                 tab.items = [
                     ...tab.items.filter(flowItem => flowItem.id !== treeItemEditing?.id),
@@ -125,8 +106,8 @@ export const PropertiesEditorController: React.FC = () => {
             });
         };
 
-        onChangeState();
-    }, [project, onChangeState]);
+        setProject(project);
+    }, [project, setProject]);
 
     /** Devolve para o editor de propriedades as propriedades do item selecionado no momento. */
     const getSelectedItem = useCallback((currentFocus: ECurrentFocus): IItem => {

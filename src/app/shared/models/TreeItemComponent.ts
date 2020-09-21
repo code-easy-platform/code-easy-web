@@ -20,7 +20,7 @@ export class TreeItemComponent extends BasicConfigurations<EComponentType> imple
     public set properties(props: IProperty[]) {
 
         // Ensures that the original properties are present, and add to the list if any are not
-        const originalProperties = DefaultPropsHelper.getNewProps(this.type, this.name);
+        const originalProperties = DefaultPropsHelper.getNewProps(this.type, this.name, this.type === EComponentType.routerExpose);
         originalProperties.forEach(originalProp => {
             if (!props.some(prop => prop.propertieType === originalProp.propertieType)) {
                 props.push(originalProp);

@@ -124,28 +124,6 @@ input[type="checkbox"]:checked {
   overflow: hidden;
 }
 
-/* Backgrounds base */
-
-.background {
-  background-color: var(--main-background);
-}
-
-.background-bars {
-  background-color: var(--main-background-bars);
-}
-
-.background-info {
-  background-color: var(--main-background-info);
-}
-
-.background-panels {
-  background-color: var(--main-background-panels);
-}
-
-.background-highlighted {
-  background-color: var(--main-background-highlighted);
-}
-
 .input-border {
   border: var(--input-border);
 }
@@ -175,7 +153,7 @@ input[type="checkbox"]:checked {
   padding: var(--size-xs);
 }
 
-.hover:hover {
+.hover:hover, .focus:focus {
   opacity: 0.7;
 }
 

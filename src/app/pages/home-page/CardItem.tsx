@@ -98,11 +98,11 @@ export const CardItem = memo(({ listMode, ...props }: CardItemProps) => {
                 <div className="margin-top-m" style={{ justifyContent: 'flex-end' }}>
                     <button
                         onClick={props.onCancel}
-                        className="border-none hover active cursor-pointer padding-sm padding-left-m padding-right-m background-transparent margin-right-s border-radius outline-none"
+                        className="border-none hover focus active cursor-pointer padding-sm padding-left-m padding-right-m background-transparent margin-right-s border-radius outline-none"
                     >Cancel</button>
                     <button
                         onClick={() => props.onClick(item)}
-                        className="border-none hover active cursor-pointer padding-sm text-white padding-left-m padding-right-m border-radius outline-none background-primary"
+                        className="border-none hover focus active cursor-pointer padding-sm text-white padding-left-m padding-right-m border-radius outline-none background-primary"
                     >Save</button>
                 </div>
             </div>
