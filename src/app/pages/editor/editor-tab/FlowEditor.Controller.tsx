@@ -15,15 +15,9 @@ export const FlowEditorController: React.FC = memo(() => {
     const { flowBackgroundType, snapGridWhileDragging } = useIdeConfigs();
     const { project, setProject } = useEditorContext();
 
-    /** Atualiza o foco do editor de propriedades */
-    const changeFocus = useCallback(() => project.currentComponentFocus = ECurrentFocus.flow, [project]);
-
     const handleOnChangeItems = useCallback((updatedItems: IFlowItem[]) => {
 
         /** Toda vez que houver uma alteração nos items de fluxo está função será executada. */
-
-        // Atualiza o currentFocus da tab
-        changeFocus();
 
         // Encontra a tab certa e atualiza os items
         project.tabs.forEach((tab: Tab) => {
@@ -40,7 +34,7 @@ export const FlowEditorController: React.FC = memo(() => {
                             const index = item.items.findIndex(item => updatedItem.id === item.id);
                             if (index >= 0) {
                                 newItems.push(new FlowItemComponent({
-                                    itemType: parseEItemType(String(updatedItem.itemType)),
+                                    type: parseEItemType(String(updatedItem.itemType)),
                                     isSelected: updatedItem.isSelected || false,
                                     connections: updatedItem.connections || [],
                                     properties: item.items[index].properties,
@@ -48,7 +42,7 @@ export const FlowEditorController: React.FC = memo(() => {
                                     hasWarning: updatedItem.hasWarning,
                                     isDisabled: updatedItem.isDisabled,
                                     hasError: updatedItem.hasError,
-                                    name: updatedItem.label || '',
+                                    label: updatedItem.label || '',
                                     left: updatedItem.left,
                                     icon: updatedItem.icon,
                                     top: updatedItem.top,
@@ -56,14 +50,14 @@ export const FlowEditorController: React.FC = memo(() => {
                                 }));
                             } else {
                                 newItems.push(new FlowItemComponent({
-                                    itemType: parseEItemType(String(updatedItem.itemType)),
+                                    type: parseEItemType(String(updatedItem.itemType)),
                                     isSelected: updatedItem.isSelected || false,
                                     connections: updatedItem.connections || [],
                                     description: updatedItem.description,
                                     hasWarning: updatedItem.hasWarning,
                                     isDisabled: updatedItem.isDisabled,
                                     hasError: updatedItem.hasError,
-                                    name: updatedItem.label || '',
+                                    label: updatedItem.label || '',
                                     icon: updatedItem.icon,
                                     left: updatedItem.left,
                                     top: updatedItem.top,
@@ -82,7 +76,7 @@ export const FlowEditorController: React.FC = memo(() => {
 
         // Atualiza o context do projeto
         setProject(project);
-    }, [changeFocus, setProject, project]);
+    }, [setProject, project]);
 
     /**
      * Ao soltar um novo item permitido no editor está função será executada.
@@ -117,7 +111,7 @@ export const FlowEditorController: React.FC = memo(() => {
                         });
 
                         let completeItem = new FlowItemComponent({
-                            itemType: parseEItemType(String(newItem.itemType)),
+                            type: parseEItemType(String(newItem.itemType)),
                             isSelected: newItem.isSelected || false,
                             connections: newItem.connections || [],
                             description: newItem.description,
@@ -125,8 +119,7 @@ export const FlowEditorController: React.FC = memo(() => {
                             hasWarning: newItem.hasWarning,
                             isDisabled: newItem.isDisabled,
                             hasError: newItem.hasError,
-                            name: newItem.label || '',
-                            label: newItem.itemType,
+                            label: newItem.label || '',
                             icon: newItem.icon,
                             left: newItem.left,
                             top: newItem.top,
@@ -155,21 +148,19 @@ export const FlowEditorController: React.FC = memo(() => {
         newItem.flowItemType = EFlowItemType.acorn;
         newItem.label = newItem.itemType;
 
-        changeFocus();
-
         return newItem;
-    }, [changeFocus, project.tabs]);
+    }, [project.tabs]);
 
     /** Alimenta a toolbox, de onde pode ser arrastados items para o fluxo. */
-    const toolBoxItems = useCallback(() => [
-        { id: '1', icon: IconFlowStart, name: "START", itemType: EItemType.START, top: 0, left: 0, flowItemType: EFlowItemType.acorn },
-        { id: '2', icon: IconFlowAction, name: "ACTION", itemType: EItemType.ACTION, top: 0, left: 0, flowItemType: EFlowItemType.acorn },
-        { id: '3', icon: IconFlowIf, name: "IF", itemType: EItemType.IF, top: 0, left: 0, flowItemType: EFlowItemType.acorn },
-        { id: '4', icon: IconFlowForeach, name: "FOREACH", itemType: EItemType.FOREACH, top: 0, left: 0, flowItemType: EFlowItemType.acorn },
-        { id: '6', icon: IconFlowSwitch, name: "SWITCH", itemType: EItemType.SWITCH, top: 0, left: 0, flowItemType: EFlowItemType.acorn },
-        { id: '7', icon: IconFlowAssign, name: "ASSIGN", itemType: EItemType.ASSIGN, top: 0, left: 0, flowItemType: EFlowItemType.acorn },
-        { id: '8', icon: IconFlowEnd, name: "END", itemType: EItemType.END, top: 0, left: 0, flowItemType: EFlowItemType.acorn },
-        { id: '9', icon: IconFlowComment, name: "COMMENT", itemType: EItemType.COMMENT, top: 0, left: 0, flowItemType: EFlowItemType.comment },
+    const toolBoxItems = useCallback((): IFlowItem[] => [
+        { id: '1', icon: IconFlowStart, label: "START", itemType: EItemType.START, top: 0, left: 0, flowItemType: EFlowItemType.acorn },
+        { id: '2', icon: IconFlowAction, label: "ACTION", itemType: EItemType.ACTION, top: 0, left: 0, flowItemType: EFlowItemType.acorn },
+        { id: '3', icon: IconFlowIf, label: "IF", itemType: EItemType.IF, top: 0, left: 0, flowItemType: EFlowItemType.acorn },
+        { id: '4', icon: IconFlowForeach, label: "FOREACH", itemType: EItemType.FOREACH, top: 0, left: 0, flowItemType: EFlowItemType.acorn },
+        { id: '6', icon: IconFlowSwitch, label: "SWITCH", itemType: EItemType.SWITCH, top: 0, left: 0, flowItemType: EFlowItemType.acorn },
+        { id: '7', icon: IconFlowAssign, label: "ASSIGN", itemType: EItemType.ASSIGN, top: 0, left: 0, flowItemType: EFlowItemType.acorn },
+        { id: '8', icon: IconFlowEnd, label: "END", itemType: EItemType.END, top: 0, left: 0, flowItemType: EFlowItemType.acorn },
+        { id: '9', icon: IconFlowComment, label: "COMMENT", itemType: EItemType.COMMENT, top: 0, left: 0, flowItemType: EFlowItemType.comment },
     ], []);
 
     /** Quando clicado com o botão esquerdo do mouse no interior do editor esta função é acionada. */
@@ -219,28 +210,28 @@ export const FlowEditorController: React.FC = memo(() => {
 
         toolBoxItems().forEach(item => {
             options.push({
-                label: 'Add ' + item.name,
-                icon: AssetsService.getIcon(item.itemType),
+                label: 'Add ' + item.label,
+
                 action: () => {
 
                     // Encontra a tab certa e adiciona um item de fluxo aos items
                     project.tabs.forEach((tab: Tab) => {
                         tab.items.forEach(item_tree => {
-                            if (item_tree.isEditing) {
+                            if (item?.itemType && item_tree.isEditing) {
 
                                 // Deseleciona todos os items anteriores
                                 item_tree.items.forEach(item_flow => item_flow.isSelected = false);
 
                                 // Adiciona a tab com os items alterados
                                 item_tree.items.push(new FlowItemComponent({
-                                    icon: AssetsService.getIcon(item.itemType),
-                                    itemType: item.itemType,
+                                    icon: AssetsService.getIcon(parseEItemType(item.itemType)),
+                                    type: parseEItemType(item.itemType),
+                                    label: String(item.label),
                                     id: Utils.getUUID(),
                                     isDisabled: false,
                                     hasWarning: false,
                                     isSelected: true,
                                     hasError: false,
-                                    name: item.name,
                                     connections: [],
                                     properties: [],
                                     left,
@@ -271,11 +262,11 @@ export const FlowEditorController: React.FC = memo(() => {
                 if (item.isEditing) {
 
                     breadcamps.push({
-                        label: tab.configs.label,
+                        label: tab.label,
                         onClick: () => {
-                            project.tabs.forEach((tab: Tab) => tab.configs.isEditing = false);
-                            project.currentComponentFocus = ECurrentFocus.tree;
-                            tab.configs.isEditing = true;
+                            project.tabs.forEach((tab: Tab) => tab.isEditing = false);
+                            project.currentFocus = ECurrentFocus.tree;
+                            tab.isEditing = true;
                             setProject(project);
                         }
                     });
@@ -283,7 +274,7 @@ export const FlowEditorController: React.FC = memo(() => {
                     breadcamps.push({
                         label: item.label,
                         onClick: (() => {
-                            project.tabs.forEach((tab: Tab) => tab.configs.isEditing = false);
+                            project.tabs.forEach((tab: Tab) => tab.isEditing = false);
 
                             project.tabs.forEach(tab => {
                                 tab.items.forEach(item => {
@@ -291,8 +282,8 @@ export const FlowEditorController: React.FC = memo(() => {
                                 });
                             });
 
-                            project.currentComponentFocus = ECurrentFocus.tree;
-                            tab.configs.isEditing = true;
+                            project.currentFocus = ECurrentFocus.tree;
+                            tab.isEditing = true;
                             item.isSelected = true;
                             setProject(project);
 
@@ -363,16 +354,16 @@ export const FlowEditorController: React.FC = memo(() => {
                 label: item.name,
                 width: item.width,
                 height: item.height,
-                itemType: item.itemType,
+                itemType: item.type,
                 isSelected: item.isSelected,
                 isDisabled: item.isDisabled,
                 connections: item.connections,
                 flowItemType: item.flowItemType,
                 isEnabledNewConnetion: item.isEnabledNewConnetion,
-                icon: selectedActionIcon?.value?.content || item.icon,
+                icon: selectedActionIcon?.value?.content || item.icon.content,
                 hasError: item.properties.some(prop => (prop.valueHasError || prop.nameHasError)),
                 hasWarning: item.properties.some(prop => (prop.valueHasWarning || prop.nameHasWarning)),
-                description: item.itemType !== EItemType.COMMENT
+                description: item.type !== EItemType.COMMENT
                     ? selectedActionDescription?.value || item.description
                     : item.name,
             });
@@ -438,7 +429,7 @@ export const FlowEditorController: React.FC = memo(() => {
                 }
             }}
             onFocus={() => {
-                changeFocus();
+                project.currentFocus = ECurrentFocus.flow;
                 setProject(project);
             }}
             configs={{

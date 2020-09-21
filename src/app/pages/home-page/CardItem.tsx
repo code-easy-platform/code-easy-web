@@ -1,8 +1,8 @@
 import React, { useState, memo } from 'react';
-
-import { ProjectTypeList, ProjectType } from '../../shared/enuns/ProjectType';
-import { ContextMenuService } from '../../shared/components/context-menu/ContextMenuService';
 import { IconStar } from 'code-easy-components';
+
+import { ContextMenuService } from '../../shared/components/context-menu/ContextMenuService';
+import { ProjectTypeList, EProjectType } from '../../shared/enuns';
 
 interface CardItemProps {
     onDelete?(id: string): void;
@@ -12,7 +12,7 @@ interface CardItemProps {
         id: string;
         name: string;
         version: string;
-        type: ProjectType;
+        type: EProjectType;
         description: string;
     }): void;
     isAdding?: boolean;
@@ -21,7 +21,7 @@ interface CardItemProps {
         id: string;
         name: string;
         version: string;
-        type: ProjectType;
+        type: EProjectType;
         lastUpdate?: string;
         description: string;
     }
@@ -98,11 +98,11 @@ export const CardItem = memo(({ listMode, ...props }: CardItemProps) => {
                 <div className="margin-top-m" style={{ justifyContent: 'flex-end' }}>
                     <button
                         onClick={props.onCancel}
-                        className="border-none hover active cursor-pointer padding-sm padding-left-m padding-right-m background-transparent margin-right-s border-radius outline-none"
+                        className="border-none hover focus active cursor-pointer padding-sm padding-left-m padding-right-m background-transparent margin-right-s border-radius outline-none"
                     >Cancel</button>
                     <button
                         onClick={() => props.onClick(item)}
-                        className="border-none hover active cursor-pointer padding-sm text-white padding-left-m padding-right-m border-radius outline-none background-primary"
+                        className="border-none hover focus active cursor-pointer padding-sm text-white padding-left-m padding-right-m border-radius outline-none background-primary"
                     >Save</button>
                 </div>
             </div>

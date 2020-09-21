@@ -1,11 +1,17 @@
-import { IFlowItemComponent, IItemComponentConfigs } from "./../../interfaces";
-import { IProperty } from "./../../components/properties-editor";
+import { IBasicConfigurations } from "./IBasicConfigurations";
+import { IFlowItemComponent } from "./IFlowItemComponent";
+import { EComponentType } from "./../../enuns";
 
-export interface ITreeItemComponent extends IItemComponentConfigs {
-    /**Usado para lista todas as propriedades de um item */
-    properties?: IProperty[];
-    /** Usado para conter os items de um fluxo */
+/**
+ * Tree item representation with all its properties
+ */
+export interface ITreeItemComponent extends IBasicConfigurations<EComponentType> {
+    /**
+     * Used to contain items in a stream
+     */
     items: IFlowItemComponent[];
-    /** Usado para fazer auto referência usado para construir árvores */
-    itemPaiId: string | undefined;
+    /**
+     * Used to be found by the item that comes before, your igniter.
+     */
+    ascendantId?: string;
 }
