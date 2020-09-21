@@ -14,11 +14,8 @@ export const TreeManagerController: React.FC = () => {
 
     const { project, setProject } = useEditorContext();
 
-    /** Atualiza o contexto do projeto */
-    const onChangeState = useCallback(() => setProject(project), [project, setProject]);
-
     /** Remove tree items */
-    const treeManagerRemoveItem = (inputItemId: string | undefined) => {
+    const treeManagerRemoveItem = useCallback((inputItemId: string | undefined) => {
 
         // Se for undefined não faz nada
         if (!inputItemId) return;
@@ -56,10 +53,10 @@ export const TreeManagerController: React.FC = () => {
             }
         }
 
-        onChangeState();
-    };
+        setProject(project);
+    }, [project, setProject]);
 
-    const treeManagerOnKeyDowm = (e: React.FocusEvent<HTMLDivElement> | any) => {
+    const treeManagerOnKeyDowm = useCallback((e: React.FocusEvent<HTMLDivElement> | any) => {
         if (e.key === 'Delete') {
             let items: TreeItemComponent[] = [];
             project.tabs.forEach((tab: Tab) => {
@@ -73,10 +70,10 @@ export const TreeManagerController: React.FC = () => {
                 treeManagerRemoveItem(itemToEdit.id);
             }
         }
-    }
+    }, [project.tabs, treeManagerRemoveItem])
 
     /** Quando clicado com o botão esquerdo do mouse no interior da árvore esta função é acionada. */
-    const treeManagerContextMenu = (itemId: string | undefined) => {
+    const treeManagerContextMenu = useCallback((itemId: string | undefined) => {
         let options: IContextItemList[] = [];
 
         const addParam = (inputItemId: string | undefined, paramType: EComponentType.inputVariable | EComponentType.localVariable | EComponentType.outputVariable) => {
@@ -110,7 +107,7 @@ export const TreeManagerController: React.FC = () => {
                 }));
             }
 
-            onChangeState();
+            setProject(project);
         }
 
         const addRoute = (inputItemId: string | undefined, routerType: EComponentType.routerConsume | EComponentType.routerExpose) => {
@@ -150,7 +147,7 @@ export const TreeManagerController: React.FC = () => {
                     }));
                 }
             }
-            onChangeState();
+            setProject(project);
         }
 
         const addAction = (inputItemId: string | undefined) => {
@@ -186,7 +183,8 @@ export const TreeManagerController: React.FC = () => {
                     }));
                 }
             }
-            onChangeState()
+
+            setProject(project);
         }
 
         project.tabs.forEach((tab: Tab) => {
@@ -338,11 +336,9 @@ export const TreeManagerController: React.FC = () => {
         }
 
         return options;
-    }
+    }, [project, setProject, treeManagerRemoveItem]);
 
     const handleOnChange = useCallback((updatedItems: ITreeItem[]) => {
-
-        project.currentFocus = ECurrentFocus.tree;
 
         project.tabs.forEach((tab: Tab) => {
             if (tab.isEditing) {
@@ -377,8 +373,8 @@ export const TreeManagerController: React.FC = () => {
             }
         });
 
-        onChangeState();
-    }, [project, onChangeState]);
+        setProject(project);
+    }, [project, setProject]);
 
     /** Monta a estrutura da árvore e devolve no return */
     const treeManagerItems = ((): ITreeItem[] => {
@@ -470,9 +466,10 @@ export const TreeManagerController: React.FC = () => {
                     <CustomDragLayer children={item} />
                 )
             }}
-            onContextMenu={(itemId, e) => {
+            onContextMenu={(treeItemId, e) => {
                 e.preventDefault();
-                ContextMenuService.showMenu(e.clientX, e.clientY, treeManagerContextMenu(itemId));
+                console.log(treeItemId)
+                ContextMenuService.showMenu(e.clientX, e.clientY, treeManagerContextMenu(treeItemId));
             }}
         />
     );

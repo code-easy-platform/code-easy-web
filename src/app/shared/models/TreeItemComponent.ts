@@ -96,6 +96,7 @@ export class TreeItemComponent extends BasicConfigurations<EComponentType> imple
         super(fields);
 
         this.properties = fields.properties || this.properties;
+        this.ascendantId = fields.ascendantId || this.ascendantId;
         this.items = fields.items.map(item => new FlowItemComponent(item));
     }
 }
