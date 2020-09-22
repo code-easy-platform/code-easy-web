@@ -34,7 +34,7 @@ Code easy platform is a web platform for developing APIs in nodejs that helps yo
 
 ## Main screen preview
 
-![Code easy](https://raw.githubusercontent.com/code-easy-platform/code-easy-web/master/projeto/Code-easy-web.PNG)
+![Code easy](https://raw.githubusercontent.com/code-easy-platform/code-easy-web/master/projeto/Code-easy-web.png)
 
 ## Contributing
 
