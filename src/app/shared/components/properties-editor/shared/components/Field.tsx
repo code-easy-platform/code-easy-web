@@ -48,6 +48,9 @@ export const Field: React.FC<FieldProps> = ({ field, onChange }) => {
         case TypeOfValues.assign:
             return <Assign onChange={onChange} {...field} />;
 
+        case TypeOfValues.hidden:
+            return null;
+
         default:
             return null;
     }

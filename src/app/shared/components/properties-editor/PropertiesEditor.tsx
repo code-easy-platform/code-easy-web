@@ -9,7 +9,7 @@ interface PropertiesEditorFormProps {
 }
 export const PropertiesEditorForm: React.FC<PropertiesEditorFormProps> = ({ item, onChange }) => {
     const showHeader = item.name !== "" || (item.subname && item.subname !== "");
-
+    
     const handleOnChange = useCallback((fields: IProperty<any>[]) => {
         onChange && onChange({ ...item, properties: fields });
     }, [item, onChange]);

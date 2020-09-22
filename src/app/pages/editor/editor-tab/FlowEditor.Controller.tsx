@@ -365,7 +365,7 @@ export const FlowEditorController: React.FC = memo(() => {
                 hasWarning: item.properties.some(prop => (prop.valueHasWarning || prop.nameHasWarning)),
                 description: item.type !== EItemType.COMMENT
                     ? selectedActionDescription?.value || item.description
-                    : item.name,
+                    : item.properties.find(prop => prop.propertieType === PropertieTypes.comment)?.value,
             });
         });
 
