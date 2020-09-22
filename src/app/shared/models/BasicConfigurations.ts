@@ -29,7 +29,9 @@ export class BasicConfigurations<T> implements IBasicConfigurations<T> {
     public set label(value: string) {
         let prop = this._properties?.find(prop => prop.propertieType === PropertieTypes.label);
         if (prop) {
-            prop.value = value;
+            if (value.trim().length > 1) {
+                prop.value = value;
+            }
         } else {
             this._properties.push({
                 value,

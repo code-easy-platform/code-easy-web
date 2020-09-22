@@ -50,7 +50,6 @@ export class FlowItemComponent extends BasicConfigurations<EItemType> implements
                 break;
 
             case EItemType.ACTION:
-                console.log('log')
                 props = this._propertiesFromAction(props);
                 break;
 
@@ -401,7 +400,7 @@ export class FlowItemComponent extends BasicConfigurations<EItemType> implements
 
         this.connections = [
             ...this.connections.map((connection, index) => {
-                // Renomeando a label da connection
+                // Rename label of the connection
                 if (index === 0) {
                     return {
                         ...connection,
