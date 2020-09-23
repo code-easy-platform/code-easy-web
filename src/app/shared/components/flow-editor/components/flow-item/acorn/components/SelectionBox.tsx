@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { memo } from 'react';
 
 interface SelectionBoxProps {
     onMouseDown?(event: React.MouseEvent<SVGRectElement, MouseEvent>): void;
@@ -13,7 +13,7 @@ interface SelectionBoxProps {
     id: string;
 }
 /** Render image icon */
-export const SelectionBox: React.FC<SelectionBoxProps> = ({ height, left, top, width, id, strokeColor, strokeWidth, fullDraggable, backgroundColor, onMouseDown }) => {
+export const SelectionBox: React.FC<SelectionBoxProps> = memo(({ height, left, top, width, id, strokeColor, strokeWidth, fullDraggable, backgroundColor, onMouseDown }) => {
     return (
         <>
             <rect // Help in the background
@@ -50,4 +50,4 @@ export const SelectionBox: React.FC<SelectionBoxProps> = ({ height, left, top, w
             />
         </>
     );
-}
+});

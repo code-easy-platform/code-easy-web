@@ -3,8 +3,8 @@ import { DropTargetMonitor } from 'react-dnd';
 import { useRecoilCallback } from 'recoil';
 import { Utils } from 'code-easy-components';
 
-import { useFlowItems, useConfigs, useSelectItemById, useCopySelecteds, usePasteSelecteds, useFlowItemsConnetionsSelector, useDuplicateSelecteds } from './shared/hooks';
 import { FlowItemStore, FlowItemsStore, GetFlowItemsSelector, GetSelectedFlowItemsSelector, FlowLinesStore } from './shared/stores';
+import { useFlowItems, useConfigs, useSelectItemById, useFlowItemsConnetionsSelector } from './shared/hooks';
 import { IFlowEditorBoardProps } from './shared/interfaces/FlowEditorInterfaces';
 import { EmptyFeedback } from './components/empty-feedback/EmptyFeedback';
 import { ICoords, IFlowItem, IDroppableItem } from './shared/interfaces';
@@ -27,11 +27,10 @@ export const FlowEditorBoard: React.FC<IFlowEditorBoardProps> = (props) => {
     } = useConfigs();
     const { id, childrenWhenItemsEmpty = "Nothing here to edit", breadcrumbs = [], toolItems = [] } = props;
     const { onMouseEnter, onMouseLeave, onContextMenu, onDropItem, onFocus } = props;
-    const duplicateSelectedItems = useDuplicateSelecteds();
-    const pasteSelectedItems = usePasteSelecteds();
+    const { onAnyKeyDown, onKeyDownCtrlC, onKeyDownCtrlD, onKeyDownCtrlV } = props;
+
     const lines = useFlowItemsConnetionsSelector();
     const boardRef = useRef<SVGSVGElement>(null);
-    const copySelectedItems = useCopySelecteds();
     const selectItemById = useSelectItemById();
     const items = useFlowItems();
 
@@ -319,8 +318,6 @@ export const FlowEditorBoard: React.FC<IFlowEditorBoardProps> = (props) => {
         target.focus();
     });
 
-    console.log(showToolbar)
-
     return (
         <div style={{ width: '100%', height: '100%', display: 'flex' }} onMouseEnter={onMouseEnter} onMouseLeave={onMouseLeave}>
             <Toolbar
@@ -347,21 +344,19 @@ export const FlowEditorBoard: React.FC<IFlowEditorBoardProps> = (props) => {
                     dottedSize={dottedSize}
                     onDropItem={handleDroptem}
                     useElevation={useElevation}
+                    onAnyKeyDown={onAnyKeyDown}
                     onContextMenu={onContextMenu}
                     onKeyDownDelete={handleDelete}
+                    onKeyDownCtrlC={onKeyDownCtrlC}
+                    onKeyDownCtrlD={onKeyDownCtrlD}
+                    onKeyDownCtrlV={onKeyDownCtrlV}
                     elevationColor={elevationColor}
                     backgroundType={backgroundType}
                     backgroundColor={backgroundColor}
-                    onKeyDownCtrlC={copySelectedItems}
-                    onKeyDownCtrlV={pasteSelectedItems}
                     allowedsInDrop={typesAllowedToDrop}
                     onArrowKeyDown={handleArrowKeyDown}
                     onKeyDownCtrlA={handleSelecteAllFlowItems}
                     onMouseDown={e => selectItemById(undefined, e.ctrlKey)}
-                    onKeyDownCtrlD={e => {
-                        e.preventDefault();
-                        duplicateSelectedItems();
-                    }}
                 >
                     {lines.map(({ id, originId, targetId }, index) => <Line
                         id={id}
