@@ -368,6 +368,7 @@ export const FlowEditorBoard: React.FC<IFlowEditorBoardProps> = (props) => {
                         key={index}
                         originId={originId}
                         targetId={targetId}
+                        parentRef={boardRef}
                         onDropItem={handleDroptem}
                         onContextMenu={onContextMenu}
                         allowedsInDrop={typesAllowedToDrop}
@@ -376,6 +377,7 @@ export const FlowEditorBoard: React.FC<IFlowEditorBoardProps> = (props) => {
                         <FlowItem
                             id={id}
                             key={id}
+                            parentRef={boardRef}
                             onContextMenu={onContextMenu}
                         />
                     ))}

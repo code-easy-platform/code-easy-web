@@ -9,13 +9,14 @@ interface FlowComponentProps {
     item: IFlowItem;
 
     useEvents?: boolean;
+    parentRef: React.RefObject<SVGSVGElement>;
 
     /** Used in parent component to move this element in the screen */
     onMouseDown?(event: React.MouseEvent<SVGGElement, MouseEvent>): void;
     /** Used to start the context menu for this específic component */
     onContextMenu?(event: React.MouseEvent<SVGGElement, MouseEvent>): void;
 }
-export const Acorn: React.FC<FlowComponentProps> = ({ item, useEvents, onContextMenu, onMouseDown }) => {
+export const Acorn: React.FC<FlowComponentProps> = ({ item, parentRef, useEvents, onContextMenu, onMouseDown }) => {
     const { flowItemErrorColor, flowItemTextColor, flowItemWarningColor, flowItemSelectedColor, lineWidth, backgroundColor } = useConfigs();
     const selectItemById = useSelectItemById();
 
@@ -51,6 +52,7 @@ export const Acorn: React.FC<FlowComponentProps> = ({ item, useEvents, onContext
                 width={(item.width || 0) + 20}
                 originId={String(item.id)}
                 left={item.left - 10}
+                parentRef={parentRef}
                 top={item.top - 10}
                 isRounded={true}
             />}

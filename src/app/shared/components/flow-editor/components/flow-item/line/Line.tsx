@@ -27,6 +27,7 @@ interface LineProps {
      * Target flow item
      */
     targetId: string | undefined;
+    parentRef: React.RefObject<SVGSVGElement>;
     /**
      * Reference to the element used to create new connections between items
      * 
@@ -50,7 +51,7 @@ interface LineProps {
      */
     onContextMenu?(event: React.MouseEvent<SVGGElement, MouseEvent>): void;
 }
-export const Line: React.FC<LineProps> = ({ id, originId, allowedsInDrop, newConnectionBoxRef, onContextMenu, onMouseDown, onDropItem }) => {
+export const Line: React.FC<LineProps> = ({ id, originId, parentRef, allowedsInDrop, newConnectionBoxRef, onContextMenu, onMouseDown, onDropItem }) => {
     const { disableOpacity, linesColor, lineWidth, flowItemSelectedColor, flowItemTextColor } = useConfigs();
     const createOrUpdateConnection = useCreateOrUpdateConnection();
     const selectItemById = useSelectItemById();
@@ -105,6 +106,11 @@ export const Line: React.FC<LineProps> = ({ id, originId, allowedsInDrop, newCon
     const onMouseUp = useCallback(async (e: any) => {
         e.stopPropagation();
 
+        document.body.style.pointerEvents = 'unset';
+        if (parentRef.current) {
+            parentRef.current.style.pointerEvents = 'auto';
+        }
+
         const hasChange = await createOrUpdateConnection(id, String(originId), e.target.id);
 
         window.onmouseup = null;
@@ -126,10 +132,15 @@ export const Line: React.FC<LineProps> = ({ id, originId, allowedsInDrop, newCon
         }
 
         emitOnChange();
-    }, [createOrUpdateConnection, id, originId, newConnectionBoxRef, isCurved, top, top2, left, left2]);
+    }, [parentRef, createOrUpdateConnection, id, originId, newConnectionBoxRef, isCurved, top, top2, left, left2]);
 
     const mouseDown = useCallback((e: any) => {
         e.stopPropagation();
+
+        document.body.style.pointerEvents = 'none';
+        if (parentRef.current) {
+            parentRef.current.style.pointerEvents = 'auto';
+        }
 
         document.body.style.cursor = 'crosshair';
         window.onmousemove = mouseMove;
@@ -139,7 +150,7 @@ export const Line: React.FC<LineProps> = ({ id, originId, allowedsInDrop, newCon
         onMouseDown && onMouseDown(e);
 
         emitOnChange();
-    }, [mouseMove, onMouseUp, selectItemById, id, onMouseDown]);
+    }, [parentRef, mouseMove, onMouseUp, selectItemById, id, onMouseDown]);
 
     // Used when being used to create a new line
     if (newConnectionBoxRef?.current) {
