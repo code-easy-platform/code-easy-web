@@ -8,9 +8,10 @@ import { Comment } from './Comment';
 
 interface FlowProps {
     id: string;
+    parentRef: React.RefObject<SVGSVGElement>;
     onContextMenu?(event: React.MouseEvent<SVGGElement, MouseEvent>): void;
 }
-const FlowItem: React.FC<FlowProps> = ({ id, onContextMenu }) => {
+const FlowItem: React.FC<FlowProps> = ({ id, parentRef, onContextMenu }) => {
     const { snapGridWhileDragging } = useConfigs();
     const dragAllFlowItems = useDragAllElements();
     const selectItemById = useSelectItemById();
@@ -27,8 +28,13 @@ const FlowItem: React.FC<FlowProps> = ({ id, onContextMenu }) => {
         window.onmousemove = null;
         window.onmouseup = null;
 
+        document.body.style.pointerEvents = 'unset';
+        if (parentRef.current) {
+            parentRef.current.style.pointerEvents = 'auto';
+        }
+
         emitOnChange();
-    }, []);
+    }, [parentRef]);
 
     /** Stores the position where the flow item item was clicked. */
     let cliquedLocationFlowItem = useRef({ top: 0, left: 0 });
@@ -41,11 +47,16 @@ const FlowItem: React.FC<FlowProps> = ({ id, onContextMenu }) => {
         const left = e.offsetX - cliquedLocationFlowItem.current.left;
 
         dragAllFlowItems(flowItem.id, top, left, snapGridWhileDragging);
-    }, [dragAllFlowItems, flowItem.id, snapGridWhileDragging]);
+    }, [flowItem.id, snapGridWhileDragging, dragAllFlowItems]);
 
     /** Declara a fun no ref da svg para que o item atual possa ser arrastado na tela. */
     const mouseDown = useCallback((e: React.MouseEvent<SVGGElement, MouseEvent>) => {
         e.stopPropagation();
+
+        document.body.style.pointerEvents = 'none';
+        if (parentRef.current) {
+            parentRef.current.style.pointerEvents = 'auto';
+        }
 
         cliquedLocationFlowItem.current = {
             top: e.nativeEvent.offsetY - (flowItem?.top || 0),
@@ -57,7 +68,7 @@ const FlowItem: React.FC<FlowProps> = ({ id, onContextMenu }) => {
 
         window.onmousemove = mouseMove;
         window.onmouseup = mouseUp;
-    }, [flowItem, mouseMove, mouseUp, selectItemById]);
+    }, [parentRef, flowItem, mouseMove, mouseUp, selectItemById]);
 
     switch (flowItem.flowItemType) {
         case EFlowItemType.acorn:
@@ -65,6 +76,7 @@ const FlowItem: React.FC<FlowProps> = ({ id, onContextMenu }) => {
             return (
                 <Acorn
                     item={flowItem}
+                    parentRef={parentRef}
                     onMouseDown={mouseDown}
                     onContextMenu={onContextMenu}
                 />
@@ -74,6 +86,7 @@ const FlowItem: React.FC<FlowProps> = ({ id, onContextMenu }) => {
             return (
                 <Comment
                     item={flowItem}
+                    parentRef={parentRef}
                     onMouseDown={mouseDown}
                     onContextMenu={onContextMenu}
                 />

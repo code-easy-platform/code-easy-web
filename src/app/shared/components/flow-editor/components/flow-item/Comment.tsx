@@ -6,13 +6,14 @@ import { useConfigs } from '../../shared/hooks';
 
 interface CommentProps {
     item: IFlowItem;
+    parentRef: React.RefObject<SVGSVGElement>;
 
     /** Used in parent component to move this element in the screen */
     onMouseDown?(event: React.MouseEvent<SVGGElement | HTMLDivElement, MouseEvent>): void;
     /** Used to start the context menu for this específic component */
     onContextMenu?(event: React.MouseEvent<SVGGElement | HTMLDivElement, MouseEvent>): void;
 }
-export const Comment: React.FC<CommentProps> = ({ item, onMouseDown, onContextMenu }) => {
+export const Comment: React.FC<CommentProps> = ({ item, parentRef, onMouseDown, onContextMenu }) => {
     const { flowItemSelectedColor, commentColor, lineWidth, flowItemErrorColor, flowItemWarningColor, commentTextColor } = useConfigs();
 
     const strokeColor: string = item.isSelected
@@ -43,6 +44,7 @@ export const Comment: React.FC<CommentProps> = ({ item, onMouseDown, onContextMe
                 originId={String(item.id)}
                 lineWidth={lineWidth}
                 left={item.left - 20}
+                parentRef={parentRef}
                 top={item.top - 20}
             />
             <foreignObject

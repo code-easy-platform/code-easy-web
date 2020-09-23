@@ -56,6 +56,9 @@ const SelectorArea: React.FC<SelectorAreaProps> = ({ onSelectionEnd, onSelection
                     window.onmousemove = null;
                     window.onmouseup = null;
 
+                    document.body.style.pointerEvents = 'unset';
+                    selectorAreaRef.current.parentElement.style.pointerEvents = 'auto';
+
                     setPosition({
                         startLeft: 0,
                         startTop: 0,
@@ -72,6 +75,10 @@ const SelectorArea: React.FC<SelectorAreaProps> = ({ onSelectionEnd, onSelection
                 const mouseDown = (e: MouseEvent | any) => {
                     if (!isDisabled) {
                         if (e.target.id === selectorAreaRef.current.parentElement.id) {
+
+                            document.body.style.pointerEvents = 'none';
+                            selectorAreaRef.current.parentElement.style.pointerEvents = 'auto';
+
                             window.onmousemove = mouseMove;
                             window.onmouseup = mouseUp;
 
