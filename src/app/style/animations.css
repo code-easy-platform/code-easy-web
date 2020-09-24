@@ -14,3 +14,19 @@
     animation-name: animation-fade-in;
     animation-duration: .2s;
 }
+
+/* Fade out animation code */
+@keyframes animation-fade-out {
+    from {
+        opacity: 1;
+    }
+    to {
+        opacity: 0;
+    }
+}
+
+/* Fade in animation */
+.fade-out {
+    animation-name: animation-fade-out;
+    animation-duration: .2s;
+}

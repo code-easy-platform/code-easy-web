@@ -1,104 +1,140 @@
-import React, { useState, useEffect } from 'react';
-import { IconClose, IconMaximize } from 'code-easy-components';
+import React, { useCallback, useEffect, useImperativeHandle, useRef, useState } from 'react';
+import { IconClose, IconMaximize, Utils } from 'code-easy-components';
+import { ModalElement, ModalProps } from './ModalInterfaces';
 
-import './Modal.css';
 
-interface ModalProps {
-    onClickSecondary?(e: React.MouseEvent<HTMLButtonElement, MouseEvent>): void;
-    onClickPrimary?(e: React.MouseEvent<HTMLButtonElement, MouseEvent>): void;
-    onMaximize?(value: boolean): boolean;
-    onMinimize?(value: boolean): boolean;
-    onClose?(value: boolean): boolean;
-    closeWithBackdropClick?: boolean;
-    extraButtoms?: {
-        text: string;
-        onClick(e: React.MouseEvent<HTMLButtonElement, MouseEvent>): void;
-    }[];
-    allowBackdropClick?: boolean;
-    secondaryButtomText?: string;
-    primaryButtomText?: string;
-    initialHeight?: number;
-    initialWidth?: number;
-    maxHeight?: number;
-    maxWidth?: number;
-    isOpen: boolean;
-    title?: string;
-}
-export const Modal: React.FC<ModalProps> = ({ children, extraButtoms = [], primaryButtomText, secondaryButtomText, maxWidth = 800, maxHeight = 700, title = '', initialHeight = 400, initialWidth = 600, onMaximize, onMinimize, onClose, isOpen, onClickPrimary, onClickSecondary, allowBackdropClick = true, closeWithBackdropClick = false }) => {
+const _Modal: React.ForwardRefRenderFunction<ModalElement, ModalProps> = ({ children, isOpen: inputIsOpen, title, isFocused, maxWidth = window.innerWidth, maxHeight = window.innerHeight, initialHeight = 400, initialWidth = 600, allowBackdropClick = true, closeWithBackdropClick, onClose, onBlur, onFocus, onMaximize, onMinimize }, ref) => {
+    const baseref = useRef<HTMLDivElement | null>(null);
+    const modalId = useRef(Utils.getUUID());
 
     const [clickedPosition, setClickedPosition] = useState({ clickedTop: 0, clickedLeft: 0 });
 
-    /** Controla a posição da modal na tela */
-    const [position, setPosition] = useState({ top: (window.innerHeight / 2) - 250, left: (window.innerWidth / 2) - 250 });
+    /** Controla se a modal está maxinizada ou minimizada */
+    const [isMaximized, setIsMaximized] = useState(false);
+
+    /** Controla se a modal está aberta ou fechada */
+    const [isOpen, setIsOpen] = useState(inputIsOpen);
+    useEffect(() => {
+        setIsOpen(inputIsOpen);
+    }, [inputIsOpen]);
+
+    const [position, setPosition] = useState({ top: 0, left: 0 });
     const [height, setHeight] = useState(initialHeight);
     const [width, setWidth] = useState(initialWidth);
 
-    /** Controla se a modal está maxinizada ou minimizada */
-    const [maximized, setMaximized] = useState(false);
-
-    /** Controla se a modal está aberta ou fechada */
-    const [closed, setClosed] = useState(!isOpen);
+    const [hasFocused, setHasFocused] = useState(isFocused);
     useEffect(() => {
-        setClosed(!isOpen);
-    }, [isOpen]);
-
-    const toggleMaximize = () => {
-        if (maximized) {
-            setMaximized(onMaximize ? onMaximize(!maximized) : !maximized);
+        if (isFocused !== undefined) {
+            setHasFocused(isFocused);
         } else {
-            setMaximized(onMinimize ? onMinimize(!maximized) : !maximized);
+            setHasFocused(isFocused);
         }
-    }
+    }, [isFocused]);
 
-    const keyDown = (e: React.KeyboardEvent<HTMLDivElement>) => {
-        if (e.keyCode === 27) {
+    const handleOnFocus = useCallback(() => {
+        setHasFocused(true);
+        onFocus && onFocus();
+    }, [onFocus]);
+
+    const handleOnBlur = useCallback(() => {
+        setHasFocused(false);
+        onBlur && onBlur();
+    }, [onBlur]);
+
+    const handleClose = useCallback(() => {
+        setIsOpen(false);
+        onClose && onClose();
+    }, [onClose]);
+
+    const toggleMaximize = useCallback(() => {
+        if (isMaximized) {
+            setIsMaximized(!isMaximized);
+            onMinimize && onMinimize();
+        } else {
+            setIsMaximized(!isMaximized);
+            onMaximize && onMaximize();
+        }
+    }, [isMaximized, onMaximize, onMinimize]);
+
+    const handleBackdropKeyDown = useCallback((e: React.KeyboardEvent<HTMLDivElement>) => {
+        if (e.key === 'Escape') {
             if ((position.left < 0 || position.left > window.innerWidth) || (position.top < 0 || position.top > window.innerHeight)) {
                 setPosition({ left: 50, top: 50 });
             }
-            close();
+            handleClose && handleClose();
         }
-    }
-
-    const close = () => setClosed(onClose ? onClose(true) : true);
+    }, [handleClose, position.left, position.top]);
 
     /** Controla as partes redimencionáveis da modal */
-    const risizers = {
+    const resizers = {
         initialize: (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
-            if (e.nativeEvent.offsetX <= 4) {
-                risizers.resizeLeft.mouseDown();
-            } else if (e.nativeEvent.offsetY <= 4) {
-                risizers.resizeTop.mouseDown();
-            } else if (e.nativeEvent.offsetY >= (e.currentTarget.offsetHeight - 4)) {
-                risizers.resizeBottom.mouseDown();
-            } else if (e.nativeEvent.offsetX >= (e.currentTarget.offsetWidth - 4)) {
-                risizers.resizeRight.mouseDown();
+            if (modalId.current && modalId.current !== e.currentTarget.id) return;
+
+            const mouseLeft = e.nativeEvent.x - e.currentTarget.offsetLeft;
+            const mouseTop = e.nativeEvent.y - e.currentTarget.offsetTop;
+
+            if ((mouseLeft >= (e.currentTarget.offsetWidth - 8)) && (mouseTop >= (e.currentTarget.offsetHeight - 8))) {
+                resizers.resizeBottomRight.mouseDown();
+            } else if ((mouseLeft <= 8) && (mouseTop >= (e.currentTarget.offsetHeight - 8))) {
+                resizers.resizeBottomLeft.mouseDown();
+            } else if ((mouseLeft <= 8) && (mouseTop <= 8)) {
+                resizers.resizeTopLeft.mouseDown();
+            } else if ((mouseLeft >= (e.currentTarget.offsetWidth - 8)) && (mouseTop <= 8)) {
+                resizers.resizeTopRight.mouseDown();
+            } else {
+                if (mouseLeft <= 4) {
+                    resizers.resizeLeft.mouseDown();
+                } else if (mouseTop <= 4) {
+                    resizers.resizeTop.mouseDown();
+                } else if (mouseTop >= (e.currentTarget.offsetHeight - 4)) {
+                    resizers.resizeBottom.mouseDown();
+                } else if (mouseLeft >= (e.currentTarget.offsetWidth - 4)) {
+                    resizers.resizeRight.mouseDown();
+                }
             }
         },
         cursorChange: (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
 
-            if (e.nativeEvent.offsetX <= 4) {
-                e.currentTarget.style.cursor = 'col-resize';
-            } else if (e.nativeEvent.offsetX >= (e.currentTarget.offsetWidth - 4)) {
-                e.currentTarget.style.cursor = 'col-resize';
-            } else if (e.nativeEvent.offsetY <= 4) {
-                e.currentTarget.style.cursor = 'row-resize';
-            } else if (e.nativeEvent.offsetY >= (e.currentTarget.offsetHeight - 4)) {
-                e.currentTarget.style.cursor = 'row-resize';
-            } else {
-                e.currentTarget.style.cursor = 'default';
-            }
+            if (modalId.current && modalId.current !== e.currentTarget.id) return;
 
+            const mouseLeft = e.nativeEvent.x - e.currentTarget.offsetLeft;
+            const mouseTop = e.nativeEvent.y - e.currentTarget.offsetTop;
+
+            if ((mouseLeft >= (e.currentTarget.offsetWidth - 8)) && (mouseTop >= (e.currentTarget.offsetHeight - 8))) {
+                e.currentTarget.style.cursor = 'nw-resize';
+            } else if ((mouseLeft <= 8) && (mouseTop >= (e.currentTarget.offsetHeight - 8))) {
+                e.currentTarget.style.cursor = 'ne-resize';
+            } else if ((mouseLeft <= 8) && (mouseTop <= 8)) {
+                e.currentTarget.style.cursor = 'nw-resize';
+            } else if ((mouseLeft >= (e.currentTarget.offsetWidth - 8)) && (mouseTop <= 8)) {
+                e.currentTarget.style.cursor = 'ne-resize';
+            } else {
+                if (mouseLeft <= 4) {
+                    e.currentTarget.style.cursor = 'col-resize';
+                } else if (mouseLeft >= (e.currentTarget.offsetWidth - 4)) {
+                    e.currentTarget.style.cursor = 'col-resize';
+                } else if (mouseTop <= 4) {
+                    e.currentTarget.style.cursor = 'row-resize';
+                } else if (mouseTop >= (e.currentTarget.offsetHeight - 4)) {
+                    e.currentTarget.style.cursor = 'row-resize';
+                } else {
+                    e.currentTarget.style.cursor = 'unset';
+                }
+            }
         },
         modalMove: {
             mouseMove: (e: MouseEvent) => {
                 let newLeft = e.x - clickedPosition.clickedLeft;
                 let newTop = e.y - clickedPosition.clickedTop;
 
-                if (maximized) {
+                if (isMaximized) {
                     toggleMaximize();
                 }
 
-                setPosition({ left: newLeft, top: newTop });
+                setPosition(oldPosition => ({
+                    top: newTop > -1 ? newTop : oldPosition.top,
+                    left: newLeft,
+                }));
             },
             mouseUp: () => {
                 setClickedPosition({ clickedLeft: 0, clickedTop: 0 });
@@ -110,14 +146,19 @@ export const Modal: React.FC<ModalProps> = ({ children, extraButtoms = [], prima
                 clickedPosition.clickedLeft = e.nativeEvent.offsetX;
                 clickedPosition.clickedTop = e.nativeEvent.offsetY;
 
+                window.document.body.style.cursor = 'grabbing';
+
                 setClickedPosition(clickedPosition);
-                window.onmousemove = risizers.modalMove.mouseMove;
-                window.onmouseup = risizers.modalMove.mouseUp;
+                window.onmousemove = resizers.modalMove.mouseMove;
+                window.onmouseup = resizers.modalMove.mouseUp;
             }
         },
         resizeRight: {
             mouseMove: (e: MouseEvent) => {
                 const newWidth = (e.x - position.left) - 2;
+
+                if (newWidth >= maxWidth || newWidth <= 600) return;
+
                 setWidth(newWidth);
             },
             mouseUp: () => {
@@ -126,8 +167,8 @@ export const Modal: React.FC<ModalProps> = ({ children, extraButtoms = [], prima
                 window.onmouseup = null;
             },
             mouseDown: () => {
-                window.onmousemove = risizers.resizeRight.mouseMove;
-                window.onmouseup = risizers.resizeRight.mouseUp;
+                window.onmousemove = resizers.resizeRight.mouseMove;
+                window.onmouseup = resizers.resizeRight.mouseUp;
                 window.document.body.style.cursor = 'e-resize';
             }
         },
@@ -146,14 +187,17 @@ export const Modal: React.FC<ModalProps> = ({ children, extraButtoms = [], prima
                 window.onmouseup = null;
             },
             mouseDown: () => {
-                window.onmousemove = risizers.resizeLeft.mouseMove;
+                window.onmousemove = resizers.resizeLeft.mouseMove;
                 window.document.body.style.cursor = 'e-resize';
-                window.onmouseup = risizers.resizeLeft.mouseUp;
+                window.onmouseup = resizers.resizeLeft.mouseUp;
             }
         },
         resizeBottom: {
             mouseMove: (e: MouseEvent) => {
                 const newHeight = (e.y - position.top) - 2;
+
+                if (newHeight >= maxHeight || newHeight <= 300) return;
+
                 setHeight(newHeight);
             },
             mouseUp: () => {
@@ -162,8 +206,8 @@ export const Modal: React.FC<ModalProps> = ({ children, extraButtoms = [], prima
                 window.onmouseup = null;
             },
             mouseDown: () => {
-                window.onmousemove = risizers.resizeBottom.mouseMove;
-                window.onmouseup = risizers.resizeBottom.mouseUp;
+                window.onmousemove = resizers.resizeBottom.mouseMove;
+                window.onmouseup = resizers.resizeBottom.mouseUp;
                 window.document.body.style.cursor = 'n-resize';
             }
         },
@@ -182,71 +226,199 @@ export const Modal: React.FC<ModalProps> = ({ children, extraButtoms = [], prima
                 window.onmouseup = null;
             },
             mouseDown: () => {
-                window.onmousemove = risizers.resizeTop.mouseMove;
+                window.onmousemove = resizers.resizeTop.mouseMove;
                 window.document.body.style.cursor = 'n-resize';
-                window.onmouseup = risizers.resizeTop.mouseUp;
+                window.onmouseup = resizers.resizeTop.mouseUp;
             }
-        }
-    }
+        },
+        resizeBottomRight: {
+            mouseMove: (e: MouseEvent) => {
+                const newHeight = (e.y - position.top) - 2;
+                const newWidth = (e.x - position.left) - 2;
 
-    if (closed) return null;
+                const changeHeight = !(newHeight >= maxHeight || newHeight <= 300);
+                const changeWidth = !(newWidth >= maxWidth || newWidth <= 600);
+
+                if (changeHeight) setHeight(newHeight);
+                if (changeWidth) setWidth(newWidth);
+            },
+            mouseUp: () => {
+                window.document.body.style.cursor = 'unset';
+                window.onmousemove = null;
+                window.onmouseup = null;
+            },
+            mouseDown: () => {
+                window.onmousemove = resizers.resizeBottomRight.mouseMove;
+                window.onmouseup = resizers.resizeBottomRight.mouseUp;
+                window.document.body.style.cursor = 'nw-resize';
+            }
+        },
+        resizeBottomLeft: {
+            mouseMove: (e: MouseEvent) => {
+                const newWidth = ((position.left - e.x) - 2) + width;
+                const newHeight = (e.y - position.top) - 2;
+
+                const changeHeight = !(newHeight >= maxHeight || newHeight <= 300);
+                const changeWidth = !(newWidth >= maxWidth || newWidth <= 600);
+
+                if (changeWidth) {
+                    setPosition({ ...position, left: e.x });
+                    setWidth(newWidth);
+                }
+
+                if (changeHeight) setHeight(newHeight);
+            },
+            mouseUp: () => {
+                window.document.body.style.cursor = 'unset';
+                window.onmousemove = null;
+                window.onmouseup = null;
+            },
+            mouseDown: () => {
+                window.onmousemove = resizers.resizeBottomLeft.mouseMove;
+                window.onmouseup = resizers.resizeBottomLeft.mouseUp;
+                window.document.body.style.cursor = 'ne-resize';
+            }
+        },
+        resizeTopLeft: {
+            mouseMove: (e: MouseEvent) => {
+                const newHeight = ((position.top - e.y) - 2) + height;
+                const newWidth = ((position.left - e.x) - 2) + width;
+
+                const changeHeight = !(newHeight >= maxHeight || newHeight <= 300);
+                const changeWidth = !(newWidth >= maxWidth || newWidth <= 600);
+
+                setPosition(oldPosition => ({
+                    left: changeWidth ? e.x : oldPosition.left,
+                    top: changeHeight ? e.y : oldPosition.top,
+                }));
+
+                if (changeHeight) setHeight(newHeight);
+                if (changeWidth) setWidth(newWidth);
+            },
+            mouseUp: () => {
+                window.document.body.style.cursor = 'unset';
+                window.onmousemove = null;
+                window.onmouseup = null;
+            },
+            mouseDown: () => {
+                window.onmousemove = resizers.resizeTopLeft.mouseMove;
+                window.onmouseup = resizers.resizeTopLeft.mouseUp;
+                window.document.body.style.cursor = 'nw-resize';
+            }
+        },
+        resizeTopRight: {
+            mouseMove: (e: MouseEvent) => {
+                const newHeight = ((position.top - e.y) - 2) + height;
+                const newWidth = (e.x - position.left) - 2;
+
+                const changeHeight = !(newHeight >= maxHeight || newHeight <= 300);
+                const changeWidth = !(newWidth >= maxWidth || newWidth <= 600);
+
+                if (changeHeight) {
+                    setPosition({ ...position, top: e.y });
+                    setHeight(newHeight);
+                }
+
+                if (changeWidth) setWidth(newWidth);
+            },
+            mouseUp: () => {
+                window.document.body.style.cursor = 'unset';
+                window.onmousemove = null;
+                window.onmouseup = null;
+            },
+            mouseDown: () => {
+                window.onmousemove = resizers.resizeTopRight.mouseMove;
+                window.onmouseup = resizers.resizeTopRight.mouseUp;
+                window.document.body.style.cursor = 'ne-resize';
+            }
+        },
+    };
+
+    useImperativeHandle(ref, () => ({
+        setPosition: (top, left) => setPosition({ top, left }),
+        focus: () => baseref.current?.focus(),
+        toggleMaximize: toggleMaximize,
+        open: () => setIsOpen(true),
+        close: handleClose,
+        isMaximized,
+        position,
+        isOpen,
+    }));
+
+    if (!isOpen) return null;
 
     return (<>
         {!allowBackdropClick &&
             <div
                 tabIndex={0}
-                onKeyDown={keyDown}
-                style={{ backgroundColor: '#ffffff10', zIndex: 1 }}
-                className={"fade-in full-height full-width absolute"}
-                onClick={() => closeWithBackdropClick ? close() : undefined}
+                onKeyDown={handleBackdropKeyDown}
+                style={{ backgroundColor: '#ffffff10' }}
+                className={"fade-in full-height full-width absolute z1"}
+                onFocus={() => baseref.current && baseref.current.focus()}
+                onClick={() => closeWithBackdropClick && handleClose ? handleClose() : undefined}
             />
         }
         <div
-            id={"base-modal"}
-            style={{
-                right: maximized ? 0 : undefined,
-                top: maximized ? 0 : position.top,
-                bottom: maximized ? 0 : undefined,
-                left: maximized ? 0 : position.left,
-
-                width: maximized ? 'auto' : width,
-                height: maximized ? 'auto' : height,
-
-                minWidth: maximized ? undefined : 600,
-                minHeight: maximized ? undefined : 300,
-                maxWidth: maximized ? undefined : maxWidth,
-                maxHeight: maximized ? undefined : maxHeight,
-
-                transitionDuration: maximized ? '.1s' : undefined,
-            }}
             tabIndex={0}
-            onMouseDown={risizers.initialize}
-            onMouseMove={risizers.cursorChange}
-            className={`base-modal padding-xs background-bars box-shadow-small flex-column${maximized ? ' full-width full-height' : ''}`}
+            id={modalId.current}
+            onMouseDown={resizers.initialize}
+            onMouseMove={resizers.cursorChange}
+            className="fixed outline-none padding-xs z2 fade-in"
+            onFocus={() => baseref.current && baseref.current.focus()}
+            style={{
+                minWidth: 600,
+                minHeight: 300,
+
+                right: isMaximized ? 0 : undefined,
+                top: isMaximized ? 0 : position.top,
+                bottom: isMaximized ? 0 : undefined,
+                left: isMaximized ? 0 : position.left,
+
+                width: isMaximized ? 'auto' : width,
+                height: isMaximized ? 'auto' : height,
+            }}
         >
-            <div onMouseDown={risizers.modalMove.mouseDown} onDoubleClick={toggleMaximize} className={`modal-top-bar margin-bottom-xs flex-row`}>
-                <div className="flex1 flex-items-center padding-horizontal-s opacity-9">{title}</div>
-                <div>
-                    <button onClick={toggleMaximize} onMouseDown={e => e.stopPropagation()} className="btn background-transparent border-radius-soft outline-none modal-btn">
-                        <img height={30} width={30} src={IconMaximize} alt="Toggle maximize modal" draggable={false} />
-                    </button>
-                    <button onClick={close} onMouseDown={e => e.stopPropagation()} className="btn background-transparent border-radius-soft outline-none modal-btn" title="Close(Esc)">
-                        <img height={30} width={30} src={IconClose} alt="Close modal" draggable={false} />
-                    </button>
+            <div
+                tabIndex={0}
+                ref={baseref}
+                onBlur={handleOnBlur}
+                onFocus={handleOnFocus}
+                onMouseMove={() => { }}
+                onKeyDown={handleBackdropKeyDown}
+                style={{ boxShadow: `0 0 ${hasFocused ? '20' : '10'}px 0px #0000008a` }}
+                className={`flex1 outline-none flex-column background no-events ${hasFocused ? 'z5 border-default' : 'z2 border-default-transparent'}`}
+            >
+                <div
+                    onDoubleClick={toggleMaximize}
+                    onContextMenu={e => e.preventDefault()}
+                    onMouseDown={resizers.modalMove.mouseDown}
+                    className="background-bars flex-items-center events-all"
+                >
+                    <div className="padding-s flex1 no-events">
+                        {title}
+                    </div>
+                    <img
+                        src={IconMaximize}
+                        onClick={toggleMaximize}
+                        alt="Toggle maximize modal"
+                        onMouseDown={e => e.stopPropagation()}
+                        className="hover active cursor-pointer no-draggable opacity-8"
+                    />
+                    <img
+                        src={IconClose}
+                        alt="Close modal"
+                        onClick={handleClose}
+                        onMouseDown={e => e.stopPropagation()}
+                        onDoubleClick={e => e.stopPropagation()}
+                        className="hover active cursor-pointer no-draggable"
+                    />
+                </div>
+                <div className="flex1 flex-column events-all">
+                    {children}
                 </div>
             </div>
-
-            <div className={`flex1 background padding-s padding-bottom-m overflow-auto`}>
-                {children}
-            </div>
-
-            <div className={`modal-top-footer padding-top-xs flex-row modal-top-footer`}>
-                {extraButtoms.map(btn => <button onClick={btn.onClick} children={btn.text || "Cancel"} className="btn background-transparent padding-s padding-left-m padding-right-m margin-right-s outline-none border-radius-soft" />)}
-                <button onClick={onClickSecondary} className="btn background-transparent padding-s padding-left-m padding-right-m margin-right-s outline-none border-radius-soft">{secondaryButtomText || "Cancel"}</button>
-                <button onClick={onClickPrimary} className="btn padding-s padding-left-m padding-right-m outline-none border-radius-soft background-primary">{primaryButtomText || "Save"}</button>
-            </div>
-
         </div>
-    </>
-    );
+    </>);
 }
+
+export const Modal = React.forwardRef(_Modal);

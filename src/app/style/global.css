@@ -140,12 +140,24 @@ input[type="checkbox"]:checked {
   border: thin solid var(--main-background-highlighted);
 }
 
+.border-default-transparent {
+  border: thin solid transparent;
+}
+
 .border-none {
   border: none;
 }
 
 .no-events {
   pointer-events: none;
+}
+
+.events-all {
+  pointer-events: all;
+}
+
+.events-borders-only {
+  pointer-events: stroke;
 }
 
 .input-medium {
@@ -181,6 +193,10 @@ input[type="checkbox"]:checked {
 
 .absolute {
   position: absolute;
+}
+
+.fixed {
+  position: fixed;
 }
 
 .cursor-pointer {
