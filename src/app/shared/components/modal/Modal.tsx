@@ -3,7 +3,7 @@ import { IconClose, IconMaximize } from 'code-easy-components';
 import { ModalElement, ModalProps } from './ModalInterfaces';
 
 
-const _Modal: React.ForwardRefRenderFunction<ModalElement, ModalProps> = ({ children, allowMaximize = true, isOpen: inputIsOpen, title, isFocused = true, maxWidth = window.innerWidth, maxHeight = window.innerHeight, initialHeight = 400, initialWidth = 600, allowBackdropClick = true, closeWithBackdropClick, onClose, onBlur, onFocus, onMaximize, onMinimize }, ref) => {
+const _Modal: React.ForwardRefRenderFunction<ModalElement, ModalProps> = ({ children, isResizable = true, isDraggable = true, allowMaximize = true, isOpen: inputIsOpen, title, isFocused = true, maxWidth = window.innerWidth, maxHeight = window.innerHeight, initialHeight = 400, initialWidth = 600, allowBackdropClick = true, closeWithBackdropClick, onClose, onBlur, onFocus, onMaximize, onMinimize }, ref) => {
     const baseref = useRef<HTMLDivElement | null>(null);
 
     const [clickedPosition, setClickedPosition] = useState({ clickedTop: 0, clickedLeft: 0 });
@@ -83,6 +83,7 @@ const _Modal: React.ForwardRefRenderFunction<ModalElement, ModalProps> = ({ chil
     /** Controla as partes redimencionáveis da modal */
     const resizers = {
         initialize: (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
+            if (!isResizable) return;
 
             const mouseLeft = e.nativeEvent.x - e.currentTarget.offsetLeft;
             const mouseTop = e.nativeEvent.y - e.currentTarget.offsetTop;
@@ -108,6 +109,7 @@ const _Modal: React.ForwardRefRenderFunction<ModalElement, ModalProps> = ({ chil
             }
         },
         cursorChange: (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
+            if (!isResizable) return;
 
             const mouseLeft = e.nativeEvent.x - e.currentTarget.offsetLeft;
             const mouseTop = e.nativeEvent.y - e.currentTarget.offsetTop;
@@ -155,6 +157,8 @@ const _Modal: React.ForwardRefRenderFunction<ModalElement, ModalProps> = ({ chil
                 window.onmouseup = null;
             },
             mouseDown: (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
+                if (!isDraggable) return;
+
                 clickedPosition.clickedLeft = e.nativeEvent.offsetX;
                 clickedPosition.clickedTop = e.nativeEvent.offsetY;
 

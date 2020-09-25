@@ -78,7 +78,7 @@ export const CardItem = memo(({ listMode, ...props }: CardItemProps) => {
                 <div className="margin-top-s">
                     <div className="flex3 flex-column margin-right-s">
                         <label htmlFor="input_name">Name</label>
-                        <input id="input_name" value={item.name} onChange={e => setItem({ ...item, name: e.target.value })} />
+                        <input id="input_name" value={item.name} onChange={e => setItem({ ...item, name: e.target.value })} autoFocus={true} />
                     </div>
                     <div className="flex1 flex-column" style={{ width: 50 }}>
                         <label htmlFor="input_version">Version</label>
