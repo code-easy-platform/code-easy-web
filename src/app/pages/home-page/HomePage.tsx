@@ -39,6 +39,7 @@ export const HomePage = memo(() => {
         ProjectsStorage.setProjects(projects);
     }, [projects]);
 
+
     return (
         <div className="main-page">
             <div className="tool-bar background-bars">

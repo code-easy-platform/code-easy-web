@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 
 import { ProjectsStorage } from '../../shared/services/storage/ProjectsStorage';
-import { Modal } from '../../shared/components/modal/Modal';
+import { Modal } from '../../shared/components/modal';
 import { Project } from '../../shared/models';
 import { CardItem } from './CardItem';
 
@@ -47,7 +47,6 @@ export const ImportProjects = ({ open, close }: { open: boolean, close: Function
                     setProjects([]);
                 }
             }
-
         };
 
         // Lê o conteúdo contido no arquivo
@@ -56,45 +55,56 @@ export const ImportProjects = ({ open, close }: { open: boolean, close: Function
         } else {
             setProjects([]);
         }
-
     }
 
     const importProjects = () => {
         ProjectsStorage.setProjects(projects);
-        window.alert("Projects imported successfully...")
+        window.alert("Projects imported successfully...");
+        setProjectsRecognized(false);
+        setProjects([]);
         close();
     }
 
     return (
         <Modal
             key="ImportAFile"
+            onClose={() => close()}
             allowBackdropClick={false}
             isOpen={openImportProjects}
-            primaryButtomText={"Import"}
-            secondaryButtomText={"Close"}
             title={"Import your projects"}
-            onClickPrimary={importProjects}
-            onClickSecondary={() => close()}
-            onClose={() => { close(); return true }}
-            children={<div className="flex-column">
-                <input type="file" accept=".json" onChange={onChangeFile} />
-                <div className="margin-top-s padding-s flex-wrap overflow-auto">
-                    {!projectRecognized && "No projects recognized..."}
-                    {projects.map(project => (
-                        <CardItem
-                            item={{
-                                id: project.configurations.id || '',
-                                name: project.configurations.label,
-                                type: project.configurations.type,
-                                version: project.configurations.version,
-                                description: project.configurations.description,
-                            }}
-                            onClick={() => { }}
-                            key={project.configurations.id}
-                        />
-                    ))}
+        >
+            <div className={`flex-column flex1 flex-items-center${!projectRecognized ? ' flex-content-center' : ''}`}>
+                <div className={`${projectRecognized ? 'margin-top-m' : ''}`}>
+                    <input
+                        type="file"
+                        accept=".json"
+                        onChange={onChangeFile}
+                    />
+                    {projectRecognized &&
+                        <button
+                            onClick={importProjects}
+                            className="padding-horizontal-m margin-left-s cursor-pointer background-primary border-default text-white border-radius-soft outline-none hover active"
+                        >Import</button>
+                    }
                 </div>
-            </div>}
-        />
+                {projectRecognized &&
+                    <div className="margin-top-s padding-s flex-wrap overflow-auto flex-content-center">
+                        {projects.map(project => (
+                            <CardItem
+                                item={{
+                                    id: project.configurations.id || '',
+                                    name: project.configurations.label,
+                                    type: project.configurations.type,
+                                    version: project.configurations.version,
+                                    description: project.configurations.description,
+                                }}
+                                onClick={() => { }}
+                                key={project.configurations.id}
+                            />
+                        ))}
+                    </div>
+                }
+            </div>
+        </Modal>
     );
 }

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { memo } from 'react';
 
 interface ImageProps {
     imageSrc: string;
@@ -8,7 +8,7 @@ interface ImageProps {
     top?: number;
 }
 /** Render image icon */
-export const ImageView: React.FC<ImageProps> = ({ imageSrc, height, left, top, width }) => {
+export const ImageView: React.FC<ImageProps> = memo(({ imageSrc, height, left, top, width }) => {
     return (
         <image
             style={{ pointerEvents: 'none' }}
@@ -19,4 +19,4 @@ export const ImageView: React.FC<ImageProps> = ({ imageSrc, height, left, top, w
             y={top}
         />
     );
-}
+});

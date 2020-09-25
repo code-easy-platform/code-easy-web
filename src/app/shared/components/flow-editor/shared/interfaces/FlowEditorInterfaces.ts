@@ -157,6 +157,26 @@ export interface IFlowEditorBoardEvents {
      */
     onContextMenu?(event: React.MouseEvent<any, MouseEvent>): void;
     /**
+     * Event executed when any key is pressed
+     * @param event Keyboard react event
+     */
+    onAnyKeyDown?(event: React.KeyboardEvent<SVGSVGElement>): void;
+    /**
+     * Event executed when the **Ctrl + C** key combination is pressed
+     * @param event Keyboard react event
+     */
+    onKeyDownCtrlC?(event: React.KeyboardEvent<SVGSVGElement>): void;
+    /**
+     * Event executed when the **Ctrl + D** key combination is pressed
+     * @param event Keyboard react event
+     */
+    onKeyDownCtrlD?(event: React.KeyboardEvent<SVGSVGElement>): void;
+    /**
+     * Event executed when the **Ctrl + V** key combination is pressed
+     * @param event Keyboard react event
+     */
+    onKeyDownCtrlV?(event: React.KeyboardEvent<SVGSVGElement>): void;
+    /**
      * Event executed when the mouse enters the board area
      * @param event React event
      */

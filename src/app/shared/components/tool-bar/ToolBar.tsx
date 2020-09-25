@@ -4,8 +4,8 @@ import { PropertiesTab } from '../../../pages/editor/properties-tab/PropertiesTa
 import { TabButton, TabGroup, TabsManager } from '../tabs';
 import { useEditorContext } from '../../contexts';
 import { AssetsService } from '../../services';
-import { Modal } from '../modal/Modal';
 import { Tab } from '../../models';
+import { Modal } from '../modal';
 import './ToolBar.css';
 
 export const ToolBar: React.FC = memo(() => {
@@ -87,15 +87,13 @@ export const ToolBar: React.FC = memo(() => {
             </div>
         </div>
         <Modal
-            initialHeight={500}
+            initialWidth={850}
+            initialHeight={640}
             title={"Properties"}
+            allowMaximize={false}
             isOpen={isOpenModalProps}
-            primaryButtomText={"Done"}
             children={<PropertiesTab />}
-            secondaryButtomText={"Close"}
-            onClickPrimary={() => setIsOpenModalProps(false)}
-            onClickSecondary={() => setIsOpenModalProps(false)}
-            onClose={() => { setIsOpenModalProps(false); return true; }}
+            onClose={() => { setIsOpenModalProps(false); }}
         />
     </>);
 });

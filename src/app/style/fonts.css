@@ -62,6 +62,10 @@
     font-size: var(--font-size-xg);
 }
 
+.font-size-xxg {
+    font-size: var(--font-size-xxg);
+}
+
 .text-underline-error {
     text-decoration: var(--text-underline-error);
 }

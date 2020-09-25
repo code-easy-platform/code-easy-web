@@ -22,6 +22,18 @@
     flex: 3;
 }
 
+.flex4 {
+    -webkit-box-flex: 4;
+    -ms-flex: 4;
+    flex: 4;
+}
+
+.flex5 {
+    -webkit-box-flex: 5;
+    -ms-flex: 5;
+    flex: 5;
+}
+
 .flex-column {
     -webkit-box-orient: vertical;
     -webkit-box-direction: normal;

@@ -2,8 +2,8 @@ import { useRecoilValue, useRecoilState, useRecoilCallback } from "recoil";
 import { Utils } from "code-easy-components";
 
 import { FlowItemsStore, FlowItemStore, GetFlowItemsSelector, GetSelectedFlowItemsSelector, GetBoardSizeSelector, FlowLinesStore } from "../stores";
-import { IConnection, IFlowItem, ILine } from "../interfaces";
 import { emitOnChange } from "../../components";
+import { IConnection } from "../interfaces";
 
 export const useFlowItems = () => {
     return useRecoilValue(FlowItemsStore);
@@ -279,143 +279,6 @@ export const useCreateOrUpdateConnection = () => useRecoilCallback(({ snapshot, 
 
     // If has changed connection or create
     return true;
-});
-
-/** Copy selected flow items */
-export const useCopySelecteds = () => useRecoilCallback(({ snapshot }) => async () => {
-    const selectedFlowItems = await snapshot.getPromise(GetSelectedFlowItemsSelector);
-    navigator.clipboard.writeText(JSON.stringify(selectedFlowItems));
-});
-
-/** Duplicate selected flow items */
-export const useDuplicateSelecteds = () => useRecoilCallback(({ snapshot, set }) => async () => {
-    const components = await snapshot.getPromise(GetSelectedFlowItemsSelector);
-
-    // Used to add all new lines
-    let newLines: ILine[] = [];
-
-    // Getting older ids
-    let itemIds = await snapshot.getPromise(FlowItemsStore);
-    itemIds.forEach(id => {
-
-        // Deselects all items that were already in the flow
-        set(FlowItemStore(String(id)), oldState => ({ ...oldState, isSelected: false }));
-    });
-
-    // For each component that was on the clipboard
-    components.forEach(item => {
-        item = {
-            ...item,
-            top: item.top + 50,
-            id: Utils.getUUID(),
-            left: item.left + 100,
-        }
-
-        // Complete state for the new item
-        item = {
-            ...item,
-            connections: (item.connections || []).map(connection => {
-
-                // Add new lines
-                if (connection.id && connection.targetId) {
-                    newLines = [
-                        ...newLines,
-                        {
-                            id: connection.id,
-                            originId: String(item.id),
-                            targetId: connection.targetId,
-                        }
-                    ];
-                }
-
-                return {
-                    ...connection,
-                    originId: String(item.id),
-                };
-            }),
-        };
-
-        itemIds = [
-            ...itemIds,
-            String(item.id),
-        ];
-
-        set(FlowItemStore(String(item.id)), item);
-    });
-
-    set(FlowItemsStore, itemIds);
-    set(FlowLinesStore, oldLinesState => ([...oldLinesState, ...newLines]));
-
-    emitOnChange();
-});
-
-/** Paste selected flow items */
-export const usePasteSelecteds = () => useRecoilCallback(({ snapshot, set }) => async () => {
-    try {
-        navigator
-            .clipboard
-            .readText()
-            .then(async text => {
-                try {
-                    // Transforma clipboard text in IFlowItems
-                    const components: IFlowItem[] = JSON.parse(text || '[]');
-
-                    // Used to add all new lines
-                    let newLines: ILine[] = [];
-
-                    // Getting older ids
-                    let itemIds = await snapshot.getPromise(FlowItemsStore);
-                    itemIds.forEach(id => {
-
-                        // Deselects all items that were already in the flow
-                        set(FlowItemStore(String(id)), oldState => ({ ...oldState, isSelected: false }));
-                    });
-
-                    // For each component that was on the clipboard
-                    components.forEach((item, index) => {
-                        item.top = item.top + 50;
-                        item.id = Utils.getUUID();
-                        item.left = item.left + 100;
-
-                        // Complete state for the new item
-                        item = {
-                            ...item,
-                            connections: (item.connections || []).map(connection => {
-
-                                // Add new lines
-                                if (connection.id && connection.targetId) {
-                                    newLines = [
-                                        ...newLines,
-                                        {
-                                            id: connection.id,
-                                            originId: String(item.id),
-                                            targetId: connection.targetId,
-                                        }
-                                    ];
-                                }
-
-                                return {
-                                    ...connection,
-                                    originId: String(item.id),
-                                };
-                            }),
-                        };
-
-                        itemIds = [
-                            ...itemIds,
-                            String(item.id),
-                        ];
-
-                        set(FlowItemStore(String(item.id)), item);
-                    });
-
-                    set(FlowItemsStore, itemIds);
-                    set(FlowLinesStore, oldLinesState => ([...oldLinesState, ...newLines]));
-
-                    emitOnChange();
-                } catch (_) { }
-            });
-    } catch (e) { console.log(e) }
 });
 
 export const useSizeByText = () => (text: string) => {
