@@ -1,9 +1,9 @@
 import React from "react";
 
+import { Switch } from "../../shared/components/properties-editor/shared/components/toggle-swicth/Switch";
 import { FlowBackgroundType } from "../../shared/services/storage/IdeConfigStorage";
 import { Modal } from "../../shared/components/modal";
 import { useIdeConfigs } from "../../shared/contexts";
-import { Switch } from "../../shared/components/properties-editor/shared/components/toggle-swicth/Switch";
 
 
 export const IdeConfigs: React.FC<{ open: boolean, close(): void }> = ({ open, close }) => {

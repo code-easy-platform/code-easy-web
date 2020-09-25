@@ -367,7 +367,7 @@ const _Modal: React.ForwardRefRenderFunction<ModalElement, ModalProps> = ({ chil
             <div
                 tabIndex={0}
                 onKeyDown={handleBackdropKeyDown}
-                onFocus={() => setHasFocused(true)}
+                onFocus={() => baseref.current?.focus()}
                 style={{ backgroundColor: '#ffffff10' }}
                 className={"fade-in full-height full-width absolute z2"}
                 onClick={() => closeWithBackdropClick && handleClose ? handleClose() : undefined}
