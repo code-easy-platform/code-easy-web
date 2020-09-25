@@ -16,6 +16,7 @@ export interface ModalProps {
     closeWithBackdropClick?: boolean;
     allowBackdropClick?: boolean;
     children: React.ReactNode;
+    allowMaximize?: boolean;
     initialHeight?: number;
     initialWidth?: number;
     isFocused?: boolean;

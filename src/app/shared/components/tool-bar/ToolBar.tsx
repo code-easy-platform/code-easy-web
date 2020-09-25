@@ -87,8 +87,10 @@ export const ToolBar: React.FC = memo(() => {
             </div>
         </div>
         <Modal
-            initialHeight={500}
+            initialWidth={850}
+            initialHeight={640}
             title={"Properties"}
+            allowMaximize={false}
             isOpen={isOpenModalProps}
             children={<PropertiesTab />}
             onClose={() => { setIsOpenModalProps(false); }}

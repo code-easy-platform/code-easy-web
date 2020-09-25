@@ -3,7 +3,7 @@ import { IconClose, IconMaximize } from 'code-easy-components';
 import { ModalElement, ModalProps } from './ModalInterfaces';
 
 
-const _Modal: React.ForwardRefRenderFunction<ModalElement, ModalProps> = ({ children, isOpen: inputIsOpen, title, isFocused = true, maxWidth = window.innerWidth, maxHeight = window.innerHeight, initialHeight = 400, initialWidth = 600, allowBackdropClick = true, closeWithBackdropClick, onClose, onBlur, onFocus, onMaximize, onMinimize }, ref) => {
+const _Modal: React.ForwardRefRenderFunction<ModalElement, ModalProps> = ({ children, allowMaximize = true, isOpen: inputIsOpen, title, isFocused = true, maxWidth = window.innerWidth, maxHeight = window.innerHeight, initialHeight = 400, initialWidth = 600, allowBackdropClick = true, closeWithBackdropClick, onClose, onBlur, onFocus, onMaximize, onMinimize }, ref) => {
     const baseref = useRef<HTMLDivElement | null>(null);
 
     const [clickedPosition, setClickedPosition] = useState({ clickedTop: 0, clickedLeft: 0 });
@@ -60,11 +60,11 @@ const _Modal: React.ForwardRefRenderFunction<ModalElement, ModalProps> = ({ chil
         if (isMaximized) {
             setIsMaximized(!isMaximized);
             onMinimize && onMinimize();
-        } else {
+        } else if (allowMaximize) {
             setIsMaximized(!isMaximized);
             onMaximize && onMaximize();
         }
-    }, [isMaximized, onMaximize, onMinimize]);
+    }, [allowMaximize, isMaximized, onMaximize, onMinimize]);
 
     const handleBackdropKeyDown = useCallback((e: React.KeyboardEvent<HTMLDivElement>) => {
         if (e.key === 'Escape') {
@@ -410,13 +410,13 @@ const _Modal: React.ForwardRefRenderFunction<ModalElement, ModalProps> = ({ chil
                     <div className="padding-s flex1 no-events">
                         <p className="full-width text-ellipsis">{title}</p>
                     </div>
-                    <img
+                    {allowMaximize && <img
                         src={IconMaximize}
                         onClick={toggleMaximize}
                         alt="Toggle maximize modal"
                         onMouseDown={e => e.stopPropagation()}
                         className="hover active cursor-pointer no-draggable opacity-8"
-                    />
+                    />}
                     <img
                         src={IconClose}
                         alt="Close modal"
