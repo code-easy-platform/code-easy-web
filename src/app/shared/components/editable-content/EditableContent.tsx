@@ -1,10 +1,14 @@
-import React from 'react';
+import React, { useRef } from 'react';
 import MonacoEditor from 'react-monaco-editor';
 
 import { useEditorContext } from '../../contexts';
-import { Modal } from '../modal/Modal';
+import { Modal, ModalElement } from '../modal';
 
 export const EditableContent: React.FC<{ itemId: string, removeModal: Function }> = ({ itemId, removeModal }) => {
+
+    const modalRef = useRef<ModalElement>(null);
+    const editorRef = useRef<MonacoEditor>(null);
+
     const { project, setProject } = useEditorContext();
     let selectedItem: any;
 
@@ -43,18 +47,25 @@ export const EditableContent: React.FC<{ itemId: string, removeModal: Function }
     return (
         <Modal
             isOpen={true}
-            maxWidth={820}
-            maxHeight={620}
+            ref={modalRef}
+            initialWidth={800}
+            initialHeight={600}
             allowBackdropClick={true}
-            primaryButtomText={"Done"}
             title={selectedItem?.name}
-            secondaryButtomText={"Close"}
+            onClose={() => removeModal()}
             closeWithBackdropClick={false}
-            onClickPrimary={_ => removeModal()}
-            onClickSecondary={_ => removeModal()}
-            onClose={value => { removeModal(); return value; }}
         >
             <MonacoEditor
+                theme={"vs-dark"}
+                ref={editorRef}
+                language="javascript"
+                value={selectedItem?.value}
+                width={modalRef.current?.width}
+                height={modalRef.current?.height}
+                onChange={value => { selectedItem.value = value; setProject(project) }}
+                overrideServices={{
+
+                }}
                 options={{
                     autoClosingQuotes: "always",
                     tabCompletion: "on",
@@ -65,10 +76,6 @@ export const EditableContent: React.FC<{ itemId: string, removeModal: Function }
                         showFunctions: true
                     }
                 }}
-                theme={"vs-dark"}
-                language="typescript"
-                value={selectedItem?.value}
-                onChange={value => { selectedItem.value = value; setProject(project) }}
             />
         </Modal>
     );

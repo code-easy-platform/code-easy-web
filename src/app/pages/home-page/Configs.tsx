@@ -1,7 +1,7 @@
 import React from "react";
 
 import { FlowBackgroundType } from "../../shared/services/storage/IdeConfigStorage";
-import { Modal } from "../../shared/components/modal/Modal";
+import { Modal } from "../../shared/components/modal";
 import { useIdeConfigs } from "../../shared/contexts";
 
 
@@ -22,11 +22,9 @@ export const IdeConfigs: React.FC<{ open: boolean, close(): void }> = ({ open, c
 
     return (
         <Modal
-            onClose={() => { close(); return true }}
-            onClickSecondary={() => close()}
             allowBackdropClick={false}
             title={"Configurações"}
-            onClickPrimary={handleSave}
+            onClose={close}
             isOpen={open}
             children={<>
                 <div className="margin-top-s flex-column">

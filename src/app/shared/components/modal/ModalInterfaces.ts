@@ -3,9 +3,12 @@ export interface ModalElement {
     position: { top: number, left: number };
     toggleMaximize(): void;
     isMaximized: boolean;
+    recenter(): void;
     isOpen: boolean;
+    height: number;
     close(): void;
     focus(): void;
+    width: number;
     open(): void;
 }
 

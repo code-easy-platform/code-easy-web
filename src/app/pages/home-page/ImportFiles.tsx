@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 
 import { ProjectsStorage } from '../../shared/services/storage/ProjectsStorage';
-import { Modal } from '../../shared/components/modal/Modal';
+import { Modal } from '../../shared/components/modal';
 import { Project } from '../../shared/models';
 import { CardItem } from './CardItem';
 
@@ -68,14 +68,10 @@ export const ImportProjects = ({ open, close }: { open: boolean, close: Function
     return (
         <Modal
             key="ImportAFile"
+            onClose={() => close()}
             allowBackdropClick={false}
             isOpen={openImportProjects}
-            primaryButtomText={"Import"}
-            secondaryButtomText={"Close"}
             title={"Import your projects"}
-            onClickPrimary={importProjects}
-            onClickSecondary={() => close()}
-            onClose={() => { close(); return true }}
             children={<div className="flex-column">
                 <input type="file" accept=".json" onChange={onChangeFile} />
                 <div className="margin-top-s padding-s flex-wrap overflow-auto">

@@ -1,11 +1,10 @@
-import React, { useState, useEffect, useCallback, memo, useRef } from 'react';
+import React, { useState, useEffect, useCallback, memo } from 'react';
 import { Utils, IconOpenGithub, IconDownload, IconImport, IconConfig } from 'code-easy-components';
 import { useHistory } from 'react-router-dom';
 import dataformat from 'dateformat';
 
 import { BottonStatusBar } from '../../shared/components/botton-status-bar/BottonStatusBar';
 import { ProjectsStorage } from '../../shared/services/storage/ProjectsStorage';
-import { Modal, ModalElement } from '../../shared/components/modal';
 import { TabButton } from '../../shared/components/tabs';
 import { EProjectType } from '../../shared/enuns';
 import { ImportProjects } from './ImportFiles';
@@ -15,8 +14,6 @@ import { CardItem } from './CardItem';
 
 
 export const HomePage = memo(() => {
-
-    const modalRef = useRef<ModalElement>(null);
 
     const [projects, setProjects] = useState<Project[]>(ProjectsStorage.getProjects() || []);
     const [openImportProjects, setOpenImportProjects] = useState(false);
@@ -45,17 +42,6 @@ export const HomePage = memo(() => {
 
     return (
         <div className="main-page">
-            <Modal
-                isOpen={true}
-                ref={modalRef}
-                onClose={console.log}
-                title="Meu título de modal"
-            >
-                <div className="flex-center flex-content-center flex-items-center flex1 flex-column">
-                    Meu content de modal
-                    <div style={{ width: 100, height: 50, background: '#000' }} />
-                </div>
-            </Modal>
             <div className="tool-bar background-bars">
                 <TabButton
                     id="tabMenu"

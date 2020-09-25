@@ -152,6 +152,10 @@ input[type="checkbox"]:checked {
   pointer-events: none;
 }
 
+.events-unset {
+  pointer-events: unset;
+}
+
 .events-all {
   pointer-events: all;
 }

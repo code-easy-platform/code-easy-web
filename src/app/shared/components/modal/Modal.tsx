@@ -1,11 +1,10 @@
 import React, { useCallback, useEffect, useImperativeHandle, useRef, useState } from 'react';
-import { IconClose, IconMaximize, Utils } from 'code-easy-components';
+import { IconClose, IconMaximize } from 'code-easy-components';
 import { ModalElement, ModalProps } from './ModalInterfaces';
 
 
 const _Modal: React.ForwardRefRenderFunction<ModalElement, ModalProps> = ({ children, isOpen: inputIsOpen, title, isFocused, maxWidth = window.innerWidth, maxHeight = window.innerHeight, initialHeight = 400, initialWidth = 600, allowBackdropClick = true, closeWithBackdropClick, onClose, onBlur, onFocus, onMaximize, onMinimize }, ref) => {
     const baseref = useRef<HTMLDivElement | null>(null);
-    const modalId = useRef(Utils.getUUID());
 
     const [clickedPosition, setClickedPosition] = useState({ clickedTop: 0, clickedLeft: 0 });
 
@@ -65,10 +64,21 @@ const _Modal: React.ForwardRefRenderFunction<ModalElement, ModalProps> = ({ chil
         }
     }, [handleClose, position.left, position.top]);
 
+    const handleRecenter = useCallback(() => {
+        const newTop = (window.innerHeight / 2) - (height / 2);
+        const newLeft = (window.innerWidth / 2) - (width / 2);
+
+        setPosition({ left: newLeft, top: newTop })
+    }, [height, width]);
+
+    const handleOpen = useCallback(() => {
+        setIsOpen(true);
+        handleOnFocus();
+    }, [handleOnFocus]);
+
     /** Controla as partes redimencionáveis da modal */
     const resizers = {
         initialize: (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
-            if (modalId.current && modalId.current !== e.currentTarget.id) return;
 
             const mouseLeft = e.nativeEvent.x - e.currentTarget.offsetLeft;
             const mouseTop = e.nativeEvent.y - e.currentTarget.offsetTop;
@@ -94,8 +104,6 @@ const _Modal: React.ForwardRefRenderFunction<ModalElement, ModalProps> = ({ chil
             }
         },
         cursorChange: (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
-
-            if (modalId.current && modalId.current !== e.currentTarget.id) return;
 
             const mouseLeft = e.nativeEvent.x - e.currentTarget.offsetLeft;
             const mouseTop = e.nativeEvent.y - e.currentTarget.offsetTop;
@@ -335,11 +343,14 @@ const _Modal: React.ForwardRefRenderFunction<ModalElement, ModalProps> = ({ chil
     };
 
     useImperativeHandle(ref, () => ({
+        height: isMaximized && baseref.current ? baseref.current.clientHeight : height,
+        width: isMaximized && baseref.current ? baseref.current.clientWidth : width,
         setPosition: (top, left) => setPosition({ top, left }),
-        focus: () => baseref.current?.focus(),
+        focus: () => setHasFocused(true),
         toggleMaximize: toggleMaximize,
-        open: () => setIsOpen(true),
+        recenter: handleRecenter,
         close: handleClose,
+        open: handleOpen,
         isMaximized,
         position,
         isOpen,
@@ -352,19 +363,18 @@ const _Modal: React.ForwardRefRenderFunction<ModalElement, ModalProps> = ({ chil
             <div
                 tabIndex={0}
                 onKeyDown={handleBackdropKeyDown}
+                onFocus={() => setHasFocused(true)}
                 style={{ backgroundColor: '#ffffff10' }}
-                className={"fade-in full-height full-width absolute z1"}
-                onFocus={() => baseref.current && baseref.current.focus()}
+                className={"fade-in full-height full-width absolute z2"}
                 onClick={() => closeWithBackdropClick && handleClose ? handleClose() : undefined}
             />
         }
         <div
             tabIndex={0}
-            id={modalId.current}
             onMouseDown={resizers.initialize}
             onMouseMove={resizers.cursorChange}
-            className="fixed outline-none padding-xs z2 fade-in"
-            onFocus={() => baseref.current && baseref.current.focus()}
+            onFocus={() => setHasFocused(true)}
+            className="fixed outline-none padding-xs z3 fade-in"
             style={{
                 minWidth: 600,
                 minHeight: 300,
@@ -383,10 +393,9 @@ const _Modal: React.ForwardRefRenderFunction<ModalElement, ModalProps> = ({ chil
                 ref={baseref}
                 onBlur={handleOnBlur}
                 onFocus={handleOnFocus}
-                onMouseMove={() => { }}
                 onKeyDown={handleBackdropKeyDown}
                 style={{ boxShadow: `0 0 ${hasFocused ? '20' : '10'}px 0px #0000008a` }}
-                className={`flex1 outline-none flex-column background no-events ${hasFocused ? 'z5 border-default' : 'z2 border-default-transparent'}`}
+                className={`flex1 outline-none flex-column background no-events ${hasFocused ? 'z5 border-default' : 'z3 border-default-transparent'}`}
             >
                 <div
                     onDoubleClick={toggleMaximize}
@@ -395,7 +404,7 @@ const _Modal: React.ForwardRefRenderFunction<ModalElement, ModalProps> = ({ chil
                     className="background-bars flex-items-center events-all"
                 >
                     <div className="padding-s flex1 no-events">
-                        {title}
+                        <p className="full-width text-ellipsis">{title}</p>
                     </div>
                     <img
                         src={IconMaximize}
@@ -413,7 +422,7 @@ const _Modal: React.ForwardRefRenderFunction<ModalElement, ModalProps> = ({ chil
                         className="hover active cursor-pointer no-draggable"
                     />
                 </div>
-                <div className="flex1 flex-column events-all">
+                <div className="flex1 flex-column events-all overflow-auto">
                     {children}
                 </div>
             </div>
