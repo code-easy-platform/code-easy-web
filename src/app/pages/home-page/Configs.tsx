@@ -3,12 +3,13 @@ import React from "react";
 import { FlowBackgroundType } from "../../shared/services/storage/IdeConfigStorage";
 import { Modal } from "../../shared/components/modal";
 import { useIdeConfigs } from "../../shared/contexts";
+import { Switch } from "../../shared/components/properties-editor/shared/components/toggle-swicth/Switch";
 
 
 export const IdeConfigs: React.FC<{ open: boolean, close(): void }> = ({ open, close }) => {
     const { flowBackgroundType, snapGridWhileDragging, setConfigs } = useIdeConfigs();
 
-    const handleSnapGrid = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const handleSnapGrid = () => {
         setConfigs({ snapGridWhileDragging: !snapGridWhileDragging });
     }
 
@@ -16,22 +17,23 @@ export const IdeConfigs: React.FC<{ open: boolean, close(): void }> = ({ open, c
         setConfigs({ flowBackgroundType: e.target.value as any });
     }
 
-    const handleSave = () => {
-        close();
-    }
-
     return (
         <Modal
-            allowBackdropClick={false}
-            title={"Configurações"}
-            onClose={close}
             isOpen={open}
-            children={<>
-                <div className="margin-top-s flex-column">
-                    <header className="main-header">Flow editor</header>
-
-                    <br />
-
+            onClose={close}
+            initialWidth={820}
+            initialHeight={580}
+            title={"Configurations"}
+            allowBackdropClick={false}
+        >
+            <div className="flex1">
+                <section className="flex2 padding-top-xs padding-bottom-xs background-panels">
+                    <div className="hover active padding-s cursor-pointer selected">
+                        Flow editor
+                    </div>
+                </section>
+                <hr className="hr hr-vertical hr-white" />
+                <section className="flex5 padding-s flex-column">
                     <div className="flex-column">
                         <label htmlFor="select">Background type</label>
                         <select id={"select"} onChange={handleBackground} value={flowBackgroundType} className="margin-top-s" style={{ maxWidth: 200 }}>
@@ -40,14 +42,12 @@ export const IdeConfigs: React.FC<{ open: boolean, close(): void }> = ({ open, c
                             <option value={FlowBackgroundType.none}>None</option>
                         </select>
                     </div>
-
-                    <div className="margin-top-s">
-                        <input id="snapGrid" type="checkbox" className="padding-xs margin-right-s" checked={snapGridWhileDragging} onChange={handleSnapGrid} />
-                        <label htmlFor="snapGrid">Snap grid while dragging</label>
+                    <div className="margin-top-s flex-items-center">
+                        <Switch id="snapGrid" border="var(--input-border)" checked={snapGridWhileDragging} onChange={handleSnapGrid} />
+                        <label htmlFor="snapGrid" className="margin-left-s">Snap grid while dragging</label>
                     </div>
-
-                </div>
-            </>}
-        />
+                </section>
+            </div>
+        </Modal>
     );
 }

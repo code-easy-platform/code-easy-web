@@ -3,23 +3,34 @@ import { IconClose, IconMaximize } from 'code-easy-components';
 import { ModalElement, ModalProps } from './ModalInterfaces';
 
 
-const _Modal: React.ForwardRefRenderFunction<ModalElement, ModalProps> = ({ children, isOpen: inputIsOpen, title, isFocused, maxWidth = window.innerWidth, maxHeight = window.innerHeight, initialHeight = 400, initialWidth = 600, allowBackdropClick = true, closeWithBackdropClick, onClose, onBlur, onFocus, onMaximize, onMinimize }, ref) => {
+const _Modal: React.ForwardRefRenderFunction<ModalElement, ModalProps> = ({ children, isOpen: inputIsOpen, title, isFocused = true, maxWidth = window.innerWidth, maxHeight = window.innerHeight, initialHeight = 400, initialWidth = 600, allowBackdropClick = true, closeWithBackdropClick, onClose, onBlur, onFocus, onMaximize, onMinimize }, ref) => {
     const baseref = useRef<HTMLDivElement | null>(null);
 
     const [clickedPosition, setClickedPosition] = useState({ clickedTop: 0, clickedLeft: 0 });
 
     /** Controla se a modal está maxinizada ou minimizada */
     const [isMaximized, setIsMaximized] = useState(false);
+    const [height, setHeight] = useState(initialHeight);
+    const [width, setWidth] = useState(initialWidth);
+
+    const handleRecenter = useCallback(() => {
+        const newTop = (window.innerHeight / 2) - (height / 2);
+        const newLeft = (window.innerWidth / 2) - (width / 2);
+
+        setPosition({ left: newLeft, top: newTop })
+    }, [height, width]);
 
     /** Controla se a modal está aberta ou fechada */
     const [isOpen, setIsOpen] = useState(inputIsOpen);
     useEffect(() => {
         setIsOpen(inputIsOpen);
-    }, [inputIsOpen]);
+        if (!inputIsOpen) {
+            handleRecenter();
+            baseref.current?.focus();
+        }
+    }, [handleRecenter, inputIsOpen]);
 
     const [position, setPosition] = useState({ top: 0, left: 0 });
-    const [height, setHeight] = useState(initialHeight);
-    const [width, setWidth] = useState(initialWidth);
 
     const [hasFocused, setHasFocused] = useState(isFocused);
     useEffect(() => {
@@ -63,13 +74,6 @@ const _Modal: React.ForwardRefRenderFunction<ModalElement, ModalProps> = ({ chil
             handleClose && handleClose();
         }
     }, [handleClose, position.left, position.top]);
-
-    const handleRecenter = useCallback(() => {
-        const newTop = (window.innerHeight / 2) - (height / 2);
-        const newLeft = (window.innerWidth / 2) - (width / 2);
-
-        setPosition({ left: newLeft, top: newTop })
-    }, [height, width]);
 
     const handleOpen = useCallback(() => {
         setIsOpen(true);
