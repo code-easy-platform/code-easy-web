@@ -1,6 +1,6 @@
 import { IProjectConfigurations } from "./IProjectConfigurations";
 import { IProjectOpenedWindow } from "./IProjectOpenedWindow";
-import { ITreeItem } from "../../components/tree-manager";
+import { ITreeItem } from "../../components/external";
 import { IOpenedWindow } from "./IOpenedWindow";
 import { ECurrentFocus } from "./../../enuns";
 import { ITab } from "./ITab";

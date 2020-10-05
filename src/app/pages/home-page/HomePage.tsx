@@ -3,9 +3,8 @@ import { Utils, IconOpenGithub, IconDownload, IconImport, IconConfig } from 'cod
 import { useHistory } from 'react-router-dom';
 import dataformat from 'dateformat';
 
-import { BottonStatusBar } from '../../shared/components/botton-status-bar/BottonStatusBar';
+import { BottonStatusBar, TabButton } from '../../shared/components';
 import { ProjectsStorage } from '../../shared/services/storage/ProjectsStorage';
-import { TabButton } from '../../shared/components/tabs';
 import { EProjectType } from '../../shared/enuns';
 import { ImportProjects } from './ImportFiles';
 import { Project } from '../../shared/models';

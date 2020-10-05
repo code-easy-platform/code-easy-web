@@ -1,5 +1,4 @@
-import React from 'react';
-import { Utils } from 'code-easy-components';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 
 import { ContextMenuService } from './ContextMenuService';
 import './ContextMenu.css';
@@ -12,25 +11,27 @@ export interface IContextItemList {
     useConfirmation?: boolean;
     confirmationMessage?: string;
 }
+
 interface ContextMenuSate {
     actions: IContextItemList[],
     isShow: boolean,
     left: number,
     top: number,
 }
-export class ContextMenu extends React.Component<{ title?: string }> {
-    private menuSubscrition: any;
 
-    state: ContextMenuSate = {
+export const ContextMenu: React.FC<{ title?: string }> = ({ title }) => {
+    const contextMenuRef = useRef<HTMLDivElement | null>(null);
+    const subscription = useRef<any>();
+
+    const [state, setState] = useState<ContextMenuSate>({
         isShow: false,
         actions: [],
         left: 0,
         top: 0,
-    }
-
-    componentDidMount() {
-        this.menuSubscrition = ContextMenuService.getMessage().subscribe(data => {
-            this.setState({
+    });
+    useEffect(() => {
+        subscription.current = ContextMenuService.getMessage().subscribe(data => {
+            setState({
                 actions: data.actions,
                 left: data.left,
                 top: data.top,
@@ -38,48 +39,61 @@ export class ContextMenu extends React.Component<{ title?: string }> {
             });
         });
 
-        window.onclick = () => {
-            this.setState({
-                isShow: false,
-                actions: [],
-                left: -100,
-                top: -100,
-            });
-        };
+        return subscription.current.unsubscribe;
+    }, []);
 
-    }
+    const handleLostFocus = useCallback(() => {
+        ContextMenuService.clearMessages();
+        setState({
+            isShow: false,
+            actions: [],
+            left: -100,
+            top: -100,
+        });
+    }, []);
 
-    componentWillUnmount = () => this.menuSubscrition.unsubscribe();
+    if (!state.isShow) return null;
 
+    return (
+        <div
+            className="context-view fade-in fixed flex-column outline-none"
+            style={{ left: state.left, top: state.top }}
+            onBlur={handleLostFocus}
+            ref={contextMenuRef}
+            tabIndex={0}
+        >
+            {title && <div className="context-menu-title">{title}</div>}
+            {(contextMenuRef.current?.focus())}
+            {state.actions.map(({ action, label, disabled, icon, useConfirmation, confirmationMessage }) => {
 
-    render = () => (<>
-        {this.state.isShow && <div className="context-menu padding-bottom-xs padding-top-xs fade-in" style={{ left: this.state.left, top: this.state.top }}>
-            {this.props.title && <div className="context-menu-title">{this.props.title}</div>}
-            {this.state.actions.map((action) => (
-                action.label !== '-'
-                    ? <div
-                        key={action.label}
-                        className={`context-menu-list-item${action.disabled ? ' disabled' : ''}`}
-                        onClick={
-                            action.disabled
-                                ? undefined
-                                : () => {
-                                    ContextMenuService.clearMessages();
-                                    if (action.useConfirmation) {
-                                        if (window.confirm(action.confirmationMessage || 'Continue?')) {
-                                            action.action();
-                                        }
-                                    } else {
-                                        action.action();
-                                    }
+                if (label === '-') {
+                    return <hr className="hr-white margin-s border-default" />;
+                }
+
+                return (
+                    <div
+                        key={label}
+                        className={`context-menu-list-item padding-horizontal-sm flex-items-center${disabled ? ' disabled' : ' cursor-pointer'}`}
+                        onClick={() => {
+                            if (disabled) return;
+
+                            // Close context menu and clear options list
+                            handleLostFocus();
+
+                            if (useConfirmation) {
+                                if (window.confirm(confirmationMessage || 'Continue?')) {
+                                    action();
                                 }
-                        }
+                            } else {
+                                action();
+                            }
+                        }}
                     >
-                        {action.icon && <img className="padding-right-s" width={15} height={15} src={action.icon} alt={action.label} />}
-                        {action.label}
+                        {icon && <img className="padding-right-s no-draggable" width={16} height={16} src={icon} alt={label} />}
+                        {label}
                     </div>
-                    : <hr key={Utils.getUUID()} className="hr-white margin-bottom-xs margin-top-xs border-default" />
-            ))}
-        </div>}
-    </>);
+                )
+            })}
+        </div>
+    );
 }

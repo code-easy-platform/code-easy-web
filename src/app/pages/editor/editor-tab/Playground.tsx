@@ -1,8 +1,6 @@
 import React, { memo } from 'react';
 
-import { TwoColumnsResizable } from '../../../shared/components/resizable-columns/TwoColumnsResizable';
-import { TwoRowsResizable } from '../../../shared/components/resizable-columns/TwoRowsResizable';
-import { OutputPanel } from '../../../shared/components/output-panel/OutputPanel';
+import { TwoColumnsResizable, TwoRowsResizable, OutputPanel } from '../../../shared/components';
 import { ProblemsHelper } from '../../../shared/services/helpers/ProblemsHelper';
 import { OutputHelper } from '../../../shared/services/helpers/OutputHelper';
 import { PropertiesEditorController } from './PropertiesEditor.Controller';

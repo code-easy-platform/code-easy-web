@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useState } from 'react';
 
 
 export const OptionItemContent: React.FC = ({ children }) => {
@@ -15,14 +15,11 @@ export interface IOptionListItem {
 }
 interface ListDetailProps {
     menuOptions: IOptionListItem[];
-    children: [] | React.ReactElement<typeof OptionItemContent>
+    children: React.ReactNode[] | React.ReactNode
 }
 export const ListDetail: React.FC<ListDetailProps> = ({ menuOptions, children }) => {
 
     const [options, setOptions] = useState(menuOptions);
-    useEffect(() => {
-        setOptions(menuOptions);
-    }, [menuOptions]);
 
     const handleSelectMenuItem = useCallback((position: number) => {
         setOptions([
@@ -35,13 +32,13 @@ export const ListDetail: React.FC<ListDetailProps> = ({ menuOptions, children })
 
     return (
         <div className="flex1">
-            <section className="flex2 padding-top-xs padding-bottom-xs background-panels">
+            <section className="flex2 padding-top-xs padding-bottom-xs background-panels font-size-g">
                 {options.map(({ title, description, isSelected }, index) => (
                     <div
                         key={index}
                         title={description}
                         onMouseDown={() => handleSelectMenuItem(index)}
-                        className={`hover active padding-s cursor-pointer${isSelected ? ' selected' : ''}`}
+                        className={`padding-s cursor-pointer${isSelected ? ' selected' : ' hover active'}`}
                     >
                         {title}
                     </div>

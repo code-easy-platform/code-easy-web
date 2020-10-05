@@ -1,12 +1,11 @@
 import { Utils } from "code-easy-components";
 
 import { ParametersLocationList, ParametersLocation } from "../../enuns/ParametersLocation";
-import { IProperty, TypeOfValues } from "../../components/properties-editor";
+import { IProperty, TypeOfValues, EItemType } from "../../components/external";
 import { MethodsApi, MethodsApiList } from "../../enuns/ApiMethods";
 import { DataTypes, DataTypesList } from "../../enuns/DataType";
 import { PropertieTypes } from "../../enuns/PropertieTypes";
 import { EComponentType } from "../../enuns/ComponentType";
-import { EItemType } from "../../components/flow-editor";
 
 class DefaultPropsService {
 

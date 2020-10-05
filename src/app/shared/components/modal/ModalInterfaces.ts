@@ -18,7 +18,9 @@ export interface ModalProps {
     children: React.ReactNode;
     allowMaximize?: boolean;
     initialHeight?: number;
+    isResizable?: boolean;
     initialWidth?: number;
+    isDraggable?: boolean;
     isFocused?: boolean;
     onMaximize?(): void;
     onMinimize?(): void;

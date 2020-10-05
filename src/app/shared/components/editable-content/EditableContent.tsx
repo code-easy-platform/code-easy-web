@@ -56,25 +56,30 @@ export const EditableContent: React.FC<{ itemId: string, removeModal: Function }
             closeWithBackdropClick={false}
         >
             <MonacoEditor
-                theme={"vs-dark"}
+                language="json"
                 ref={editorRef}
-                language="javascript"
+                theme={"vs-dark"}
                 value={selectedItem?.value}
                 width={modalRef.current?.width}
                 height={modalRef.current?.height}
                 onChange={value => { selectedItem.value = value; setProject(project) }}
-                overrideServices={{
-
-                }}
                 options={{
                     autoClosingQuotes: "always",
+                    mouseWheelZoom: true,
                     tabCompletion: "on",
                     dragAndDrop: true,
                     links: true,
-                    mouseWheelZoom: true,
+                    fontFamily: 'Firacode',
+                    comments: {
+                        insertSpace: true
+                    },
                     suggest: {
-                        showFunctions: true
-                    }
+                        showFunctions: true,
+                        showConstants: true,
+                        showVariables: true,
+                        showColors: true,
+                    },
+                    highlightActiveIndentGuide: true,
                 }}
             />
         </Modal>

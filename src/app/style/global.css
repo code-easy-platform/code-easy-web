@@ -321,6 +321,26 @@ input[type="checkbox"]:checked {
   z-index: 5;
 }
 
+.z6 {
+  z-index: 6;
+}
+
+.z7 {
+  z-index: 7;
+}
+
+.z8 {
+  z-index: 8;
+}
+
+.z9 {
+  z-index: 9;
+}
+
+.z10 {
+  z-index: 10;
+}
+
 .no-draggable {
   -webkit-user-drag: none;
 }

@@ -1,7 +1,6 @@
 import { IconError, IconWarning, Utils } from "code-easy-components";
 
-import { IFileContent, IProperty, TypeOfValues } from "./../components/properties-editor";
-import { ITreeItem } from "./../components/tree-manager";
+import { IFileContent, IProperty, TypeOfValues, ITreeItem } from "./../components/external";
 import { IBasicConfigurations } from "./../interfaces";
 import { AssetsService } from "../services";
 import { PropertieTypes } from "./../enuns";

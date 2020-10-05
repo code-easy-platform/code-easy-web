@@ -1,8 +1,8 @@
 import React, { useState, memo } from 'react';
 import { IconStar } from 'code-easy-components';
 
-import { ContextMenuService } from '../../shared/components/context-menu/ContextMenuService';
 import { ProjectTypeList, EProjectType } from '../../shared/enuns';
+import { ContextMenuService } from '../../shared/components';
 
 interface CardItemProps {
     onDelete?(id: string): void;
@@ -46,10 +46,9 @@ export const CardItem = memo(({ listMode, ...props }: CardItemProps) => {
             ? <div
                 tabIndex={0}
                 onContextMenu={contextMenu}
+                title={props.item.description}
                 onClick={() => props.onClick(item)}
-                onKeyDown={e => (e.keyCode === 13 || e.keyCode === 32) ? props.onClick(item) : {}
-                }
-                className={`${!listMode && "margin-right-m"} margin-bottom-m border-radius btn background-transparent padding-none flex-column outline-none`}
+                className={`${!listMode && "margin-right-m"} margin-bottom-m border-radius-soft btn background-transparent padding-none flex-column outline-none input-border`}
                 style={{
                     border: 'var(--input-border)',
                     width: listMode ? 'auto' : 200,
@@ -57,28 +56,29 @@ export const CardItem = memo(({ listMode, ...props }: CardItemProps) => {
                     maxWidth: 400,
                 }}
             >
-                {!listMode && <>
-                    <div className="flex1 padding-m" style={{ alignSelf: 'center' }}>
-                        <img height="50" src={props.item.icon || IconStar} alt="Placeholder" />
-                    </div>
-                    <hr className="hr margin-bottom-s margin-top-s" style={{ backgroundColor: 'var(--main-background-highlighted)' }} />
-                </>}
+                {!listMode &&
+                    <>
+                        <div className="flex1 padding-m" style={{ alignSelf: 'center' }}>
+                            <img height="50" src={props.item.icon || IconStar} alt="Placeholder" />
+                        </div>
+                        <hr className="hr margin-bottom-s margin-top-s" style={{ backgroundColor: 'var(--main-background-highlighted)' }} />
+                    </>
+                }
                 <div className="flex-column">
                     <div className="padding-s text-ellipsis">{props.item.name}</div>
                     <div className="padding-s font-size-s flex-column" style={{ alignItems: 'center' }}>
-                        {!listMode && <div className="flex1">{props.item.description}</div>}
-                        <div className="flex-space-between full-width margin-top-s">
+                        <div className="flex-space-between full-width margin-top-s font-size-m">
                             <div style={{ whiteSpace: 'nowrap' }}>v. {props.item.version}</div>
                             <div style={{ whiteSpace: 'nowrap' }}>{props.item.lastUpdate}</div>
                         </div>
                     </div>
                 </div>
-            </div >
-            : <div className="margin-right-m margin-bottom-m border-radius padding-s flex-column" style={{ border: 'var(--input-border)', width: 300 }}>
+            </div>
+            : <div className="margin-right-m margin-bottom-m border-radius padding-s flex-column input-border background-bars" style={{ width: 300 }}>
                 <div className="margin-top-s">
                     <div className="flex3 flex-column margin-right-s">
                         <label htmlFor="input_name">Name</label>
-                        <input id="input_name" value={item.name} onChange={e => setItem({ ...item, name: e.target.value })} />
+                        <input id="input_name" value={item.name} onChange={e => setItem({ ...item, name: e.target.value })} autoFocus={true} />
                     </div>
                     <div className="flex1 flex-column" style={{ width: 50 }}>
                         <label htmlFor="input_version">Version</label>
@@ -98,7 +98,7 @@ export const CardItem = memo(({ listMode, ...props }: CardItemProps) => {
                 <div className="margin-top-m" style={{ justifyContent: 'flex-end' }}>
                     <button
                         onClick={props.onCancel}
-                        className="border-none hover focus active cursor-pointer padding-sm padding-left-m padding-right-m background-transparent margin-right-s border-radius outline-none"
+                        className="border-none hover focus active cursor-pointer padding-sm text-white padding-left-m padding-right-m background-transparent margin-right-s border-radius outline-none"
                     >Cancel</button>
                     <button
                         onClick={() => props.onClick(item)}

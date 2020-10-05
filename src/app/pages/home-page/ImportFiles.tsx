@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 
 import { ProjectsStorage } from '../../shared/services/storage/ProjectsStorage';
-import { Modal } from '../../shared/components/modal';
+import { Modal } from '../../shared/components';
 import { Project } from '../../shared/models';
 import { CardItem } from './CardItem';
 

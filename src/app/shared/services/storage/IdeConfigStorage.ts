@@ -23,6 +23,7 @@ export class IdeConfigStorage {
             configs = this.setConfigs({
                 flowBackgroundType: FlowBackgroundType.dotted,
                 snapGridWhileDragging: true,
+                defaultPort: 3333,
             });
         }
 
