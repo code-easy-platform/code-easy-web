@@ -1,7 +1,7 @@
 import React from 'react';
 import { useHistory } from 'react-router-dom';
 
-import { IOptionListItem, ListDetail, OptionItemContent } from '../../../shared/components/modal';
+import { IOptionListItem, ListDetail, OptionItemContent } from '../../../shared/components';
 import { ProjectsStorage } from '../../../shared/services/storage/ProjectsStorage';
 import { useEditorContext } from '../../../shared/contexts';
 

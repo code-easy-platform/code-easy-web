@@ -1,7 +1,7 @@
 import React from "react";
 
 import { Switch } from "../../shared/components/external/properties-editor/shared/components/toggle-swicth/Switch";
-import { IOptionListItem, ListDetail, Modal, OptionItemContent } from "../../shared/components/modal";
+import { IOptionListItem, ListDetail, Modal, OptionItemContent } from "../../shared/components";
 import { FlowBackgroundType } from "../../shared/services/storage/IdeConfigStorage";
 import { useIdeConfigs } from "../../shared/contexts";
 

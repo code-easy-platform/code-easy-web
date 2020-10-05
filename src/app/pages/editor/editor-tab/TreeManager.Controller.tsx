@@ -2,8 +2,7 @@ import React, { useCallback } from 'react';
 import { IconTrash, Utils, IconFlowStart, IconFlowEnd } from 'code-easy-components';
 
 import { TreeManager, ITreeItem, CustomDragLayer, EItemType } from '../../../shared/components/external';
-import { ContextMenuService } from '../../../shared/components/context-menu/ContextMenuService';
-import { IContextItemList } from '../../../shared/components/context-menu/ContextMenu';
+import { ContextMenuService, IContextItemList } from '../../../shared/components';
 import { TreeItemComponent, FlowItemComponent, Tab } from '../../../shared/models';
 import { ECurrentFocus, EComponentType } from '../../../shared/enuns';
 import { useEditorContext } from '../../../shared/contexts';

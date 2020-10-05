@@ -3,10 +3,9 @@ import { IconTrash, Utils, IconFlowStart, IconFlowAction, IconFlowIf, IconFlowFo
 
 import { FlowEditor, IFlowItem, IBreadCrumbButton, EItemType, EFlowItemType, parseEItemType, EItemTypeList, IProperty } from '../../../shared/components/external';
 import { BackgroundEmpty, BackgroundEmptyLeft, BackgroundEmptyLeftToTop } from '../../../assets';
-import { ContextMenuService } from '../../../shared/components/context-menu/ContextMenuService';
-import { IContextItemList } from '../../../shared/components/context-menu/ContextMenu';
 import { PropertieTypes, EComponentType, ECurrentFocus } from '../../../shared/enuns';
 import { TreeItemComponent, FlowItemComponent, Tab } from '../../../shared/models';
+import { ContextMenuService, IContextItemList } from '../../../shared/components';
 import { DefaultPropsHelper, AssetsService } from '../../../shared/services';
 import { useIdeConfigs, useEditorContext } from '../../../shared/contexts';
 

@@ -1,10 +1,10 @@
 import React, { useState, useEffect, useCallback, useContext } from 'react';
 import { useParams, useHistory } from 'react-router-dom';
 
-import { CenterLoadingIndicator } from '../components/loading-indicator/LoadingIndicator';
 import { ProjectsStorage } from '../services/storage/ProjectsStorage';
 import { ProblemsHelper } from '../services/helpers/ProblemsHelper';
 import { EComponentType, PropertieTypes } from '../enuns';
+import { CenterLoadingIndicator } from '../components';
 import { TreeItemComponent } from '../models';
 import { AssetsService } from '../services';
 import { Project } from '../models';

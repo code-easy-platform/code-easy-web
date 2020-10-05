@@ -1,12 +1,9 @@
 import React from 'react';
 
-import { BottonStatusBar } from '../../shared/components/botton-status-bar/BottonStatusBar';
-import { ContextModalList } from '../../shared/components/context-modais/ContextModalList';
-import { ToolBar } from '../../shared/components/tool-bar/ToolBar';
+import { BottonStatusBar, ContextModalList, ToolBar } from '../../shared/components';
 import { CodeEditorProvider } from '../../shared/contexts';
 import { Playground } from './editor-tab/Playground';
 import './Editor.css';
-
 
 export const Editor: React.FC = () => {
     return (

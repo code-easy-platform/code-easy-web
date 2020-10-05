@@ -1,8 +1,8 @@
 import React, { useState, memo } from 'react';
 import { IconStar } from 'code-easy-components';
 
-import { ContextMenuService } from '../../shared/components/context-menu/ContextMenuService';
 import { ProjectTypeList, EProjectType } from '../../shared/enuns';
+import { ContextMenuService } from '../../shared/components';
 
 interface CardItemProps {
     onDelete?(id: string): void;
