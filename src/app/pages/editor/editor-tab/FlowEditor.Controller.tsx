@@ -153,41 +153,39 @@ export const FlowEditorController: React.FC = memo(() => {
 
     /** Alimenta a toolbox, de onde pode ser arrastados items para o fluxo. */
     const toolBoxItems = useCallback((): IFlowItem[] => [
-        { id: '1', icon: IconFlowStart, label: "START", itemType: EItemType.START, top: 0, left: 0, flowItemType: EFlowItemType.acorn },
-        { id: '2', icon: IconFlowAction, label: "ACTION", itemType: EItemType.ACTION, top: 0, left: 0, flowItemType: EFlowItemType.acorn },
-        { id: '3', icon: IconFlowIf, label: "IF", itemType: EItemType.IF, top: 0, left: 0, flowItemType: EFlowItemType.acorn },
-        { id: '4', icon: IconFlowForeach, label: "FOREACH", itemType: EItemType.FOREACH, top: 0, left: 0, flowItemType: EFlowItemType.acorn },
-        { id: '6', icon: IconFlowSwitch, label: "SWITCH", itemType: EItemType.SWITCH, top: 0, left: 0, flowItemType: EFlowItemType.acorn },
-        { id: '7', icon: IconFlowAssign, label: "ASSIGN", itemType: EItemType.ASSIGN, top: 0, left: 0, flowItemType: EFlowItemType.acorn },
-        { id: '8', icon: IconFlowEnd, label: "END", itemType: EItemType.END, top: 0, left: 0, flowItemType: EFlowItemType.acorn },
-        { id: '9', icon: IconFlowComment, label: "COMMENT", itemType: EItemType.COMMENT, top: 0, left: 0, flowItemType: EFlowItemType.comment },
+        { id: '1', top: 0, left: 0, flowItemType: EFlowItemType.acorn, label: EItemType.START, icon: IconFlowStart, itemType: EItemType.START },
+        { id: '2', top: 0, left: 0, flowItemType: EFlowItemType.acorn, label: EItemType.ACTION, icon: IconFlowAction, itemType: EItemType.ACTION },
+        { id: '3', top: 0, left: 0, flowItemType: EFlowItemType.acorn, label: EItemType.IF, icon: IconFlowIf, itemType: EItemType.IF },
+        { id: '4', top: 0, left: 0, flowItemType: EFlowItemType.acorn, label: EItemType.FOREACH, icon: IconFlowForeach, itemType: EItemType.FOREACH },
+        { id: '6', top: 0, left: 0, flowItemType: EFlowItemType.acorn, label: EItemType.SWITCH, icon: IconFlowSwitch, itemType: EItemType.SWITCH },
+        { id: '7', top: 0, left: 0, flowItemType: EFlowItemType.acorn, label: EItemType.ASSIGN, icon: IconFlowAssign, itemType: EItemType.ASSIGN },
+        { id: '8', top: 0, left: 0, flowItemType: EFlowItemType.acorn, label: EItemType.END, icon: IconFlowEnd, itemType: EItemType.END },
+        { id: '9', top: 0, left: 0, flowItemType: EFlowItemType.comment, label: EItemType.COMMENT, icon: IconFlowComment, itemType: EItemType.COMMENT },
     ], []);
 
     /** Quando clicado com o botão esquerdo do mouse no interior do editor esta função é acionada. */
-    const contextMenu = useCallback((data: any, e: any): IContextItemList[] => {
+    const handleShowContextMenu = useCallback((id: any, e: any): IContextItemList[] => {
         const left = e.nativeEvent.offsetX;
         const top = e.nativeEvent.offsetY;
 
         let options: IContextItemList[] = [];
 
-        if (data) {
-            const itemToDelete = data;
+        if (id) {
+            let indexTreeToDelete: number | undefined;
+            let indexTabToDelete: number | undefined;
+            let indexToDelete: number | undefined;
+
+            project.tabs.forEach((tab: Tab, indexTab) => {
+                tab.items.forEach((item, indexTree) => {
+                    if (item.isEditing) {
+                        indexToDelete = item.items.findIndex(flow_item => flow_item.id === id);
+                        indexTreeToDelete = indexTree;
+                        indexTabToDelete = indexTab;
+                    }
+                });
+            });
 
             const handleContextDelete = () => {
-                let indexTreeToDelete: number | undefined;
-                let indexTabToDelete: number | undefined;
-                let indexToDelete: number | undefined;
-
-                project.tabs.forEach((tab: Tab, indexTab) => {
-                    tab.items.forEach((item, indexTree) => {
-                        if (item.isEditing) {
-                            indexToDelete = item.items.findIndex(flow_item => flow_item.id === itemToDelete.itemId);
-                            indexTreeToDelete = indexTree;
-                            indexTabToDelete = indexTab;
-                        }
-                    })
-                });
-
                 if (indexTabToDelete !== undefined && indexToDelete !== undefined && indexToDelete !== -1 && indexTreeToDelete !== undefined) {
                     project.tabs[indexTabToDelete].items[indexTreeToDelete].items.splice(indexToDelete, 1);
 
@@ -196,22 +194,24 @@ export const FlowEditorController: React.FC = memo(() => {
                 }
             }
 
-            options.push({
-                icon: IconTrash,
-                action: handleContextDelete,
-                label: 'Delete ' + itemToDelete.itemType,
-            });
+            if (indexTabToDelete !== undefined && indexToDelete !== undefined && indexToDelete !== -1 && indexTreeToDelete !== undefined) {
+                options.push({
+                    icon: IconTrash,
+                    action: handleContextDelete,
+                    label: 'Delete ' + project.tabs[indexTabToDelete].items[indexTreeToDelete].items[indexToDelete].type,
+                });
 
-            options.push({
-                label: '-',
-                action: () => { }
-            });
+                options.push({
+                    label: '-',
+                    action: () => { }
+                });
+            }
         }
 
         toolBoxItems().forEach(item => {
             options.push({
+                icon: item.icon,
                 label: 'Add ' + item.label,
-
                 action: () => {
 
                     // Encontra a tab certa e adiciona um item de fluxo aos items
@@ -246,7 +246,6 @@ export const FlowEditorController: React.FC = memo(() => {
                     setProject(project);
                 }
             });
-
         });
 
         return options;
@@ -376,6 +375,18 @@ export const FlowEditorController: React.FC = memo(() => {
         };
     }, [project]);
 
+    const handleOnFocus = useCallback(() => {
+        project.currentFocus = ECurrentFocus.flow;
+        setProject(project);
+    }, [project, setProject]);
+
+    const handleOnContextMenu = useCallback((e: React.MouseEvent<any, MouseEvent>) => {
+        if (e) {
+            e.preventDefault();
+            ContextMenuService.showMenu(e.clientX, e.clientY, handleShowContextMenu((e.target as any).id, e));
+        }
+    }, [handleShowContextMenu]);
+
     const flowEditorItemsResult = flowEditorItems();
 
     const getBackgroundEmpty = useCallback(() => {
@@ -384,25 +395,25 @@ export const FlowEditorController: React.FC = memo(() => {
 
         if (flowEditorItemsResult.hasSomethingEditing) {
             return (
-                <>
+                <div className="opacity-6 flex-content-center flex-items-center no-events" style={{ height: '-webkit-fill-available', width: '-webkit-fill-available' }}>
                     <BackgroundEmptyLeft className="opacity-9" width={600} style={{ position: 'absolute', top: 0, left: 0 }} />
                     <BackgroundEmpty className="opacity-9" width={600} style={{ position: 'absolute', top: 0, right: 0 }} />
                     <h1 style={{ textAlign: 'center' }}>Drag and drop something here</h1>
-                </>
+                </div>
             );
         } else if (!flowEditorItemsResult.hasSomethingToEdit) {
             return (
-                <>
+                <div className="opacity-6 flex-content-center flex-items-center no-events" style={{ height: '-webkit-fill-available', width: '-webkit-fill-available' }}>
                     <h1 style={{ textAlign: 'center' }}>In the tree on the left,<br /> create a new feature to start</h1>
                     <BackgroundEmptyLeftToTop className="opacity-9" width={600} style={{ position: 'absolute', top: 0, right: 0 }} />
-                </>
+                </div>
             );
         } else if (flowEditorItemsResult.hasSomethingToEdit && !flowEditorItemsResult.hasSomethingEditing) {
             return (
-                <>
+                <div className="opacity-6 flex-content-center flex-items-center no-events" style={{ height: '-webkit-fill-available', width: '-webkit-fill-available' }}>
                     <h1 style={{ textAlign: 'center' }}>In the tree on the left,<br />double click to edit</h1>
                     <BackgroundEmptyLeftToTop className="opacity-9" width={600} style={{ position: 'absolute', top: 0, right: 0 }} />
-                </>
+                </div>
             );
         } else {
             return null;
@@ -412,27 +423,22 @@ export const FlowEditorController: React.FC = memo(() => {
     return (
         <FlowEditor
             id={"CODE_EDITOR"}
+            onFocus={handleOnFocus}
             toolItems={toolBoxItems()}
             breadcrumbs={getBreadcamps()}
             onDropItem={handleOnDropItem}
+            onContextMenu={handleOnContextMenu}
             onChangeItems={handleOnChangeItems}
             items={flowEditorItemsResult.flowItems}
-            childrenWhenItemsEmpty={
-                <div className="opacity-6 flex-content-center flex-items-center no-events" style={{ height: '-webkit-fill-available', width: '-webkit-fill-available' }}>
-                    {getBackgroundEmpty()}
-                </div>
-            }
-            onContextMenu={(e) => {
-                if (e) {
-                    e.preventDefault();
-                    ContextMenuService.showMenu(e.clientX, e.clientY, contextMenu(undefined, e));
-                }
-            }}
-            onFocus={() => {
-                project.currentFocus = ECurrentFocus.flow;
-                setProject(project);
-            }}
+            childrenWhenItemsEmpty={getBackgroundEmpty()}
             configs={{
+                typesAllowedToDrop: [...EItemTypeList, EComponentType.globalAction, EComponentType.localAction, EComponentType.localVariable, EComponentType.inputVariable, EComponentType.outputVariable],
+                snapGridWhileDragging: snapGridWhileDragging,
+                backgroundType: flowBackgroundType,
+                lineWidth: 1,
+
+                showToolbar: flowEditorItemsResult.hasSomethingToEdit && flowEditorItemsResult.hasSomethingEditing,
+
                 selectionBorderColor: 'var(--selection-border-color)',
                 selectionBackgroundColor: '#ffffff11',
 
@@ -440,13 +446,6 @@ export const FlowEditorController: React.FC = memo(() => {
                 flowItemSelectedColor: 'var(--selection-border-color)',
                 flowItemErrorColor: 'var(--main-error-color)',
                 commentTextColor: '#ffffff',
-
-                typesAllowedToDrop: [...EItemTypeList, EComponentType.globalAction, EComponentType.localAction, EComponentType.localVariable, EComponentType.inputVariable, EComponentType.outputVariable],
-                snapGridWhileDragging: snapGridWhileDragging,
-                backgroundType: flowBackgroundType,
-                lineWidth: 1,
-
-                showToolbar: flowEditorItemsResult.hasSomethingToEdit && flowEditorItemsResult.hasSomethingEditing,
             }}
         />
     );

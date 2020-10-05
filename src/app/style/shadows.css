@@ -11,10 +11,10 @@
     --shadow-xl: 0 8px 10px rgba(0, 0, 0, .1);
     /* Others shadows */
     --box-shadow-small: 4px -1px 5px 0.1px #191919;
-    --box-shadow-small-center: 0px 0px 5px 1px #191919;
-    --box-shadow-medium-center: 0px 0px 10px 4px #191919;
+    --box-shadow-small-center: 0px 0px 5px 1px #0000008a;
+    --box-shadow-medium-center: 0px 0px 10px 4px #0000008a;
 }
-
+/* 0000008a */
 .shadow-none {
     box-shadow: var(--shadow-none);
 }

@@ -402,8 +402,8 @@ const _Modal: React.ForwardRefRenderFunction<ModalElement, ModalProps> = ({ chil
                 onBlur={handleOnBlur}
                 onFocus={handleOnFocus}
                 onKeyDown={handleBackdropKeyDown}
-                style={{ boxShadow: `0 0 ${hasFocused ? '20' : '10'}px 0px #0000008a` }}
-                className={`flex1 outline-none flex-column background no-events ${hasFocused ? 'z5 border-default' : 'z3 border-default-transparent'}`}
+                // style={{ boxShadow: `0 0 ${hasFocused ? '20' : '10'}px 0px #0000008a` }}
+                className={`flex1 outline-none flex-column background no-events ${hasFocused ? 'z5 border-default box-shadow-medium-center' : 'z3 border-default-transparent box-shadow-small-center'}`}
             >
                 <div
                     onDoubleClick={toggleMaximize}
