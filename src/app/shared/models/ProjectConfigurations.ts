@@ -1,9 +1,8 @@
 import { IconError, IconWarning, Utils } from "code-easy-components";
 
-import { TypeOfValues } from "../components/properties-editor";
+import { TypeOfValues, ITreeItem } from "../components/external";
 import { BasicConfigurations } from "./BasicConfigurations";
 import { EProjectType, PropertieTypes } from "./../enuns";
-import { ITreeItem } from "./../components/tree-manager";
 import { IProjectConfigurations } from "../interfaces";
 
 

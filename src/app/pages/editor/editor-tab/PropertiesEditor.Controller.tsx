@@ -1,10 +1,9 @@
 import React, { useCallback } from 'react';
 import { Utils } from 'code-easy-components';
 
-import { PropertiesEditor, IProperty, TypeOfValues, IItem } from '../../../shared/components/properties-editor';
+import { EItemType, PropertiesEditor, IProperty, TypeOfValues, IItem } from '../../../shared/components/external';
 import { ContextModalListService } from '../../../shared/components/context-modais/ContextModalListService';
 import { EComponentType, ECurrentFocus, PropertieTypes } from '../../../shared/enuns';
-import { EItemType } from '../../../shared/components/flow-editor';
 import { TreeItemComponent, Tab } from '../../../shared/models';
 import { useEditorContext } from '../../../shared/contexts';
 

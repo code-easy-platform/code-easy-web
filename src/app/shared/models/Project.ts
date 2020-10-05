@@ -3,7 +3,7 @@ import { IconError, IconWarning } from "code-easy-components";
 import { IOpenedWindow, IProject, IProjectManageWindows, IProjectOpenedWindow } from "../interfaces";
 import { ProjectConfigurations } from "./ProjectConfigurations";
 import { EComponentType, ECurrentFocus } from "./../enuns";
-import { ITreeItem } from "../components/tree-manager";
+import { ITreeItem } from "../components/external";
 import { ProjectParser } from "./ProjectParser";
 import { Tab } from "./Tab";
 

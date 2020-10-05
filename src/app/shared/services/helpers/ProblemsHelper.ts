@@ -1,8 +1,7 @@
 import { IconWarning, IconError } from "code-easy-components";
 
-import { ITreeItem } from "../../components/tree-manager";
+import { ITreeItem, EItemType } from "../../components/external";
 import { EComponentType } from "../../enuns/ComponentType";
-import { EItemType } from "../../components/flow-editor";
 import { PropertieTypes } from "../../enuns";
 import { Project } from "../../models";
 

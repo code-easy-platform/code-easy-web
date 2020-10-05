@@ -1,6 +1,6 @@
 import React, { useState, memo } from 'react';
 
-import { TreeManager, ITreeItem } from '../tree-manager';
+import { TreeManager, ITreeItem } from '../external';
 import { TabGroup, TabButton } from '../tabs';
 
 enum OutputTab {

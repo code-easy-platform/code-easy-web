@@ -1,12 +1,11 @@
 import React, { useCallback } from 'react';
 import { IconTrash, Utils, IconFlowStart, IconFlowEnd } from 'code-easy-components';
 
-import { TreeManager, ITreeItem, CustomDragLayer } from '../../../shared/components/tree-manager';
+import { TreeManager, ITreeItem, CustomDragLayer, EItemType } from '../../../shared/components/external';
 import { ContextMenuService } from '../../../shared/components/context-menu/ContextMenuService';
 import { IContextItemList } from '../../../shared/components/context-menu/ContextMenu';
 import { TreeItemComponent, FlowItemComponent, Tab } from '../../../shared/models';
 import { ECurrentFocus, EComponentType } from '../../../shared/enuns';
-import { EItemType } from '../../../shared/components/flow-editor';
 import { useEditorContext } from '../../../shared/contexts';
 import { AssetsService } from '../../../shared/services';
 

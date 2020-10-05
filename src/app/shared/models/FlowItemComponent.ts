@@ -1,9 +1,7 @@
 import { IconError, IconWarning, Utils } from "code-easy-components";
 
-import { EItemType, IConnection, EFlowItemType } from "./../components/flow-editor";
-import { IProperty, TypeOfValues } from "./../components/properties-editor";
+import { EItemType, IConnection, EFlowItemType, IProperty, TypeOfValues, ITreeItem } from "./../components/external";
 import { BasicConfigurations } from "./BasicConfigurations";
-import { ITreeItem } from "./../components/tree-manager";
 import { IFlowItemComponent } from "./../interfaces";
 import { DefaultPropsHelper } from "./../services";
 import { PropertieTypes } from "./../enuns";

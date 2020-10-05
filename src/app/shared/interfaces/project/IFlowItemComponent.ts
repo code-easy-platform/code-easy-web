@@ -1,4 +1,4 @@
-import { EItemType, IConnection, IFlowItem } from "./../../components/flow-editor";
+import { EItemType, IConnection, IFlowItem } from "./../../components/external";
 import { IBasicConfigurations } from "./IBasicConfigurations";
 
 /**

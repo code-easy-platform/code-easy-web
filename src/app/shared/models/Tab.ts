@@ -1,8 +1,8 @@
 import { BasicConfigurations } from "./BasicConfigurations";
 import { TreeItemComponent } from "./TreeItemComponent";
+import { ITreeItem } from "../components/external";
 import { EComponentType } from "./../enuns";
 import { ITab } from "./../interfaces";
-import { ITreeItem } from "../components/tree-manager";
 
 
 type OmitInConstructor = 'name' | 'problems';

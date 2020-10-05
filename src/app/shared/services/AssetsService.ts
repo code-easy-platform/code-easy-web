@@ -5,7 +5,7 @@ import {
 } from 'code-easy-components';
 
 import { EComponentType, EProjectType } from "../enuns";
-import { EItemType } from '../components/flow-editor';
+import { EItemType } from '../components/external';
 
 
 class Assets {

@@ -1,7 +1,5 @@
-import { IProperty } from "./../../components/properties-editor";
+import { IProperty, ITreeItem, EItemType } from "./../../components/external";
 import { EComponentType, EProjectType } from "./../../enuns";
-import { ITreeItem } from "./../../components/tree-manager";
-import { EItemType } from "./../../components/flow-editor";
 
 /**
  * Common fields between the different project structures
