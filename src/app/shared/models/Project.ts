@@ -79,14 +79,13 @@ export class Project extends ProjectParser implements IProject, IProjectManageWi
                         {
                             id: tabItem.id,
                             title: tabItem.label,
+                            hasError: tabItem.hasError,
                             isSelected: tabItem.isEditing,
+                            hasWarning: tabItem.hasWarning,
                             description: tabItem.description,
-                            hasError: tabItem.items.some(itemFlow => itemFlow.hasError),
-                            hasWarning: tabItem.items.some(itemFlow => itemFlow.hasWarning)
                         }
                     ]
                 }
-
             });
         });
 

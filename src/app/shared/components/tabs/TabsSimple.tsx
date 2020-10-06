@@ -16,14 +16,16 @@ interface ITabButtonProps {
     content?: any;
     title?: string;
     className?: String;
+    hasError?: boolean;
     fontSize?: FontSize;
+    hasWarning?: boolean;
     isSelected?: boolean;
     style?: CSSProperties;
     to?: string | undefined;
     onFocus?(e: React.FocusEvent<HTMLDivElement>): void;
     onClick?(e: React.MouseEvent<HTMLDivElement, MouseEvent>): void;
 }
-export const TabButton: React.FC<ITabButtonProps> = memo(({ to, fontSize = 'xg', ...props }) => {
+export const TabButton: React.FC<ITabButtonProps> = memo(({ to, hasError, hasWarning, fontSize = 'xg', ...props }) => {
     const history = useHistory();
     return (
         <div
@@ -35,7 +37,7 @@ export const TabButton: React.FC<ITabButtonProps> = memo(({ to, fontSize = 'xg',
             onDragEnter={props.onClick}
             onFocus={!to ? props.onFocus : () => history.push(to)}
             onClick={!to ? props.onClick : () => history.push(to)}
-            className={`border-none cursor-pointer background-transparent flex-justfy-center flex-items-center outline-none padding-s opacity-7 font-size-${fontSize}${props.isSelected ? " btn-tab-selected opacity-10" : ""} ${props.className}`}
+            className={`border-none cursor-pointer background-transparent flex-justfy-center flex-items-center outline-none padding-s opacity-7${hasError ? 'text-underline-error' : ''} ${hasWarning ? 'text-underline-warning' : ''} font-size-${fontSize}${props.isSelected ? " btn-tab-selected opacity-10" : ""} ${props.className}`}
         />
     );
 });

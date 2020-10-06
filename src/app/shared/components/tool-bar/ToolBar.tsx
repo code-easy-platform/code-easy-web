@@ -63,13 +63,15 @@ export const ToolBar: React.FC = memo(() => {
                             <TabButton
                                 id={tab.name}
                                 key={tab.name}
+                                hasError={tab.hasError}
+                                title={tab.description}
+                                isSelected={tab.isEditing}
+                                hasWarning={tab.hasWarning}
+                                className="btn-open-routers-tab flex1 padding-horizontal-sm"
                                 content={<>
                                     <img height="90%" className="padding-right-s" src={AssetsService.getIcon(tab.type)} alt={tab.type} />
                                     {tab.label}
                                 </>}
-                                title={tab.description}
-                                isSelected={tab.isEditing}
-                                className="btn-open-routers-tab flex1 padding-horizontal-sm"
                                 onClick={() => {
                                     project.tabs.forEach(currentTab => currentTab.isEditing = false);
                                     project.tabs[index].isEditing = true;
