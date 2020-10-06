@@ -44,7 +44,7 @@ export const TabButton: React.FC<TabButtonProps> = ({ id, description, title, ic
         e.stopPropagation();
         e.preventDefault();
 
-        if (e.keyCode === 32) {
+        if (e.key === ' ') {
             onSelect && onSelect(id);
         }
     }, [id, onSelect]);

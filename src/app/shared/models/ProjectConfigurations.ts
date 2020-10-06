@@ -6,7 +6,7 @@ import { EProjectType, PropertieTypes } from "./../enuns";
 import { IProjectConfigurations } from "../interfaces";
 
 
-type OmitInConstructor = 'name' | 'problems';
+type OmitInConstructor = Omit<IProjectConfigurations, 'name' | 'problems'>;
 
 export class ProjectConfigurations extends BasicConfigurations<EProjectType> implements IProjectConfigurations {
 
@@ -122,7 +122,7 @@ export class ProjectConfigurations extends BasicConfigurations<EProjectType> imp
         return problems;
     }
 
-    constructor(fields: Omit<IProjectConfigurations, OmitInConstructor>) {
+    constructor(fields: OmitInConstructor) {
         super(fields);
 
         this.author = fields.author;

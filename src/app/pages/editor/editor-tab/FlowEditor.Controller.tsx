@@ -348,7 +348,7 @@ export const FlowEditorController: React.FC = memo(() => {
                 id: item.id,
                 top: item.top,
                 left: item.left,
-                label: item.name,
+                label: item.label,
                 width: item.width,
                 height: item.height,
                 itemType: item.type,

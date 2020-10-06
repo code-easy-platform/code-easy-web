@@ -8,7 +8,7 @@ import { ProjectParser } from "./ProjectParser";
 import { Tab } from "./Tab";
 
 
-type OmitInConstructor = 'problems';
+type OmitInConstructor = Omit<IProject, 'problems'>;
 
 export class Project extends ProjectParser implements IProject, IProjectManageWindows {
     public configurations: ProjectConfigurations;
@@ -52,7 +52,7 @@ export class Project extends ProjectParser implements IProject, IProjectManageWi
         return problems;
     }
 
-    constructor(fields: Omit<IProject, OmitInConstructor>) {
+    constructor(fields: OmitInConstructor) {
         super();
 
         this.configurations = new ProjectConfigurations(fields.configurations);
@@ -158,14 +158,16 @@ export class Project extends ProjectParser implements IProject, IProjectManageWi
             });
         };
 
+        this._windows = this._windows.filter(windowTab => this.tabs.some(tab => tab.items.some(item => item.id === windowTab.id)));
+
         // Searches for tabs that have been deleted to remove them from the list
-        let indexToRemove;
+        /* let indexToRemove;
         do {
             indexToRemove = this._windows.findIndex(windowTab => !this.tabs.some(tab => tab.items.some(item => item.id === windowTab.id)));
             if (indexToRemove >= 0) {
                 this._windows.splice(indexToRemove, 1);
             }
-        } while (indexToRemove >= 0)
+        } while (indexToRemove >= 0) */
 
         // Search for new tabs being edited
         this.tabs.forEach(tab => {

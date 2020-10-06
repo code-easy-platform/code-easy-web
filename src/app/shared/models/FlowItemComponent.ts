@@ -7,7 +7,7 @@ import { DefaultPropsHelper } from "./../services";
 import { PropertieTypes } from "./../enuns";
 
 
-type OmitInConstructor = 'flowItemType' | 'isEnabledNewConnetion' | 'height' | 'width' | 'name' | 'problems';
+type OmitInConstructor = Omit<IFlowItemComponent, 'flowItemType' | 'isEnabledNewConnetion' | 'height' | 'width' | 'name' | 'problems'>;
 
 export class FlowItemComponent extends BasicConfigurations<EItemType> implements IFlowItemComponent {
     public flowItemType: EFlowItemType = EFlowItemType.acorn;
@@ -199,7 +199,7 @@ export class FlowItemComponent extends BasicConfigurations<EItemType> implements
         }
     }
 
-    constructor(fields: Omit<IFlowItemComponent, OmitInConstructor>) {
+    constructor(fields: OmitInConstructor) {
         super(fields);
 
         this.top = fields.top;

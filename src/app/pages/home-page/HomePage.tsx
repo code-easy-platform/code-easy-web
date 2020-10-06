@@ -13,7 +13,6 @@ import { CardItem } from './CardItem';
 
 
 export const HomePage = memo(() => {
-
     const [projects, setProjects] = useState<Project[]>(ProjectsStorage.getProjects() || []);
     const [openImportProjects, setOpenImportProjects] = useState(false);
     const [openConfig, setOpenConfig] = useState(false);
@@ -26,7 +25,6 @@ export const HomePage = memo(() => {
         document.title = "Projects - Code easy";
     }, [projects]);
 
-
     const addNewProject = useCallback((item: any) => {
         setIsAdding(false);
 
@@ -37,7 +35,6 @@ export const HomePage = memo(() => {
         setProjects(projects);
         ProjectsStorage.setProjects(projects);
     }, [projects]);
-
 
     return (
         <div className="main-page">

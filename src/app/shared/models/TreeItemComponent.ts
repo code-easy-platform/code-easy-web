@@ -5,10 +5,10 @@ import { BasicConfigurations } from "./BasicConfigurations";
 import { FlowItemComponent } from "./FlowItemComponent";
 import { DefaultPropsHelper } from "./../services";
 import { ITreeItemComponent } from "../interfaces";
-import { EComponentType } from "./../enuns";
+import { EComponentType, PropertieTypes } from "./../enuns";
 
 
-type OmitInConstructor = 'name' | 'problems';
+type OmitInConstructor = Omit<ITreeItemComponent, 'name' | 'problems'>;
 
 export class TreeItemComponent extends BasicConfigurations<EComponentType> implements ITreeItemComponent {
     public items: FlowItemComponent[];
@@ -22,6 +22,17 @@ export class TreeItemComponent extends BasicConfigurations<EComponentType> imple
         originalProperties.forEach(originalProp => {
             if (!props.some(prop => prop.propertieType === originalProp.propertieType)) {
                 props.push(originalProp);
+            }
+        });
+
+        props.forEach(prop => {
+            switch (prop.propertieType) {
+                case PropertieTypes.url:
+                    prop = this._propertieFromUrl(prop);
+                    break;
+
+                default:
+                    break;
             }
         });
 
@@ -90,11 +101,16 @@ export class TreeItemComponent extends BasicConfigurations<EComponentType> imple
         return problems;
     }
 
-    constructor(fields: Omit<ITreeItemComponent, OmitInConstructor>) {
+    constructor(fields: OmitInConstructor) {
         super(fields);
 
         this.properties = fields.properties || this.properties;
         this.ascendantId = fields.ascendantId || this.ascendantId;
         this.items = fields.items.map(item => new FlowItemComponent(item));
+    }
+
+    private _propertieFromUrl(prop: IProperty): IProperty {
+        prop.value = String(prop.value).replaceAll('_', '-');
+        return prop;
     }
 }
