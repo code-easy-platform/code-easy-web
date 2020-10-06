@@ -13,10 +13,12 @@ export class ProjectParser {
     public static stringify(project: Project): string {
         const res: IProject = {
             problems: [],
+            addProblem() { },
             windows: project.windows,
             currentFocus: project.currentFocus,
             configurations: {
                 problems: [],
+                addProblem() { },
                 id: project.configurations.id,
                 name: project.configurations.name,
                 type: project.configurations.type,
@@ -47,6 +49,7 @@ export class ProjectParser {
                 hasWarning: tab.hasWarning,
                 isEditing: tab.isEditing,
                 hasError: tab.hasError,
+                addProblem() { },
                 ordem: tab.ordem,
                 label: tab.label,
                 name: tab.label,
@@ -70,6 +73,7 @@ export class ProjectParser {
                     name: itemTree.label,
                     type: itemTree.type,
                     icon: itemTree.icon,
+                    addProblem() { },
                     id: itemTree.id,
                     problems: [],
                     items: itemTree.items.map((flowItem): IFlowItemComponent => ({
@@ -95,6 +99,7 @@ export class ProjectParser {
                         icon: flowItem.icon,
                         left: flowItem.left,
                         top: flowItem.top,
+                        addProblem() { },
                         id: flowItem.id,
                         problems: [],
                     })),

@@ -8,7 +8,7 @@ import { ITreeItemComponent } from "../interfaces";
 import { EComponentType, PropertieTypes } from "./../enuns";
 
 
-type OmitInConstructor = Omit<ITreeItemComponent, 'name' | 'problems'>;
+type OmitInConstructor = Omit<ITreeItemComponent, 'name' | 'problems' | 'hasError' | 'hasWarning' | 'addProblem'>;
 
 export class TreeItemComponent extends BasicConfigurations<EComponentType> implements ITreeItemComponent {
     public items: FlowItemComponent[];
@@ -60,9 +60,6 @@ export class TreeItemComponent extends BasicConfigurations<EComponentType> imple
             let numStarts = this.items.filter(itemFlow => itemFlow.type === EItemType.START);
             if (numStarts.length > 1) {
                 addProblem(`In ${this.label} must have only start flow item`, 'error');
-                numStarts.forEach(start => start.hasError = true);
-            } else {
-                numStarts.forEach(start => start.hasError = false);
             }
 
             // Valida se encontra um start e um end na tela
@@ -76,12 +73,10 @@ export class TreeItemComponent extends BasicConfigurations<EComponentType> imple
             let unusedEnd = this.items.find(itemFlow => (itemFlow.type === EItemType.END) && !this.items.some(flowItem => flowItem.connections.some(connection => connection.targetId === itemFlow.id)));
             if (unusedEnd) {
                 addProblem(`In "${this.label}" a "${unusedEnd.name}" flow item is not used`, 'error');
-                unusedEnd.hasError = true;
             }
         }
 
         this.items.forEach(flowItem => {
-
             problems = [
                 ...problems,
                 ...flowItem.problems,
@@ -91,11 +86,8 @@ export class TreeItemComponent extends BasicConfigurations<EComponentType> imple
             if (!this.items.some(flowItemToValidate => flowItemToValidate.connections.some(connection => connection.targetId === flowItem.id))) {
                 if (flowItem.type !== EItemType.START && flowItem.type !== EItemType.COMMENT) {
                     addProblem(`The flow item "${flowItem.label}" must be connected to the flow.`, 'error');
-                    flowItem.hasError = true;
-                    this.hasError = true;
                 }
             }
-
         });
 
         return problems;

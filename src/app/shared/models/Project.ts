@@ -8,7 +8,7 @@ import { ProjectParser } from "./ProjectParser";
 import { Tab } from "./Tab";
 
 
-type OmitInConstructor = Omit<IProject, 'problems'>;
+type OmitInConstructor = Omit<IProject, 'problems' | 'addProblem'>;
 
 export class Project extends ProjectParser implements IProject, IProjectManageWindows {
     public configurations: ProjectConfigurations;
@@ -21,35 +21,37 @@ export class Project extends ProjectParser implements IProject, IProjectManageWi
         return this._windows;
     }
 
+    private _problems: ITreeItem[] = [];
     public get problems(): ITreeItem[] {
-        let problems: ITreeItem[] = [
+        this._problems = [
             ...this.configurations.problems,
         ];
 
         this.tabs.forEach(tab => {
-            problems = [
-                ...problems,
+            this._problems = [
+                ...this._problems,
                 ...tab.problems,
             ];
         });
 
-        const addProblem = (label: string, type: 'warning' | 'error') => {
-            problems.push({
-                icon: type === 'warning' ? IconWarning : IconError,
-                nodeExpanded: false,
-                isSelected: false,
-                id: undefined,
-                iconSize: 15,
-                type: "ITEM",
-                label,
-            });
-        }
-
         if (this.tabs.find(treeItem => treeItem.type === EComponentType.tabRoutes)?.items.length === 0) {
-            addProblem(`The project must be have last one route.`, 'error');
+            this.addProblem(`The project must be have last one route.`, 'error');
         }
 
-        return problems;
+        return this._problems;
+    }
+
+    public addProblem(label: string, type: 'warning' | 'error') {
+        this._problems.push({
+            icon: type === 'warning' ? IconWarning : IconError,
+            isDisabledSelect: true,
+            nodeExpanded: false,
+            isSelected: false,
+            id: undefined,
+            iconSize: 15,
+            type: "ITEM",
+            label,
+        });
     }
 
     constructor(fields: OmitInConstructor) {

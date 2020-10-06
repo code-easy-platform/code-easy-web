@@ -6,7 +6,7 @@ import { AssetsService } from "../services";
 import { PropertieTypes } from "./../enuns";
 
 
-type OmitInConstructor<T> = Omit<IBasicConfigurations<T>, 'name' | 'problems'>;
+type OmitInConstructor<T> = Omit<IBasicConfigurations<T>, 'name' | 'problems' | 'hasError' | 'hasWarning' | 'addProblem'>;
 
 export class BasicConfigurations<T> implements IBasicConfigurations<T> {
 
@@ -72,51 +72,46 @@ export class BasicConfigurations<T> implements IBasicConfigurations<T> {
         }
     }
 
+    private _problems: ITreeItem[] = [];
     public get problems(): ITreeItem[] {
-        let problems: ITreeItem[] = [];
-        this.hasWarning = false;
-        this.hasError = false;
+        this._problems = [];
 
-        const addProblem = (label: string, type: 'warning' | 'error') => {
-            problems.push({
-                icon: type === 'warning' ? IconWarning : IconError,
-                isDisabledSelect: true,
-                nodeExpanded: false,
-                isSelected: false,
-                id: undefined,
-                iconSize: 15,
-                type: "ITEM",
-                label,
-            });
-        };
-
-        // Valida o label
         const label = this.label;
         if (label === '') {
-            addProblem('Field Label cannot be empty', 'error');
+            this.addProblem('Field Label cannot be empty', 'error');
             this._properties
                 .filter(prop => prop.propertieType === PropertieTypes.label)
                 .forEach(prop => { prop.valueHasWarning = false; prop.valueHasError = true });
-            this.hasError = true;
         } else if (label.length < 3) {
-            addProblem(`Field Label cannot be less than 3 characters in "${label}"`, 'error');
-            this._properties
-                .filter(prop => prop.propertieType === PropertieTypes.label)
-                .forEach(prop => { prop.valueHasWarning = false; prop.valueHasError = true });
-            this.hasError = true;
-        } else if (label.length > 50) {
-            addProblem(`More than 50 characters are not recommended in the item "${label}"`, 'warning');
+            this.addProblem(`Field Label cannot be less than 3 characters in "${label}"`, 'warning');
             this._properties
                 .filter(prop => prop.propertieType === PropertieTypes.label)
                 .forEach(prop => { prop.valueHasWarning = true; prop.valueHasError = false });
-            this.hasWarning = true;
+        } else if (label.length > 50) {
+            this.addProblem(`More than 50 characters are not recommended in the item "${label}"`, 'warning');
+            this._properties
+                .filter(prop => prop.propertieType === PropertieTypes.label)
+                .forEach(prop => { prop.valueHasWarning = true; prop.valueHasError = false });
         } else {
             this.properties
                 .filter(prop => prop.propertieType === PropertieTypes.label)
                 .forEach(prop => { prop.valueHasWarning = false; prop.valueHasError = false });
         }
 
-        return problems;
+        return this._problems;
+    }
+
+    public addProblem(label: string, type: 'warning' | 'error') {
+        this._problems.push({
+            icon: type === 'warning' ? IconWarning : IconError,
+            isDisabledSelect: true,
+            nodeExpanded: false,
+            isSelected: false,
+            id: undefined,
+            iconSize: 15,
+            type: "ITEM",
+            label,
+        });
     }
 
     public get icon(): IFileContent {
@@ -162,13 +157,19 @@ export class BasicConfigurations<T> implements IBasicConfigurations<T> {
         this._properties = props;
     }
 
+    public get hasError(): boolean {
+        return this.problems.filter(problem => problem.type === 'error').length > 0
+    }
+
+    public get hasWarning(): boolean {
+        return this.problems.filter(problem => problem.type === 'warning').length > 0
+    }
+
     public type: T;
     public ordem?: number;
     public isExpanded?: boolean;
-    public hasError: boolean = false;
     public isEditing: boolean = false;
     public isSelected: boolean = false;
-    public hasWarning: boolean = false;
     public updatedDate: Date = new Date();
     public createdDate: Date = new Date();
 
@@ -178,9 +179,7 @@ export class BasicConfigurations<T> implements IBasicConfigurations<T> {
         this.id = fields.id || this.id;
         this.ordem = fields.ordem || this.ordem;
         this.label = fields.label || this.label;
-        this.hasError = fields.hasError || this.hasError;
         this.isEditing = fields.isEditing || this.isEditing;
-        this.hasWarning = fields.hasWarning || this.hasWarning;
         this.isExpanded = fields.isExpanded || this.isExpanded;
         this.isSelected = fields.isSelected || this.isSelected;
         this.properties = fields.properties || this.properties;

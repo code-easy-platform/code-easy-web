@@ -46,7 +46,7 @@
     /* Menu de contexto */
     --color-context-menu-background: #1a1a1b;
     --color-context-menu-background-title: #ffffff20;
-    --color-context-menu-list-item-hover: var(--color-list-item-hover);
+    --color-context-menu-list-item-hover: #114226;
     --color-context-menu-list-item-active: var(--color-list-item-active);
     --box-shadow-context-menu: var(--box-shadow-small-center);
     /* Toolbar */

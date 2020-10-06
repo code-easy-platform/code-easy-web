@@ -7,7 +7,7 @@ import { DefaultPropsHelper } from "./../services";
 import { PropertieTypes } from "./../enuns";
 
 
-type OmitInConstructor = Omit<IFlowItemComponent, 'flowItemType' | 'isEnabledNewConnetion' | 'height' | 'width' | 'name' | 'problems'>;
+type OmitInConstructor = Omit<IFlowItemComponent, 'flowItemType' | 'isEnabledNewConnetion' | 'height' | 'width' | 'name' | 'problems' | 'hasError' | 'hasWarning' | 'addProblem'>;
 
 export class FlowItemComponent extends BasicConfigurations<EItemType> implements IFlowItemComponent {
     public flowItemType: EFlowItemType = EFlowItemType.acorn;
@@ -100,7 +100,6 @@ export class FlowItemComponent extends BasicConfigurations<EItemType> implements
         // Se for diferente de END e COMMENT valida se tem sucessores
         if ((this.type !== EItemType.END && this.type !== EItemType.COMMENT) && this.connections.length === 0) {
             addProblem(`The flow item "${this.name}" is missing a connector.`, 'error');
-            this.hasError = true;
         }
 
         // Validates for each item
@@ -140,13 +139,11 @@ export class FlowItemComponent extends BasicConfigurations<EItemType> implements
                     if (prop.value === '') {
                         addProblem(`In the "${this.name}" item, the "${prop.name}" condition must have an informed expression.`, 'error');
                         prop.valueHasError = true;
-                        this.hasError = true;
                     }
                 });
                 // Valida as connection
                 if (this.connections.length >= 1 && this.connections.length < 2) {
                     addProblem(`Flow item "${this.name}" is missing a connector.`, 'error');
-                    this.hasError = true;
                 }
 
                 break;

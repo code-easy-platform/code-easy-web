@@ -6,7 +6,7 @@ import { EProjectType, PropertieTypes } from "./../enuns";
 import { IProjectConfigurations } from "../interfaces";
 
 
-type OmitInConstructor = Omit<IProjectConfigurations, 'name' | 'problems'>;
+type OmitInConstructor = Omit<IProjectConfigurations, 'name' | 'problems' | 'hasError' | 'hasWarning' | 'addProblem'>;
 
 export class ProjectConfigurations extends BasicConfigurations<EProjectType> implements IProjectConfigurations {
 
@@ -103,18 +103,14 @@ export class ProjectConfigurations extends BasicConfigurations<EProjectType> imp
 
         if (this.author.length === 0) {
             addProblem('Author field must be have a value', 'error');
-            this.hasError = true;
         } else if (this.author.length < 3) {
             addProblem('Project Author name field cannot be less than 3 characters', 'warning');
-            this.hasWarning = true;
         } else if (this.author.length > 50) {
             addProblem('Project Author name field cannot exceed 50 characters', 'warning');
-            this.hasWarning = true;
         }
 
         if (this.version.length === 0) {
             addProblem('Version field must be have a value', 'error');
-            this.hasError = true;
         } else if (Utils.isValidVersion(this.version)) {
             addProblem('Project version field is not valid', 'error');
         }
