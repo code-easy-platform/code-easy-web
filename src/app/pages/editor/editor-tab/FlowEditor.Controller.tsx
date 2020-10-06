@@ -433,6 +433,7 @@ export const FlowEditorController: React.FC = memo(() => {
                 flowItemSelectedColor: 'var(--selection-border-color)',
                 flowItemWarningColor: 'var(--main-warning-color)',
                 flowItemErrorColor: 'var(--main-error-color)',
+                flowItemTextColor: '#ffffffba',
                 commentTextColor: '#ffffff',
             }}
         />

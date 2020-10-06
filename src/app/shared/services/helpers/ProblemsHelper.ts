@@ -57,14 +57,7 @@ class ProblemsHelperService {
         });
 
         if (project.problems.length === 0) {
-            project.problems.push({
-                label: "No problems detected",
-                isDisabledSelect: true,
-                nodeExpanded: false,
-                isSelected: false,
-                id: undefined,
-                type: "ITEM",
-            });
+            project.addProblem("No problems detected", 'success');
         }
 
         return { problems: project.problems, project };

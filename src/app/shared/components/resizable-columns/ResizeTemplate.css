@@ -28,7 +28,7 @@
 .grabber-col-right-resize-y {
   height: var(--main-grapper-size);
   width: var(--size-fill);
-  position: absolute;
+  margin-bottom: -4px;
   cursor: n-resize;
   margin-top: -4px;
   overflow: hidden;

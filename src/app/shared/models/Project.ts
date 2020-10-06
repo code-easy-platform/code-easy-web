@@ -41,9 +41,18 @@ export class Project extends ProjectParser implements IProject, IProjectManageWi
         return this._problems;
     }
 
-    public addProblem(label: string, type: 'warning' | 'error') {
+    constructor(fields: OmitInConstructor) {
+        super();
+
+        this.configurations = new ProjectConfigurations(fields.configurations);
+        this.tabs = fields.tabs.map(tab => new Tab(tab));
+        this.currentFocus = fields.currentFocus;
+        this._windows = fields.windows;
+    }
+
+    public addProblem(label: string, type: 'warning' | 'error' | 'success') {
         this._problems.push({
-            icon: type === 'warning' ? IconWarning : IconError,
+            icon: type === 'warning' ? IconWarning : type === 'error' ? IconError : undefined,
             isDisabledSelect: true,
             nodeExpanded: false,
             isSelected: false,
@@ -52,15 +61,6 @@ export class Project extends ProjectParser implements IProject, IProjectManageWi
             type: "ITEM",
             label,
         });
-    }
-
-    constructor(fields: OmitInConstructor) {
-        super();
-
-        this.configurations = new ProjectConfigurations(fields.configurations);
-        this.tabs = fields.tabs.map(tab => new Tab(tab));
-        this.currentFocus = fields.currentFocus;
-        this._windows = fields.windows;
     }
 
     public getWindows(): IOpenedWindow[] {
