@@ -63,16 +63,15 @@ export const ContextMenu: React.FC<{ title?: string }> = ({ title }) => {
             tabIndex={0}
         >
             {title && <div className="context-menu-title">{title}</div>}
-            {(contextMenuRef.current?.focus())}
-            {state.actions.map(({ action, label, disabled, icon, useConfirmation, confirmationMessage }) => {
+            {state.actions.map(({ action, label, disabled, icon, useConfirmation, confirmationMessage }, index) => {
 
                 if (label === '-') {
-                    return <hr className="hr-white margin-s border-default" />;
+                    return <hr key={`hr-${index}`} className="hr-white margin-s margin-top-xs margin-bottom-xs border-default" />;
                 }
 
                 return (
                     <div
-                        key={label}
+                        key={index}
                         className={`context-menu-list-item padding-horizontal-sm flex-items-center${disabled ? ' disabled' : ' cursor-pointer'}`}
                         onClick={() => {
                             if (disabled) return;
@@ -89,11 +88,19 @@ export const ContextMenu: React.FC<{ title?: string }> = ({ title }) => {
                             }
                         }}
                     >
-                        {icon && <img className="padding-right-s no-draggable" width={16} height={16} src={icon} alt={label} />}
+                        <img
+                            className={"padding-right-s no-draggable"}
+                            style={{ opacity: icon ? 1 : 0 }}
+                            height={16}
+                            width={16}
+                            src={icon}
+                            alt=""
+                        />
                         {label}
                     </div>
                 )
             })}
+            {(contextMenuRef.current?.focus())}
         </div>
     );
 }

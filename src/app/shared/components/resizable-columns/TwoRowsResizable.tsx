@@ -53,15 +53,17 @@ export class TwoRowsResizable extends Component<IRecipeProps> {
                     height: (window.innerHeight - this.state.bottomHeight) - 56,
                 }}>{this.props.top}</div>
 
-                <hr className='hr' />
+                <hr className="hr" />
+                <div className="grabber-col-right-resize-y" onMouseDown={this.mouseDown} />
 
                 <div className="full-width" style={{
                     height: this.state.bottomHeight,
                     maxHeight: useMinMaxHeight && (this.props.maxBottomHeight || '95%'),
                     minHeight: useMinMaxHeight && (this.props.minBottomHeight || '10%'),
                 }}>
-                    <div className="grabber-col-right-resize-y" onMouseDown={this.mouseDown} />
-                    <div className="flex1 full-width">{this.props.bottom}</div>
+                    <div className="flex1 full-width full-height">
+                        {this.props.bottom}
+                    </div>
                 </div>
             </div>
         );

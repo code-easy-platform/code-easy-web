@@ -8,7 +8,6 @@ export const useItems = () => {
     const itemsBase = items.filter(item => !item.ascendantId);
 
     const itemsByAscendentId = useCallback((id: string | undefined) => {
-
         if (!id) return [];
 
         return items.filter(item => item.ascendantId === id)
@@ -30,34 +29,22 @@ export const useItems = () => {
     const selectItemById = useCallback((id: string | undefined, keepSelection?: boolean) => {
         if (!id) return;
 
+        if (items.find(item => item.id === id)?.isSelected) {
+            return;
+        }
+
         setItems(
             items.map(item => {
                 if (keepSelection) {
-
-                    if (item.id === id) {
-                        item = {
-                            ...item,
-                            isSelected: true
-                        };
-                    } else {
-                        item = {
-                            ...item,
-                            isSelected: false
-                        };
-                    }
-
+                    item = {
+                        ...item,
+                        isSelected: item.id === id
+                    };
                 } else {
-                    if (item.id === id) {
-                        item = {
-                            ...item,
-                            isSelected: true
-                        };
-                    } else {
-                        item = {
-                            ...item,
-                            isSelected: false
-                        };
-                    }
+                    item = {
+                        ...item,
+                        isSelected: item.id === id
+                    };
                 }
                 return item;
             })
@@ -67,19 +54,16 @@ export const useItems = () => {
     const editItemById = useCallback((id: string | undefined) => {
         if (!id) return;
 
+        if (items.find(item => item.id === id)?.isEditing) {
+            return;
+        }
+
         setItems(
             items.map(item => {
-                if (item.id === id) {
-                    return {
-                        ...item,
-                        isEditing: true
-                    };
-                } else {
-                    return {
-                        ...item,
-                        isEditing: false
-                    };
-                }
+                return {
+                    ...item,
+                    isEditing: item.id === id
+                };
             })
         );
     }, [items, setItems]);

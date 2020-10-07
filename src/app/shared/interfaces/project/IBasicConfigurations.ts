@@ -75,4 +75,8 @@ export interface IBasicConfigurations<T = EComponentType | EProjectType | EItemT
      * Used to list all problems in this component
      */
     readonly problems: ITreeItem[];
+    /**
+     * Used to add problems in this component
+     */
+    addProblem(label: string, type: 'warning' | 'error'): void;
 }

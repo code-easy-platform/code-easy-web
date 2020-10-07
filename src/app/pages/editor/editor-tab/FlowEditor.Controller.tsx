@@ -37,9 +37,7 @@ export const FlowEditorController: React.FC = memo(() => {
                                     connections: updatedItem.connections || [],
                                     properties: item.items[index].properties,
                                     description: updatedItem.description,
-                                    hasWarning: updatedItem.hasWarning,
                                     isDisabled: updatedItem.isDisabled,
-                                    hasError: updatedItem.hasError,
                                     label: updatedItem.label || '',
                                     left: updatedItem.left,
                                     icon: updatedItem.icon,
@@ -52,9 +50,7 @@ export const FlowEditorController: React.FC = memo(() => {
                                     isSelected: updatedItem.isSelected || false,
                                     connections: updatedItem.connections || [],
                                     description: updatedItem.description,
-                                    hasWarning: updatedItem.hasWarning,
                                     isDisabled: updatedItem.isDisabled,
-                                    hasError: updatedItem.hasError,
                                     label: updatedItem.label || '',
                                     icon: updatedItem.icon,
                                     left: updatedItem.left,
@@ -114,9 +110,7 @@ export const FlowEditorController: React.FC = memo(() => {
                             connections: newItem.connections || [],
                             description: newItem.description,
                             properties: originalProperties,
-                            hasWarning: newItem.hasWarning,
                             isDisabled: newItem.isDisabled,
-                            hasError: newItem.hasError,
                             label: newItem.label || '',
                             icon: newItem.icon,
                             left: newItem.left,
@@ -214,28 +208,24 @@ export const FlowEditorController: React.FC = memo(() => {
 
                     // Encontra a tab certa e adiciona um item de fluxo aos items
                     project.tabs.forEach((tab: Tab) => {
-                        tab.items.forEach(item_tree => {
-                            if (item?.itemType && item_tree.isEditing) {
+                        tab.items.forEach(itemTree => {
+                            if (item?.itemType && itemTree.isEditing) {
 
                                 // Deseleciona todos os items anteriores
-                                item_tree.items.forEach(item_flow => item_flow.isSelected = false);
+                                itemTree.items.forEach(itemFlow => itemFlow.isSelected = false);
 
                                 // Adiciona a tab com os items alterados
-                                item_tree.items.push(new FlowItemComponent({
+                                itemTree.items.push(new FlowItemComponent({
                                     icon: AssetsService.getIcon(parseEItemType(item.itemType)),
                                     type: parseEItemType(item.itemType),
                                     label: String(item.label),
                                     id: Utils.getUUID(),
                                     isDisabled: false,
-                                    hasWarning: false,
                                     isSelected: true,
-                                    hasError: false,
                                     connections: [],
-                                    properties: [],
                                     left,
                                     top,
                                 }));
-
                             }
                         });
                     });
@@ -348,7 +338,7 @@ export const FlowEditorController: React.FC = memo(() => {
                 id: item.id,
                 top: item.top,
                 left: item.left,
-                label: item.name,
+                label: item.label,
                 width: item.width,
                 height: item.height,
                 itemType: item.type,
@@ -440,9 +430,10 @@ export const FlowEditorController: React.FC = memo(() => {
                 selectionBorderColor: 'var(--selection-border-color)',
                 selectionBackgroundColor: '#ffffff11',
 
-                flowItemWarningColor: 'var(--main-warning-color)',
                 flowItemSelectedColor: 'var(--selection-border-color)',
+                flowItemWarningColor: 'var(--main-warning-color)',
                 flowItemErrorColor: 'var(--main-error-color)',
+                flowItemTextColor: '#ffffffba',
                 commentTextColor: '#ffffff',
             }}
         />

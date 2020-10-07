@@ -26,11 +26,13 @@ export const TreeManagerBase: React.FC<TreeManagerBaseProps> = ({ childrenWhenEm
             onContextMenu={handleContextMenu}
         >
             {baseItems.length > 0 && baseItems.map((item, index) => (
-                <Tree
-                    key={index}
-                    item={item}
-                    onContextMenu={onContextMenu}
-                />
+                <div className="tree-base-internal">
+                    <Tree
+                        key={index}
+                        item={item}
+                        onContextMenu={onContextMenu}
+                    />
+                </div>
             ))}
             {!((childrenWhenEmpty && baseItems.length === 0) || showEmptyMessage) &&
                 <div style={{ padding: 50 }} />

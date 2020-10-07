@@ -1,5 +1,4 @@
 import React, { useCallback } from 'react';
-import { Utils } from 'code-easy-components';
 
 import { EItemType, PropertiesEditor, IProperty, TypeOfValues, IItem } from '../../../shared/components/external';
 import { EComponentType, ECurrentFocus, PropertieTypes } from '../../../shared/enuns';
@@ -22,22 +21,17 @@ export const PropertiesEditorController: React.FC = () => {
                 tab.items.forEach(itemTree => {
                     if (itemTree && itemTree.isSelected && itemTree.id === item.id) {
 
-                        const newLabel = item.properties.find(prop => prop.propertieType === PropertieTypes.label);
+                        // Atualizas as props
+                        itemTree.properties = item.properties;
 
                         // Este bloco garante que se a label de uma routa muda o seu path será alterado junto.
                         if (itemTree.type === EComponentType.routerConsume || itemTree.type === EComponentType.routerExpose) {
                             item.properties.forEach(prop => {
                                 if (prop.propertieType === PropertieTypes.url) {
-                                    prop.value = `/${Utils.getNormalizedString(newLabel ? newLabel.value : prop.value).toLowerCase()}`;
-                                } else if (prop.propertieType === PropertieTypes.name) {
-                                    prop.value = Utils.getNormalizedString(newLabel ? newLabel.value : prop.value).toLowerCase();
+                                    prop.value = `/${itemTree.name}`;
                                 }
                             });
-
                         }
-
-                        // Atualizas as props
-                        itemTree.properties = item.properties;
                     }
                 });
             });

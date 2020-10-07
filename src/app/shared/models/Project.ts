@@ -8,7 +8,7 @@ import { ProjectParser } from "./ProjectParser";
 import { Tab } from "./Tab";
 
 
-type OmitInConstructor = 'problems';
+type OmitInConstructor = Omit<IProject, 'problems' | 'addProblem'>;
 
 export class Project extends ProjectParser implements IProject, IProjectManageWindows {
     public configurations: ProjectConfigurations;
@@ -21,44 +21,46 @@ export class Project extends ProjectParser implements IProject, IProjectManageWi
         return this._windows;
     }
 
+    private _problems: ITreeItem[] = [];
     public get problems(): ITreeItem[] {
-        let problems: ITreeItem[] = [
+        this._problems = [
             ...this.configurations.problems,
         ];
 
         this.tabs.forEach(tab => {
-            problems = [
-                ...problems,
+            this._problems = [
+                ...this._problems,
                 ...tab.problems,
             ];
         });
 
-        const addProblem = (label: string, type: 'warning' | 'error') => {
-            problems.push({
-                icon: type === 'warning' ? IconWarning : IconError,
-                nodeExpanded: false,
-                isSelected: false,
-                id: undefined,
-                iconSize: 15,
-                type: "ITEM",
-                label,
-            });
-        }
-
         if (this.tabs.find(treeItem => treeItem.type === EComponentType.tabRoutes)?.items.length === 0) {
-            addProblem(`The project must be have last one route.`, 'error');
+            this.addProblem(`The project must be have last one route.`, 'error');
         }
 
-        return problems;
+        return this._problems;
     }
 
-    constructor(fields: Omit<IProject, OmitInConstructor>) {
+    constructor(fields: OmitInConstructor) {
         super();
 
         this.configurations = new ProjectConfigurations(fields.configurations);
         this.tabs = fields.tabs.map(tab => new Tab(tab));
         this.currentFocus = fields.currentFocus;
         this._windows = fields.windows;
+    }
+
+    public addProblem(label: string, type: 'warning' | 'error' | 'success') {
+        this._problems.push({
+            icon: type === 'warning' ? IconWarning : type === 'error' ? IconError : undefined,
+            isDisabledSelect: true,
+            nodeExpanded: false,
+            isSelected: false,
+            id: undefined,
+            iconSize: 15,
+            type: "ITEM",
+            label,
+        });
     }
 
     public getWindows(): IOpenedWindow[] {
@@ -77,14 +79,13 @@ export class Project extends ProjectParser implements IProject, IProjectManageWi
                         {
                             id: tabItem.id,
                             title: tabItem.label,
+                            hasError: tabItem.hasError,
                             isSelected: tabItem.isEditing,
+                            hasWarning: tabItem.hasWarning,
                             description: tabItem.description,
-                            hasError: tabItem.items.some(itemFlow => itemFlow.hasError),
-                            hasWarning: tabItem.items.some(itemFlow => itemFlow.hasWarning)
                         }
                     ]
                 }
-
             });
         });
 
@@ -158,14 +159,16 @@ export class Project extends ProjectParser implements IProject, IProjectManageWi
             });
         };
 
+        this._windows = this._windows.filter(windowTab => this.tabs.some(tab => tab.items.some(item => item.id === windowTab.id)));
+
         // Searches for tabs that have been deleted to remove them from the list
-        let indexToRemove;
+        /* let indexToRemove;
         do {
             indexToRemove = this._windows.findIndex(windowTab => !this.tabs.some(tab => tab.items.some(item => item.id === windowTab.id)));
             if (indexToRemove >= 0) {
                 this._windows.splice(indexToRemove, 1);
             }
-        } while (indexToRemove >= 0)
+        } while (indexToRemove >= 0) */
 
         // Search for new tabs being edited
         this.tabs.forEach(tab => {

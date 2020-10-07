@@ -8,9 +8,6 @@ import App from './app/App';
 // Inicia o uso a fonte roboto no projeto
 require('typeface-roboto');
 
-
-setInterval(() => {
-    ReactDOM.render(<App />, document.getElementById('root'));
-}, 200);
+ReactDOM.render(<App />, document.getElementById('root'));
 
 serviceWorker.register();

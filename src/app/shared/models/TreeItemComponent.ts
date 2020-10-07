@@ -5,10 +5,10 @@ import { BasicConfigurations } from "./BasicConfigurations";
 import { FlowItemComponent } from "./FlowItemComponent";
 import { DefaultPropsHelper } from "./../services";
 import { ITreeItemComponent } from "../interfaces";
-import { EComponentType } from "./../enuns";
+import { EComponentType, PropertieTypes } from "./../enuns";
 
 
-type OmitInConstructor = 'name' | 'problems';
+type OmitInConstructor = Omit<ITreeItemComponent, 'name' | 'problems' | 'hasError' | 'hasWarning' | 'addProblem'>;
 
 export class TreeItemComponent extends BasicConfigurations<EComponentType> implements ITreeItemComponent {
     public items: FlowItemComponent[];
@@ -22,6 +22,17 @@ export class TreeItemComponent extends BasicConfigurations<EComponentType> imple
         originalProperties.forEach(originalProp => {
             if (!props.some(prop => prop.propertieType === originalProp.propertieType)) {
                 props.push(originalProp);
+            }
+        });
+
+        props.forEach(prop => {
+            switch (prop.propertieType) {
+                case PropertieTypes.url:
+                    prop = this._propertieFromUrl(prop);
+                    break;
+
+                default:
+                    break;
             }
         });
 
@@ -49,9 +60,6 @@ export class TreeItemComponent extends BasicConfigurations<EComponentType> imple
             let numStarts = this.items.filter(itemFlow => itemFlow.type === EItemType.START);
             if (numStarts.length > 1) {
                 addProblem(`In ${this.label} must have only start flow item`, 'error');
-                numStarts.forEach(start => start.hasError = true);
-            } else {
-                numStarts.forEach(start => start.hasError = false);
             }
 
             // Valida se encontra um start e um end na tela
@@ -65,12 +73,10 @@ export class TreeItemComponent extends BasicConfigurations<EComponentType> imple
             let unusedEnd = this.items.find(itemFlow => (itemFlow.type === EItemType.END) && !this.items.some(flowItem => flowItem.connections.some(connection => connection.targetId === itemFlow.id)));
             if (unusedEnd) {
                 addProblem(`In "${this.label}" a "${unusedEnd.name}" flow item is not used`, 'error');
-                unusedEnd.hasError = true;
             }
         }
 
         this.items.forEach(flowItem => {
-
             problems = [
                 ...problems,
                 ...flowItem.problems,
@@ -80,21 +86,23 @@ export class TreeItemComponent extends BasicConfigurations<EComponentType> imple
             if (!this.items.some(flowItemToValidate => flowItemToValidate.connections.some(connection => connection.targetId === flowItem.id))) {
                 if (flowItem.type !== EItemType.START && flowItem.type !== EItemType.COMMENT) {
                     addProblem(`The flow item "${flowItem.label}" must be connected to the flow.`, 'error');
-                    flowItem.hasError = true;
-                    this.hasError = true;
                 }
             }
-
         });
 
         return problems;
     }
 
-    constructor(fields: Omit<ITreeItemComponent, OmitInConstructor>) {
+    constructor(fields: OmitInConstructor) {
         super(fields);
 
         this.properties = fields.properties || this.properties;
         this.ascendantId = fields.ascendantId || this.ascendantId;
         this.items = fields.items.map(item => new FlowItemComponent(item));
+    }
+
+    private _propertieFromUrl(prop: IProperty): IProperty {
+        prop.value = String(prop.value).replaceAll('_', '-');
+        return prop;
     }
 }

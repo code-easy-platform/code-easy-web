@@ -16,7 +16,7 @@ export const Editor: React.FC = () => {
                     <Playground />
                 </div>
 
-                <hr className="hr" />
+                <hr className="hr z1" />
                 <BottonStatusBar />
             </div>
             <ContextModalList />

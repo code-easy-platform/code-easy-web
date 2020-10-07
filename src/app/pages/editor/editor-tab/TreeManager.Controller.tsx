@@ -466,7 +466,6 @@ export const TreeManagerController: React.FC = () => {
             }}
             onContextMenu={(treeItemId, e) => {
                 e.preventDefault();
-                console.log(treeItemId)
                 ContextMenuService.showMenu(e.clientX, e.clientY, treeManagerContextMenu(treeItemId));
             }}
         />

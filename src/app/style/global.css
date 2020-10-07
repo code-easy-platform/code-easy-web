@@ -253,6 +253,11 @@ input[type="checkbox"]:checked {
   width: 100%;
 }
 
+.hr.hr-transparent {
+  background-color: transparent;
+  width: 100%;
+}
+
 .hr.divider {
   margin-bottom: var(--size-s);
   margin-top: var(--size-s);

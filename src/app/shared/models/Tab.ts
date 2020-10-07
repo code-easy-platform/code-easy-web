@@ -5,7 +5,7 @@ import { EComponentType } from "./../enuns";
 import { ITab } from "./../interfaces";
 
 
-type OmitInConstructor = 'name' | 'problems';
+type OmitInConstructor = Omit<ITab, 'name' | 'problems' | 'hasError' | 'hasWarning' | 'addProblem'>;
 
 export class Tab extends BasicConfigurations<EComponentType> implements ITab {
     public items: TreeItemComponent[];
@@ -23,7 +23,7 @@ export class Tab extends BasicConfigurations<EComponentType> implements ITab {
         return problems;
     }
 
-    constructor(fields: Omit<ITab, OmitInConstructor>) {
+    constructor(fields: OmitInConstructor) {
         super(fields);
 
         this.items = fields.items.map(item => new TreeItemComponent(item));
