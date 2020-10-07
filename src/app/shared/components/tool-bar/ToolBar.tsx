@@ -39,10 +39,8 @@ export const ToolBar: React.FC = memo(() => {
                     }))
                 }
                 onChange={windowId => {
-                    if (project.configurations.id) {
-
+                    if (project.configurations.id && project.windows.find(windowTab => windowTab.isSelected)?.id !== windowId) {
                         project.selectWindowById(windowId);
-
                         setProject(project);
                     }
                 }}
@@ -69,18 +67,15 @@ export const ToolBar: React.FC = memo(() => {
                                 hasWarning={tab.hasWarning}
                                 className="btn-open-routers-tab flex1 padding-horizontal-sm"
                                 content={<>
-                                    <img height="90%" className="padding-right-s" src={AssetsService.getIcon(tab.type)} alt={tab.type} />
+                                    <img height="90%" className="padding-right-s no-draggable" src={AssetsService.getIcon(tab.type)} alt={tab.type} />
                                     {tab.label}
                                 </>}
                                 onClick={() => {
-                                    project.tabs.forEach(currentTab => currentTab.isEditing = false);
-                                    project.tabs[index].isEditing = true;
-                                    setProject(project)
-                                }}
-                                onFocus={() => {
-                                    project.tabs.forEach(currentTab => currentTab.isEditing = false);
-                                    project.tabs[index].isEditing = true;
-                                    setProject(project)
+                                    if (!project.tabs[index].isEditing) {
+                                        project.tabs.forEach(currentTab => currentTab.isEditing = false);
+                                        project.tabs[index].isEditing = true;
+                                        setProject(project);
+                                    }
                                 }}
                             />
                         );

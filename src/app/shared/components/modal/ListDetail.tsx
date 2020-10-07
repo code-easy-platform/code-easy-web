@@ -1,12 +1,10 @@
 import React, { useCallback, useState } from 'react';
 
-
 export const OptionItemContent: React.FC = ({ children }) => {
     return (
         <>{children}</>
     );
 }
-
 
 export interface IOptionListItem {
     title: string;
@@ -22,6 +20,10 @@ export const ListDetail: React.FC<ListDetailProps> = ({ menuOptions, children })
     const [options, setOptions] = useState(menuOptions);
 
     const handleSelectMenuItem = useCallback((position: number) => {
+        if (options.find((_, index) => index === position)?.isSelected) {
+            return;
+        }
+
         setOptions([
             ...options.map((option, index) => ({
                 ...option,

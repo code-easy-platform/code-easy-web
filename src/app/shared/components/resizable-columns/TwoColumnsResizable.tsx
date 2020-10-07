@@ -48,7 +48,7 @@ export class TwoColumnsResizable extends Component<IRecipeProps> {
                 <div className="full-height full-width">
                     {this.props.right}
                 </div>
-            </div>
+            </div>  
         </div>
     );
 

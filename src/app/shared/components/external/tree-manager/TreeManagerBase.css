@@ -17,6 +17,12 @@
     flex: 1;
 }
 
+.tree-base-internal {
+    flex-direction: column;
+    width: fit-content;
+    min-width: 100%;
+}
+
 .tree-base:focus {
     outline: none;
 }
@@ -49,6 +55,8 @@
 /* Configure tree item */
 
 .tree-item input {
+    position: absolute;
+    float: right;
     opacity: 0;
     height: 0;
     width: 0;
@@ -104,9 +112,7 @@
     background-color: var(--focused-item-color);
 }
 
-.tree-item.editing label,
-.tree-item.editing.selected label,
-.tree-item.editing.selected :checked:focus+label label {
+.tree-item.editing label, .tree-item.editing.selected label, .tree-item.editing.selected :checked:focus+label label {
     background-color: var(--editing-item-color);
 }
 
