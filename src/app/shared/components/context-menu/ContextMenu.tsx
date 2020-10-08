@@ -42,6 +42,12 @@ export const ContextMenu: React.FC<{ title?: string }> = ({ title }) => {
         return subscription.current.unsubscribe;
     }, []);
 
+    useEffect(() => {
+        if (contextMenuRef.current && state.isShow) {
+            contextMenuRef.current.focus();
+        }
+    }, [state.isShow]);
+
     const handleLostFocus = useCallback(() => {
         ContextMenuService.clearMessages();
         setState({
@@ -73,7 +79,10 @@ export const ContextMenu: React.FC<{ title?: string }> = ({ title }) => {
                     <div
                         key={index}
                         className={`context-menu-list-item padding-horizontal-sm flex-items-center${disabled ? ' disabled' : ' cursor-pointer'}`}
-                        onClick={() => {
+                        onClick={e => {
+                            e.stopPropagation();
+                            e.preventDefault();
+
                             if (disabled) return;
 
                             // Close context menu and clear options list
@@ -100,7 +109,6 @@ export const ContextMenu: React.FC<{ title?: string }> = ({ title }) => {
                     </div>
                 )
             })}
-            {(contextMenuRef.current?.focus())}
         </div>
     );
 }
