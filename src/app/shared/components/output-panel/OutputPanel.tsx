@@ -8,7 +8,6 @@ enum OutputTab {
     whatsnew = "Whatsnew",
     problems = "Problems",
     output = "Output",
-    figma = "Figma",
 }
 
 interface OutputPanelProps {
@@ -26,8 +25,6 @@ export const OutputPanel: React.FC<OutputPanelProps> = memo(({ notification, out
                     <TabButton id="problems" onClick={() => setCurrtab(OutputTab.problems)} isSelected={currTab === OutputTab.problems} content={"Problems"} />
                     <TabButton onClick={() => setCurrtab(OutputTab.output)} isSelected={currTab === OutputTab.output} id="output" content="Output" />
                     <TabButton onClick={() => setCurrtab(OutputTab.notifications)} isSelected={currTab === OutputTab.notifications} id="notifications" content="Notifications" />
-                    <div className="full-width" />
-                    <TabButton onClick={() => setCurrtab(OutputTab.figma)} isSelected={currTab === OutputTab.figma} id="figma" content="Figma" />
                 </TabGroup>
             </div>
             <hr className="hr" />
@@ -64,14 +61,6 @@ export const OutputPanel: React.FC<OutputPanelProps> = memo(({ notification, out
                             type: "ITEM",
                         }]}
                     />
-                </>}
-                {currTab === OutputTab.figma && <>
-                    <iframe
-                        title={"IFrame figma"}
-                        className={"full-width"}
-                        style={{ border: 'none' }}
-                        src="https://www.figma.com/embed?embed_host=share&url=https%3A%2F%2Fwww.figma.com%2Ffile%2FNmtaptPKChB7t2nMk8LWkCxW%2FCode-Easy%3Fnode-id%3D0%253A1"
-                    ></iframe>
                 </>}
             </div>
         </div>

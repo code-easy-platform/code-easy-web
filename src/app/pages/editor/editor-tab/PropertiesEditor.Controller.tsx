@@ -159,9 +159,9 @@ export const PropertiesEditorController: React.FC = () => {
             // Start mapped item
             let mappedItem: IItem = {
                 id: selectedItem.id,
+                name: selectedItem.label,
                 subname: selectedItem.type,
                 properties: selectedItem.properties,
-                name: selectedItem.properties.find(prop => prop.propertieType === PropertieTypes.label)?.value,
             };
 
             /**
@@ -296,6 +296,7 @@ export const PropertiesEditorController: React.FC = () => {
             // Mapea os items para modal
             mappedItem.properties.map(prop => {
                 if (prop.id && prop.name) {
+                    prop.onPickerNameClick = () => ContextModalListService.showModal({ editingId: prop.id || '' });
                     prop.onPickerValueClick = () => ContextModalListService.showModal({ editingId: prop.id || '' });
                 };
                 return prop;
