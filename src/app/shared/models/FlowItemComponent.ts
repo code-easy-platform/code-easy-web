@@ -280,19 +280,24 @@ export class FlowItemComponent extends BasicConfigurations<EItemType> implements
     }
 
     private _propertiesFromComment(props: IProperty[]): IProperty[] {
-
         this.flowItemType = EFlowItemType.comment;
         this.isEnabledNewConnetion = true;
 
         const propComment = props.find(prop => prop.propertieType === PropertieTypes.comment);
-        const propLabel = props.find(prop => prop.propertieType === PropertieTypes.label);
-        if (propLabel) {
-            propLabel.value = propComment?.value || 'Write here your comment';
+        if (propComment) {
+            propComment.value = propComment.value || 'Write here your comment';
         }
 
-        let prop = this.properties?.find(prop => prop.propertieType === PropertieTypes.description);
-        if (prop) {
-            prop.type = TypeOfValues.hidden;
+        const propLabel = props.find(prop => prop.propertieType === PropertieTypes.label);
+        if (propLabel && propComment) {
+            propLabel.type = TypeOfValues.hidden;
+            propLabel.value = String(propComment.value).substring(0, 45) + (String(propComment.value).length > 45 ? '...' : '');
+        }
+
+        const propDescription = this.properties?.find(prop => prop.propertieType === PropertieTypes.description);
+        if (propDescription && propComment) {
+            propDescription.type = TypeOfValues.hidden;
+            propDescription.value = propComment.value;
         }
 
         return props;

@@ -56,7 +56,7 @@ export const ContextMenu: React.FC<{ title?: string }> = ({ title }) => {
 
     return (
         <div
-            className="context-view fade-in fixed flex-column outline-none"
+            className="context-view fade-in flex-column outline-none"
             style={{ left: state.left, top: state.top }}
             onBlur={handleLostFocus}
             ref={contextMenuRef}

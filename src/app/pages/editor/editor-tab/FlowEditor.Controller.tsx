@@ -6,8 +6,8 @@ import { BackgroundEmpty, BackgroundEmptyLeft, BackgroundEmptyLeftToTop } from '
 import { PropertieTypes, EComponentType, ECurrentFocus } from '../../../shared/enuns';
 import { TreeItemComponent, FlowItemComponent, Tab } from '../../../shared/models';
 import { ContextMenuService, IContextItemList } from '../../../shared/components';
-import { DefaultPropsHelper, AssetsService } from '../../../shared/services';
 import { useIdeConfigs, useEditorContext } from '../../../shared/contexts';
+import { AssetsService } from '../../../shared/services';
 
 export const FlowEditorController: React.FC = memo(() => {
     const { flowBackgroundType, snapGridWhileDragging } = useIdeConfigs();
@@ -56,7 +56,6 @@ export const FlowEditorController: React.FC = memo(() => {
                                     left: updatedItem.left,
                                     top: updatedItem.top,
                                     id: updatedItem.id,
-                                    properties: [],
                                 }));
                             }
                         }
@@ -79,17 +78,11 @@ export const FlowEditorController: React.FC = memo(() => {
      */
     const handleOnDropItem = useCallback((oldItemId: string, newItemId: string, newItem: IFlowItem) => {
 
-        console.log('oldItemId', oldItemId)
-        console.log('newItemId', newItemId)
-        console.log('newItem', newItem)
-
         // Action
         if (newItem.itemType?.toString() === EComponentType.globalAction.toString() || newItem.itemType?.toString() === EComponentType.localAction.toString()) {
             newItem.isEnabledNewConnetion = true;
             newItem.itemType = EItemType.ACTION;
             newItem.icon = IconFlowAction;
-
-            const originalProperties = DefaultPropsHelper.getNewProps(EItemType.ACTION, newItem.itemType);
 
             // Encontra a tab certa e atualiza os items
             project.tabs.forEach((tab: Tab) => {
@@ -97,28 +90,18 @@ export const FlowEditorController: React.FC = memo(() => {
                     if (!item.isEditing) {
                         item.items.forEach(flowItem => flowItem.isSelected = false);
                     } else {
-
-                        originalProperties.forEach(prop => {
-                            if (prop.propertieType === PropertieTypes.action) {
-                                prop.value = oldItemId;
-                            }
-                        });
-
-                        let completeItem = new FlowItemComponent({
+                        item.items.push(new FlowItemComponent({
                             type: parseEItemType(String(newItem.itemType)),
                             isSelected: newItem.isSelected || false,
                             connections: newItem.connections || [],
                             description: newItem.description,
-                            properties: originalProperties,
                             isDisabled: newItem.isDisabled,
                             label: newItem.label || '',
                             icon: newItem.icon,
                             left: newItem.left,
                             top: newItem.top,
                             id: newItem.id,
-                        });
-
-                        item.items.push(completeItem);
+                        }));
                     }
                 })
             })
@@ -132,7 +115,6 @@ export const FlowEditorController: React.FC = memo(() => {
             newItem.isEnabledNewConnetion = true;
             newItem.itemType = EItemType.ASSIGN;
             newItem.icon = IconFlowAssign;
-
         } else {
             newItem.isEnabledNewConnetion = true;
         }
@@ -205,7 +187,6 @@ export const FlowEditorController: React.FC = memo(() => {
                 icon: item.icon,
                 label: 'Add ' + item.label,
                 action: () => {
-
                     // Encontra a tab certa e adiciona um item de fluxo aos items
                     project.tabs.forEach((tab: Tab) => {
                         tab.items.forEach(itemTree => {

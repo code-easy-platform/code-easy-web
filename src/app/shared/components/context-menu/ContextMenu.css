@@ -5,6 +5,7 @@
     padding-top: var(--padding-s);
     font-size: var(--font-size-g);
     min-width: 200px;
+    position: fixed;
     z-index: 2500;
 }
 
