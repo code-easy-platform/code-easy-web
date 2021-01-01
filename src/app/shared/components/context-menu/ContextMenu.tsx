@@ -1,46 +1,13 @@
-import React, { useCallback, useEffect, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useRef } from 'react';
+import { useObserver } from 'react-observing';
+import { ContextMenuStore } from '../../stores';
 
-import { ContextMenuService } from './ContextMenuService';
 import './ContextMenu.css';
-
-export interface IContextItemList {
-    icon?: any;
-    label: string;
-    action(): any;
-    disabled?: boolean;
-    useConfirmation?: boolean;
-    confirmationMessage?: string;
-}
-
-interface ContextMenuSate {
-    actions: IContextItemList[],
-    isShow: boolean,
-    left: number,
-    top: number,
-}
 
 export const ContextMenu: React.FC<{ title?: string }> = ({ title }) => {
     const contextMenuRef = useRef<HTMLDivElement | null>(null);
-    const subscription = useRef<any>();
 
-    const [state, setState] = useState<ContextMenuSate>({
-        isShow: false,
-        actions: [],
-        left: 0,
-        top: 0,
-    });
-    useEffect(() => {
-        subscription.current = ContextMenuService.getMessage().subscribe(data => {
-            setState({
-                actions: data.actions,
-                left: data.left,
-                top: data.top,
-                isShow: true,
-            });
-        });
-
-        return subscription.current.unsubscribe;
-    }, []);
+    const [state, setState] = useObserver(ContextMenuStore);
 
     useEffect(() => {
         if (contextMenuRef.current && state.isShow) {
@@ -49,14 +16,13 @@ export const ContextMenu: React.FC<{ title?: string }> = ({ title }) => {
     }, [state.isShow]);
 
     const handleLostFocus = useCallback(() => {
-        ContextMenuService.clearMessages();
         setState({
             isShow: false,
             actions: [],
             left: -100,
             top: -100,
         });
-    }, []);
+    }, [setState]);
 
     if (!state.isShow) return null;
 

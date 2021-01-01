@@ -5,9 +5,9 @@ import { FlowEditor, IFlowItem, IBreadCrumbButton, EItemType, EFlowItemType, par
 import { BackgroundEmpty, BackgroundEmptyLeft, BackgroundEmptyLeftToTop } from '../../../assets';
 import { PropertieTypes, EComponentType, ECurrentFocus } from '../../../shared/enuns';
 import { TreeItemComponent, FlowItemComponent, Tab } from '../../../shared/models';
-import { ContextMenuService, IContextItemList } from '../../../shared/components';
 import { useIdeConfigs, useEditorContext } from '../../../shared/contexts';
-import { AssetsService } from '../../../shared/services';
+import { AssetsService, openContextMenu } from '../../../shared/services';
+import { IContextItemList } from '../../../shared/interfaces';
 
 export const FlowEditorController: React.FC = memo(() => {
     const { flowBackgroundType, snapGridWhileDragging } = useIdeConfigs();
@@ -352,7 +352,7 @@ export const FlowEditorController: React.FC = memo(() => {
     const handleOnContextMenu = useCallback((e: React.MouseEvent<any, MouseEvent>) => {
         if (e) {
             e.preventDefault();
-            ContextMenuService.showMenu(e.clientX, e.clientY, handleShowContextMenu((e.target as any).id, e));
+            openContextMenu(e.clientX, e.clientY, handleShowContextMenu((e.target as any).id, e));
         }
     }, [handleShowContextMenu]);
 

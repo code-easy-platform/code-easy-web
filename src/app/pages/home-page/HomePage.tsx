@@ -10,7 +10,6 @@ import { ImportProjects } from './ImportFiles';
 import { Project } from '../../shared/models';
 import { IdeConfigs } from './Configs';
 import { CardItem } from './CardItem';
-// import { TestConnection } from '../../shared/integration/extension';
 
 
 export const HomePage = memo(() => {
@@ -21,7 +20,6 @@ export const HomePage = memo(() => {
     const [filter, setFilter] = useState('');
     const history = useHistory();
 
-    // TestConnection.test().then(console.log)
 
     useEffect(() => {
         ProjectsStorage.setProjects(projects);

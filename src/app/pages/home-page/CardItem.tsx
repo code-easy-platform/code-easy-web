@@ -2,7 +2,7 @@ import React, { useState, memo } from 'react';
 import { IconStar } from 'code-easy-components';
 
 import { ProjectTypeList, EProjectType } from '../../shared/enuns';
-import { ContextMenuService } from '../../shared/components';
+import { openContextMenu } from '../../shared/services';
 
 interface CardItemProps {
     onDelete?(id: string): void;
@@ -32,7 +32,7 @@ export const CardItem = memo(({ listMode, ...props }: CardItemProps) => {
 
     const contextMenu = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
         e.preventDefault();
-        ContextMenuService.showMenu(e.pageX, e.pageY, [
+        openContextMenu(e.pageX, e.pageY, [
             {
                 label: 'Delete',
                 useConfirmation: true,

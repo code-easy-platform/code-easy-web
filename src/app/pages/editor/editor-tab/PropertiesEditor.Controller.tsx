@@ -2,9 +2,9 @@ import React, { useCallback } from 'react';
 
 import { EItemType, PropertiesEditor, IProperty, TypeOfValues, IItem } from '../../../shared/components/external';
 import { EComponentType, ECurrentFocus, PropertieTypes } from '../../../shared/enuns';
-import { ContextModalListService } from '../../../shared/components';
 import { TreeItemComponent, Tab } from '../../../shared/models';
 import { useEditorContext } from '../../../shared/contexts';
+import { openModal } from '../../../shared/services';
 
 export const PropertiesEditorController: React.FC = () => {
 
@@ -125,7 +125,7 @@ export const PropertiesEditorController: React.FC = () => {
                     name: res.properties.find(prop => prop.propertieType === PropertieTypes.label)?.value,
                     properties: res.properties.map(prop => {
                         if (prop.id && prop.name) {
-                            prop.onPickerValueClick = () => ContextModalListService.showModal({ editingId: prop.id || '' });
+                            prop.onPickerValueClick = () => openModal(prop.id || '');
                         }
                         return prop;
                     })
@@ -223,7 +223,7 @@ export const PropertiesEditorController: React.FC = () => {
                             type: TypeOfValues.expression,
                             propertieType: PropertieTypes.param,
                             information: param.description !== '' ? param.description : undefined,
-                            onPickerValueClick: () => !param.id ? null : ContextModalListService.showModal({ editingId: param.id }),
+                            onPickerValueClick: () => !param.id ? null : openModal(param.id),
                             suggestions: getAllLocalVariablesAsSuggestion()
                                 .map(suggest => ({
                                     disabled: false,
@@ -296,8 +296,8 @@ export const PropertiesEditorController: React.FC = () => {
             // Mapea os items para modal
             mappedItem.properties.map(prop => {
                 if (prop.id && prop.name) {
-                    prop.onPickerNameClick = () => ContextModalListService.showModal({ editingId: prop.id || '' });
-                    prop.onPickerValueClick = () => ContextModalListService.showModal({ editingId: prop.id || '' });
+                    prop.onPickerNameClick = () => openModal(prop.id || '');
+                    prop.onPickerValueClick = () => openModal(prop.id || '');
                 };
                 return prop;
             });

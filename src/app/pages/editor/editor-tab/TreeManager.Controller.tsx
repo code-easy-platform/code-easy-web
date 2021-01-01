@@ -2,11 +2,11 @@ import React, { useCallback } from 'react';
 import { IconTrash, Utils, IconFlowStart, IconFlowEnd } from 'code-easy-components';
 
 import { TreeManager, ITreeItem, CustomDragLayer, EItemType } from '../../../shared/components/external';
-import { ContextMenuService, IContextItemList } from '../../../shared/components';
 import { TreeItemComponent, FlowItemComponent, Tab } from '../../../shared/models';
+import { AssetsService, openContextMenu } from '../../../shared/services';
 import { ECurrentFocus, EComponentType } from '../../../shared/enuns';
+import { IContextItemList } from '../../../shared/interfaces';
 import { useEditorContext } from '../../../shared/contexts';
-import { AssetsService } from '../../../shared/services';
 
 export const TreeManagerController: React.FC = () => {
 
@@ -466,7 +466,7 @@ export const TreeManagerController: React.FC = () => {
             }}
             onContextMenu={(treeItemId, e) => {
                 e.preventDefault();
-                ContextMenuService.showMenu(e.clientX, e.clientY, treeManagerContextMenu(treeItemId));
+                openContextMenu(e.clientX, e.clientY, treeManagerContextMenu(treeItemId));
             }}
         />
     );

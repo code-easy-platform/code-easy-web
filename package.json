@@ -24,6 +24,7 @@
     "react-dnd-html5-backend": "^9.4.0",
     "react-dom": "^16.10.2",
     "react-monaco-editor": "^0.35.0",
+    "react-observing": "^1.2.5",
     "react-router-dom": "^5.1.2",
     "react-scripts": "^3.2.0",
     "recoil": "^0.1.2",
