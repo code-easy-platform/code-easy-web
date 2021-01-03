@@ -1,51 +1,18 @@
-import { IProjectConfigurations } from "./IProjectConfigurations";
-import { IProjectOpenedWindow } from "./IProjectOpenedWindow";
-import { ITreeItem } from "../../components/external";
-import { IOpenedWindow } from "./IOpenedWindow";
-import { ECurrentFocus } from "./../../enuns";
+import { IObservable } from "react-observing";
+
+import { IProperty } from "../../components/external";
 import { ITab } from "./ITab";
 
+/**
+ * Represents a full project structure
+ */
 export interface IProject {
-    /**
-     * Project settings and definitions
-     */
-    configurations: IProjectConfigurations;
-    /**
-     * Contains all open windows (action, routes ...)
-     */
-    windows: IProjectOpenedWindow[];
-    /**
-     * Indicates which component is currently focused
-     */
-    currentFocus: ECurrentFocus;
-    /**
-     * Used to separate routes, actions, data and etc...
-     */
-    tabs: ITab[];
-    /**
-     * Used to list all problems in this component
-     */
-    readonly problems: ITreeItem[];
-    /**
-     * Used to add problems in this component
-     */
-    addProblem(label: string, type: 'warning' | 'error'): void;
+  /**
+   * Store all properties to the project
+   */
+  properties: IObservable<IProperty[]>;
+  /**
+   * Used to separate routes, actions, data and etc...
+   */
+  tabs: IObservable<ITab[]>;
 }
-
-export interface IProjectManageWindows {
-    /**
-     * Select a window by id
-     * @param windowId Window to select
-     */
-    selectWindowById(windowId: string): void;
-    /**
-     * Close a window
-     * @param windowId window id to remove from openeds windows
-     */
-    removeWindowById(windowId: string): void;
-    /**
-     * Get all openeds windows
-     */
-    getWindows(): IOpenedWindow[];
-}
-

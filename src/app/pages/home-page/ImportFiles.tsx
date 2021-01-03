@@ -15,7 +15,7 @@ export const ImportProjects = ({ open, close }: { open: boolean, close: Function
     }, [open]);
 
     const onChangeFile = (e: any) => {
-        const file = new FileReader();
+        /* const file = new FileReader();
 
         file.onload = (e: any) => {
             const projs = Project.parseProjects(e.target.result);
@@ -54,7 +54,7 @@ export const ImportProjects = ({ open, close }: { open: boolean, close: Function
             file.readAsText(e.target.files[0]);
         } else {
             setProjects([]);
-        }
+        } */
     }
 
     const importProjects = () => {
@@ -92,14 +92,14 @@ export const ImportProjects = ({ open, close }: { open: boolean, close: Function
                         {projects.map(project => (
                             <CardItem
                                 item={{
-                                    id: project.configurations.id || '',
-                                    name: project.configurations.label,
-                                    type: project.configurations.type,
-                                    version: project.configurations.version,
-                                    description: project.configurations.description,
+                                    id: project.id.value || '',
+                                    name: project.label.value,
+                                    type: project.type.value,
+                                    version: project.version.value,
+                                    description: project.description.value,
                                 }}
                                 onClick={() => { }}
-                                key={project.configurations.id}
+                                key={project.id.value}
                             />
                         ))}
                     </div>

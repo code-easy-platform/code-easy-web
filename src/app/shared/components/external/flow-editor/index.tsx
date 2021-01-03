@@ -1,22 +1,38 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import HTML5Backend from 'react-dnd-html5-backend';
 import { DndProvider } from 'react-dnd';
+import { observe, set } from 'react-observing';
 
-import { IFlowEditorProps } from './shared/interfaces/FlowEditorInterfaces';
-import { OnChangeEmitter } from './components/on-change-emitter';
 import { ConfigurationProvider } from './shared/contexts';
+import { IFlowEditorProps } from './shared/interfaces';
 import { FlowEditorBoard } from './FlowEditorBoard';
-import { RecoilContainer } from './shared/stores';
+import { FlowItemsState } from './shared/stores';
+import { EFlowItemType } from './shared/enums';
+import { useSizeByText } from './shared/hooks';
 
-export const FlowEditor = ({ configs, items, onChangeItems, ...rest }: IFlowEditorProps) => {
+export const FlowEditor: React.FC<IFlowEditorProps> = ({ configs, items, ...rest }) => {
+    const getSizeByText = useSizeByText();
+
+    useEffect(() => {
+        set(FlowItemsState, items.map(item => {
+            if (item.flowItemType.value !== EFlowItemType.comment) {
+                return item;
+            }
+
+            const commentSizes = getSizeByText(item.description.value || '');
+            return {
+                ...item,
+                height: observe(commentSizes.height),
+                width: observe(commentSizes.width),
+            };
+        }))
+    }, [getSizeByText, items]);
+
     return (
         <ConfigurationProvider configs={configs}>
-            <RecoilContainer items={items}>
-                <DndProvider backend={HTML5Backend}>
-                    <OnChangeEmitter onChange={onChangeItems} />
-                    <FlowEditorBoard {...rest} />
-                </DndProvider>
-            </RecoilContainer>
+            <DndProvider backend={HTML5Backend}>
+                <FlowEditorBoard {...rest} />
+            </DndProvider>
         </ConfigurationProvider>
     );
 }

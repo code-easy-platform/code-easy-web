@@ -1,17 +1,18 @@
 import React, { useState, memo } from 'react';
+import { set, useObserverValue } from 'react-observing';
 
 import { PropertiesTab } from '../../../pages/editor/properties-tab/PropertiesTab';
 import { TabButton, TabGroup, TabsManager } from '../tabs';
 import { useEditorContext } from '../../contexts';
 import { AssetsService } from '../../services';
-import { Tab } from '../../models';
 import { Modal } from '../modal';
 import './ToolBar.css';
 
 export const ToolBar: React.FC = memo(() => {
     const [isOpenModalProps, setIsOpenModalProps] = useState(false);
-    const { project, setProject, getIconByItemId } = useEditorContext();
-    const tabs: Tab[] = (project?.tabs || []);
+
+    const { project } = useEditorContext();
+    const tabs = useObserverValue(project.tabs);
 
     return (<>
         <div className="tool-bar background-bars">
@@ -20,61 +21,61 @@ export const ToolBar: React.FC = memo(() => {
                     id="tabMenu"
                     title="Menu"
                     to="/projects"
-                    className=" btn background-transparent btn-open-menu-tab outline-none"
+                    className="btn background-transparent btn-open-menu-tab outline-none"
                 />
                 <hr className="hr hr-vertical" />
                 <TabButton
                     id="tabPropriedades"
                     title="Propriedades do projeto"
-                    className=" btn-open-properties-tab"
+                    className="btn-open-properties-tab"
                     onClick={() => setIsOpenModalProps(true)}
                 />
             </div>
             <hr className="hr hr-vertical" />
             <TabsManager
-                tabs={
-                    project.getWindows().map(tab => ({
-                        ...tab,
-                        icon: getIconByItemId(tab.id)
-                    }))
+                tabs={[]}
+            /* tabs={
+                project.getWindows().map(tab => ({
+                    ...tab,
+                    icon: getIconByItemId(tab.id)
+                }))
+            }
+            onChange={windowId => {
+                if (project.configurations.id && project.windows.find(windowTab => windowTab.isSelected)?.id !== windowId) {
+                    project.selectWindowById(windowId);
+                    setProject(project);
                 }
-                onChange={windowId => {
-                    if (project.configurations.id && project.windows.find(windowTab => windowTab.isSelected)?.id !== windowId) {
-                        project.selectWindowById(windowId);
-                        setProject(project);
-                    }
-                }}
-                onCloseWindowTab={windowId => {
-                    if (project.configurations.id) {
+            }}
+            onCloseWindowTab={windowId => {
+                if (project.configurations.id) {
 
-                        project.removeWindowById(windowId);
+                    project.removeWindowById(windowId);
 
-                        setProject(project);
-                    }
-                }}
+                    setProject(project);
+                }
+            }} */
             />
             <hr className="hr hr-vertical" />
             <div style={{ justifyContent: "flex-end" }}>
                 <TabGroup>
-                    {tabs.map((tab: Tab, index) => {
+                    {tabs.map((tab, index) => {
                         return (
                             <TabButton
-                                id={tab.name}
-                                key={tab.name}
-                                hasError={tab.hasError}
-                                title={tab.description}
-                                isSelected={tab.isEditing}
-                                hasWarning={tab.hasWarning}
+                                key={tab.name.value}
+                                id={String(tab.id.value)}
+                                hasError={tab.hasError.value}
+                                title={tab.description.value}
+                                isSelected={tab.isEditing.value}
+                                hasWarning={tab.hasWarning.value}
                                 className="btn-open-routers-tab flex1 padding-horizontal-sm"
                                 content={<>
-                                    <img height="90%" className="padding-right-s no-draggable" src={AssetsService.getIcon(tab.type)} alt={tab.type} />
-                                    {tab.label}
+                                    <img height="90%" className="padding-right-s no-draggable" src={AssetsService.getIcon(tab.type)} alt={tab.type.value} />
+                                    {tab.label.value}
                                 </>}
                                 onClick={() => {
-                                    if (!project.tabs[index].isEditing) {
-                                        project.tabs.forEach(currentTab => currentTab.isEditing = false);
-                                        project.tabs[index].isEditing = true;
-                                        setProject(project);
+                                    if (!tabs[index].isEditing) {
+                                        tabs.forEach(currentTab => currentTab.isEditing.value = false);
+                                        set(tabs[index].isEditing, true);
                                     }
                                 }}
                             />

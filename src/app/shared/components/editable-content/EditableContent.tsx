@@ -1,4 +1,5 @@
 import React, { useRef } from 'react';
+import { useObserverValue } from 'react-observing';
 import MonacoEditor from 'react-monaco-editor';
 
 import { useEditorContext } from '../../contexts';
@@ -10,30 +11,31 @@ export const EditableContent: React.FC<{ itemId: string, removeModal: Function }
     const editorRef = useRef<MonacoEditor>(null);
 
     const { project, setProject } = useEditorContext();
+    const tabs = useObserverValue(project.tabs);
     let selectedItem: any;
 
-    project.tabs.forEach(tab => {
-        tab.items.forEach(treeItem => {
+    tabs.forEach(tab => {
+        tab.items.value.forEach(treeItem => {
 
-            if (treeItem.id === itemId) {
+            if (treeItem.id.value === itemId) {
                 selectedItem = treeItem;
             }
 
-            treeItem.properties.forEach(treeItemProp => {
-                if (treeItemProp.id === itemId) {
+            treeItem.properties.value?.forEach(treeItemProp => {
+                if (treeItemProp.id.value === itemId) {
                     selectedItem = treeItemProp;
                 }
             });
 
-            treeItem.items.forEach(flowItem => {
+            treeItem.items.value.forEach(flowItem => {
 
-                if (flowItem.id === itemId) {
+                if (flowItem.id.value === itemId) {
                     selectedItem = flowItem;
                 }
 
-                flowItem.properties.forEach(flowItemProp => {
+                flowItem.properties.value?.forEach(flowItemProp => {
 
-                    if (flowItemProp.id === itemId) {
+                    if (flowItemProp.id.value === itemId) {
                         selectedItem = flowItemProp;
                     }
 

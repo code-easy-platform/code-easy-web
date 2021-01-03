@@ -30,11 +30,17 @@ export const TabsManager: React.FC<TabsManagerProps> = memo(({ tabs, fontSize = 
         <nav role="tablist" className={`window-tabs-manager font-size-${fontSize}`} onWheel={onWeel}>
             {tabs.map((tab, index) => (
                 <TabButton
-                    {...tab}
                     key={index}
+                    id={tab.id.value}
                     onSelect={onChange}
+                    icon={tab.icon.value}
+                    title={tab.title.value}
                     onClose={onCloseWindowTab}
+                    hasError={tab.hasError.value}
                     onContext={onContextWindowTab}
+                    isSelected={tab.isSelected.value}
+                    hasWarning={tab.hasWarning.value}
+                    description={tab.description.value}
                 />
             ))}
         </nav>

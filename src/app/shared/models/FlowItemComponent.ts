@@ -1,432 +1,293 @@
-import { IconError, IconWarning, Utils } from "code-easy-components";
+import { IObservable, observe } from "react-observing";
+import { Utils } from "code-easy-components";
 
-import { EItemType, IConnection, EFlowItemType, IProperty, TypeOfValues, ITreeItem } from "./../components/external";
+import { EFlowItemType, EItemType, IConnection, IProperty, TypeOfValues } from "./../components/external";
 import { BasicConfigurations } from "./BasicConfigurations";
 import { IFlowItemComponent } from "./../interfaces";
-import { DefaultPropsHelper } from "./../services";
 import { PropertieTypes } from "./../enuns";
 
+/**
+ * Fields passeds in constructor
+ */
+interface IConstructor {
+  connections?: IConnection[];
+  properties?: IProperty[];
+  type: EItemType;
+  id?: string;
+}
 
-type OmitInConstructor = Omit<IFlowItemComponent, 'flowItemType' | 'isEnabledNewConnetion' | 'height' | 'width' | 'name' | 'problems' | 'hasError' | 'hasWarning' | 'addProblem'>;
-
+/**
+ * Represents a full FlowItemComponent implementation
+ */
 export class FlowItemComponent extends BasicConfigurations<EItemType> implements IFlowItemComponent {
-    public flowItemType: EFlowItemType = EFlowItemType.acorn;
-    public isEnabledNewConnetion: boolean = false;
-    public height: number = 40;
-    public width: number = 40;
 
-    public isDisabled?: boolean | undefined;
-    public left: number;
-    public top: number;
-
-    private _connections: IConnection[] = [];
-    public get connections(): IConnection[] {
-        return this._connections || [];
-    }
-    public set connections(connects: IConnection[]) {
-        this._connections = connects;
+  public get top(): IObservable<number> {
+    let prop = this.properties.value.find(prop => prop.propertieType.value === PropertieTypes.top)?.value;
+    if (prop) {
+      return prop;
     }
 
-    public get properties(): IProperty[] { return super.properties; }
-    public set properties(props: IProperty[]) {
+    prop = observe(0);
 
-        // Update the type of item in flow editor
-        this.flowItemType = this.type === EItemType.COMMENT ? EFlowItemType.comment : EFlowItemType.acorn;
+    this.properties.value = [
+      ...this.properties.value,
+      {
+        value: prop,
+        id: observe(Utils.getUUID()),
+        name: observe(PropertieTypes.top),
+        type: observe(TypeOfValues.hidden),
+        propertieType: observe(PropertieTypes.top),
 
-        // Ensures that the original properties are present, and add to the list if any are not
-        const originalProperties = DefaultPropsHelper.getNewProps(this.type, this.name);
-        originalProperties.forEach(originalProp => {
-            if (!props.some(prop => prop.propertieType === originalProp.propertieType)) {
-                props.push(originalProp);
-            }
-        });
+        group: observe(undefined),
+        suggestions: observe(undefined),
+        information: observe(undefined),
+        fileMaxSize: observe(undefined),
+        nameHasError: observe(undefined),
+        valueHasError: observe(undefined),
+        focusOnRender: observe(undefined),
+        nameHasWarning: observe(undefined),
+        valueHasWarning: observe(undefined),
+        nameSuggestions: observe(undefined),
+        editNameDisabled: observe(undefined),
+        onPickerNameClick: observe(undefined),
+        editValueDisabled: observe(undefined),
+        onPickerValueClick: observe(undefined),
+      }
+    ];
 
-        switch (this.type) {
+    return prop;
+  }
 
-            case EItemType.ASSIGN:
-                props = this._propertiesFromAssigns(props);
-                break;
-
-            case EItemType.ACTION:
-                props = this._propertiesFromAction(props);
-                break;
-
-            case EItemType.IF:
-                props = this._propertiesFromIf(props);
-                break;
-
-            case EItemType.SWITCH:
-                props = this._propertiesFromSwitch(props);
-                break;
-
-            case EItemType.FOREACH:
-                props = this._propertiesFromForeach(props);
-                break;
-
-            case EItemType.COMMENT:
-                props = this._propertiesFromComment(props);
-                break;
-
-            case EItemType.END:
-                props = this._propertiesFromEnd(props);
-                break;
-
-            case EItemType.START:
-                props = this._propertiesFromStart(props);
-                break;
-
-            default:
-                break;
-        }
-
-        super.properties = props;
+  public get left(): IObservable<number> {
+    let prop = this.properties.value.find(prop => prop.propertieType.value === PropertieTypes.left)?.value;
+    if (prop) {
+      return prop;
     }
 
-    public get problems(): ITreeItem[] {
-        let problems = super.problems;
+    prop = observe(0);
 
-        const addProblem = (label: string, type: 'warning' | 'error') => {
-            problems.push({
-                icon: type === 'warning' ? IconWarning : IconError,
-                nodeExpanded: false,
-                isSelected: false,
-                id: undefined,
-                iconSize: 15,
-                type: "ITEM",
-                label,
-            });
-        }
+    this.properties.value = [
+      ...this.properties.value,
+      {
+        value: prop,
+        id: observe(Utils.getUUID()),
+        type: observe(TypeOfValues.hidden),
+        name: observe(PropertieTypes.left),
+        propertieType: observe(PropertieTypes.left),
 
-        // Se for diferente de END e COMMENT valida se tem sucessores
-        if ((this.type !== EItemType.END && this.type !== EItemType.COMMENT) && this.connections.length === 0) {
-            addProblem(`The flow item "${this.name}" is missing a connector.`, 'error');
-        }
+        group: observe(undefined),
+        suggestions: observe(undefined),
+        information: observe(undefined),
+        fileMaxSize: observe(undefined),
+        nameHasError: observe(undefined),
+        valueHasError: observe(undefined),
+        focusOnRender: observe(undefined),
+        nameHasWarning: observe(undefined),
+        valueHasWarning: observe(undefined),
+        nameSuggestions: observe(undefined),
+        editNameDisabled: observe(undefined),
+        onPickerNameClick: observe(undefined),
+        editValueDisabled: observe(undefined),
+        onPickerValueClick: observe(undefined),
+      }
+    ];
 
-        // Validates for each item
-        switch (this.type) {
-            case EItemType.ASSIGN:
-                this.properties.filter(prop => prop.propertieType === PropertieTypes.assigns).forEach(prop => {
-                    prop.valueHasError = false;
-                    prop.nameHasError = false;
+    return prop;
+  }
 
-                    if (prop.name !== '' && prop.value === '') {
-                        addProblem(`In the "${this.name}" item, no value is being assigned to the "${prop.name}."`, 'error');
-                        prop.valueHasError = true;
-                    } else if (prop.name === '' && prop.value !== '') {
-                        addProblem(`In ${this.name} the value "${prop.value}" is not being assigned to any variable or parameter.`, 'error');
-                        prop.nameHasError = true;
-                    }
-                });
-                break;
-
-            case EItemType.SWITCH:
-                this.properties.filter(prop => prop.propertieType === PropertieTypes.condition).forEach(prop => {
-                    prop.valueHasError = false;
-
-                    if (prop.value === '') {
-                        addProblem(`In the "${this.name}" item, the "${prop.name}" condition must have an informed expression.`, 'error');
-                        prop.valueHasError = true;
-                    }
-
-                });
-                break;
-
-            case EItemType.IF:
-
-                // Valida a condition do IF
-                this.properties.filter(prop => prop.propertieType === PropertieTypes.condition).forEach(prop => {
-                    prop.valueHasError = false;
-                    if (prop.value === '') {
-                        addProblem(`In the "${this.name}" item, the "${prop.name}" condition must have an informed expression.`, 'error');
-                        prop.valueHasError = true;
-                    }
-                });
-                // Valida as connection
-                if (this.connections.length >= 1 && this.connections.length < 2) {
-                    addProblem(`Flow item "${this.name}" is missing a connector.`, 'error');
-                }
-
-                break;
-
-            case EItemType.END:
-                // Nothing to valid yet
-                break;
-
-            case EItemType.ACTION:
-                this.properties.filter(prop => prop.propertieType === PropertieTypes.action).forEach(prop => {
-                    prop.valueHasError = false;
-
-                    if (prop.value === '') {
-                        addProblem(`The flow item "${this.name}" must have a valid value in the "${prop.name}" field.`, 'error');
-                        prop.valueHasError = true;
-                    }
-
-                });
-                break;
-
-            case EItemType.FOREACH:
-                this.properties.filter(prop => prop.propertieType === PropertieTypes.sourceList).forEach(prop => {
-                    prop.valueHasError = false;
-
-                    if (prop.value === '') {
-                        addProblem(`The flow item "${this.name}" must have a valid value in the "${prop.name}" field.`, 'error');
-                        prop.valueHasError = true;
-                    }
-                });
-                break;
-
-            default: break;
-        }
-
-        if (problems.length <= 1) {
-            return problems;
-        } else {
-            const newId = Utils.getUUID();
-            return [
-                ...problems.map(problem => ({ ...problem, ascendantId: newId })),
-                {
-                    label: `Inconsistences in flow item "${this.name}."`,
-                    nodeExpanded: true,
-                    isSelected: false,
-                    iconSize: 15,
-                    type: "ITEM",
-                    id: newId,
-                },
-            ];
-        }
+  public get isDisabled(): IObservable<boolean> {
+    let prop = this.properties.value.find(prop => prop.propertieType.value === PropertieTypes.isDisabled)?.value;
+    if (prop) {
+      return prop;
     }
 
-    constructor(fields: OmitInConstructor) {
-        super(fields);
+    prop = observe(false);
 
-        this.top = fields.top;
-        this.left = fields.left;
-        this.properties = fields.properties || this.properties;
-        this.connections = fields.connections || this.connections;
+    this.properties.value = [
+      ...this.properties.value,
+      {
+        value: prop,
+        id: observe(Utils.getUUID()),
+        type: observe(TypeOfValues.hidden),
+        name: observe(PropertieTypes.isDisabled),
+        propertieType: observe(PropertieTypes.isDisabled),
+
+        group: observe(undefined),
+        suggestions: observe(undefined),
+        information: observe(undefined),
+        fileMaxSize: observe(undefined),
+        nameHasError: observe(undefined),
+        valueHasError: observe(undefined),
+        focusOnRender: observe(undefined),
+        nameHasWarning: observe(undefined),
+        valueHasWarning: observe(undefined),
+        nameSuggestions: observe(undefined),
+        editNameDisabled: observe(undefined),
+        onPickerNameClick: observe(undefined),
+        editValueDisabled: observe(undefined),
+        onPickerValueClick: observe(undefined),
+      }
+    ];
+
+    return prop;
+  }
+
+  public get width(): IObservable<number | undefined> {
+    let prop = this.properties.value.find(prop => prop.propertieType.value === PropertieTypes.width)?.value;
+    if (prop) {
+      return prop;
     }
 
-    /**
-     * Atualiza as propriedades do assign:
-     * * Validaçoes de erros
-     * * Adição automática de novos assigments
-     */
-    private _propertiesFromAssigns(props: IProperty[]): IProperty[] {
+    prop = observe(0);
 
-        /** Essa sequência de código garante que sempre terá apenas um assigment vazio disponível */
-        const emptyAssigments = props.filter(prop => (prop.name === '' && prop.value === ''));
-        if (emptyAssigments.length === 0) {
-            const newId = Utils.getUUID();
+    this.properties.value = [
+      ...this.properties.value,
+      {
+        value: prop,
+        id: observe(Utils.getUUID()),
+        type: observe(TypeOfValues.hidden),
+        name: observe(PropertieTypes.width),
+        propertieType: observe(PropertieTypes.width),
 
-            // Está adicionando items nos assigments
-            props.push({
-                name: '',
-                id: newId,
-                value: '',
-                group: 'Assigments',
-                type: TypeOfValues.assign,
-                propertieType: PropertieTypes.assigns,
-            });
+        group: observe(undefined),
+        suggestions: observe(undefined),
+        information: observe(undefined),
+        fileMaxSize: observe(undefined),
+        nameHasError: observe(undefined),
+        valueHasError: observe(undefined),
+        focusOnRender: observe(undefined),
+        nameHasWarning: observe(undefined),
+        valueHasWarning: observe(undefined),
+        nameSuggestions: observe(undefined),
+        editNameDisabled: observe(undefined),
+        onPickerNameClick: observe(undefined),
+        editValueDisabled: observe(undefined),
+        onPickerValueClick: observe(undefined),
+      }
+    ];
 
-        } else if (emptyAssigments.length > 1) {
+    return prop;
+  }
 
-            // Está removendo items desnecessários do assigment
-            emptyAssigments.forEach((empAssig, index) => {
-                let indexToRemove = props.findIndex(prop => prop.id === empAssig.id);
-                if (index < (emptyAssigments.length - 1)) {
-                    props.splice(indexToRemove, 1);
-                }
-            });
-
-        }
-
-        // Enable or disable new connections
-        if (this.connections.length === 0) {
-            this.isEnabledNewConnetion = true;
-        } else {
-            this.isEnabledNewConnetion = false;
-        }
-
-        let prop = this.properties?.find(prop => prop.propertieType === PropertieTypes.description);
-        if (prop) {
-            prop.type = TypeOfValues.hidden;
-        }
-
-        return props;
+  public get height(): IObservable<number | undefined> {
+    let prop = this.properties.value.find(prop => prop.propertieType.value === PropertieTypes.height)?.value;
+    if (prop) {
+      return prop;
     }
 
-    private _propertiesFromForeach(props: IProperty[]): IProperty[] {
+    prop = observe(0);
 
-        this.connections = this.connections.map((connection, index) => {
-            // Renomeando a label da connection
-            if (index === 0)
-                return { ...connection, connectionLabel: 'Cycle' };
+    this.properties.value = [
+      ...this.properties.value,
+      {
+        value: prop,
+        id: observe(Utils.getUUID()),
+        type: observe(TypeOfValues.hidden),
+        name: observe(PropertieTypes.height),
+        propertieType: observe(PropertieTypes.height),
 
-            return connection;
-        });
+        group: observe(undefined),
+        suggestions: observe(undefined),
+        information: observe(undefined),
+        fileMaxSize: observe(undefined),
+        nameHasError: observe(undefined),
+        valueHasError: observe(undefined),
+        focusOnRender: observe(undefined),
+        nameHasWarning: observe(undefined),
+        valueHasWarning: observe(undefined),
+        nameSuggestions: observe(undefined),
+        editNameDisabled: observe(undefined),
+        onPickerNameClick: observe(undefined),
+        editValueDisabled: observe(undefined),
+        onPickerValueClick: observe(undefined),
+      }
+    ];
 
-        // Enable or disable new connections
-        if (this.connections.length < 2) {
-            this.isEnabledNewConnetion = true;
-        } else {
-            this.isEnabledNewConnetion = false;
-        }
+    return prop;
+  }
 
-        let prop = this.properties?.find(prop => prop.propertieType === PropertieTypes.description);
-        if (prop) {
-            prop.type = TypeOfValues.hidden;
-        }
-
-        return props;
+  public get flowItemType(): IObservable<EFlowItemType> {
+    let prop = this.properties.value.find(prop => prop.propertieType.value === PropertieTypes.flowItemType)?.value;
+    if (prop) {
+      return prop;
     }
 
-    private _propertiesFromComment(props: IProperty[]): IProperty[] {
-        this.flowItemType = EFlowItemType.comment;
-        this.isEnabledNewConnetion = true;
+    prop = observe(EFlowItemType.acorn);
 
-        const propComment = props.find(prop => prop.propertieType === PropertieTypes.comment);
-        if (propComment) {
-            propComment.value = propComment.value || 'Write here your comment';
-        }
+    this.properties.value = [
+      ...this.properties.value,
+      {
+        value: prop,
+        id: observe(Utils.getUUID()),
+        type: observe(TypeOfValues.hidden),
+        name: observe(PropertieTypes.flowItemType),
+        propertieType: observe(PropertieTypes.flowItemType),
 
-        const propLabel = props.find(prop => prop.propertieType === PropertieTypes.label);
-        if (propLabel && propComment) {
-            propLabel.type = TypeOfValues.hidden;
-            propLabel.value = String(propComment.value).substring(0, 45) + (String(propComment.value).length > 45 ? '...' : '');
-        }
+        group: observe(undefined),
+        suggestions: observe(undefined),
+        information: observe(undefined),
+        fileMaxSize: observe(undefined),
+        nameHasError: observe(undefined),
+        valueHasError: observe(undefined),
+        focusOnRender: observe(undefined),
+        nameHasWarning: observe(undefined),
+        valueHasWarning: observe(undefined),
+        nameSuggestions: observe(undefined),
+        editNameDisabled: observe(undefined),
+        onPickerNameClick: observe(undefined),
+        editValueDisabled: observe(undefined),
+        onPickerValueClick: observe(undefined),
+      }
+    ];
 
-        const propDescription = this.properties?.find(prop => prop.propertieType === PropertieTypes.description);
-        if (propDescription && propComment) {
-            propDescription.type = TypeOfValues.hidden;
-            propDescription.value = propComment.value;
-        }
+    return prop;
+  }
 
-        return props;
+  public get isEnabledNewConnetion(): IObservable<boolean | undefined> {
+    let prop = this.properties.value.find(prop => prop.propertieType.value === PropertieTypes.isEnabledNewConnetion)?.value;
+    if (prop) {
+      return prop;
     }
 
-    private _propertiesFromAction(props: IProperty[]): IProperty[] {
+    prop = observe(false);
 
-        // Enable or disable new connections
-        if (this.connections.length === 0) {
-            this.isEnabledNewConnetion = true;
-        } else {
-            this.isEnabledNewConnetion = false;
-        }
+    this.properties.value = [
+      ...this.properties.value,
+      {
+        value: prop,
+        id: observe(Utils.getUUID()),
+        type: observe(TypeOfValues.hidden),
+        name: observe(PropertieTypes.isEnabledNewConnetion),
+        propertieType: observe(PropertieTypes.isEnabledNewConnetion),
 
-        /** Define se pode modificar o nome caso tenha uma action selecionada */
-        const propAction = props.find(prop => prop.propertieType === PropertieTypes.action);
-        const propLabel = props.find(prop => prop.propertieType === PropertieTypes.label);
-        if (propLabel && propAction) {
-            propLabel.editValueDisabled = propAction?.value !== '';
-        }
+        group: observe(undefined),
+        suggestions: observe(undefined),
+        information: observe(undefined),
+        fileMaxSize: observe(undefined),
+        nameHasError: observe(undefined),
+        valueHasError: observe(undefined),
+        focusOnRender: observe(undefined),
+        nameHasWarning: observe(undefined),
+        valueHasWarning: observe(undefined),
+        nameSuggestions: observe(undefined),
+        editNameDisabled: observe(undefined),
+        onPickerNameClick: observe(undefined),
+        editValueDisabled: observe(undefined),
+        onPickerValueClick: observe(undefined),
+      }
+    ];
 
-        let prop = this.properties?.find(prop => prop.propertieType === PropertieTypes.description);
-        if (prop) {
-            prop.type = TypeOfValues.hidden;
-        }
+    return prop;
+  }
 
-        return props;
-    }
+  private _connections: IObservable<IConnection[]>;
+  public get connections(): IObservable<IConnection[]> {
+    return this._connections;
+  }
 
-    private _propertiesFromSwitch(props: IProperty[]): IProperty[] {
+  constructor(props: IConstructor) {
+    super(props);
 
-        this.isEnabledNewConnetion = true;
-
-        this.connections = this.connections.map((connection, index) => {
-            if (index === 0) {
-                return { ...connection, connectionLabel: 'Default' };
-            } else {
-                // Renomeando a label da connection
-                connection = { ...connection, connectionLabel: 'Condition' + index };
-
-                // Encontra a connection adicionada préviamente
-                let existentProp = props.find(prop => prop.id === connection.id);
-                if (!existentProp) {
-                    props.push({
-                        value: '',
-                        id: connection.id,
-                        group: 'Conditions',
-                        name: 'Condition' + index,
-                        type: TypeOfValues.expression,
-                        propertieType: PropertieTypes.condition,
-                    });
-                } else {
-                    // Está atualizando direto no "props" por referência
-                    existentProp.name = 'Condition' + index;
-                }
-
-                return connection;
-            }
-        });
-
-        // Remove todos as props que não tiverem connections com o mesmo id
-        let indexToRemove = props.findIndex(prop => (prop.propertieType === PropertieTypes.condition && !this.connections.some(connection => connection.id === prop.id)));
-        while (indexToRemove >= 0) {
-            props.splice(indexToRemove, 1);
-            indexToRemove = props.findIndex(prop => (prop.propertieType === PropertieTypes.condition && !this.connections.some(connection => connection.id === prop.id)));
-        }
-
-        let prop = this.properties?.find(prop => prop.propertieType === PropertieTypes.description);
-        if (prop) {
-            prop.type = TypeOfValues.hidden;
-        }
-
-        return props;
-    }
-
-    private _propertiesFromStart(props: IProperty[]): IProperty[] {
-
-        // Enable or disable new connections
-        if (this.connections.length === 0) {
-            this.isEnabledNewConnetion = true;
-        } else {
-            this.isEnabledNewConnetion = false;
-        }
-
-        this.properties.forEach(prop => prop.type = TypeOfValues.hidden);
-
-        return props;
-    }
-
-    private _propertiesFromEnd(props: IProperty[]): IProperty[] {
-
-        this.isEnabledNewConnetion = false;
-
-        this.properties.forEach(prop => prop.type = TypeOfValues.hidden);
-
-        return props;
-    }
-
-    private _propertiesFromIf(props: IProperty[]): IProperty[] {
-
-        this.connections = [
-            ...this.connections.map((connection, index) => {
-                // Rename label of the connection
-                if (index === 0) {
-                    return {
-                        ...connection,
-                        connectionLabel: 'True'
-                    };
-                } else {
-                    return {
-                        ...connection,
-                        connectionLabel: 'False'
-                    };
-                }
-            })
-        ];
-
-        // Enable or disable new connections
-        if (this.connections.length < 2) {
-            this.isEnabledNewConnetion = true;
-        } else {
-            this.isEnabledNewConnetion = false;
-        }
-
-        let prop = this.properties?.find(prop => prop.propertieType === PropertieTypes.description);
-        if (prop) {
-            prop.type = TypeOfValues.hidden;
-        }
-
-        return props;
-    }
+    this._connections = observe(props.connections || []);
+  }
 }

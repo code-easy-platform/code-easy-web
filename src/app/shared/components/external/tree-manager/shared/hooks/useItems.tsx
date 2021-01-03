@@ -1,87 +1,86 @@
-import { useContext, useCallback } from "react"
-import { ItemsContext } from "../contexts";
+import { useCallback, useEffect, useState } from "react"
+import { IObservable, ISubscription, set, useObserver, useObserverValue } from "react-observing";
 
+import { TreeItemsStore } from "../stores";
+
+
+/**
+ * Get all base items
+ */
+export const useBaseItems = () => {
+    const items = useObserverValue(TreeItemsStore);
+    return items.filter(item => !item.ascendantId.value);
+}
+
+/**
+ * Get all childs by id
+ */
+export const useItemsByAscendentId = (id: string | undefined) => {
+    const items = useObserverValue(TreeItemsStore);
+    const [childs, setChilds] = useState(items.filter(item => item.ascendantId.value === id));
+
+    useEffect(() => {
+        const subscriptions: ISubscription[] = [];
+
+        items.forEach(item => {
+            subscriptions.push(
+                item.ascendantId.subscribe(ascendantId => {
+                    if (ascendantId === id) {
+                        setChilds(oldChilds => {
+                            if (!oldChilds.some(child => child.id.value === item.id.value)) {
+                                return [...oldChilds, item];
+                            } else {
+                                return oldChilds;
+                            }
+                        });
+                    } else {
+                        setChilds(oldChilds => {
+                            if (oldChilds.some(child => child.id.value === item.id.value)) {
+                                return [...oldChilds.filter(child => child.id.value !== item.id.value)];
+                            } else {
+                                return oldChilds;
+                            }
+                        });
+                    }
+                })
+            );
+        });
+
+        return () => subscriptions.forEach(subs => subs?.unsubscribe());
+    }, [id, items]);
+
+    return childs;
+}
 
 export const useItems = () => {
-    const { items, setItems } = useContext(ItemsContext);
+    const [items] = useObserver(TreeItemsStore);
 
-    const itemsBase = items.filter(item => !item.ascendantId);
-
-    const itemsByAscendentId = useCallback((id: string | undefined) => {
-        if (!id) return [];
-
-        return items.filter(item => item.ascendantId === id)
+    const selectItem = useCallback((observeble: IObservable<boolean | undefined>, keepSelection?: boolean) => {
+        if (keepSelection) {
+            set(observeble, oldValue => !oldValue);
+        } else {
+            items.forEach(item => {
+                set(item.isSelected, item.isSelected.id === observeble.id);
+            });
+        }
     }, [items]);
 
-    const expandItemById = useCallback((id: string | undefined) => {
-        if (!id) return;
-
-        setItems(
-            items.map(item => {
-                if (item.id === id) {
-                    item.nodeExpanded = !item.nodeExpanded;
-                }
-                return item;
-            })
-        );
-    }, [items, setItems]);
-
-    const selectItemById = useCallback((id: string | undefined, keepSelection?: boolean) => {
-        if (!id) return;
-
-        if (items.find(item => item.id === id)?.isSelected) {
-            return;
-        }
-
-        setItems(
-            items.map(item => {
-                if (keepSelection) {
-                    item = {
-                        ...item,
-                        isSelected: item.id === id
-                    };
-                } else {
-                    item = {
-                        ...item,
-                        isSelected: item.id === id
-                    };
-                }
-                return item;
-            })
-        );
-    }, [items, setItems]);
-
-    const editItemById = useCallback((id: string | undefined) => {
-        if (!id) return;
-
-        if (items.find(item => item.id === id)?.isEditing) {
-            return;
-        }
-
-        setItems(
-            items.map(item => {
-                return {
-                    ...item,
-                    isEditing: item.id === id
-                };
-            })
-        );
-    }, [items, setItems]);
+    const editItem = useCallback((observeble: IObservable<boolean | undefined>) => {
+        items.forEach(item => {
+            set(item.isEditing, item.isEditing.id === observeble.id);
+        });
+    }, [items]);
 
     const changeAscendentById = useCallback((id: string | undefined, targetId: string | undefined) => {
         if (!id && !targetId) return;
 
         if (id === targetId) return;
 
-        setItems(
-            items.map(item => {
-                if (item.id === id) {
-                    item.ascendantId = targetId;
-                }
-                return item;
-            })
-        );
-    }, [items, setItems]);
+        const droppedItem = items.find(item => item.id.value === id);
+        if (droppedItem) {
+            set(droppedItem.ascendantId, targetId);
+        }
+    }, [items]);
 
     return {
         /**
@@ -89,24 +88,12 @@ export const useItems = () => {
          */
         changeAscById: changeAscendentById,
         /**
-         * Get all childs by id
+         * Select a item and deselects others if necessary
          */
-        itemsByAscId: itemsByAscendentId,
+        selectItem,
         /**
-         * Get all base items
+         * Edit only a item 
          */
-        baseItems: itemsBase,
-        /**
-         * Expand item by id
-         */
-        expandItemById,
-        /**
-         * Select a item by id
-         */
-        selectItemById,
-        /**
-         * Edit a item by id
-         */
-        editItemById,
+        editItem,
     }
 } 

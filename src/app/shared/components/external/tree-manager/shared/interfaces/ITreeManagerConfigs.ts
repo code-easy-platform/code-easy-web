@@ -36,6 +36,11 @@ export interface ITreeManagerConfigs {
      */
     isUseDrag?: boolean;
     /**
+     * Used to form the tree view for items.
+     * When informed it represents the size of the left padding
+     */
+    leftPadding?: number;
+    /**
      * Identifier
      */
     id?: string | undefined;

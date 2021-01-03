@@ -1,4 +1,6 @@
-import { IProperty, ITreeItem, EItemType } from "./../../components/external";
+import { IObservable } from "react-observing";
+
+import { IProperty, EItemType } from "./../../components/external";
 import { EComponentType, EProjectType } from "./../../enuns";
 
 /**
@@ -6,53 +8,13 @@ import { EComponentType, EProjectType } from "./../../enuns";
  */
 export interface IBasicConfigurations<T = EComponentType | EProjectType | EItemType> {
     /**
-     * Used to visually represent the record
-     */
-    icon?: any;
-    /**
      * Used for tree it helps to know if the item is a folder or a file
      */
-    type: T;
+    type: IObservable<T>;
     /**
      * Used to name a record visually only
      */
-    label: string;
-    /**
-     * Used to control the ordering of items
-     */
-    ordem?: number;
-    /**
-     * Indicates if the item has an error
-     */
-    hasError?: boolean;
-    /**
-     * Field used to store criation date
-     */
-    createdDate?: Date;
-    /**
-     * Field used to store updated date
-     */
-    updatedDate?: Date;
-    /** 
-     * Used to be able to tell the item flow which items in a tree are currently being edited
-     */
-    isEditing?: boolean;
-    /**
-     * Indicates whether the item has any type of warning
-     */
-    hasWarning?: boolean;
-    /**
-     * Used to describe some more specific detail
-     */
-    description?: string;
-    /** 
-     * Indicates where the item is selected in the tree.
-     */
-    isSelected?: boolean;
-    /**
-     * Used on the tree, it helps to know if the item is expanded or collapsed
-     */
-    isExpanded?: boolean;
+    label: IObservable<string>;
     /**
      * Used to identify a record more simply.
      * 
@@ -60,23 +22,55 @@ export interface IBasicConfigurations<T = EComponentType | EProjectType | EItemT
      *  * Cannot have special characters
      *  * It cannot be empty
      */
-    readonly name: string;
+    readonly name: IObservable<string>;
+    /**
+     * Used to visually represent the record
+     */
+    icon: IObservable<any | undefined>;
     /**
      * Uuid used as identifier
      * 
      * If ***undefined*** the record is being created
      */
-    id: string | undefined;
+    id: IObservable<string | undefined>;
+    /**
+     * Used to control the ordering of items
+     */
+    ordem: IObservable<number | undefined>;
+    /**
+     * Indicates if the item has an error
+     */
+    hasError: IObservable<boolean | undefined>;
+    /**
+     * Field used to store criation date
+     */
+    createdDate: IObservable<Date | undefined>;
+    /**
+     * Field used to store updated date
+     */
+    updatedDate: IObservable<Date | undefined>;
+    /** 
+     * Used to be able to tell the item flow which items in a tree are currently being edited
+     */
+    isEditing: IObservable<boolean | undefined>;
+    /**
+     * Indicates whether the item has any type of warning
+     */
+    hasWarning: IObservable<boolean | undefined>;
+    /**
+     * Used to describe some more specific detail
+     */
+    description: IObservable<string | undefined>;
+    /** 
+     * Indicates where the item is selected in the tree.
+     */
+    isSelected: IObservable<boolean | undefined>;
+    /**
+     * Used on the tree, it helps to know if the item is expanded or collapsed
+     */
+    isExpanded: IObservable<boolean | undefined>;
     /**
      * Used to list all properties of an item
      */
-    properties?: IProperty[];
-    /**
-     * Used to list all problems in this component
-     */
-    readonly problems: ITreeItem[];
-    /**
-     * Used to add problems in this component
-     */
-    addProblem(label: string, type: 'warning' | 'error'): void;
+    properties: IObservable<IProperty[] | undefined>;
 }

@@ -2,7 +2,7 @@ import React from 'react';
 
 import { BottonStatusBar, ContextModalList, ToolBar } from '../../shared/components';
 import { CodeEditorProvider } from '../../shared/contexts';
-// import { Playground } from './editor-tab/Playground';
+import { Playground } from './editor-tab/Playground';
 import './Editor.css';
 
 export const Editor: React.FC = () => {
@@ -13,7 +13,7 @@ export const Editor: React.FC = () => {
                 <hr className="hr" />
 
                 <div className="fade-in" style={{ height: "calc(100vh - 62px)" }}>
-                    {/* <Playground /> */}
+                    <Playground />
                 </div>
 
                 <hr className="hr z1" />

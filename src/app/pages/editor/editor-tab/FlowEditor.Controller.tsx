@@ -1,75 +1,63 @@
 import React, { memo, useCallback } from 'react';
 import { IconTrash, Utils, IconFlowStart, IconFlowAction, IconFlowIf, IconFlowForeach, IconFlowSwitch, IconFlowAssign, IconFlowEnd, IconFlowComment } from 'code-easy-components';
+import { set, useObserverValue, observe, useSetObserver } from 'react-observing';
 
-import { FlowEditor, IFlowItem, IBreadCrumbButton, EItemType, EFlowItemType, parseEItemType, EItemTypeList, IProperty } from '../../../shared/components/external';
+import { FlowEditor, IFlowItem, IBreadCrumbButton, EItemType, EFlowItemType, parseEItemType, EItemTypeList } from '../../../shared/components/external';
 import { BackgroundEmpty, BackgroundEmptyLeft, BackgroundEmptyLeftToTop } from '../../../assets';
 import { PropertieTypes, EComponentType, ECurrentFocus } from '../../../shared/enuns';
-import { TreeItemComponent, FlowItemComponent, Tab } from '../../../shared/models';
+import { TreeItemComponent, FlowItemComponent } from '../../../shared/models';
 import { useIdeConfigs, useEditorContext } from '../../../shared/contexts';
-import { AssetsService, openContextMenu } from '../../../shared/services';
 import { IContextItemList } from '../../../shared/interfaces';
+import { openContextMenu } from '../../../shared/services';
+import { CurrentFocusStore } from '../../../shared/stores';
 
 export const FlowEditorController: React.FC = memo(() => {
     const { flowBackgroundType, snapGridWhileDragging } = useIdeConfigs();
-    const { project, setProject } = useEditorContext();
+    const setCurrentFocus = useSetObserver(CurrentFocusStore);
+    const { project } = useEditorContext();
+
+    const tabs = useObserverValue(project.tabs);
 
     const handleOnChangeItems = useCallback((updatedItems: IFlowItem[]) => {
 
         /** Toda vez que houver uma alteração nos items de fluxo está função será executada. */
 
         // Encontra a tab certa e atualiza os items
-        project.tabs.forEach((tab: Tab) => {
-            tab.items.forEach(item => {
-                if (!item.isEditing) {
-                    item.items.forEach(flowItem => flowItem.isSelected = false);
+        tabs.forEach(tab => {
+            tab.items.value.forEach(item => {
+                if (!item.isEditing.value) {
+                    item.items.value.forEach(flowItem => set(flowItem.isSelected, false));
                 } else {
                     let newItems: FlowItemComponent[] = [];
 
                     // Atualiza os items do item da arvore.
                     updatedItems.forEach(updatedItem => {
-                        if (updatedItem.id !== undefined) {
+                        if (updatedItem.id.value !== undefined) {
 
-                            const index = item.items.findIndex(item => updatedItem.id === item.id);
+                            const index = item.items.value.findIndex(item => updatedItem.id === item.id);
                             if (index >= 0) {
                                 newItems.push(new FlowItemComponent({
+                                    properties: item.items.value[index].properties.value,
                                     type: parseEItemType(String(updatedItem.itemType)),
-                                    isSelected: updatedItem.isSelected || false,
-                                    connections: updatedItem.connections || [],
-                                    properties: item.items[index].properties,
-                                    description: updatedItem.description,
-                                    isDisabled: updatedItem.isDisabled,
-                                    label: updatedItem.label || '',
-                                    left: updatedItem.left,
-                                    icon: updatedItem.icon,
-                                    top: updatedItem.top,
-                                    id: updatedItem.id,
+                                    connections: updatedItem.connections.value || [],
+                                    id: updatedItem.id.value,
                                 }));
                             } else {
                                 newItems.push(new FlowItemComponent({
                                     type: parseEItemType(String(updatedItem.itemType)),
-                                    isSelected: updatedItem.isSelected || false,
-                                    connections: updatedItem.connections || [],
-                                    description: updatedItem.description,
-                                    isDisabled: updatedItem.isDisabled,
-                                    label: updatedItem.label || '',
-                                    icon: updatedItem.icon,
-                                    left: updatedItem.left,
-                                    top: updatedItem.top,
-                                    id: updatedItem.id,
+                                    connections: updatedItem.connections.value || [],
+                                    id: updatedItem.id.value,
                                 }));
                             }
                         }
                     });
 
                     // Atualiza a tab com os items alterados
-                    item.items = newItems;
+                    set(item.items, newItems);
                 }
             });
         });
-
-        // Atualiza o context do projeto
-        setProject(project);
-    }, [setProject, project]);
+    }, [tabs]);
 
     /**
      * Ao soltar um novo item permitido no editor está função será executada.
@@ -80,27 +68,20 @@ export const FlowEditorController: React.FC = memo(() => {
 
         // Action
         if (newItem.itemType?.toString() === EComponentType.globalAction.toString() || newItem.itemType?.toString() === EComponentType.localAction.toString()) {
-            newItem.isEnabledNewConnetion = true;
-            newItem.itemType = EItemType.ACTION;
-            newItem.icon = IconFlowAction;
+            set(newItem.isEnabledNewConnetion, true);
+            set(newItem.itemType, EItemType.ACTION);
+            set(newItem.icon, IconFlowAction);
 
             // Encontra a tab certa e atualiza os items
-            project.tabs.forEach((tab: Tab) => {
-                tab.items.forEach(item => {
-                    if (!item.isEditing) {
-                        item.items.forEach(flowItem => flowItem.isSelected = false);
+            tabs.forEach(tab => {
+                tab.items.value.forEach(item => {
+                    if (!item.isEditing.value) {
+                        item.items.value.forEach(flowItem => set(flowItem.isSelected, false));
                     } else {
-                        item.items.push(new FlowItemComponent({
+                        item.items.value.push(new FlowItemComponent({
                             type: parseEItemType(String(newItem.itemType)),
-                            isSelected: newItem.isSelected || false,
-                            connections: newItem.connections || [],
-                            description: newItem.description,
-                            isDisabled: newItem.isDisabled,
-                            label: newItem.label || '',
-                            icon: newItem.icon,
-                            left: newItem.left,
-                            top: newItem.top,
-                            id: newItem.id,
+                            connections: newItem.connections.value || [],
+                            id: newItem.id.value,
                         }));
                     }
                 })
@@ -112,35 +93,35 @@ export const FlowEditorController: React.FC = memo(() => {
             newItem.itemType?.toString() === EComponentType.inputVariable.toString() ||
             newItem.itemType?.toString() === EComponentType.localVariable.toString()
         ) {
-            newItem.isEnabledNewConnetion = true;
-            newItem.itemType = EItemType.ASSIGN;
-            newItem.icon = IconFlowAssign;
+            set(newItem.isEnabledNewConnetion, true);
+            set(newItem.itemType, EItemType.ASSIGN);
+            set(newItem.icon, IconFlowAssign);
         } else {
-            newItem.isEnabledNewConnetion = true;
+            set(newItem.isEnabledNewConnetion, true);
         }
 
-        newItem.flowItemType = EFlowItemType.acorn;
-        newItem.label = newItem.itemType;
+        set(newItem.flowItemType, EFlowItemType.acorn);
+        set(newItem.label, newItem.itemType?.value);
 
         return newItem;
-    }, [project.tabs]);
+    }, [tabs]);
 
     /** Alimenta a toolbox, de onde pode ser arrastados items para o fluxo. */
     const toolBoxItems = useCallback((): IFlowItem[] => [
-        { id: '1', top: 0, left: 0, flowItemType: EFlowItemType.acorn, label: EItemType.START, icon: IconFlowStart, itemType: EItemType.START },
-        { id: '2', top: 0, left: 0, flowItemType: EFlowItemType.acorn, label: EItemType.ACTION, icon: IconFlowAction, itemType: EItemType.ACTION },
-        { id: '3', top: 0, left: 0, flowItemType: EFlowItemType.acorn, label: EItemType.IF, icon: IconFlowIf, itemType: EItemType.IF },
-        { id: '4', top: 0, left: 0, flowItemType: EFlowItemType.acorn, label: EItemType.FOREACH, icon: IconFlowForeach, itemType: EItemType.FOREACH },
-        { id: '6', top: 0, left: 0, flowItemType: EFlowItemType.acorn, label: EItemType.SWITCH, icon: IconFlowSwitch, itemType: EItemType.SWITCH },
-        { id: '7', top: 0, left: 0, flowItemType: EFlowItemType.acorn, label: EItemType.ASSIGN, icon: IconFlowAssign, itemType: EItemType.ASSIGN },
-        { id: '8', top: 0, left: 0, flowItemType: EFlowItemType.acorn, label: EItemType.END, icon: IconFlowEnd, itemType: EItemType.END },
-        { id: '9', top: 0, left: 0, flowItemType: EFlowItemType.comment, label: EItemType.COMMENT, icon: IconFlowComment, itemType: EItemType.COMMENT },
+        { id: observe('1'), top: observe(0), left: observe(0), flowItemType: observe(EFlowItemType.acorn), label: observe(EItemType.START), icon: observe(IconFlowStart), itemType: observe(EItemType.START), connections: observe([]), description: observe(''), hasError: observe(undefined), hasWarning: observe(undefined), height: observe(undefined), isDisabled: observe(false), isEnabledNewConnetion: observe(undefined), isSelected: observe(false), width: observe(undefined) },
+        { id: observe('2'), top: observe(0), left: observe(0), flowItemType: observe(EFlowItemType.acorn), label: observe(EItemType.ACTION), icon: observe(IconFlowAction), itemType: observe(EItemType.ACTION), connections: observe([]), description: observe(''), hasError: observe(undefined), hasWarning: observe(undefined), height: observe(undefined), isDisabled: observe(false), isEnabledNewConnetion: observe(undefined), isSelected: observe(false), width: observe(undefined) },
+        { id: observe('3'), top: observe(0), left: observe(0), flowItemType: observe(EFlowItemType.acorn), label: observe(EItemType.IF), icon: observe(IconFlowIf), itemType: observe(EItemType.IF), connections: observe([]), description: observe(''), hasError: observe(undefined), hasWarning: observe(undefined), height: observe(undefined), isDisabled: observe(false), isEnabledNewConnetion: observe(undefined), isSelected: observe(false), width: observe(undefined) },
+        { id: observe('4'), top: observe(0), left: observe(0), flowItemType: observe(EFlowItemType.acorn), label: observe(EItemType.FOREACH), icon: observe(IconFlowForeach), itemType: observe(EItemType.FOREACH), connections: observe([]), description: observe(''), hasError: observe(undefined), hasWarning: observe(undefined), height: observe(undefined), isDisabled: observe(false), isEnabledNewConnetion: observe(undefined), isSelected: observe(false), width: observe(undefined) },
+        { id: observe('6'), top: observe(0), left: observe(0), flowItemType: observe(EFlowItemType.acorn), label: observe(EItemType.SWITCH), icon: observe(IconFlowSwitch), itemType: observe(EItemType.SWITCH), connections: observe([]), description: observe(''), hasError: observe(undefined), hasWarning: observe(undefined), height: observe(undefined), isDisabled: observe(false), isEnabledNewConnetion: observe(undefined), isSelected: observe(false), width: observe(undefined) },
+        { id: observe('7'), top: observe(0), left: observe(0), flowItemType: observe(EFlowItemType.acorn), label: observe(EItemType.ASSIGN), icon: observe(IconFlowAssign), itemType: observe(EItemType.ASSIGN), connections: observe([]), description: observe(''), hasError: observe(undefined), hasWarning: observe(undefined), height: observe(undefined), isDisabled: observe(false), isEnabledNewConnetion: observe(undefined), isSelected: observe(false), width: observe(undefined) },
+        { id: observe('8'), top: observe(0), left: observe(0), flowItemType: observe(EFlowItemType.acorn), label: observe(EItemType.END), icon: observe(IconFlowEnd), itemType: observe(EItemType.END), connections: observe([]), description: observe(''), hasError: observe(undefined), hasWarning: observe(undefined), height: observe(undefined), isDisabled: observe(false), isEnabledNewConnetion: observe(undefined), isSelected: observe(false), width: observe(undefined) },
+        { id: observe('9'), top: observe(0), left: observe(0), flowItemType: observe(EFlowItemType.comment), label: observe(EItemType.COMMENT), icon: observe(IconFlowComment), itemType: observe(EItemType.COMMENT), connections: observe([]), description: observe(''), hasError: observe(undefined), hasWarning: observe(undefined), height: observe(undefined), isDisabled: observe(false), isEnabledNewConnetion: observe(undefined), isSelected: observe(false), width: observe(undefined) },
     ], []);
 
     /** Quando clicado com o botão esquerdo do mouse no interior do editor esta função é acionada. */
     const handleShowContextMenu = useCallback((id: any, e: any): IContextItemList[] => {
-        const left = e.nativeEvent.offsetX;
-        const top = e.nativeEvent.offsetY;
+        // const left = e.nativeEvent.offsetX;
+        // const top = e.nativeEvent.offsetY;
 
         let options: IContextItemList[] = [];
 
@@ -149,10 +130,10 @@ export const FlowEditorController: React.FC = memo(() => {
             let indexTabToDelete: number | undefined;
             let indexToDelete: number | undefined;
 
-            project.tabs.forEach((tab: Tab, indexTab) => {
-                tab.items.forEach((item, indexTree) => {
-                    if (item.isEditing) {
-                        indexToDelete = item.items.findIndex(flow_item => flow_item.id === id);
+            tabs.forEach((tab, indexTab) => {
+                tab.items.value.forEach((item, indexTree) => {
+                    if (item.isEditing.value) {
+                        indexToDelete = item.items.value.findIndex(flow_item => flow_item.id.value === id);
                         indexTreeToDelete = indexTree;
                         indexTabToDelete = indexTab;
                     }
@@ -161,10 +142,7 @@ export const FlowEditorController: React.FC = memo(() => {
 
             const handleContextDelete = () => {
                 if (indexTabToDelete !== undefined && indexToDelete !== undefined && indexToDelete !== -1 && indexTreeToDelete !== undefined) {
-                    project.tabs[indexTabToDelete].items[indexTreeToDelete].items.splice(indexToDelete, 1);
-
-                    // Atualiza o context do projeto
-                    setProject(project);
+                    tabs[indexTabToDelete].items.value[indexTreeToDelete].items.value.splice(indexToDelete, 1);
                 }
             }
 
@@ -172,7 +150,7 @@ export const FlowEditorController: React.FC = memo(() => {
                 options.push({
                     icon: IconTrash,
                     action: handleContextDelete,
-                    label: 'Delete ' + project.tabs[indexTabToDelete].items[indexTreeToDelete].items[indexToDelete].type,
+                    label: 'Delete ' + tabs[indexTabToDelete].items.value[indexTreeToDelete].items.value[indexToDelete].type.value,
                 });
 
                 options.push({
@@ -184,86 +162,71 @@ export const FlowEditorController: React.FC = memo(() => {
 
         toolBoxItems().forEach(item => {
             options.push({
-                icon: item.icon,
-                label: 'Add ' + item.label,
+                icon: item.icon.value,
+                label: 'Add ' + item.label.value,
                 action: () => {
                     // Encontra a tab certa e adiciona um item de fluxo aos items
-                    project.tabs.forEach((tab: Tab) => {
-                        tab.items.forEach(itemTree => {
+                    tabs.forEach(tab => {
+                        tab.items.value.forEach(itemTree => {
                             if (item?.itemType && itemTree.isEditing) {
 
                                 // Deseleciona todos os items anteriores
-                                itemTree.items.forEach(itemFlow => itemFlow.isSelected = false);
+                                itemTree.items.value.forEach(itemFlow => set(itemFlow.isSelected, false));
 
                                 // Adiciona a tab com os items alterados
-                                itemTree.items.push(new FlowItemComponent({
-                                    icon: AssetsService.getIcon(parseEItemType(item.itemType)),
-                                    type: parseEItemType(item.itemType),
-                                    label: String(item.label),
+                                itemTree.items.value.push(new FlowItemComponent({
+                                    type: parseEItemType(item.itemType.value),
                                     id: Utils.getUUID(),
-                                    isDisabled: false,
-                                    isSelected: true,
                                     connections: [],
-                                    left,
-                                    top,
                                 }));
                             }
                         });
                     });
-
-                    // Atualiza o context do projeto
-                    setProject(project);
                 }
             });
         });
 
         return options;
-    }, [project, toolBoxItems, setProject]);
+    }, [tabs, toolBoxItems]);
 
     /** Monta o breadcamps que será exibido no top do editor de fluxos. */
     const getBreadcamps = useCallback((): IBreadCrumbButton[] => {
 
         let breadcamps: IBreadCrumbButton[] = [];
 
-        project.tabs.forEach((tab: Tab) => {
-            tab.items.forEach(item => {
-                if (item.isEditing) {
+        tabs.forEach(tab => {
+            tab.items.value.forEach(item => {
+                if (item.isEditing.value) {
 
                     breadcamps.push({
                         label: tab.label,
-                        onClick: () => {
-                            project.tabs.forEach((tab: Tab) => tab.isEditing = false);
-                            project.currentFocus = ECurrentFocus.tree;
-                            tab.isEditing = true;
-                            setProject(project);
-                        }
+                        onClick: observe(() => {
+                            tabs.forEach(tab => set(tab.isEditing, false));
+                            set(tab.isEditing, true);
+                        })
                     });
 
                     breadcamps.push({
                         label: item.label,
-                        onClick: (() => {
-                            project.tabs.forEach((tab: Tab) => tab.isEditing = false);
+                        onClick: observe(() => {
+                            tabs.forEach(tab => set(tab.isEditing, false));
 
-                            project.tabs.forEach(tab => {
-                                tab.items.forEach(item => {
-                                    item.isSelected = false;
+                            tabs.forEach(tab => {
+                                tab.items.value.forEach(item => {
+                                    set(item.isSelected, true);
                                 });
                             });
 
-                            project.currentFocus = ECurrentFocus.tree;
-                            tab.isEditing = true;
-                            item.isSelected = true;
-                            setProject(project);
-
+                            set(item.isSelected, true);
+                            set(tab.isEditing, true);
                         }),
                     });
-
                 }
             });
         });
 
         return breadcamps;
-    }, [project, setProject]);
+    }, [tabs]);
 
     /** Usando o state pode pegar os items que devem ser editados pelo fluxo. */
     const flowEditorItems = useCallback((): { hasSomethingEditing: boolean, hasSomethingToEdit: boolean, flowItems: IFlowItem[] } => {
@@ -272,15 +235,20 @@ export const FlowEditorController: React.FC = memo(() => {
         let itemEditing: TreeItemComponent | undefined;
 
         /** Return if the project has some action, table or route to allow edit */
-        const hasSomethingToEdit = project.tabs.some(tab => tab.items.length > 0);
+        const hasSomethingToEdit = tabs.some(tab => tab.items.value.length > 0);
 
         /** Return if the project has some action, table or route editing */
-        const hasSomethingEditing = project.tabs.some(tab => tab.items.some(item => item.isEditing));
+        const hasSomethingEditing = tabs.some(tab => tab.items.value.some(item => item.isEditing));
 
-        project.tabs.forEach((tab: Tab) => {
-            tab.items.forEach(item => {
-                if (item.isEditing) {
-                    itemEditing = item;
+        tabs.forEach(tab => {
+            tab.items.value.forEach(item => {
+                if (item.isEditing.value) {
+                    itemEditing = new TreeItemComponent({
+                        properties: item.properties.value,
+                        items: item.items.value,
+                        type: item.type.value,
+                        id: item.id.value,
+                    });
                 }
             });
         });
@@ -293,24 +261,24 @@ export const FlowEditorController: React.FC = memo(() => {
         };
 
         // Reordena pela altura
-        itemEditing.items.sort((a, b) => (a.top - b.top));
+        itemEditing.items.value.sort((a, b) => (a.top.value - b.top.value));
 
 
         // Se for o simples para o editor de fluxos, faz um map dos items.
         let flowItems: IFlowItem[] = [];
-        itemEditing.items.forEach(item => {
+        itemEditing.items.value.forEach(item => {
 
             /** Prop usada para guarda o id da action referênciada */
-            const actionProp = item.properties.find(prop => prop.propertieType === PropertieTypes.action);
+            const actionProp = item.properties.value?.find(prop => prop.propertieType.value === PropertieTypes.action);
 
             /** Bloco de código qu encontra o ícone que será usado no fluxo */
             let selectedActionIcon: any;
-            let selectedActionDescription: IProperty | undefined;
-            project.tabs.forEach((tab: Tab) => {
-                tab.items.forEach(itemToIconFind => {
+            // let selectedActionDescription: IProperty | undefined;
+            tabs.forEach(tab => {
+                tab.items.value.forEach(itemToIconFind => {
                     if (itemToIconFind.name === actionProp?.value) {
-                        selectedActionIcon = itemToIconFind.properties.find(prop => prop.propertieType === PropertieTypes.icon);
-                        selectedActionDescription = itemToIconFind.properties.find(prop => prop.propertieType === PropertieTypes.description);
+                        selectedActionIcon = itemToIconFind.properties.value?.find(prop => prop.propertieType.value === PropertieTypes.icon);
+                        // selectedActionDescription = itemToIconFind.properties.value?.find(prop => prop.propertieType.value === PropertieTypes.description);
                     }
                 });
             });
@@ -323,17 +291,18 @@ export const FlowEditorController: React.FC = memo(() => {
                 width: item.width,
                 height: item.height,
                 itemType: item.type,
+                hasError: item.hasError,
+                hasWarning: item.hasWarning,
                 isSelected: item.isSelected,
                 isDisabled: item.isDisabled,
                 connections: item.connections,
+                description: item.description,
                 flowItemType: item.flowItemType,
                 isEnabledNewConnetion: item.isEnabledNewConnetion,
-                icon: selectedActionIcon?.value?.content || item.icon.content,
-                hasError: item.properties.some(prop => (prop.valueHasError || prop.nameHasError)),
-                hasWarning: item.properties.some(prop => (prop.valueHasWarning || prop.nameHasWarning)),
-                description: item.type !== EItemType.COMMENT
+                icon: selectedActionIcon?.value?.content || item.icon.value.content,
+                /* description: item.type.value !== EItemType.COMMENT
                     ? selectedActionDescription?.value || item.description
-                    : item.properties.find(prop => prop.propertieType === PropertieTypes.comment)?.value,
+                    : item.properties.value?.find(prop => prop.propertieType.value === PropertieTypes.comment), */
             });
         });
 
@@ -342,12 +311,11 @@ export const FlowEditorController: React.FC = memo(() => {
             hasSomethingToEdit,
             hasSomethingEditing,
         };
-    }, [project]);
+    }, [tabs]);
 
     const handleOnFocus = useCallback(() => {
-        project.currentFocus = ECurrentFocus.flow;
-        setProject(project);
-    }, [project, setProject]);
+        setCurrentFocus(ECurrentFocus.flow);
+    }, [setCurrentFocus]);
 
     const handleOnContextMenu = useCallback((e: React.MouseEvent<any, MouseEvent>) => {
         if (e) {

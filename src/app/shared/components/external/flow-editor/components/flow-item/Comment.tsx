@@ -1,26 +1,45 @@
 import React from 'react';
+import { useObserverValue } from 'react-observing';
 
 import { IFlowItem } from '../../shared/interfaces/FlowItemInterfaces';
 import NewConnectionBox from './line/NewConnectionBox';
 import { useConfigs } from '../../shared/hooks';
 
 interface CommentProps {
+    /**
+     * 
+     */
     item: IFlowItem;
+    /**
+     * 
+     */
     parentRef: React.RefObject<SVGSVGElement>;
-
-    /** Used in parent component to move this element in the screen */
+    /**
+     * Used in parent component to move this element in the screen
+     */
     onMouseDown?(event: React.MouseEvent<SVGGElement | HTMLDivElement, MouseEvent>): void;
-    /** Used to start the context menu for this específic component */
+    /**
+     * Used to start the context menu for this específic component
+     */
     onContextMenu?(event: React.MouseEvent<SVGGElement | HTMLDivElement, MouseEvent>): void;
 }
 export const Comment: React.FC<CommentProps> = ({ item, parentRef, onMouseDown, onContextMenu }) => {
     const { flowItemSelectedColor, commentColor, lineWidth, flowItemErrorColor, flowItemWarningColor, commentTextColor } = useConfigs();
 
-    const strokeColor: string = item.isSelected
+    const description = useObserverValue(item.description);
+    const isSelected = useObserverValue(item.isSelected);
+    const hasWarning = useObserverValue(item.hasWarning);
+    const hasError = useObserverValue(item.hasError);
+    const height = useObserverValue(item.height);
+    const width = useObserverValue(item.width);
+    const left = useObserverValue(item.left);
+    const top = useObserverValue(item.top);
+
+    const strokeColor: string = isSelected
         ? `${flowItemSelectedColor}`
-        : item.hasError
+        : hasError
             ? `${flowItemErrorColor}`
-            : item.hasWarning
+            : hasWarning
                 ? `${flowItemWarningColor}`
                 : "transparent";
 
@@ -31,34 +50,34 @@ export const Comment: React.FC<CommentProps> = ({ item, parentRef, onMouseDown, 
     }
 
     const handleOnMouseDown = (e: React.MouseEvent<SVGRectElement, MouseEvent>) => {
+        onMouseDown && onMouseDown(e);
         e.stopPropagation();
         e.preventDefault();
-        onMouseDown && onMouseDown(e);
     }
 
     return (
         <>
             <NewConnectionBox
-                height={(item.height || 0) + ((lineWidth || 0) * 2) + 36}
-                width={(item.width || 0) + ((lineWidth || 0) * 2) + 38}
-                originId={String(item.id)}
+                height={(height || 0) + ((lineWidth || 0) * 2) + 36}
+                width={(width || 0) + ((lineWidth || 0) * 2) + 38}
+                originIdStore={item.id}
                 lineWidth={lineWidth}
-                left={item.left - 20}
                 parentRef={parentRef}
-                top={item.top - 20}
+                left={left - 20}
+                top={top - 20}
             />
             <foreignObject
-                id={item.id}
-                y={item.top - 10}
-                x={item.left - 10}
+                y={top - 10}
+                x={left - 10}
+                id={item.id.value}
                 style={{ cursor: 'move' }}
                 onMouseDown={handleOnMouseDown}
                 onContextMenu={handleOnContextMenu}
-                width={(item.width || 0) + ((lineWidth || 0) * 2) + 18}
-                height={(item.height || 0) + ((lineWidth || 0) * 2) + 16}
+                width={(width || 0) + ((lineWidth || 0) * 2) + 18}
+                height={(height || 0) + ((lineWidth || 0) * 2) + 16}
             >
                 <div
-                    children={item.description}
+                    children={description}
                     style={{
                         border: `${lineWidth}px solid ${strokeColor}`,
                         height: '-webkit-fill-available',

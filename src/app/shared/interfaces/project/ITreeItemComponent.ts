@@ -1,3 +1,5 @@
+import { IObservable } from "react-observing";
+
 import { IBasicConfigurations } from "./IBasicConfigurations";
 import { IFlowItemComponent } from "./IFlowItemComponent";
 import { EComponentType } from "./../../enuns";
@@ -9,9 +11,9 @@ export interface ITreeItemComponent extends IBasicConfigurations<EComponentType>
     /**
      * Used to contain items in a stream
      */
-    items: IFlowItemComponent[];
+    items: IObservable<IFlowItemComponent[]>;
     /**
      * Used to be found by the item that comes before, your igniter.
      */
-    ascendantId?: string;
+    ascendantId: IObservable<string | undefined>;
 }

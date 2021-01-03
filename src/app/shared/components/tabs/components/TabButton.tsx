@@ -1,15 +1,19 @@
 import React, { useCallback } from 'react';
 import { IconClose } from 'code-easy-components';
 
-import { IOpenedWindow } from '../../../interfaces';
-
-interface TabButtonProps extends IOpenedWindow {
+interface TabButtonProps {
     onContext?(tabId: string | undefined): void;
     onSelect?(tabId: string | undefined): void;
     onClose?(tabId: string | undefined): void;
+    description: string | undefined;
+    hasWarning: boolean | undefined;
+    isSelected: boolean | undefined;
+    hasError: boolean | undefined;
     useClose?: boolean;
     className?: string;
+    title: string;
     icon?: any;
+    id: string;
 }
 export const TabButton: React.FC<TabButtonProps> = ({ id, description, title, icon, className, hasError, hasWarning, isSelected, useClose = true, onSelect, onContext, onClose }) => {
 

@@ -1,9 +1,9 @@
-import { IFlowItemComponent, IProject, ITab, ITreeItemComponent } from "../interfaces";
-import { ProjectConfigurations } from "./ProjectConfigurations";
-import { TreeItemComponent } from "./TreeItemComponent";
-import { FlowItemComponent } from "./FlowItemComponent";
+// import { IFlowItemComponent, IProject, ITab, ITreeItemComponent } from "../interfaces";
+// import { ProjectConfigurations } from "./ProjectConfigurations";
+// import { TreeItemComponent } from "./TreeItemComponent";
+// import { FlowItemComponent } from "./FlowItemComponent";
 import { Project } from "./Project";
-import { Tab } from "./Tab";
+// import { Tab } from "./Tab";
 
 export class ProjectParser {
     /**
@@ -11,97 +11,20 @@ export class ProjectParser {
      *  @param project Project that will be transformed into a string
      */
     public static stringify(project: Project): string {
-        const res: IProject = {
-            problems: [],
-            addProblem() { },
-            windows: project.windows,
-            currentFocus: project.currentFocus,
-            configurations: {
-                problems: [],
-                addProblem() { },
-                id: project.configurations.id,
-                name: project.configurations.name,
-                type: project.configurations.type,
-                icon: project.configurations.icon,
-                label: project.configurations.label,
-                ordem: project.configurations.ordem,
-                author: project.configurations.author,
-                version: project.configurations.version,
-                hasError: project.configurations.hasError,
-                isEditing: project.configurations.isEditing,
-                hasWarning: project.configurations.hasWarning,
-                isExpanded: project.configurations.isExpanded,
-                isSelected: project.configurations.isSelected,
-                properties: project.configurations.properties,
-                createdDate: project.configurations.createdDate,
-                description: project.configurations.description,
-                updatedDate: project.configurations.updatedDate,
-                currentPlatformVersion: project.configurations.currentPlatformVersion,
-                createdInPlatformVersion: project.configurations.createdInPlatformVersion,
-            },
-            tabs: project.tabs.map((tab): ITab => ({
-                description: tab.description,
-                createdDate: tab.createdDate,
-                updatedDate: tab.updatedDate,
-                properties: tab.properties,
-                isSelected: tab.isSelected,
-                isExpanded: tab.isExpanded,
-                hasWarning: tab.hasWarning,
-                isEditing: tab.isEditing,
-                hasError: tab.hasError,
-                addProblem() { },
-                ordem: tab.ordem,
-                label: tab.label,
-                name: tab.label,
-                type: tab.type,
-                icon: tab.icon,
-                problems: [],
-                id: tab.id,
-                items: tab.items.map((itemTree): ITreeItemComponent => ({
-                    ascendantId: itemTree.ascendantId,
-                    description: itemTree.description,
-                    createdDate: itemTree.createdDate,
-                    updatedDate: itemTree.updatedDate,
-                    isExpanded: itemTree.isExpanded,
-                    hasWarning: itemTree.hasWarning,
-                    properties: itemTree.properties,
-                    isSelected: itemTree.isSelected,
-                    isEditing: itemTree.isEditing,
-                    hasError: itemTree.hasError,
-                    ordem: itemTree.ordem,
-                    label: itemTree.label,
-                    name: itemTree.label,
-                    type: itemTree.type,
-                    icon: itemTree.icon,
-                    addProblem() { },
-                    id: itemTree.id,
-                    problems: [],
-                    items: itemTree.items.map((flowItem): IFlowItemComponent => ({
-                        isEnabledNewConnetion: flowItem.isEnabledNewConnetion,
-                        connections: flowItem.connections || [],
-                        flowItemType: flowItem.flowItemType,
-                        description: flowItem.description,
-                        updatedDate: flowItem.updatedDate,
-                        createdDate: flowItem.createdDate,
-                        properties: flowItem.properties,
-                        isSelected: flowItem.isSelected,
-                        hasWarning: flowItem.hasWarning,
-                        isDisabled: flowItem.isDisabled,
-                        isExpanded: flowItem.isExpanded,
-                        isEditing: flowItem.isEditing,
-                        hasError: flowItem.hasError,
-                        height: flowItem.height,
-                        ordem: flowItem.ordem,
-                        label: flowItem.label,
-                        name: flowItem.label,
-                        width: flowItem.width,
-                        type: flowItem.type,
-                        icon: flowItem.icon,
-                        left: flowItem.left,
-                        top: flowItem.top,
-                        addProblem() { },
-                        id: flowItem.id,
-                        problems: [],
+        const res = {
+            id: project.id.value,
+            properties: project.properties.value,
+            tabs: project.tabs.value.map((tab) => ({
+                properties: tab.properties.value,
+                id: tab.id.value,
+                items: tab.items.value.map((itemTree) => ({
+                    properties: itemTree.properties.value,
+                    id: itemTree.id.value,
+                    items: itemTree.items.value.map((flowItem) => ({
+                        isEnabledNewConnetion: flowItem.isEnabledNewConnetion.value,
+                        connections: flowItem.connections.value || [],
+                        properties: flowItem.properties.value,
+                        id: flowItem.id.value,
                     })),
                 })),
             })),
@@ -113,7 +36,7 @@ export class ProjectParser {
      * Transform a string into a structure
      * @param value Content that will be transformed into a Project
      */
-    public static parse(value: string): Project {
+    /* public static parse(value: string): Project {
         const json: IProject = JSON.parse(value);
 
         return new Project({
@@ -133,7 +56,7 @@ export class ProjectParser {
                 }))
             }))
         });
-    }
+    } */
 
     /**
      * Turns a list of Projects class into a string to make it easier to save to local storage.
@@ -147,7 +70,7 @@ export class ProjectParser {
      * Transform a string into a list of structure
      * @param value Content that will be transformed into a Project
      */
-    public static parseProjects(projectsInString: string): Project[] {
+    /* public static parseProjects(projectsInString: string): Project[] {
         try {
             const listString: string[] | undefined = JSON.parse(projectsInString);
             if (listString) {
@@ -159,5 +82,5 @@ export class ProjectParser {
             console.error(e);
             return [];
         }
-    }
+    } */
 }

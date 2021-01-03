@@ -1,129 +1,158 @@
-import { IconError, IconWarning, Utils } from "code-easy-components";
+import { Utils } from "code-easy-components";
+import { IObservable, observe } from "react-observing";
 
-import { TypeOfValues, ITreeItem } from "../components/external";
 import { BasicConfigurations } from "./BasicConfigurations";
 import { EProjectType, PropertieTypes } from "./../enuns";
-import { IProjectConfigurations } from "../interfaces";
-
-
-type OmitInConstructor = Omit<IProjectConfigurations, 'name' | 'problems' | 'hasError' | 'hasWarning' | 'addProblem'>;
+import { IProjectConfigurations } from "./../interfaces";
+import { TypeOfValues } from "./../components/external";
 
 export class ProjectConfigurations extends BasicConfigurations<EProjectType> implements IProjectConfigurations {
 
-    public get author(): string {
-        return this.properties.find(prop => prop.propertieType === PropertieTypes.author)?.value || '';
-    };
-    public set author(value: string) {
-        let prop = this.properties.find(prop => prop.propertieType === PropertieTypes.author);
+    public get author(): IObservable<string> {
+        let prop = this.properties.value.find(prop => prop.propertieType.value === PropertieTypes.author)?.value;
         if (prop) {
-            prop.value = value || prop.value;
-        } else {
-            this.properties.push({
-                value,
-                id: Utils.getUUID(),
-                focusOnRender: true,
-                type: TypeOfValues.string,
-                name: PropertieTypes.author,
-                propertieType: PropertieTypes.author,
-            });
+            return prop;
         }
+
+        prop = observe('');
+
+        this.properties.value = [
+            ...this.properties.value,
+            {
+                value: prop,
+                id: observe(Utils.getUUID()),
+                type: observe(TypeOfValues.hidden),
+                name: observe(PropertieTypes.author),
+                propertieType: observe(PropertieTypes.author),
+
+                group: observe(undefined),
+                suggestions: observe(undefined),
+                information: observe(undefined),
+                fileMaxSize: observe(undefined),
+                nameHasError: observe(undefined),
+                valueHasError: observe(undefined),
+                focusOnRender: observe(undefined),
+                nameHasWarning: observe(undefined),
+                valueHasWarning: observe(undefined),
+                nameSuggestions: observe(undefined),
+                editNameDisabled: observe(undefined),
+                onPickerNameClick: observe(undefined),
+                editValueDisabled: observe(undefined),
+                onPickerValueClick: observe(undefined),
+            }
+        ];
+
+        return prop;
     };
 
-    public get version(): string {
-        return this.properties.find(prop => prop.propertieType === PropertieTypes.version)?.value || '';
-    };
-    public set version(value: string) {
-        let prop = this.properties?.find(prop => prop.propertieType === PropertieTypes.version);
+    public get version(): IObservable<string> {
+        let prop = this.properties.value.find(prop => prop.propertieType.value === PropertieTypes.version)?.value;
         if (prop) {
-            prop.value = value;
-        } else {
-            this.properties.push({
-                value,
-                id: Utils.getUUID(),
-                focusOnRender: true,
-                type: TypeOfValues.string,
-                name: PropertieTypes.version,
-                propertieType: PropertieTypes.version,
-            });
+            return prop;
         }
+
+        prop = observe('');
+
+        this.properties.value = [
+            ...this.properties.value,
+            {
+                value: prop,
+                id: observe(Utils.getUUID()),
+                type: observe(TypeOfValues.hidden),
+                name: observe(PropertieTypes.version),
+                propertieType: observe(PropertieTypes.version),
+
+                group: observe(undefined),
+                suggestions: observe(undefined),
+                information: observe(undefined),
+                fileMaxSize: observe(undefined),
+                nameHasError: observe(undefined),
+                valueHasError: observe(undefined),
+                focusOnRender: observe(undefined),
+                nameHasWarning: observe(undefined),
+                valueHasWarning: observe(undefined),
+                nameSuggestions: observe(undefined),
+                editNameDisabled: observe(undefined),
+                onPickerNameClick: observe(undefined),
+                editValueDisabled: observe(undefined),
+                onPickerValueClick: observe(undefined),
+            }
+        ];
+
+        return prop;
     };
 
-    public get currentPlatformVersion(): string {
-        return this.properties.find(prop => prop.propertieType === PropertieTypes.platformVersion)?.value || '';
-    };
-    public set currentPlatformVersion(value: string) {
-        let prop = this.properties?.find(prop => prop.propertieType === PropertieTypes.platformVersion);
+    public get currentPlatformVersion(): IObservable<string> {
+        let prop = this.properties.value.find(prop => prop.propertieType.value === PropertieTypes.currentPlatformVersion)?.value;
         if (prop) {
-            prop.value = value;
-        } else {
-            this.properties.push({
-                value,
-                id: Utils.getUUID(),
-                focusOnRender: true,
-                type: TypeOfValues.string,
-                name: PropertieTypes.platformVersion,
-                propertieType: PropertieTypes.platformVersion,
-            });
+            return prop;
         }
+
+        prop = observe('');
+
+        this.properties.value = [
+            ...this.properties.value,
+            {
+                value: prop,
+                id: observe(Utils.getUUID()),
+                type: observe(TypeOfValues.hidden),
+                name: observe(PropertieTypes.currentPlatformVersion),
+                propertieType: observe(PropertieTypes.currentPlatformVersion),
+
+                group: observe(undefined),
+                suggestions: observe(undefined),
+                information: observe(undefined),
+                fileMaxSize: observe(undefined),
+                nameHasError: observe(undefined),
+                valueHasError: observe(undefined),
+                focusOnRender: observe(undefined),
+                nameHasWarning: observe(undefined),
+                valueHasWarning: observe(undefined),
+                nameSuggestions: observe(undefined),
+                editNameDisabled: observe(undefined),
+                onPickerNameClick: observe(undefined),
+                editValueDisabled: observe(undefined),
+                onPickerValueClick: observe(undefined),
+            }
+        ];
+
+        return prop;
     };
 
-    public get createdInPlatformVersion(): string {
-        return this.properties.find(prop => prop.propertieType === PropertieTypes.createdInPlatformVersion)?.value || '';
-    };
-    public set createdInPlatformVersion(value: string) {
-        let prop = this.properties?.find(prop => prop.propertieType === PropertieTypes.createdInPlatformVersion);
+    public get createdInPlatformVersion(): IObservable<string> {
+        let prop = this.properties.value.find(prop => prop.propertieType.value === PropertieTypes.createdInPlatformVersion)?.value;
         if (prop) {
-            prop.value = value;
-        } else {
-            this.properties.push({
-                value,
-                id: Utils.getUUID(),
-                focusOnRender: true,
-                type: TypeOfValues.string,
-                name: PropertieTypes.createdInPlatformVersion,
-                propertieType: PropertieTypes.createdInPlatformVersion,
-            });
+            return prop;
         }
+
+        prop = observe('');
+
+        this.properties.value = [
+            ...this.properties.value,
+            {
+                value: prop,
+                id: observe(Utils.getUUID()),
+                type: observe(TypeOfValues.hidden),
+                name: observe(PropertieTypes.createdInPlatformVersion),
+                propertieType: observe(PropertieTypes.createdInPlatformVersion),
+
+                group: observe(undefined),
+                suggestions: observe(undefined),
+                information: observe(undefined),
+                fileMaxSize: observe(undefined),
+                nameHasError: observe(undefined),
+                valueHasError: observe(undefined),
+                focusOnRender: observe(undefined),
+                nameHasWarning: observe(undefined),
+                valueHasWarning: observe(undefined),
+                nameSuggestions: observe(undefined),
+                editNameDisabled: observe(undefined),
+                onPickerNameClick: observe(undefined),
+                editValueDisabled: observe(undefined),
+                onPickerValueClick: observe(undefined),
+            }
+        ];
+
+        return prop;
     };
-
-    public get problems(): ITreeItem[] {
-        let problems = super.problems;
-
-        const addProblem = (label: string, type: 'warning' | 'error') => {
-            problems.push({
-                icon: type === 'warning' ? IconWarning : IconError,
-                nodeExpanded: false,
-                isSelected: false,
-                id: undefined,
-                iconSize: 15,
-                type: "ITEM",
-                label,
-            });
-        }
-
-        if (this.author.length === 0) {
-            addProblem('Author field must be have a value', 'error');
-        } else if (this.author.length < 3) {
-            addProblem('Project Author name field cannot be less than 3 characters', 'warning');
-        } else if (this.author.length > 50) {
-            addProblem('Project Author name field cannot exceed 50 characters', 'warning');
-        }
-
-        if (this.version.length === 0) {
-            addProblem('Version field must be have a value', 'error');
-        } else if (Utils.isValidVersion(this.version)) {
-            addProblem('Project version field is not valid', 'error');
-        }
-
-        return problems;
-    }
-
-    constructor(fields: OmitInConstructor) {
-        super(fields);
-
-        this.author = fields.author;
-        this.version = fields.version;
-        this.currentPlatformVersion = fields.currentPlatformVersion;
-        this.createdInPlatformVersion = fields.createdInPlatformVersion;
-    }
 }

@@ -1,3 +1,5 @@
+import { IObservable } from "react-observing";
+
 import { IBasicConfigurations } from "./IBasicConfigurations";
 import { EProjectType } from "./../../enuns";
 
@@ -8,17 +10,17 @@ export interface IProjectConfigurations extends IBasicConfigurations<EProjectTyp
     /**
      * Project creator
      */
-    author: string;
+    author: IObservable<string>;
     /**
      * Current version of the project
      */
-    version: string;
+    version: IObservable<string>;
     /**
      * Version of the platform on which the project was created
      */
-    createdInPlatformVersion: string;
+    createdInPlatformVersion: IObservable<string>;
     /**
      * Platform version since last change
      */
-    currentPlatformVersion: string;
+    currentPlatformVersion: IObservable<string>;
 }

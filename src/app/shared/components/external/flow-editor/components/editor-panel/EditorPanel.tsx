@@ -1,8 +1,8 @@
-import React, { memo, useRef } from 'react';
+import React, { useRef } from 'react';
 import { useDrop, DropTargetMonitor, XYCoord } from 'react-dnd';
 
-import { useBoardSize } from '../../shared/hooks';
 import { IDroppableItem } from '../../shared/interfaces';
+import { useBoardSize } from '../../shared/hooks';
 
 type EditorPanelProps = Omit<{
     dotColor?: string;
@@ -32,7 +32,7 @@ type EditorPanelProps = Omit<{
  * @param onDropItem - **Function** - Função executada quando um elemento for dropado no painel
  * @param backgroundType - **'dotted'** | **'checkered'** | **'custom'** - Parâmetro que controla o estilo do background do painel
  */
-const EditorPanel = React.forwardRef(({ allowedsInDrop, onDropItem, onDropPlaceholderChange, onChangeZoom, dotColor = '', elevationColor = 'black', useElevation = false, backgroundColor = '', dottedSize = 15, backgroundType = 'dotted', onArrowKeyDown, onKeyDownCtrlC, onKeyDownCtrlD, onKeyDownCtrlV, onKeyDownCtrlA, onKeyDownDelete, onAnyKeyDown, ...props }: EditorPanelProps, ref: any) => {
+export const EditorPanel = React.forwardRef(({ allowedsInDrop, onDropItem, onDropPlaceholderChange, onChangeZoom, dotColor = '', elevationColor = 'black', useElevation = false, backgroundColor = '', dottedSize = 15, backgroundType = 'dotted', onArrowKeyDown, onKeyDownCtrlC, onKeyDownCtrlD, onKeyDownCtrlV, onKeyDownCtrlA, onKeyDownDelete, onAnyKeyDown, ...props }: EditorPanelProps, ref: any) => {
     const { height, width } = useBoardSize();
 
     const [zoom, setZoom] = React.useState(1);
@@ -132,5 +132,3 @@ const EditorPanel = React.forwardRef(({ allowedsInDrop, onDropItem, onDropPlaceh
     );
 
 });
-
-export default memo(EditorPanel);

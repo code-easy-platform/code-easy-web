@@ -1,4 +1,6 @@
+import { IObservable } from "react-observing";
+
 export interface IProjectOpenedWindow {
-    isSelected: boolean,
-    id: string,
+    isSelected: IObservable<boolean>,
+    id: IObservable<string>,
 }

@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 
+import { SearchAutoCompleteOption } from './SearchAutoCompleteOption';
 import { ISuggestion } from './../../interfaces';
 import './SearchAutocomplete.css';
 
@@ -23,32 +24,14 @@ export const SearchAutocomplete: React.FC<SearchAutocompleteProps> = ({ options 
                 placeholder={"Type here to seach..."}
                 onChange={e => setSearch(e.currentTarget.value)}
             />
-            {options.filter(({ label }) => label.toLowerCase().indexOf(search.toLowerCase()) > -1).map(({ description, disabled, label, name, value }, index) => {
+            {options.filter(({ label }) => label.value.toLowerCase().indexOf(search.toLowerCase()) > -1).map((option, index) => {
                 return (
-                    <li key={index} className="option-item">
-                        <input
-                            tabIndex={0}
-                            type={"radio"}
-                            name={"option"}
-                            id={String(index)}
-                            disabled={disabled}
-                            onKeyDown={e => {
-                                if (onSelect && !disabled && (e.keyCode === 13 || e.keyCode === 32)) {
-                                    onSelect({ description, disabled, label, name, value });
-                                }
-                            }}
-                        />
-                        <label
-                            htmlFor={String(index)}
-                            title={label + "\n\n" + description}
-                            className={`flex1 padding-s text-ellipsis${disabled ? ' disabled' : ''}`}
-                            onMouseDown={disabled ? undefined : e => {
-                                if (onSelect && !disabled) {
-                                    onSelect({ description, disabled, label, name, value });
-                                }
-                            }}
-                        >{label}</label>
-                    </li>
+                    <SearchAutoCompleteOption
+                        id={index}
+                        key={index}
+                        {...option}
+                        onSelect={() => onSelect && onSelect(option)}
+                    />
                 );
             })}
         </ul>

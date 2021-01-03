@@ -1,31 +1,28 @@
+import { IObservable, observe } from "react-observing";
+
 import { BasicConfigurations } from "./BasicConfigurations";
-import { TreeItemComponent } from "./TreeItemComponent";
-import { ITreeItem } from "../components/external";
+import { ITreeItemComponent, ITab } from "./../interfaces";
+import { IProperty } from "./../components/external";
 import { EComponentType } from "./../enuns";
-import { ITab } from "./../interfaces";
 
+/**
+ * Fields passeds in constructor
+ */
+interface IConstructor {
+  items: ITreeItemComponent[];
+  properties?: IProperty[];
+  type: EComponentType;
+  id?: string;
+}
 
-type OmitInConstructor = Omit<ITab, 'name' | 'problems' | 'hasError' | 'hasWarning' | 'addProblem'>;
-
+/**
+ * Represents a full Tab implementation
+ */
 export class Tab extends BasicConfigurations<EComponentType> implements ITab {
-    public items: TreeItemComponent[];
+  public items: IObservable<ITreeItemComponent[]> = observe<ITreeItemComponent[]>([]);
 
-    public get problems(): ITreeItem[] {
-        let problems = super.problems;
-
-        this.items.forEach(itemTree => {
-            problems = [
-                ...problems,
-                ...itemTree.problems,
-            ];
-        });
-
-        return problems;
-    }
-
-    constructor(fields: OmitInConstructor) {
-        super(fields);
-
-        this.items = fields.items.map(item => new TreeItemComponent(item));
-    }
+  constructor(props: IConstructor) {
+    super(props);
+    this.items = observe(props.items);
+  }
 }

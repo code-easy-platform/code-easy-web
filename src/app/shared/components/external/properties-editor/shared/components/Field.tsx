@@ -1,4 +1,5 @@
 import React from 'react';
+import { useObserverValue } from 'react-observing';
 
 import {
     InputSelectionYesNo, InputExpression, InputSelection,
@@ -10,43 +11,43 @@ import { TypeOfValues } from '../enums';
 
 interface FieldProps {
     field: IProperty;
-    onChange?(data: IProperty): void;
 }
-export const Field: React.FC<FieldProps> = ({ field, onChange }) => {
+export const Field: React.FC<FieldProps> = ({ field }) => {
+    const type = useObserverValue(field.type);
 
-    switch (field.type) {
+    switch (type) {
         case TypeOfValues.viewOnly:
             return <InputViewOnly {...field} />;
 
         case TypeOfValues.string:
-            return <SimpleString onChange={onChange} {...field} />;
+            return <SimpleString {...field} />;
 
         case TypeOfValues.boolean:
-            return <InputSwitch onChange={onChange} {...field} />;
+            return <InputSwitch {...field} />;
 
         case TypeOfValues.number:
-            return <InputSimpleNumber onChange={onChange} {...field} />;
+            return <InputSimpleNumber {...field} />;
 
         case TypeOfValues.binary:
-            return <InputImportFile onChange={onChange} {...field} />;
+            return <InputImportFile {...field} />;
 
         case TypeOfValues.bigstring:
-            return <InputBigString onChange={onChange} {...field} />;
+            return <InputBigString {...field} />;
 
         case TypeOfValues.fullBigString:
-            return <InputFullBigString onChange={onChange} {...field} />;
+            return <InputFullBigString {...field} />;
 
         case TypeOfValues.selection:
-            return <InputSelection onChange={onChange} {...field} />;
+            return <InputSelection {...field} />;
 
         case TypeOfValues.yesNoSelection:
-            return <InputSelectionYesNo onChange={onChange} {...field} />;
+            return <InputSelectionYesNo {...field} />;
 
         case TypeOfValues.expression:
-            return <InputExpression onChange={onChange} {...field} />;
+            return <InputExpression {...field} />;
 
         case TypeOfValues.assign:
-            return <Assign onChange={onChange} {...field} />;
+            return <Assign {...field} />;
 
         case TypeOfValues.hidden:
             return null;

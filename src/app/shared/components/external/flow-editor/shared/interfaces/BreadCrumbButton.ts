@@ -1,4 +1,5 @@
 import { MouseEvent, KeyboardEvent } from "react";
+import { IObservable } from "react-observing";
 
 /**
  * Used to define a Breadcrumb button
@@ -7,13 +8,13 @@ export interface IBreadCrumbButton {
     /**
      * Text of the button
      */
-    label: string;
+    label: IObservable<string>;
     /**
      * Usade to disable click in to the button
      */
-    disabled?: boolean;
+    disabled?: IObservable<boolean>;
     /**
      * Function executed when button is clicked
      */
-    onClick(e: MouseEvent | KeyboardEvent): void;
+    onClick: IObservable<(e: MouseEvent | KeyboardEvent) => void>;
 }

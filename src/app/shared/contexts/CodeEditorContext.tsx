@@ -2,11 +2,10 @@ import React, { useState, useEffect, useCallback, useContext } from 'react';
 import { useParams, useHistory } from 'react-router-dom';
 
 import { ProjectsStorage } from '../services/storage/ProjectsStorage';
-import { ProblemsHelper } from '../services/helpers/ProblemsHelper';
-import { EComponentType, PropertieTypes } from '../enuns';
 import { CenterLoadingIndicator } from '../components';
 import { TreeItemComponent } from '../models';
 import { AssetsService } from '../services';
+import { EComponentType } from '../enuns';
 import { Project } from '../models';
 
 export interface ICodeEditorContext {
@@ -24,13 +23,13 @@ export const CodeEditorProvider: React.FC = ({ children }) => {
     const handleSetProject = useCallback((project: Project) => {
 
         // Valida o projeto e encontra os problemas
-        project = ProblemsHelper.getProblems(project).project;
+        // project = ProblemsHelper.getProblems(project).project;
 
         // Salva a nova versão do projeto no local storage
         ProjectsStorage.setProjectById(project);
 
         // Atualiza o state do projeto para refletir as alterações na tela
-        setState(oldState => {
+        /* setState(oldState => {
             const { label } = oldState.project.configurations;
             document.title = label === '' ? 'Code Easy' : label + ' - Code Easy';
 
@@ -38,7 +37,7 @@ export const CodeEditorProvider: React.FC = ({ children }) => {
                 ...oldState,
                 project
             }
-        });
+        }); */
     }, []);
 
     const [state, setState] = useState<ICodeEditorContext>({
@@ -57,7 +56,7 @@ export const CodeEditorProvider: React.FC = ({ children }) => {
     return (
         <CodeEditorContext.Provider value={state}>
             {
-                state.project.configurations
+                state.project
                     ? children
                     : <CenterLoadingIndicator />
             }
@@ -66,16 +65,20 @@ export const CodeEditorProvider: React.FC = ({ children }) => {
 }
 
 export const useEditorContext = () => {
-
     const { project, setProject } = useContext<ICodeEditorContext>(CodeEditorContext);
 
     const handleGetItemTreeEditing = useCallback((): TreeItemComponent | null => {
         let itemTree: TreeItemComponent | null = null;
 
-        project.tabs.forEach(tab => {
-            const resItemTree = tab.items.find(itemTree => itemTree.isEditing);
+        project.tabs.value.forEach(tab => {
+            const resItemTree = tab.items.value.find(itemTree => itemTree.isEditing);
             if (resItemTree) {
-                itemTree = resItemTree;
+                itemTree = new TreeItemComponent({
+                    properties: resItemTree.properties.value,
+                    items: resItemTree.items.value,
+                    type: resItemTree.type.value,
+                    id: resItemTree.id.value,
+                });
             }
         });
 
@@ -84,20 +87,30 @@ export const useEditorContext = () => {
 
     const handleGetItemTreeById = useCallback((id: string, type?: EComponentType): TreeItemComponent | null => {
         if (type) {
-            const tab = project.tabs.find(tab => tab.type === type);
+            const tab = project.tabs.value.find(tab => tab.type.value === type);
             if (!tab) return null;
 
-            const itemTree = tab.items.find(itemTree => itemTree.id === id);
+            const itemTree = tab.items.value.find(itemTree => itemTree.id.value === id);
             if (!itemTree) return null;
 
-            return itemTree;
+            return new TreeItemComponent({
+                properties: itemTree.properties.value,
+                items: itemTree.items.value,
+                type: itemTree.type.value,
+                id: itemTree.id.value,
+            });
         } else {
             let itemTree: TreeItemComponent | null = null;
 
-            project.tabs.forEach(tab => {
-                const resItemTree = tab.items.find(itemTree => itemTree.id === id);
+            project.tabs.value.forEach(tab => {
+                const resItemTree = tab.items.value.find(itemTree => itemTree.id.value === id);
                 if (resItemTree) {
-                    itemTree = resItemTree;
+                    itemTree = new TreeItemComponent({
+                        properties: resItemTree.properties.value,
+                        items: resItemTree.items.value,
+                        type: resItemTree.type.value,
+                        id: resItemTree.id.value,
+                    });;
                 }
             });
 
@@ -107,20 +120,30 @@ export const useEditorContext = () => {
 
     const handleGetItemTreeByName = useCallback((name: string, type?: EComponentType): TreeItemComponent | null => {
         if (type) {
-            const tab = project.tabs.find(tab => tab.type === type);
+            const tab = project.tabs.value.find(tab => tab.type.value === type);
             if (!tab) return null;
 
-            const itemTree = tab.items.find(itemTree => itemTree.name === name);
+            const itemTree = tab.items.value.find(itemTree => itemTree.name.value === name);
             if (!itemTree) return null;
 
-            return itemTree;
+            return new TreeItemComponent({
+                properties: itemTree.properties.value,
+                items: itemTree.items.value,
+                type: itemTree.type.value,
+                id: itemTree.id.value,
+            });;
         } else {
             let itemTree: TreeItemComponent | null = null;
 
-            project.tabs.forEach(tab => {
-                const resItemTree = tab.items.find(itemTree => itemTree.name === name);
+            project.tabs.value.forEach(tab => {
+                const resItemTree = tab.items.value.find(itemTree => itemTree.name.value === name);
                 if (resItemTree) {
-                    itemTree = resItemTree;
+                    itemTree = new TreeItemComponent({
+                        properties: resItemTree.properties.value,
+                        items: resItemTree.items.value,
+                        type: resItemTree.type.value,
+                        id: resItemTree.id.value,
+                    });;
                 }
             });
 
@@ -131,10 +154,10 @@ export const useEditorContext = () => {
     const handleGetIconByItemId = useCallback((id: string): TreeItemComponent | null => {
         let icon: any = undefined;
 
-        project.tabs.forEach(tab => {
-            const resItemTree = tab.items.find(itemTree => itemTree.id === id);
+        project.tabs.value.forEach(tab => {
+            const resItemTree = tab.items.value.find(itemTree => itemTree.id.value === id);
             if (resItemTree) {
-                icon = resItemTree.properties.find(prop => prop.propertieType === PropertieTypes.icon)?.value.content;
+                icon = resItemTree.icon.value.content;
                 if (!icon) {
                     icon = AssetsService.getIcon(resItemTree.type);
                 }
@@ -168,3 +191,4 @@ export const useEditorContext = () => {
         project,
     };
 }
+ 

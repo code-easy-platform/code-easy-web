@@ -1,66 +1,59 @@
-import React, { useState, useCallback, useEffect, useRef } from 'react';
+import React, { useEffect, useRef } from 'react';
+import { useObserver, useObserverValue } from 'react-observing';
 
 import { FieldWrapper } from '../field-wrapper/FieldWrapper';
 import { IProperty } from '../../../interfaces';
 import { useConfigs } from '../../../contexts';
 
-interface InputSelectionYesNoProps extends IProperty<boolean> {
-    onChange?(data: IProperty<boolean>): void;
-}
-export const InputSelectionYesNo: React.FC<InputSelectionYesNoProps> = ({ onChange, ...props }) => {
+interface InputSelectionYesNoProps extends IProperty<boolean> { }
+export const InputSelectionYesNo: React.FC<InputSelectionYesNoProps> = ({ ...props }) => {
     const { inputBorderError, inputBorderWarning, inputBorderDefault, inputTextError, inputTextWarning, inputTextDefault } = useConfigs();
+
+    const editValueDisabled = useObserverValue(props.editValueDisabled);
+    const valueHasWarning = useObserverValue(props.valueHasWarning);
+    const nameHasWarning = useObserverValue(props.nameHasWarning);
+    const focusOnRender = useObserverValue(props.focusOnRender);
+    const valueHasError = useObserverValue(props.valueHasError);
+    const nameHasError = useObserverValue(props.nameHasError);
+    const information = useObserverValue(props.information);
+    const [value, setValue] = useObserver(props.value);
+    const name = useObserverValue(props.name);
+    const id = useObserverValue(props.id);
 
     const inputRef = useRef<HTMLSelectElement>(null);
     useEffect(() => {
-        if (inputRef.current && props.focusOnRender) {
+        if (inputRef.current && focusOnRender) {
             inputRef.current.focus();
         }
-    }, [props]);
-    
-    const [value, setValue] = useState(props.value);
-    useEffect(() => setValue(props.value), [props.value]);
-
-    const handleOnChange = useCallback((e: React.ChangeEvent<HTMLSelectElement>) => {
-        if (onChange) {
-            onChange({ ...props, value: Boolean(e.currentTarget.value) });
-            setValue(Boolean(e.currentTarget.value));
-        }
-    }, [onChange, props]);
-
-    const handleOnDoubleClick = useCallback(() => {
-        if (onChange) {
-            onChange({ ...props, value: !value });
-            setValue(!value);
-        }
-    }, [onChange, props, value]);
+    }, [focusOnRender]);
 
     return (
         <FieldWrapper
             minWidth={60}
-            id={props.id || ''}
-            name={props.name || ''}
-            information={props.information}
-            nameHasError={props.nameHasError}
-            onDoubleClick={handleOnDoubleClick}
-            nameHasWarning={props.nameHasWarning}
+            id={id || ''}
+            name={name || ''}
+            information={information}
+            nameHasError={nameHasError}
+            nameHasWarning={nameHasWarning}
+            onDoubleClick={() => setValue(oldValue => !oldValue)}
         >
             {inputId => (
                 <select
-                    disabled={props.editValueDisabled}
-                    autoFocus={props.focusOnRender}
+                    onChange={e => setValue(e.currentTarget.value === 'true')}
                     className={"background-bars"}
-                    onChange={handleOnChange}
+                    disabled={editValueDisabled}
+                    autoFocus={focusOnRender}
                     value={String(value)}
                     ref={inputRef}
                     id={inputId}
                     style={{
-                        textDecoration: props.valueHasError ? inputTextError : props.valueHasWarning ? inputTextWarning : inputTextDefault,
-                        border: props.valueHasError ? inputBorderError : props.valueHasWarning ? inputBorderWarning : inputBorderDefault,
+                        textDecoration: valueHasError ? inputTextError : valueHasWarning ? inputTextWarning : inputTextDefault,
+                        border: valueHasError ? inputBorderError : valueHasWarning ? inputBorderWarning : inputBorderDefault,
                         width: '100%',
                     }}
                 >
-                    <option children={"Yes"} value={"true"} />
-                    <option children={"No"} value={"false"} />
+                    <option children="Yes" value="true" />
+                    <option children="No" value="false" />
                 </select>
             )}
         </FieldWrapper>

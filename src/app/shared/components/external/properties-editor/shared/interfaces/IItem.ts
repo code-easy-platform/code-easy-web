@@ -1,8 +1,10 @@
+import { IObservable } from 'react-observing';
+
 import { IProperty } from "./";
 
 export interface IItem {
-    id: string | undefined;
-    name: string;
-    subname?: string;
+    subname: IObservable<string | undefined>;
+    id: IObservable<string | undefined>;
+    name: IObservable<string>;
     properties: IProperty[];
 }

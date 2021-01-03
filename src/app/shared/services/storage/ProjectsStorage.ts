@@ -1,13 +1,12 @@
 import { Utils } from "code-easy-components";
 
-import { EComponentType, EProjectType, ECurrentFocus } from "./../../enuns";
-import { Project, Tab, ProjectConfigurations } from "../../models";
+import { EComponentType, EProjectType } from "./../../enuns";
+import { Project, Tab } from "../../models";
 import { StorageEnum } from "./StorageEnum";
+import { set } from "react-observing";
 
 const newProject = (name: string, version: string, type: EProjectType, description: string) => new Project({
-    currentFocus: ECurrentFocus.tree,
-    windows:[],
-    configurations: new ProjectConfigurations({
+    /* configurations: new ProjectConfigurations({
         type,
         version,
         description,
@@ -18,19 +17,21 @@ const newProject = (name: string, version: string, type: EProjectType, descripti
         author: ProjectsStorage.getAuthorName(),
         currentPlatformVersion: `${process.env.REACT_APP_VERSION}`,
         createdInPlatformVersion: `${process.env.REACT_APP_VERSION}`,
-    }),
+    }), */
+    type,
+    properties: [],
     tabs: [
         new Tab({
             items: [],
-            label: "Routes",
+            /* label: "Routes",
             isEditing: true,
             isExpanded: true,
-            isSelected: false,
+            isSelected: false, */
             id: Utils.getUUID(),
             type: EComponentType.tabRoutes,
-            description: EComponentType.tabRoutes,
+            /* description: EComponentType.tabRoutes, */
         }),
-        new Tab({
+        /* new Tab({
             items: [],
             label: 'Actions',
             isEditing: false,
@@ -39,7 +40,7 @@ const newProject = (name: string, version: string, type: EProjectType, descripti
             id: Utils.getUUID(),
             type: EComponentType.tabActions,
             description: EComponentType.tabActions,
-        }),
+        }), */
         /* new Tab({
             configs: new BasicConfigs({
                 id: `${Utils.getUUID()}`,
@@ -71,7 +72,7 @@ export class ProjectsStorage {
         let res = localStorage.getItem(StorageEnum.projectsStorage);
 
         if (res !== null && res !== "" && res) {
-            return Project.parseProjects(res);
+            return [] // Project.parseProjects(res);
         } else {
             return [];
         }
@@ -79,7 +80,7 @@ export class ProjectsStorage {
 
     /** Salva no localstorage uma lista de projetos */
     public static setProjects(projects: Project[]): Project[] {
-        localStorage.setItem(StorageEnum.projectsStorage, Project.stringifyProjects(projects));
+        // localStorage.setItem(StorageEnum.projectsStorage, Project.stringifyProjects(projects));
         return projects;
     }
 
@@ -88,10 +89,10 @@ export class ProjectsStorage {
 
         let projects: Project[] = ProjectsStorage.getProjects();
 
-        let itemIndex = projects.findIndex(itemProject => itemProject.configurations.id === project.configurations.id);
+        let itemIndex = projects.findIndex(itemProject => itemProject.id.value === project.id.value);
 
         if (itemIndex > -1) {
-            project.configurations.updatedDate = new Date(Date.now());
+            set(project.updatedDate, new Date(Date.now()));
             projects.splice(itemIndex, 1, project); // Remove elemento antigo e coloca um novo no lugar
         }
 
@@ -102,12 +103,12 @@ export class ProjectsStorage {
     public static getProjectById(id?: string): Project {
         const projects = ProjectsStorage.getProjects();
 
-        let project = projects.find(proj => proj.configurations.id === id);
+        let project = projects.find(proj => proj.id.value === id);
 
         if (!project) {
-            return new Project(newProject('', '', EProjectType.api, ''));
+            return new Project({ properties: [], tabs: [], type: EProjectType.api });
         } else {
-            return new Project(project);
+            return new Project({ properties: [], tabs: [], type: EProjectType.api });
         }
     }
 
@@ -117,7 +118,7 @@ export class ProjectsStorage {
         let projects = ProjectsStorage.getProjects();
         if (!id) { return projects; }
 
-        const itemIndex = projects.findIndex(project => project.configurations.id === id);
+        const itemIndex = projects.findIndex(project => project.id.value === id);
 
         if (itemIndex > -1) {
             projects.splice(itemIndex, 1); // Remove item
@@ -129,7 +130,7 @@ export class ProjectsStorage {
 
     /** Reseta o projeto que está sendo editado no momento */
     public static resetProject(): Project {
-        return new Project(ProjectsStorage.getProjectById());
+        return new Project({ properties: [], tabs: [], type: EProjectType.api }/* ProjectsStorage.getProjectById() */);
     }
 
     public static getColumnsResizableSize(id: string): number {

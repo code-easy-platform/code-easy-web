@@ -53,13 +53,14 @@ export const OutputPanel: React.FC<OutputPanelProps> = memo(({ notification, out
                             isUseDrag: false,
                             isUseDrop: false,
                         }}
-                        items={notification || [{
-                            label: "No notifications detected",
-                            nodeExpanded: false,
-                            isSelected: false,
-                            id: undefined,
-                            type: "ITEM",
-                        }]}
+                        items={/* notification ||  */[/* {
+                            label: observe("No notifications detected"),
+                            nodeExpanded: observe(false),
+                            isSelected: observe(false),
+                            id: observe(undefined),
+                            type: observe("ITEM"),
+
+                        } */]}
                     />
                 </>}
             </div>
