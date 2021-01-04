@@ -3,8 +3,8 @@ import { Utils } from "code-easy-components";
 
 import { IFileContent, IProperty, TypeOfValues } from "./../components/external";
 import { IBasicConfigurations } from "./../interfaces";
-import { PropertieTypes } from "./../enuns";
 import { AssetsService } from "./../services";
+import { PropertieTypes } from "./../enuns";
 
 /**
  * Fields passeds in constructor

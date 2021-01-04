@@ -1,9 +1,10 @@
-// import { IFlowItemComponent, IProject, ITab, ITreeItemComponent } from "../interfaces";
-// import { ProjectConfigurations } from "./ProjectConfigurations";
-// import { TreeItemComponent } from "./TreeItemComponent";
-// import { FlowItemComponent } from "./FlowItemComponent";
+import { observe } from "react-observing";
+
+import { TreeItemComponent } from "./TreeItemComponent";
+import { FlowItemComponent } from "./FlowItemComponent";
+import { IProperty } from "../components/external";
 import { Project } from "./Project";
-// import { Tab } from "./Tab";
+import { Tab } from "./Tab";
 
 export class ProjectParser {
     /**
@@ -13,18 +14,146 @@ export class ProjectParser {
     public static stringify(project: Project): string {
         const res = {
             id: project.id.value,
-            properties: project.properties.value,
-            tabs: project.tabs.value.map((tab) => ({
-                properties: tab.properties.value,
+            type: project.type.value,
+            properties: project.properties.value?.map(propertie => ({
+                id: propertie.id.value,
+                type: propertie.type.value,
+                name: propertie.name.value,
+                value: propertie.value.value,
+                group: propertie.group.value,
+                information: propertie.information.value,
+                fileMaxSize: propertie.fileMaxSize.value,
+                nameHasError: propertie.nameHasError.value,
+                focusOnRender: propertie.focusOnRender.value,
+                propertieType: propertie.propertieType.value,
+                valueHasError: propertie.valueHasError.value,
+                nameHasWarning: propertie.nameHasWarning.value,
+                valueHasWarning: propertie.valueHasWarning.value,
+                editNameDisabled: propertie.editNameDisabled.value,
+                editValueDisabled: propertie.editValueDisabled.value,
+                suggestions: propertie.suggestions.value?.map(suggestion => ({
+                    name: suggestion.name.value,
+                    value: suggestion.value.value,
+                    label: suggestion.label.value,
+                    disabled: suggestion.disabled.value,
+                    description: suggestion.description.value,
+                })),
+                nameSuggestions: propertie.nameSuggestions.value?.map(suggestion => ({
+                    name: suggestion.name.value,
+                    value: suggestion.value.value,
+                    label: suggestion.label.value,
+                    disabled: suggestion.disabled.value,
+                    description: suggestion.description.value,
+                })),
+            })),
+            tabs: project.tabs.value.map(tab => ({
                 id: tab.id.value,
-                items: tab.items.value.map((itemTree) => ({
-                    properties: itemTree.properties.value,
+                type: tab.type.value,
+                properties: tab.properties.value?.map(propertie => ({
+                    id: propertie.id.value,
+                    type: propertie.type.value,
+                    name: propertie.name.value,
+                    value: propertie.value.value,
+                    group: propertie.group.value,
+                    information: propertie.information.value,
+                    fileMaxSize: propertie.fileMaxSize.value,
+                    nameHasError: propertie.nameHasError.value,
+                    focusOnRender: propertie.focusOnRender.value,
+                    propertieType: propertie.propertieType.value,
+                    valueHasError: propertie.valueHasError.value,
+                    nameHasWarning: propertie.nameHasWarning.value,
+                    valueHasWarning: propertie.valueHasWarning.value,
+                    editNameDisabled: propertie.editNameDisabled.value,
+                    editValueDisabled: propertie.editValueDisabled.value,
+                    suggestions: propertie.suggestions.value?.map(suggestion => ({
+                        name: suggestion.name.value,
+                        value: suggestion.value.value,
+                        label: suggestion.label.value,
+                        disabled: suggestion.disabled.value,
+                        description: suggestion.description.value,
+                    })),
+                    nameSuggestions: propertie.nameSuggestions.value?.map(suggestion => ({
+                        name: suggestion.name.value,
+                        value: suggestion.value.value,
+                        label: suggestion.label.value,
+                        disabled: suggestion.disabled.value,
+                        description: suggestion.description.value,
+                    })),
+                })),
+                items: tab.items.value.map(itemTree => ({
                     id: itemTree.id.value,
-                    items: itemTree.items.value.map((flowItem) => ({
-                        isEnabledNewConnetion: flowItem.isEnabledNewConnetion.value,
-                        connections: flowItem.connections.value || [],
-                        properties: flowItem.properties.value,
+                    properties: itemTree.properties.value?.map(propertie => ({
+                        id: propertie.id.value,
+                        type: propertie.type.value,
+                        name: propertie.name.value,
+                        value: propertie.value.value,
+                        group: propertie.group.value,
+                        information: propertie.information.value,
+                        fileMaxSize: propertie.fileMaxSize.value,
+                        nameHasError: propertie.nameHasError.value,
+                        focusOnRender: propertie.focusOnRender.value,
+                        propertieType: propertie.propertieType.value,
+                        valueHasError: propertie.valueHasError.value,
+                        nameHasWarning: propertie.nameHasWarning.value,
+                        valueHasWarning: propertie.valueHasWarning.value,
+                        editNameDisabled: propertie.editNameDisabled.value,
+                        editValueDisabled: propertie.editValueDisabled.value,
+                        suggestions: propertie.suggestions.value?.map(suggestion => ({
+                            name: suggestion.name.value,
+                            value: suggestion.value.value,
+                            label: suggestion.label.value,
+                            disabled: suggestion.disabled.value,
+                            description: suggestion.description.value,
+                        })),
+                        nameSuggestions: propertie.nameSuggestions.value?.map(suggestion => ({
+                            name: suggestion.name.value,
+                            value: suggestion.value.value,
+                            label: suggestion.label.value,
+                            disabled: suggestion.disabled.value,
+                            description: suggestion.description.value,
+                        })),
+                    })),
+                    items: itemTree.items.value.map(flowItem => ({
                         id: flowItem.id.value,
+                        connections: flowItem.connections.value.map(connection => ({
+                            id: connection.id.value,
+                            originId: connection.originId.value,
+                            targetId: connection.targetId.value,
+                            isSelected: connection.isSelected.value,
+                            connectionLabel: connection.connectionLabel.value,
+                            connectionDescription: connection.connectionDescription.value,
+                        })) || [],
+                        properties: flowItem.properties.value?.map(propertie => ({
+                            id: propertie.id.value,
+                            type: propertie.type.value,
+                            name: propertie.name.value,
+                            value: propertie.value.value,
+                            group: propertie.group.value,
+                            information: propertie.information.value,
+                            fileMaxSize: propertie.fileMaxSize.value,
+                            nameHasError: propertie.nameHasError.value,
+                            focusOnRender: propertie.focusOnRender.value,
+                            propertieType: propertie.propertieType.value,
+                            valueHasError: propertie.valueHasError.value,
+                            nameHasWarning: propertie.nameHasWarning.value,
+                            valueHasWarning: propertie.valueHasWarning.value,
+                            editNameDisabled: propertie.editNameDisabled.value,
+                            editValueDisabled: propertie.editValueDisabled.value,
+                            suggestions: propertie.suggestions.value?.map(suggestion => ({
+                                name: suggestion.name.value,
+                                value: suggestion.value.value,
+                                label: suggestion.label.value,
+                                disabled: suggestion.disabled.value,
+                                description: suggestion.description.value,
+                            })),
+                            nameSuggestions: propertie.nameSuggestions.value?.map(suggestion => ({
+                                name: suggestion.name.value,
+                                value: suggestion.value.value,
+                                label: suggestion.label.value,
+                                disabled: suggestion.disabled.value,
+                                description: suggestion.description.value,
+                            })),
+                        })),
                     })),
                 })),
             })),
@@ -36,27 +165,62 @@ export class ProjectParser {
      * Transform a string into a structure
      * @param value Content that will be transformed into a Project
      */
-    /* public static parse(value: string): Project {
-        const json: IProject = JSON.parse(value);
+    public static parse(value: string): Project {
+        const json = JSON.parse(value);
+
+        const newPropertie = (value: any): IProperty => {
+            return {
+                id: observe(value.id),
+                name: observe(value.name),
+                type: observe(value.type),
+                value: observe(value.value),
+                group: observe(value.group),
+                suggestions: observe(value.suggestions),
+                information: observe(value.information),
+                fileMaxSize: observe(value.fileMaxSize),
+                nameHasError: observe(value.nameHasError),
+                focusOnRender: observe(value.focusOnRender),
+                propertieType: observe(value.propertieType),
+                valueHasError: observe(value.valueHasError),
+                nameHasWarning: observe(value.nameHasWarning),
+                valueHasWarning: observe(value.valueHasWarning),
+                nameSuggestions: observe(value.nameSuggestions),
+                editNameDisabled: observe(value.editNameDisabled),
+                onPickerNameClick: observe(value.onPickerNameClick),
+                editValueDisabled: observe(value.editValueDisabled),
+                onPickerValueClick: observe(value.onPickerValueClick),
+            };
+        };
 
         return new Project({
-            configurations: new ProjectConfigurations(json.configurations),
-            currentFocus: json.currentFocus,
-            windows: json.windows,
-            tabs: json.tabs.map((tab: ITab) => new Tab({
-                ...tab,
-                items: tab.items.map(item => new TreeItemComponent({
-                    ...item,
-                    properties: item.properties,
-                    items: item.items.map(itemFlow => new FlowItemComponent({
-                        ...itemFlow,
-                        connections: itemFlow.connections,
-                        properties: itemFlow.properties
+            id: json.id,
+            type: json.type,
+            tabs: json.tabs.map((tab: any) => new Tab({
+                id: tab.id,
+                type: tab.type,
+                items: tab.items.map((treeItem: any) => new TreeItemComponent({
+                    id: treeItem.id,
+                    type: treeItem.type,
+                    items: tab.items.map((flowItem: any) => new FlowItemComponent({
+                        id: flowItem.id,
+                        type: flowItem.type,
+                        connections: flowItem.connections.map((connection: any) => ({
+                            id: observe(connection.id),
+                            originId: observe(connection.originId),
+                            targetId: observe(connection.targetId),
+                            isSelected: observe(connection.isSelected),
+                            connectionLabel: observe(connection.connectionLabel),
+                            connectionDescription: observe(connection.connectionDescription),
+                        })),
+                        properties: flowItem.properties.map((prop: any) => newPropertie(prop)),
                     })),
-                }))
-            }))
+                    properties: treeItem.properties.map((prop: any) => newPropertie(prop)),
+                })),
+                properties: tab.properties.map((prop: any) => newPropertie(prop)),
+            })),
+            properties: json.properties.map((prop: any) => newPropertie(prop)),
         });
-    } */
+    }
 
     /**
      * Turns a list of Projects class into a string to make it easier to save to local storage.
@@ -70,11 +234,11 @@ export class ProjectParser {
      * Transform a string into a list of structure
      * @param value Content that will be transformed into a Project
      */
-    /* public static parseProjects(projectsInString: string): Project[] {
+    public static parseProjects(projectsInString: string): Project[] {
         try {
             const listString: string[] | undefined = JSON.parse(projectsInString);
             if (listString) {
-                return listString.map(projectString => Project.parse(projectString));
+                return listString.map(projectString => ProjectParser.parse(projectString));
             } else {
                 return [];
             }
@@ -82,5 +246,5 @@ export class ProjectParser {
             console.error(e);
             return [];
         }
-    } */
+    }
 }

@@ -13,6 +13,7 @@ interface IConstructor {
   properties: IProperty[];
   type: EProjectType;
   tabs: ITab[];
+  id?: string;
 }
 
 /**
