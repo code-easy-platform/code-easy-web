@@ -1,59 +1,61 @@
 import React, { useState, memo } from 'react';
+import { VscMenu, VscSymbolProperty } from 'react-icons/vsc';
 import { set, useObserverValue } from 'react-observing';
+import { useHistory } from 'react-router-dom';
 
 import { PropertiesTab } from '../../../pages/editor/properties-tab/PropertiesTab';
 import { TabButton, TabGroup, TabsManager } from '../tabs';
-import { useEditorContext } from '../../contexts';
+import { useEditorContext, useWindows } from '../../hooks';
 import { AssetsService } from '../../services';
 import { Modal } from '../modal';
 import './ToolBar.css';
 
 export const ToolBar: React.FC = memo(() => {
     const [isOpenModalProps, setIsOpenModalProps] = useState(false);
+    const history = useHistory();
 
     const { project } = useEditorContext();
     const tabs = useObserverValue(project.tabs);
+    const windows = useWindows();
 
     return (<>
         <div className="tool-bar background-bars">
-            <div style={{ width: "90px" }}>
+            <div>
                 <TabButton
-                    id="tabMenu"
                     title="Menu"
-                    to="/projects"
-                    className="btn background-transparent btn-open-menu-tab outline-none"
-                />
+                    role="tab-menu"
+                    className="btn outline-none"
+                    onClick={() => history.push('/projects')}
+                >
+                    <VscMenu style={{ height: 25, width: 30 }} />
+                </TabButton>
                 <hr className="hr hr-vertical" />
                 <TabButton
-                    id="tabPropriedades"
-                    title="Propriedades do projeto"
-                    className="btn-open-properties-tab"
+                    role="tab-propriedades"
+                    title="Project properties"
+                    className="btn outline-none"
                     onClick={() => setIsOpenModalProps(true)}
-                />
+                >
+                    <VscSymbolProperty className="padding-horizontal-s" style={{ height: 20, width: 20 }} />
+                </TabButton>
             </div>
             <hr className="hr hr-vertical" />
             <TabsManager
-                tabs={[]}
-            /* tabs={
-                project.getWindows().map(tab => ({
-                    ...tab,
-                    icon: getIconByItemId(tab.id)
-                }))
-            }
-            onChange={windowId => {
-                if (project.configurations.id && project.windows.find(windowTab => windowTab.isSelected)?.id !== windowId) {
-                    project.selectWindowById(windowId);
-                    setProject(project);
-                }
-            }}
-            onCloseWindowTab={windowId => {
-                if (project.configurations.id) {
+                tabs={windows}
+                /*onChange={windowId => {
+                    if (project.configurations.id && project.windows.find(windowTab => windowTab.isSelected)?.id !== windowId) {
+                        project.selectWindowById(windowId);
+                        setProject(project);
+                    }
+                }}
+                onCloseWindowTab={windowId => {
+                    if (project.configurations.id) {
 
-                    project.removeWindowById(windowId);
+                        project.removeWindowById(windowId);
 
-                    setProject(project);
-                }
-            }} */
+                        setProject(project);
+                    }
+                }} */
             />
             <hr className="hr hr-vertical" />
             <div style={{ justifyContent: "flex-end" }}>
@@ -68,17 +70,16 @@ export const ToolBar: React.FC = memo(() => {
                                 isSelected={tab.isEditing.value}
                                 hasWarning={tab.hasWarning.value}
                                 className="btn-open-routers-tab flex1 padding-horizontal-sm"
-                                content={<>
-                                    <img height="90%" className="padding-right-s no-draggable" src={AssetsService.getIcon(tab.type)} alt={tab.type.value} />
-                                    {tab.label.value}
-                                </>}
                                 onClick={() => {
-                                    if (!tabs[index].isEditing) {
+                                    if (!tabs[index].isEditing.value) {
                                         tabs.forEach(currentTab => currentTab.isEditing.value = false);
                                         set(tabs[index].isEditing, true);
                                     }
                                 }}
-                            />
+                            >
+                                <img height="90%" className="padding-right-s no-draggable" src={AssetsService.getIcon(tab.type)} alt={tab.type.value} />
+                                {tab.label.value}
+                            </TabButton>
                         );
                     })}
                 </TabGroup>

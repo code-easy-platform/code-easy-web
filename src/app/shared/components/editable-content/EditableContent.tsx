@@ -2,7 +2,7 @@ import React, { useRef } from 'react';
 import { useObserverValue } from 'react-observing';
 import MonacoEditor from 'react-monaco-editor';
 
-import { useEditorContext } from '../../contexts';
+import { useEditorContext } from '../../hooks';
 import { Modal, ModalElement } from '../modal';
 
 export const EditableContent: React.FC<{ itemId: string, removeModal: Function }> = ({ itemId, removeModal }) => {

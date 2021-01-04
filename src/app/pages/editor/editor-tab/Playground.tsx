@@ -6,7 +6,7 @@ import { OutputHelper } from '../../../shared/services/helpers/OutputHelper';
 import { PropertiesEditorController } from './PropertiesEditor.Controller';
 import { TreeManagerController } from './TreeManager.Controller';
 import { FlowEditorController } from './FlowEditor.Controller';
-import { useEditorContext } from '../../../shared/contexts';
+import { useEditorContext } from '../../../shared/hooks';
 
 export const Playground: React.FC = memo(() => {
     return (

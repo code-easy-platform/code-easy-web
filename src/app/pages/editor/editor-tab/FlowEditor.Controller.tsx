@@ -6,10 +6,11 @@ import { FlowEditor, IFlowItem, IBreadCrumbButton, EItemType, EFlowItemType, par
 import { BackgroundEmpty, BackgroundEmptyLeft, BackgroundEmptyLeftToTop } from '../../../assets';
 import { PropertieTypes, EComponentType, ECurrentFocus } from '../../../shared/enuns';
 import { TreeItemComponent, FlowItemComponent } from '../../../shared/models';
-import { useIdeConfigs, useEditorContext } from '../../../shared/contexts';
 import { IContextItemList } from '../../../shared/interfaces';
 import { openContextMenu } from '../../../shared/services';
 import { CurrentFocusStore } from '../../../shared/stores';
+import { useIdeConfigs } from '../../../shared/contexts';
+import { useEditorContext } from '../../../shared/hooks';
 
 export const FlowEditorController: React.FC = memo(() => {
     const { flowBackgroundType, snapGridWhileDragging } = useIdeConfigs();

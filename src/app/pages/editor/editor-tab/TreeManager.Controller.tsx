@@ -7,8 +7,8 @@ import { ECurrentFocus, EComponentType, PropertieTypes } from '../../../shared/e
 import { TreeItemComponent, FlowItemComponent } from '../../../shared/models';
 import { AssetsService, openContextMenu } from '../../../shared/services';
 import { IContextItemList } from '../../../shared/interfaces';
-import { useEditorContext } from '../../../shared/contexts';
 import { CurrentFocusStore } from '../../../shared/stores';
+import { useEditorContext } from '../../../shared/hooks';
 
 export const TreeManagerController: React.FC = () => {
 

@@ -22,14 +22,20 @@ export const OutputPanel: React.FC<OutputPanelProps> = memo(({ notification, out
         <div className="flex1 background-panels flex-column">
             <div className="background-bars">
                 <TabGroup className="flex-justfy-start">
-                    <TabButton id="problems" onClick={() => setCurrtab(OutputTab.problems)} isSelected={currTab === OutputTab.problems} content={"Problems"} />
-                    <TabButton onClick={() => setCurrtab(OutputTab.output)} isSelected={currTab === OutputTab.output} id="output" content="Output" />
-                    <TabButton onClick={() => setCurrtab(OutputTab.notifications)} isSelected={currTab === OutputTab.notifications} id="notifications" content="Notifications" />
+                    <TabButton id="problems" onClick={() => setCurrtab(OutputTab.problems)} isSelected={currTab === OutputTab.problems}>
+                        Problems
+                    </TabButton>
+                    <TabButton onClick={() => setCurrtab(OutputTab.output)} isSelected={currTab === OutputTab.output} id="output">
+                        Output
+                    </TabButton>
+                    <TabButton onClick={() => setCurrtab(OutputTab.notifications)} isSelected={currTab === OutputTab.notifications} id="notifications">
+                        Notifications
+                    </TabButton>
                 </TabGroup>
             </div>
             <hr className="hr" />
             <div className="flex1 overflow-auto">
-                {currTab === OutputTab.problems && <>
+                {currTab === OutputTab.problems &&
                     <TreeManager
                         items={problems || []}
                         configs={{
@@ -37,8 +43,8 @@ export const OutputPanel: React.FC<OutputPanelProps> = memo(({ notification, out
                             isUseDrop: false,
                         }}
                     />
-                </>}
-                {currTab === OutputTab.output && <>
+                }
+                {currTab === OutputTab.output &&
                     <TreeManager
                         items={output || []}
                         configs={{
@@ -46,8 +52,8 @@ export const OutputPanel: React.FC<OutputPanelProps> = memo(({ notification, out
                             isUseDrop: false,
                         }}
                     />
-                </>}
-                {currTab === OutputTab.notifications && <>
+                }
+                {currTab === OutputTab.notifications &&
                     <TreeManager
                         configs={{
                             isUseDrag: false,
@@ -59,10 +65,9 @@ export const OutputPanel: React.FC<OutputPanelProps> = memo(({ notification, out
                             isSelected: observe(false),
                             id: observe(undefined),
                             type: observe("ITEM"),
-
                         } */]}
                     />
-                </>}
+                }
             </div>
         </div>
     );

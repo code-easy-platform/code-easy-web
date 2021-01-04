@@ -2,7 +2,7 @@ import React from 'react';
 import { useObserver } from 'react-observing';
 
 import { IOptionListItem, ListDetail, OptionItemContent } from '../../../shared/components';
-import { useEditorContext } from '../../../shared/contexts';
+import { useEditorContext } from '../../../shared/hooks';
 
 export const PropertiesTab = () => {
     const { project } = useEditorContext();

@@ -1,21 +1,25 @@
 import React, { useCallback } from 'react';
+import { IObservable, useObserverValue } from 'react-observing';
 import { IconClose } from 'code-easy-components';
 
-interface TabButtonProps {
+import { IOpenedWindow } from '../../../interfaces';
+
+interface TabButtonProps extends IOpenedWindow {
     onContext?(tabId: string | undefined): void;
     onSelect?(tabId: string | undefined): void;
     onClose?(tabId: string | undefined): void;
-    description: string | undefined;
-    hasWarning: boolean | undefined;
-    isSelected: boolean | undefined;
-    hasError: boolean | undefined;
+    icon: IObservable<any>;
     useClose?: boolean;
     className?: string;
-    title: string;
-    icon?: any;
-    id: string;
 }
-export const TabButton: React.FC<TabButtonProps> = ({ id, description, title, icon, className, hasError, hasWarning, isSelected, useClose = true, onSelect, onContext, onClose }) => {
+export const TabButton: React.FC<TabButtonProps> = ({ className, useClose = true, onSelect, onContext, onClose, ...props }) => {
+    const description = useObserverValue(props.description);
+    const isSelected = useObserverValue(props.isSelected);
+    const hasWarning = useObserverValue(props.hasWarning);
+    const hasError = useObserverValue(props.hasError);
+    const title = useObserverValue(props.title);
+    const icon = useObserverValue(props.icon);
+    const id = useObserverValue(props.id);
 
     const handleContext = useCallback((e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
         e.stopPropagation();

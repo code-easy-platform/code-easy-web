@@ -1,6 +1,7 @@
-import React, { useState, useEffect, useCallback, memo } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { Utils, IconOpenGithub, IconDownload, IconImport, IconConfig } from 'code-easy-components';
 import { useHistory } from 'react-router-dom';
+import { VscMenu } from 'react-icons/vsc';
 import dataformat from 'dateformat';
 
 import { BottonStatusBar, TabButton } from '../../shared/components';
@@ -12,7 +13,7 @@ import { IdeConfigs } from './Configs';
 import { CardItem } from './CardItem';
 
 
-export const HomePage = memo(() => {
+export const HomePage = () => {
     const [projects, setProjects] = useState<Project[]>(ProjectsStorage.getProjects() || []);
     const [openImportProjects, setOpenImportProjects] = useState(false);
     const [openConfig, setOpenConfig] = useState(false);
@@ -40,13 +41,14 @@ export const HomePage = memo(() => {
         <div className="main-page">
             <div className="tool-bar background-bars">
                 <TabButton
-                    id="tabMenu"
                     title="Menu"
-                    style={{ outline: 'none' }}
-                    className={" btn background-transparent btn-open-menu-tab"}
-                />
-                <hr className="hr hr-vertical" />
+                    role="tab-menu"
+                    className="btn background-transparent outline-none"
+                >
+                    <VscMenu style={{ height: 25, width: 30 }} />
+                </TabButton>
             </div>
+
             <hr className="hr" />
 
             <div className="flex1 fade-in" style={{ height: "calc(100vh - 60px)" }}>
@@ -172,5 +174,6 @@ export const HomePage = memo(() => {
                     setOpenImportProjects(false);
                 }}
             />
-        </div>);
-});
+        </div>
+    );
+}

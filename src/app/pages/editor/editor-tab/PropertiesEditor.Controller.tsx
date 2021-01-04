@@ -3,9 +3,9 @@ import { observe, set, useObserverValue } from 'react-observing';
 
 import { PropertiesEditor, IProperty, TypeOfValues, IItem } from '../../../shared/components/external';
 import { EComponentType, ECurrentFocus, PropertieTypes } from '../../../shared/enuns';
-import { useEditorContext } from '../../../shared/contexts';
 import { TreeItemComponent } from '../../../shared/models';
 import { CurrentFocusStore } from '../../../shared/stores';
+import { useEditorContext } from '../../../shared/hooks';
 import { openModal } from '../../../shared/services';
 
 export const PropertiesEditorController: React.FC = () => {
