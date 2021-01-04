@@ -1,14 +1,14 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { Utils, IconOpenGithub, IconDownload, IconImport, IconConfig } from 'code-easy-components';
 import { useHistory } from 'react-router-dom';
-import { VscMenu } from 'react-icons/vsc';
+import { VscHome } from 'react-icons/vsc';
 import dataformat from 'dateformat';
 
 import { BottonStatusBar, TabButton } from '../../shared/components';
 import { ProjectsStorage } from '../../shared/services/storage/ProjectsStorage';
 import { EProjectType } from '../../shared/enuns';
 import { ImportProjects } from './ImportFiles';
-import { Project } from '../../shared/models';
+import { Project, ProjectParser } from '../../shared/models';
 import { IdeConfigs } from './Configs';
 import { CardItem } from './CardItem';
 
@@ -45,7 +45,7 @@ export const HomePage = () => {
                     role="tab-menu"
                     className="btn background-transparent outline-none"
                 >
-                    <VscMenu style={{ height: 25, width: 30 }} />
+                    <VscHome style={{ height: 25, width: 25 }} />
                 </TabButton>
             </div>
 
@@ -76,7 +76,7 @@ export const HomePage = () => {
                                 title={"Download your projects"}
                                 style={{ height: 'var(--tool-bar-height)' }}
                                 className="btn background-transparent outline-none padding-s"
-                                // onClick={() => Utils.downloadFile('MyProjects', 'json', Project.stringifyProjects(projects))}
+                                onClick={() => Utils.downloadFile('MyProjects', 'json', ProjectParser.stringifyProjects(projects))}
                                 children={<img src={IconDownload} style={{ height: "70%" }} alt={IconOpenGithub} draggable="false" />}
                             />
                             <button
@@ -92,10 +92,10 @@ export const HomePage = () => {
                     <div className="flex1 padding-s padding-top-m flex-column overflow-auto overflow-contrast">
                         <div>Recents</div>
                         <div className="flex1 padding-top-s padding-top-m flex-column">
-                            {projects.sort((a, b) => Utils.compareDate(b.updatedDate.value, a.updatedDate.value)).map(card => {
+                            {projects.sort((a, b) => Utils.compareDate(b.updatedDate.value, a.updatedDate.value)).map((card, index) => {
                                 return <CardItem
                                     listMode
-                                    key={card.id.value}
+                                    key={index}
                                     onDelete={() => setProjects(ProjectsStorage.removeProjectById(card.id.value))}
                                     onClick={() => {
                                         ProjectsStorage.setProjectById(card);

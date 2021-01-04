@@ -1,5 +1,5 @@
 import React, { useState, memo } from 'react';
-import { VscMenu, VscSymbolProperty } from 'react-icons/vsc';
+import { VscHome, VscSymbolProperty } from 'react-icons/vsc';
 import { set, useObserverValue } from 'react-observing';
 import { useHistory } from 'react-router-dom';
 
@@ -27,7 +27,7 @@ export const ToolBar: React.FC = memo(() => {
                     className="btn outline-none"
                     onClick={() => history.push('/projects')}
                 >
-                    <VscMenu style={{ height: 25, width: 30 }} />
+                    <VscHome style={{ height: 25, width: 25 }} />
                 </TabButton>
                 <hr className="hr hr-vertical" />
                 <TabButton

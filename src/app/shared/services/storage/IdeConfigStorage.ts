@@ -1,5 +1,5 @@
 import { IConfigurations } from "./../../interfaces";
-import { StorageEnum } from "./StorageEnum";
+import { StorageEnum } from "../../enuns";
 
 export enum FlowBackgroundType {
     checkered = 'checkered',
