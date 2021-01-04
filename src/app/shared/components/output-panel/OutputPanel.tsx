@@ -1,7 +1,7 @@
 import React, { useState, memo } from 'react';
 
 import { TreeManager, ITreeItem } from '../external';
-import { TabGroup, TabButton } from '../tabs';
+import { TabGroup, TabButtonSimple } from '../tabs';
 
 enum OutputTab {
     notifications = "Notifications",
@@ -22,15 +22,15 @@ export const OutputPanel: React.FC<OutputPanelProps> = memo(({ notification, out
         <div className="flex1 background-panels flex-column">
             <div className="background-bars">
                 <TabGroup className="flex-justfy-start">
-                    <TabButton id="problems" onClick={() => setCurrtab(OutputTab.problems)} isSelected={currTab === OutputTab.problems}>
+                    <TabButtonSimple id="problems" onClick={() => setCurrtab(OutputTab.problems)} isSelected={currTab === OutputTab.problems}>
                         Problems
-                    </TabButton>
-                    <TabButton onClick={() => setCurrtab(OutputTab.output)} isSelected={currTab === OutputTab.output} id="output">
+                    </TabButtonSimple>
+                    <TabButtonSimple onClick={() => setCurrtab(OutputTab.output)} isSelected={currTab === OutputTab.output} id="output">
                         Output
-                    </TabButton>
-                    <TabButton onClick={() => setCurrtab(OutputTab.notifications)} isSelected={currTab === OutputTab.notifications} id="notifications">
+                    </TabButtonSimple>
+                    <TabButtonSimple onClick={() => setCurrtab(OutputTab.notifications)} isSelected={currTab === OutputTab.notifications} id="notifications">
                         Notifications
-                    </TabButton>
+                    </TabButtonSimple>
                 </TabGroup>
             </div>
             <hr className="hr" />

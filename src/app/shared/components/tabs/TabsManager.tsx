@@ -11,13 +11,13 @@ interface OpenWindowWithIcon extends IOpenedWindow {
 }
 
 interface TabsManagerProps {
+    useClose?: boolean;
     fontSize?: FontSize;
     tabs: OpenWindowWithIcon[];
-    onChange?(tabId: string): void;
     onCloseWindowTab?(tabId: string): void;
     onContextWindowTab?(tabId: string): void;
 }
-export const TabsManager: React.FC<TabsManagerProps> = memo(({ tabs, fontSize = 'xg', onChange, onContextWindowTab, onCloseWindowTab }) => {
+export const TabsManager: React.FC<TabsManagerProps> = memo(({ tabs, useClose, fontSize = 'xg', onContextWindowTab, onCloseWindowTab }) => {
 
     const onWeel = useCallback((e: React.WheelEvent<HTMLElement>) => {
         if (e.deltaY > 0) {
@@ -33,7 +33,8 @@ export const TabsManager: React.FC<TabsManagerProps> = memo(({ tabs, fontSize = 
                 <TabButton
                     {...tab}
                     key={index}
-                    icon={tab.icon.value}
+                    icon={tab.icon}
+                    useClose={useClose}
                     onClose={onCloseWindowTab}
                     onContext={onContextWindowTab}
                     onSelect={() => {

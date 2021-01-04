@@ -4,27 +4,27 @@ import { useHistory } from 'react-router-dom';
 import { VscHome } from 'react-icons/vsc';
 import dataformat from 'dateformat';
 
-import { BottonStatusBar, TabButton } from '../../shared/components';
+import { BottonStatusBar, TabButtonSimple } from '../../shared/components';
 import { ProjectsStorage } from '../../shared/services/storage/ProjectsStorage';
-import { EProjectType } from '../../shared/enuns';
-import { ImportProjects } from './ImportFiles';
 import { Project, ProjectParser } from '../../shared/models';
+import { CardNewProject } from './CardNewProject';
+import { ImportProjects } from './ImportFiles';
 import { IdeConfigs } from './Configs';
 import { CardItem } from './CardItem';
 
 
 export const HomePage = () => {
-    const [projects, setProjects] = useState<Project[]>(ProjectsStorage.getProjects() || []);
     const [openImportProjects, setOpenImportProjects] = useState(false);
+    const [projects, setProjects] = useState<Project[]>([]);
     const [openConfig, setOpenConfig] = useState(false);
     const [isAdding, setIsAdding] = useState(false);
     const [filter, setFilter] = useState('');
     const history = useHistory();
 
     useEffect(() => {
-        ProjectsStorage.setProjects(projects);
         document.title = "Projects - Code easy";
-    }, [projects]);
+        setProjects(ProjectsStorage.getProjects());
+    }, []);
 
     const addNewProject = useCallback((item: any) => {
         setIsAdding(false);
@@ -40,13 +40,13 @@ export const HomePage = () => {
     return (
         <div className="main-page">
             <div className="tool-bar background-bars">
-                <TabButton
+                <TabButtonSimple
                     title="Menu"
                     role="tab-menu"
                     className="btn background-transparent outline-none"
                 >
                     <VscHome style={{ height: 25, width: 25 }} />
-                </TabButton>
+                </TabButtonSimple>
             </div>
 
             <hr className="hr" />
@@ -130,24 +130,18 @@ export const HomePage = () => {
                     </div>
                     <hr className="hr margin-bottom-s margin-top-s" style={{ backgroundColor: 'var(--main-background-highlighted)' }} />
                     <div className="flex-wrap overflow-auto">
-                        {isAdding && <CardItem
-                            key={'undefined'}
-                            isAdding={true}
-                            onClick={addNewProject}
+                        {isAdding && <CardNewProject
+                            onSave={addNewProject}
                             onCancel={() => setIsAdding(false)}
-                            item={{ id: '', name: '', version: '', description: '', type: EProjectType.api }}
                         />}
                         {projects
                             .filter(item => (item.label.value.toLowerCase().indexOf(filter.toLowerCase()) >= 0))
                             .sort((a, b) => a.label.value.localeCompare(b.label.value))
-                            .map(card => {
+                            .map((card, index) => {
                                 return <CardItem
-                                    key={card.id.value}
+                                    key={index}
+                                    onClick={() => history.push(`/editor/${card.id.value}`)}
                                     onDelete={() => setProjects(ProjectsStorage.removeProjectById(card.id.value))}
-                                    onClick={() => {
-                                        ProjectsStorage.setProjectById(card);
-                                        history.push(`/editor/${card.id.value}`);
-                                    }}
                                     item={{
                                         type: card.type.value,
                                         name: card.label.value,

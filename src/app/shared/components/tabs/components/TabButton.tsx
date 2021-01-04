@@ -3,12 +3,13 @@ import { IObservable, useObserverValue } from 'react-observing';
 import { IconClose } from 'code-easy-components';
 
 import { IOpenedWindow } from '../../../interfaces';
+import { IFileContent } from '../../external';
 
 interface TabButtonProps extends IOpenedWindow {
     onContext?(tabId: string | undefined): void;
     onSelect?(tabId: string | undefined): void;
     onClose?(tabId: string | undefined): void;
-    icon: IObservable<any>;
+    icon: IObservable<IFileContent | string>;
     useClose?: boolean;
     className?: string;
 }
@@ -20,6 +21,14 @@ export const TabButton: React.FC<TabButtonProps> = ({ className, useClose = true
     const title = useObserverValue(props.title);
     const icon = useObserverValue(props.icon);
     const id = useObserverValue(props.id);
+
+    const getIconContent = useCallback((icon: IFileContent | string) => {
+        if (typeof icon === 'string') {
+            return icon
+        } else {
+            return icon.content?.toString();
+        }
+    }, []);
 
     const handleContext = useCallback((e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
         e.stopPropagation();
@@ -68,7 +77,7 @@ export const TabButton: React.FC<TabButtonProps> = ({ className, useClose = true
                 onContextMenu={handleContext}
                 className={`window-tab-item flex-items-center outline-none opacity-6 cursor-pointer border-none ${isSelected ? "window-tab-selected" : ""} ${className}`}
             >
-                <img height="50%" className="margin-left-s" style={{ maxWidth: 20 }} src={icon} alt={title} />
+                <img height="50%" className="margin-left-s" style={{ maxWidth: 20 }} src={getIconContent(icon)} alt="" />
                 <span className={`padding-horizontal-s text-ellipsis ${hasError ? "main-text-error-color" : hasWarning ? "main-text-warning-color" : ""}`}>{title}</span>
                 {useClose && <img
                     className="background-transparent btn-close no-draggable outline-none opacity-0 margin-right-xs"

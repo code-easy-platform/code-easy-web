@@ -1,12 +1,11 @@
 import React, { useState, memo } from 'react';
+import { set, transform, useObserverValue } from 'react-observing';
 import { VscHome, VscSymbolProperty } from 'react-icons/vsc';
-import { set, useObserverValue } from 'react-observing';
 import { useHistory } from 'react-router-dom';
 
 import { PropertiesTab } from '../../../pages/editor/properties-tab/PropertiesTab';
-import { TabButton, TabGroup, TabsManager } from '../tabs';
 import { useEditorContext, useWindows } from '../../hooks';
-import { AssetsService } from '../../services';
+import { TabButtonSimple, TabsManager } from '../tabs';
 import { Modal } from '../modal';
 import './ToolBar.css';
 
@@ -21,68 +20,45 @@ export const ToolBar: React.FC = memo(() => {
     return (<>
         <div className="tool-bar background-bars">
             <div>
-                <TabButton
+                <TabButtonSimple
                     title="Menu"
                     role="tab-menu"
                     className="btn outline-none"
                     onClick={() => history.push('/projects')}
                 >
                     <VscHome style={{ height: 25, width: 25 }} />
-                </TabButton>
+                </TabButtonSimple>
                 <hr className="hr hr-vertical" />
-                <TabButton
+                <TabButtonSimple
                     role="tab-propriedades"
                     title="Project properties"
                     className="btn outline-none"
                     onClick={() => setIsOpenModalProps(true)}
                 >
                     <VscSymbolProperty className="padding-horizontal-s" style={{ height: 20, width: 20 }} />
-                </TabButton>
+                </TabButtonSimple>
             </div>
             <hr className="hr hr-vertical" />
             <TabsManager
                 tabs={windows}
-                /*onChange={windowId => {
-                    if (project.configurations.id && project.windows.find(windowTab => windowTab.isSelected)?.id !== windowId) {
-                        project.selectWindowById(windowId);
-                        setProject(project);
-                    }
-                }}
                 onCloseWindowTab={windowId => {
-                    if (project.configurations.id) {
-
-                        project.removeWindowById(windowId);
-
-                        setProject(project);
-                    }
-                }} */
+                    windows.forEach(window => set(window.isSelected, window.id.value === windowId));
+                }}
             />
             <hr className="hr hr-vertical" />
             <div style={{ justifyContent: "flex-end" }}>
-                <TabGroup>
-                    {tabs.map((tab, index) => {
-                        return (
-                            <TabButton
-                                key={tab.name.value}
-                                id={String(tab.id.value)}
-                                hasError={tab.hasError.value}
-                                title={tab.description.value}
-                                isSelected={tab.isEditing.value}
-                                hasWarning={tab.hasWarning.value}
-                                className="btn-open-routers-tab flex1 padding-horizontal-sm"
-                                onClick={() => {
-                                    if (!tabs[index].isEditing.value) {
-                                        tabs.forEach(currentTab => currentTab.isEditing.value = false);
-                                        set(tabs[index].isEditing, true);
-                                    }
-                                }}
-                            >
-                                <img height="90%" className="padding-right-s no-draggable" src={AssetsService.getIcon(tab.type)} alt={tab.type.value} />
-                                {tab.label.value}
-                            </TabButton>
-                        );
-                    })}
-                </TabGroup>
+                <TabsManager
+                    useClose={false}
+                    tabs={tabs.map(tab => ({
+                        icon: tab.icon,
+                        title: tab.label,
+                        hasError: tab.hasError,
+                        isSelected: tab.isEditing,
+                        hasWarning: tab.hasWarning,
+                        description: tab.description,
+                        id: transform(tab.id, value => String(value), value => String(value)),
+                    }))}
+                />
             </div>
         </div>
         <Modal

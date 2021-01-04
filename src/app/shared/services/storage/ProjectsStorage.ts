@@ -1,4 +1,4 @@
-import { Utils } from "code-easy-components";
+import { IconAction, IconRouter, Utils } from "code-easy-components";
 import { observe, set } from "react-observing";
 
 import { EComponentType, EProjectType, PropertieTypes, StorageEnum } from "./../../enuns";
@@ -124,6 +124,28 @@ const newProject = (name: string, version: string, type: EProjectType, descripti
                     editValueDisabled: observe(undefined),
                     onPickerValueClick: observe(undefined),
                 },
+                {
+                    value: observe(IconRouter),
+                    id: observe(Utils.getUUID()),
+                    type: observe(TypeOfValues.binary),
+                    name: observe(PropertieTypes.icon),
+                    propertieType: observe(PropertieTypes.icon),
+
+                    group: observe(undefined),
+                    suggestions: observe(undefined),
+                    information: observe(undefined),
+                    fileMaxSize: observe(undefined),
+                    nameHasError: observe(undefined),
+                    focusOnRender: observe(undefined),
+                    valueHasError: observe(undefined),
+                    nameHasWarning: observe(undefined),
+                    valueHasWarning: observe(undefined),
+                    nameSuggestions: observe(undefined),
+                    editNameDisabled: observe(undefined),
+                    onPickerNameClick: observe(undefined),
+                    editValueDisabled: observe(undefined),
+                    onPickerValueClick: observe(undefined),
+                },
             ]
         }),
         new Tab({
@@ -225,6 +247,28 @@ const newProject = (name: string, version: string, type: EProjectType, descripti
                     type: observe(TypeOfValues.string),
                     name: observe(PropertieTypes.label),
                     propertieType: observe(PropertieTypes.label),
+
+                    group: observe(undefined),
+                    suggestions: observe(undefined),
+                    information: observe(undefined),
+                    fileMaxSize: observe(undefined),
+                    nameHasError: observe(undefined),
+                    focusOnRender: observe(undefined),
+                    valueHasError: observe(undefined),
+                    nameHasWarning: observe(undefined),
+                    valueHasWarning: observe(undefined),
+                    nameSuggestions: observe(undefined),
+                    editNameDisabled: observe(undefined),
+                    onPickerNameClick: observe(undefined),
+                    editValueDisabled: observe(undefined),
+                    onPickerValueClick: observe(undefined),
+                },
+                {
+                    value: observe(IconAction),
+                    id: observe(Utils.getUUID()),
+                    type: observe(TypeOfValues.binary),
+                    name: observe(PropertieTypes.icon),
+                    propertieType: observe(PropertieTypes.icon),
 
                     group: observe(undefined),
                     suggestions: observe(undefined),
@@ -441,6 +485,8 @@ export class ProjectsStorage {
     public static getProjects(): Project[] {
         let res = localStorage.getItem(StorageEnum.projectsStorage);
 
+        console.log('getProjects');
+
         if (res !== null && res !== "" && res) {
             return ProjectParser.parseProjects(res);
         } else {
@@ -451,6 +497,9 @@ export class ProjectsStorage {
     /** Save in localstorage a list of projects */
     public static setProjects(projects: Project[]): Project[] {
         localStorage.setItem(StorageEnum.projectsStorage, ProjectParser.stringifyProjects(projects));
+
+        console.log('setProjects');
+
         return projects;
     }
 

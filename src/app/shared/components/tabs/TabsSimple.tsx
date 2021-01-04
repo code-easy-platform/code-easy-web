@@ -16,12 +16,12 @@ interface ITabButtonProps extends React.HTMLAttributes<HTMLButtonElement> {
     hasWarning?: boolean;
     isSelected?: boolean;
 }
-export const TabButton: React.FC<ITabButtonProps> = memo(({ hasError, hasWarning, fontSize = 'xg', ...props }) => {
+export const TabButtonSimple: React.FC<ITabButtonProps> = memo(({ hasError, hasWarning, fontSize = 'xg', isSelected, ...props }) => {
     return (
         <button
             {...props}
             tabIndex={props.tabIndex || 0}
-            className={`border-none cursor-pointer background-transparent flex-justfy-center flex-items-center outline-none padding-s opacity-7${hasError ? 'text-underline-error' : ''} ${hasWarning ? 'text-underline-warning' : ''} font-size-${fontSize}${props.isSelected ? " btn-tab-selected opacity-10" : ""} ${props.className}`}
+            className={`border-none cursor-pointer background-transparent flex-justfy-center flex-items-center outline-none padding-s opacity-7${hasError ? 'text-underline-error' : ''} ${hasWarning ? 'text-underline-warning' : ''} font-size-${fontSize}${isSelected ? " btn-tab-selected opacity-10" : ""} ${props.className}`}
         />
     );
 });
