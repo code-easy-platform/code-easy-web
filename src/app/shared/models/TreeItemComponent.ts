@@ -12,7 +12,7 @@ import { FlowItemComponent } from "./FlowItemComponent";
  */
 interface IConstructor {
   items: IFlowItemComponent[];
-  properties?: IProperty[];
+  properties: IProperty[];
   type: EComponentType;
   id?: string;
 }
@@ -21,7 +21,7 @@ interface IConstructor {
  * Represents a full Tab implementation
  */
 export class TreeItemComponent extends BasicConfigurations<EComponentType> implements ITreeItemComponent {
-  public items: IObservable<IFlowItemComponent[]> = observe<IFlowItemComponent[]>([]);
+  public items: IObservable<IFlowItemComponent[]>;
 
   public get ascendantId() {
     let prop = this.properties.value.find(prop => prop.propertieType.value === PropertieTypes.ascendantId)?.value;
@@ -62,11 +62,12 @@ export class TreeItemComponent extends BasicConfigurations<EComponentType> imple
 
   constructor(props: IConstructor) {
     super(props);
+
     this.items = observe(props.items.map(item => new FlowItemComponent({
       id: item.id.value,
       type: item.type.value,
-      properties: item.properties.value,
       connections: item.connections.value,
+      properties: item.properties.value || [],
     })));
   }
 }

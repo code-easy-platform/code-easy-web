@@ -10,7 +10,7 @@ import { PropertieTypes } from "./../enuns";
  * Fields passeds in constructor
  */
 interface IConstructor<T> {
-    properties?: IProperty[];
+    properties: IProperty[];
     id?: string;
     type: T;
 }
@@ -159,7 +159,7 @@ export class BasicConfigurations<T> implements IBasicConfigurations<T> {
         return prop;
     }
 
-    private _properties: IObservable<IProperty[]> = observe<IProperty[]>([]);
+    private _properties: IObservable<IProperty[]>;
     public get properties(): IObservable<IProperty[]> {
         return this._properties
     };
@@ -174,7 +174,7 @@ export class BasicConfigurations<T> implements IBasicConfigurations<T> {
         return this._hasWarning;
     }
 
-    public _type: IObservable<T>;
+    private _type: IObservable<T>;
     public get type(): IObservable<T> {
         return this._type;
     }
@@ -404,6 +404,6 @@ export class BasicConfigurations<T> implements IBasicConfigurations<T> {
     constructor(props: IConstructor<T>) {
         this._type = observe(props.type);
         this._id = props.id ? observe(props.id) : this._id;
-        this._properties = props.properties ? observe(props.properties) : this._properties;
+        this._properties = observe(props.properties);
     }
 }

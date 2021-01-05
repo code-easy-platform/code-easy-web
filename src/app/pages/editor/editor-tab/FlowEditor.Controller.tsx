@@ -1,6 +1,6 @@
-import React, { memo, useCallback } from 'react';
+import React, { memo, useCallback, useEffect, useState } from 'react';
 import { IconTrash, Utils, IconFlowStart, IconFlowAction, IconFlowIf, IconFlowForeach, IconFlowSwitch, IconFlowAssign, IconFlowEnd, IconFlowComment } from 'code-easy-components';
-import { set, useObserverValue, observe, useSetObserver } from 'react-observing';
+import { set, useObserverValue, observe, useSetObserver, ISubscription } from 'react-observing';
 
 import { FlowEditor, IFlowItem, IBreadCrumbButton, EItemType, EFlowItemType, parseEItemType, EItemTypeList } from '../../../shared/components/external';
 import { BackgroundEmpty, BackgroundEmptyLeft, BackgroundEmptyLeftToTop } from '../../../assets';
@@ -12,12 +12,117 @@ import { CurrentFocusStore } from '../../../shared/stores';
 import { useIdeConfigs } from '../../../shared/contexts';
 import { useEditorContext } from '../../../shared/hooks';
 
+const useEditingItem = () => {
+    const [hasSomethingToEdit, setHasSomethingToEdit] = useState<boolean>(false);
+    const [flowItems, setFlowItems] = useState<IFlowItem[]>([]);
+
+    const { project } = useEditorContext();
+    const tabs = useObserverValue(project.tabs);
+
+    useEffect(() => {
+        const subscriptions: ISubscription[] = [];
+
+        tabs.forEach(tab => {
+            tab.items.value.forEach(treeItem => {
+                if (treeItem.isEditing.value) {
+                    setFlowItems(treeItem.items.value.map<IFlowItem>(flowItem => ({
+                        id: flowItem.id,
+                        top: flowItem.top,
+                        left: flowItem.left,
+                        icon: flowItem.icon,
+                        label: flowItem.label,
+                        width: flowItem.width,
+                        height: flowItem.height,
+                        itemType: flowItem.type,
+                        hasError: flowItem.hasError,
+                        hasWarning: flowItem.hasWarning,
+                        isSelected: flowItem.isSelected,
+                        isDisabled: flowItem.isDisabled,
+                        connections: flowItem.connections,
+                        description: flowItem.description,
+                        flowItemType: flowItem.flowItemType,
+                        isEnabledNewConnetion: flowItem.isEnabledNewConnetion,
+                        /* description: item.type.value !== EItemType.COMMENT
+                            ? selectedActionDescription?.value || item.description
+                            : item.properties.value?.find(prop => prop.propertieType.value === PropertieTypes.comment), */
+                    })));
+                }
+            });
+
+            subscriptions.push(tab.items.subscribe(items => {
+                items.forEach(treeItem => {
+                    if (treeItem.isEditing.value) {
+                        setFlowItems(treeItem.items.value.map<IFlowItem>(flowItem => ({
+                            id: flowItem.id,
+                            top: flowItem.top,
+                            left: flowItem.left,
+                            icon: flowItem.icon,
+                            label: flowItem.label,
+                            width: flowItem.width,
+                            height: flowItem.height,
+                            itemType: flowItem.type,
+                            hasError: flowItem.hasError,
+                            hasWarning: flowItem.hasWarning,
+                            isSelected: flowItem.isSelected,
+                            isDisabled: flowItem.isDisabled,
+                            connections: flowItem.connections,
+                            description: flowItem.description,
+                            flowItemType: flowItem.flowItemType,
+                            isEnabledNewConnetion: flowItem.isEnabledNewConnetion,
+                        })));
+
+                        setHasSomethingToEdit(true);
+                    }
+
+                    subscriptions.push(treeItem.isEditing.subscribe(isEditing => {
+                        if (isEditing) {
+                            setFlowItems(treeItem.items.value.map<IFlowItem>(flowItem => ({
+                                id: flowItem.id,
+                                top: flowItem.top,
+                                left: flowItem.left,
+                                icon: flowItem.icon,
+                                label: flowItem.label,
+                                width: flowItem.width,
+                                height: flowItem.height,
+                                itemType: flowItem.type,
+                                hasError: flowItem.hasError,
+                                hasWarning: flowItem.hasWarning,
+                                isSelected: flowItem.isSelected,
+                                isDisabled: flowItem.isDisabled,
+                                connections: flowItem.connections,
+                                description: flowItem.description,
+                                flowItemType: flowItem.flowItemType,
+                                isEnabledNewConnetion: flowItem.isEnabledNewConnetion,
+                            })));
+                        }
+                    }));
+                });
+            }));
+        });
+
+        return () => subscriptions.forEach(subs => subs?.unsubscribe());
+    }, [tabs]);
+
+    /** Return if the project has some action, table or route to allow edit */
+    // const hasSomethingToEdit = tabs.some(tab => tab.items.value.length > 0);
+
+    /** Return if the project has some action, table or route editing */
+    // const hasSomethingEditing = !!(flowItems.length > 0);
+
+    return {
+        flowItems,
+        hasSomethingToEdit,
+        hasSomethingEditing: !!(flowItems.length > 0),
+    };
+}
+
 export const FlowEditorController: React.FC = memo(() => {
     const { flowBackgroundType, snapGridWhileDragging } = useIdeConfigs();
     const setCurrentFocus = useSetObserver(CurrentFocusStore);
     const { project } = useEditorContext();
 
     const tabs = useObserverValue(project.tabs);
+    const { flowItems, hasSomethingEditing, hasSomethingToEdit } = useEditingItem();
 
     const handleOnChangeItems = useCallback((updatedItems: IFlowItem[]) => {
 
@@ -38,7 +143,7 @@ export const FlowEditorController: React.FC = memo(() => {
                             const index = item.items.value.findIndex(item => updatedItem.id === item.id);
                             if (index >= 0) {
                                 newItems.push(new FlowItemComponent({
-                                    properties: item.items.value[index].properties.value,
+                                    properties: item.items.value[index].properties.value || [],
                                     type: parseEItemType(String(updatedItem.itemType)),
                                     connections: updatedItem.connections.value || [],
                                     id: updatedItem.id.value,
@@ -48,6 +153,7 @@ export const FlowEditorController: React.FC = memo(() => {
                                     type: parseEItemType(String(updatedItem.itemType)),
                                     connections: updatedItem.connections.value || [],
                                     id: updatedItem.id.value,
+                                    properties: [],
                                 }));
                             }
                         }
@@ -83,6 +189,7 @@ export const FlowEditorController: React.FC = memo(() => {
                             type: parseEItemType(String(newItem.itemType)),
                             connections: newItem.connections.value || [],
                             id: newItem.id.value,
+                            properties: [],
                         }));
                     }
                 })
@@ -179,6 +286,7 @@ export const FlowEditorController: React.FC = memo(() => {
                                     type: parseEItemType(item.itemType.value),
                                     id: Utils.getUUID(),
                                     connections: [],
+                                    properties: [],
                                 }));
                             }
                         });
@@ -229,91 +337,6 @@ export const FlowEditorController: React.FC = memo(() => {
         return breadcamps;
     }, [tabs]);
 
-    /** Usando o state pode pegar os items que devem ser editados pelo fluxo. */
-    const flowEditorItems = useCallback((): { hasSomethingEditing: boolean, hasSomethingToEdit: boolean, flowItems: IFlowItem[] } => {
-
-        // Action, Router are you editing
-        let itemEditing: TreeItemComponent | undefined;
-
-        /** Return if the project has some action, table or route to allow edit */
-        const hasSomethingToEdit = tabs.some(tab => tab.items.value.length > 0);
-
-        /** Return if the project has some action, table or route editing */
-        const hasSomethingEditing = tabs.some(tab => tab.items.value.some(item => item.isEditing));
-
-        tabs.forEach(tab => {
-            tab.items.value.forEach(item => {
-                if (item.isEditing.value) {
-                    itemEditing = new TreeItemComponent({
-                        properties: item.properties.value,
-                        items: item.items.value,
-                        type: item.type.value,
-                        id: item.id.value,
-                    });
-                }
-            });
-        });
-
-        // Se não achar um item que está sendo editado, retorna vazio
-        if (!itemEditing) return {
-            flowItems: [],
-            hasSomethingToEdit,
-            hasSomethingEditing
-        };
-
-        // Reordena pela altura
-        itemEditing.items.value.sort((a, b) => (a.top.value - b.top.value));
-
-
-        // Se for o simples para o editor de fluxos, faz um map dos items.
-        let flowItems: IFlowItem[] = [];
-        itemEditing.items.value.forEach(item => {
-
-            /** Prop usada para guarda o id da action referênciada */
-            const actionProp = item.properties.value?.find(prop => prop.propertieType.value === PropertieTypes.action);
-
-            /** Bloco de código qu encontra o ícone que será usado no fluxo */
-            let selectedActionIcon: any;
-            // let selectedActionDescription: IProperty | undefined;
-            tabs.forEach(tab => {
-                tab.items.value.forEach(itemToIconFind => {
-                    if (itemToIconFind.name === actionProp?.value) {
-                        selectedActionIcon = itemToIconFind.properties.value?.find(prop => prop.propertieType.value === PropertieTypes.icon);
-                        // selectedActionDescription = itemToIconFind.properties.value?.find(prop => prop.propertieType.value === PropertieTypes.description);
-                    }
-                });
-            });
-
-            flowItems.push({
-                id: item.id,
-                top: item.top,
-                left: item.left,
-                label: item.label,
-                width: item.width,
-                height: item.height,
-                itemType: item.type,
-                hasError: item.hasError,
-                hasWarning: item.hasWarning,
-                isSelected: item.isSelected,
-                isDisabled: item.isDisabled,
-                connections: item.connections,
-                description: item.description,
-                flowItemType: item.flowItemType,
-                isEnabledNewConnetion: item.isEnabledNewConnetion,
-                icon: selectedActionIcon?.value?.content || item.icon.value.content,
-                /* description: item.type.value !== EItemType.COMMENT
-                    ? selectedActionDescription?.value || item.description
-                    : item.properties.value?.find(prop => prop.propertieType.value === PropertieTypes.comment), */
-            });
-        });
-
-        return {
-            flowItems,
-            hasSomethingToEdit,
-            hasSomethingEditing,
-        };
-    }, [tabs]);
-
     const handleOnFocus = useCallback(() => {
         setCurrentFocus(ECurrentFocus.flow);
     }, [setCurrentFocus]);
@@ -325,13 +348,11 @@ export const FlowEditorController: React.FC = memo(() => {
         }
     }, [handleShowContextMenu]);
 
-    const flowEditorItemsResult = flowEditorItems();
-
     const getBackgroundEmpty = useCallback(() => {
 
-        if (flowEditorItemsResult.flowItems.length !== 0) return null;
+        if (flowItems.length !== 0) return null;
 
-        if (flowEditorItemsResult.hasSomethingEditing) {
+        if (hasSomethingEditing) {
             return (
                 <div className="opacity-6 flex-content-center flex-items-center no-events" style={{ height: '-webkit-fill-available', width: '-webkit-fill-available' }}>
                     <BackgroundEmptyLeft className="opacity-9" width={600} style={{ position: 'absolute', top: 0, left: 0 }} />
@@ -339,14 +360,14 @@ export const FlowEditorController: React.FC = memo(() => {
                     <h1 style={{ textAlign: 'center' }}>Drag and drop something here</h1>
                 </div>
             );
-        } else if (!flowEditorItemsResult.hasSomethingToEdit) {
+        } else if (!hasSomethingToEdit) {
             return (
                 <div className="opacity-6 flex-content-center flex-items-center no-events" style={{ height: '-webkit-fill-available', width: '-webkit-fill-available' }}>
                     <h1 style={{ textAlign: 'center' }}>In the tree on the left,<br /> create a new feature to start</h1>
                     <BackgroundEmptyLeftToTop className="opacity-9" width={600} style={{ position: 'absolute', top: 0, right: 0 }} />
                 </div>
             );
-        } else if (flowEditorItemsResult.hasSomethingToEdit && !flowEditorItemsResult.hasSomethingEditing) {
+        } else if (hasSomethingToEdit && !hasSomethingEditing) {
             return (
                 <div className="opacity-6 flex-content-center flex-items-center no-events" style={{ height: '-webkit-fill-available', width: '-webkit-fill-available' }}>
                     <h1 style={{ textAlign: 'center' }}>In the tree on the left,<br />double click to edit</h1>
@@ -356,10 +377,11 @@ export const FlowEditorController: React.FC = memo(() => {
         } else {
             return null;
         }
-    }, [flowEditorItemsResult]);
+    }, []);
 
     return (
         <FlowEditor
+            items={flowItems}
             id={"CODE_EDITOR"}
             onFocus={handleOnFocus}
             toolItems={toolBoxItems()}
@@ -367,7 +389,6 @@ export const FlowEditorController: React.FC = memo(() => {
             onDropItem={handleOnDropItem}
             onContextMenu={handleOnContextMenu}
             onChangeItems={handleOnChangeItems}
-            items={flowEditorItemsResult.flowItems}
             childrenWhenItemsEmpty={getBackgroundEmpty()}
             configs={{
                 typesAllowedToDrop: [...EItemTypeList, EComponentType.globalAction, EComponentType.localAction, EComponentType.localVariable, EComponentType.inputVariable, EComponentType.outputVariable],
@@ -375,7 +396,7 @@ export const FlowEditorController: React.FC = memo(() => {
                 backgroundType: flowBackgroundType,
                 lineWidth: 1,
 
-                showToolbar: flowEditorItemsResult.hasSomethingToEdit && flowEditorItemsResult.hasSomethingEditing,
+                showToolbar: hasSomethingToEdit && hasSomethingEditing,
 
                 selectionBorderColor: 'var(--selection-border-color)',
                 selectionBackgroundColor: '#ffffff11',

@@ -3,6 +3,28 @@
   "version": "0.0.1",
   "private": false,
   "license": "Apache 2.0",
+  "scripts": {
+    "start": "cross-env REACT_APP_VERSION='0.0.1' react-scripts start",
+    "build": "cross-env REACT_APP_VERSION='0.0.1' react-scripts build",
+    "tsc-build": "tsc",
+    "test": "react-scripts test",
+    "eject": "react-scripts eject"
+  },
+  "eslintConfig": {
+    "extends": "react-app"
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  },
   "husky": {
     "hooks": {
       "commit-msg": "commitlint -E HUSKY_GIT_PARAMS",
@@ -29,28 +51,6 @@
     "react-router-dom": "^5.1.2",
     "react-scripts": "^3.2.0",
     "typeface-roboto": "^0.0.75"
-  },
-  "scripts": {
-    "start": "cross-env REACT_APP_VERSION=$(node -p 'require(\"./package.json\").version') react-scripts start",
-    "build": "cross-env REACT_APP_VERSION=$(node -p 'require(\"./package.json\").version') react-scripts build",
-    "tsc-build": "tsc",
-    "test": "react-scripts test",
-    "eject": "react-scripts eject"
-  },
-  "eslintConfig": {
-    "extends": "react-app"
-  },
-  "browserslist": {
-    "production": [
-      ">0.2%",
-      "not dead",
-      "not op_mini all"
-    ],
-    "development": [
-      "last 1 chrome version",
-      "last 1 firefox version",
-      "last 1 safari version"
-    ]
   },
   "devDependencies": {
     "@commitlint/cli": "^8.3.5",

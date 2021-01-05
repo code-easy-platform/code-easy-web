@@ -34,7 +34,7 @@ export const CodeEditorProvider: React.FC = ({ children }) => {
                 ...oldState,
                 project
             }
-        }); */
+            */
     }, []);
 
     const [state, setState] = useState<ICodeEditorContext>({
@@ -48,7 +48,14 @@ export const CodeEditorProvider: React.FC = ({ children }) => {
             ...oldState,
             project: ProjectsStorage.getProjectById(id)
         }));
+
     }, [id, history]);
+
+    useEffect(() => {
+        return state.project.label.subscribe(label => {
+            document.title = label === '' ? 'Code Easy' : label + ' - Code Easy'
+        }).unsubscribe;
+    }, [state.project]);
 
     return (
         <CodeEditorContext.Provider value={state}>
@@ -60,4 +67,3 @@ export const CodeEditorProvider: React.FC = ({ children }) => {
         </CodeEditorContext.Provider>
     );
 }
- 

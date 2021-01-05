@@ -11,7 +11,7 @@ import { CurrentFocusStore } from '../../../shared/stores';
 import { useEditorContext } from '../../../shared/hooks';
 
 const useCurrentTab = () => {
-    const [currentTab, setCurrentTab] = useState<Tab>(new Tab({ items: [], type: EComponentType.tabRoutes }));
+    const [currentTab, setCurrentTab] = useState<Tab>(new Tab({ items: [], type: EComponentType.tabRoutes, properties: [] }));
 
     const { project } = useEditorContext();
     const tabs = useObserverValue(project.tabs);
@@ -33,7 +33,7 @@ const useCurrentTab = () => {
             }));
         });
 
-        return () => subscriptions.forEach(subs => subs?.unsubscribe())
+        return () => subscriptions.forEach(subs => subs?.unsubscribe());
     }, [tabs]);
 
     return {
@@ -80,9 +80,7 @@ export const TreeManagerController: React.FC = () => {
             project.tabs.value.forEach(tab => {
                 tab.items.value.forEach(item => {
                     // Garante não existirá duas tabs sendo editadas ao mesmo tempo.
-                    tab.items.value.forEach(item => {
-                        set(item.isSelected, false);
-                    });
+                    set(item.isSelected, false);
                 });
             });
 
@@ -174,9 +172,7 @@ export const TreeManagerController: React.FC = () => {
                 project.tabs.value.forEach(tab => {
                     tab.items.value.forEach(item => {
                         // Garante não existirá duas tabs sendo editadas ao mesmo tempo.
-                        tab.items.value.forEach(item => {
-                            set(item.isSelected, false);
-                        });
+                        set(item.isSelected, false);
                     });
                 });
 
@@ -508,9 +504,7 @@ export const TreeManagerController: React.FC = () => {
                 project.tabs.value.forEach(tab => {
                     tab.items.value.forEach(item => {
                         // Garante não existirá duas tabs sendo editadas ao mesmo tempo.
-                        tab.items.value.forEach(item => {
-                            set(item.isSelected, false);
-                        });
+                        set(item.isSelected, false);
                     });
                 });
 

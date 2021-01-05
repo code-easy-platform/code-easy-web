@@ -11,7 +11,7 @@ import { PropertieTypes } from "./../enuns";
  */
 interface IConstructor {
   connections?: IConnection[];
-  properties?: IProperty[];
+  properties: IProperty[];
   type: EItemType;
   id?: string;
 }
@@ -138,7 +138,7 @@ export class FlowItemComponent extends BasicConfigurations<EItemType> implements
       return prop;
     }
 
-    prop = observe(0);
+    prop = observe(40);
 
     this.properties.value = [
       ...this.properties.value,
@@ -175,7 +175,7 @@ export class FlowItemComponent extends BasicConfigurations<EItemType> implements
       return prop;
     }
 
-    prop = observe(0);
+    prop = observe(40);
 
     this.properties.value = [
       ...this.properties.value,

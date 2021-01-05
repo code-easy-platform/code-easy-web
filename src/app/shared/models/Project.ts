@@ -29,7 +29,7 @@ export class Project extends ProjectConfigurations implements IProject {
       id: tab.id.value,
       type: tab.type.value,
       items: tab.items.value,
-      properties: tab.properties.value,
+      properties: tab.properties.value || [],
     })));
   }
 }

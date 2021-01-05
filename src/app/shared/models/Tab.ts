@@ -11,7 +11,7 @@ import { EComponentType } from "./../enuns";
  */
 interface IConstructor {
   items: ITreeItemComponent[];
-  properties?: IProperty[];
+  properties: IProperty[];
   type: EComponentType;
   id?: string;
 }
@@ -20,15 +20,18 @@ interface IConstructor {
  * Represents a full Tab implementation
  */
 export class Tab extends BasicConfigurations<EComponentType> implements ITab {
-  public items: IObservable<TreeItemComponent[]> = observe<TreeItemComponent[]>([]);
+  public items: IObservable<TreeItemComponent[]>;
 
   constructor(props: IConstructor) {
     super(props);
-    this.items = observe(props.items.map(item => new TreeItemComponent({
-      properties: item.properties.value,
-      items: item.items.value,
-      type: item.type.value,
-      id: item.id.value,
-    })));
+
+    this.items = observe(
+      props.items.map(item => new TreeItemComponent({
+        properties: item.properties.value || [],
+        items: item.items.value,
+        type: item.type.value,
+        id: item.id.value,
+      }))
+    );
   }
 }
