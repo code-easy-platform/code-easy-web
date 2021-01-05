@@ -26,7 +26,7 @@ export const ToolBar: React.FC = memo(() => {
                     className="btn outline-none"
                     onClick={() => history.push('/projects')}
                 >
-                    <VscHome style={{ height: 25, width: 25 }} />
+                    <VscHome className="padding-horizontal-s" style={{ height: 20, width: 20 }} />
                 </TabButtonSimple>
                 <hr className="hr hr-vertical" />
                 <TabButtonSimple

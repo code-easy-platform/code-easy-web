@@ -11,7 +11,7 @@ import { TreeItemsStore } from './shared/stores';
 interface TreeManagerProps extends ITreeManagerProps, ITreeManagerEvents {
     configs: ITreeManagerConfigs;
 }
-export const TreeManager: React.FC<TreeManagerProps> = ({ configs, items, onChangeItems, ...rest }) => {
+export const TreeManager: React.FC<TreeManagerProps> = ({ configs, items, ...rest }) => {
     useEffect(() => {
         set(TreeItemsStore, items);
     }, [items]);

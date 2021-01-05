@@ -20,7 +20,7 @@ interface IConstructor {
  * Represents a full project
  */
 export class Project extends ProjectConfigurations implements IProject {
-  public tabs: IObservable<ITab[]> = observe<ITab[]>([]);
+  public tabs: IObservable<Tab[]> = observe<Tab[]>([]);
 
   constructor(props: IConstructor) {
     super(props);

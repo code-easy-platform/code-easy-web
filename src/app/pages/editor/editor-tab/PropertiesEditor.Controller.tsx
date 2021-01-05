@@ -1,5 +1,5 @@
-import React, { useCallback } from 'react';
-import { observe, set, useObserverValue } from 'react-observing';
+import React, { useCallback, useEffect, useState } from 'react';
+import { ISubscription, observe, set, useObserverValue } from 'react-observing';
 
 import { PropertiesEditor, IProperty, TypeOfValues, IItem } from '../../../shared/components/external';
 import { EComponentType, ECurrentFocus, PropertieTypes } from '../../../shared/enuns';
@@ -8,11 +8,101 @@ import { CurrentFocusStore } from '../../../shared/stores';
 import { useEditorContext } from '../../../shared/hooks';
 import { openModal } from '../../../shared/services';
 
+const useTreeItems = () => {
+    const [items, setItems] = useState<TreeItemComponent[]>([]);
+
+    const { project } = useEditorContext();
+    const tabs = useObserverValue(project.tabs);
+
+    useEffect(() => {
+        tabs.forEach(tab => {
+            setItems(oldItems => {
+                tab.items.value.forEach(item => {
+                    if (!oldItems.some(oldItem => oldItem.id.value === item.id.value)) {
+                        oldItems.push(item);
+                    }
+                });
+
+                return oldItems;
+            });
+        });
+    });
+
+    return items;
+}
+
 export const PropertiesEditorController: React.FC = () => {
+    const [itemPropertie, setItemPropertie] = useState<IItem>({
+        properties: [],
+        id: observe(''),
+        name: observe(''),
+        subname: observe(''),
+    });
 
     const { project, getItemTreeEditing, getItemTreeByName } = useEditorContext();
     const currentFocus = useObserverValue(CurrentFocusStore);
-    const tabs = useObserverValue(project.tabs);
+    const items = useTreeItems();
+
+    useEffect(() => {
+        const subscriptions: ISubscription[] = [];
+
+        if (currentFocus === ECurrentFocus.tree) {
+            items.forEach(item => {
+
+                // Select initial item
+                if (item.isSelected.value) {
+                    setItemPropertie({
+                        id: item.id,
+                        name: item.label,
+                        subname: item.type,
+                        properties: !item.properties.value
+                            ? []
+                            : item.properties.value.map(prop => {
+                                return {
+                                    ...prop,
+                                    onPickerValueClick: observe(() => openModal(prop.id.value || ''))
+                                };
+                            })
+                    });
+                }
+
+                // Subscribe in changes
+                subscriptions.push(item.isSelected.subscribe(isSelected => {
+                    console.log(isSelected)
+
+                    if (isSelected) {
+                        setItemPropertie({
+                            id: item.id,
+                            name: item.label,
+                            subname: item.type,
+                            properties: !item.properties.value
+                                ? []
+                                : item.properties.value.map(prop => {
+                                    return {
+                                        ...prop,
+                                        onPickerValueClick: observe(() => openModal(prop.id.value || ''))
+                                    };
+                                })
+                        });
+                    }
+                }));
+            });
+        } else if (currentFocus === ECurrentFocus.flow) {
+            setItemPropertie({
+                properties: [],
+                id: observe(''),
+                name: observe(''),
+                subname: observe(''),
+            });
+        }
+
+        return () => subscriptions.forEach(subs => subs?.unsubscribe())
+    }, [currentFocus, items]);
+
+
+
+
+
 
     /** Devolve para o editor de propriedades as propriedades do item selecionado no momento. */
     const getSelectedItem = useCallback((currentFocus: ECurrentFocus): IItem => {
@@ -25,29 +115,7 @@ export const PropertiesEditorController: React.FC = () => {
         }
 
         // Map a selected tree item.
-        if (currentFocus === ECurrentFocus.tree) {
-
-            const tab = tabs.find(tab => tab.items.value.find(item => item.isSelected.value));
-            if (!tab) return nullRes;
-
-            const res = tab.items.value.find(item => item.isSelected.value);
-            if (!res) return nullRes;
-
-            else {
-                return {
-                    id: res.id,
-                    subname: res.type,
-                    name: res.properties.value?.find(prop => prop.propertieType.value === PropertieTypes.label)?.value || observe(''),
-                    properties: res.properties.value?.map(prop => {
-                        if (prop.id.value && prop.name.value) {
-                            set(prop.onPickerValueClick, () => openModal(prop.id.value || ''));
-                        }
-                        return prop;
-                    }) || []
-                };
-            }
-
-        } else if (currentFocus === ECurrentFocus.flow) { // Mapeia os items de fluxo
+        if (currentFocus === ECurrentFocus.flow) { // Mapeia os items de fluxo
 
             /** Get editing item tree */
             const editingItemTree = getItemTreeEditing();
@@ -85,7 +153,7 @@ export const PropertiesEditorController: React.FC = () => {
             const getAllLocalVariablesAsSuggestion = () => {
 
                 /** Current tab from editing item */
-                const currentTab = tabs.find(tab => tab.items.value.some(tabItem => tabItem.items.value.some(tabItemFlowItem => tabItemFlowItem.id === selectedItem.id)));
+                const currentTab = project.tabs.value.find(tab => tab.items.value.some(tabItem => tabItem.items.value.some(tabItemFlowItem => tabItemFlowItem.id === selectedItem.id)));
                 if (!currentTab) return [];
 
                 /** 
@@ -118,7 +186,7 @@ export const PropertiesEditorController: React.FC = () => {
 
                 /** Get all input params from action selected */
                 let inputParams: TreeItemComponent[] = [];
-                tabs.forEach(tab => {
+                project.tabs.value.forEach(tab => {
                     inputParams = [
                         ...inputParams,
                         ...tab.items.value
@@ -186,7 +254,7 @@ export const PropertiesEditorController: React.FC = () => {
                             set(mappedItemProp.type, TypeOfValues.selection);
                             set(mappedItemProp.suggestions, []);
 
-                            tabs.forEach(tab => {
+                            project.tabs.value.forEach(tab => {
                                 tab.items.value.forEach(tabItem => {
 
                                     // Filtra todas as actions globais ou extensions para criar as sugestões para a action.
@@ -240,12 +308,11 @@ export const PropertiesEditorController: React.FC = () => {
         }
 
         return nullRes;
-    }, [getItemTreeByName, getItemTreeEditing, tabs]);
+    }, [getItemTreeByName, getItemTreeEditing, project.tabs]);
 
     return (
         <PropertiesEditor
-            // onChange={handleOnChangeItems}
-            item={getSelectedItem(currentFocus)}
+            item={itemPropertie}
         />
     );
 }

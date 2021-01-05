@@ -21,10 +21,6 @@ export interface ITreeManagerEvents {
      * Event emitted whenever a tree node is expanded
      */
     onExpandNode?(itemTreeId: string, e: React.MouseEvent<HTMLDivElement, MouseEvent>): void | undefined;
-    /**
-     * event emitted when changes to items occur
-     */
-    onChangeItems?(items: ITreeItem[]): void;
 }
 
 export interface ITreeManagerProps {

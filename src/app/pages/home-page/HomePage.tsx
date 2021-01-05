@@ -45,7 +45,7 @@ export const HomePage = () => {
                     role="tab-menu"
                     className="btn background-transparent outline-none"
                 >
-                    <VscHome style={{ height: 25, width: 25 }} />
+                    <VscHome className="padding-horizontal-s" style={{ height: 20, width: 20 }} />
                 </TabButtonSimple>
             </div>
 
