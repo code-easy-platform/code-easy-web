@@ -193,7 +193,7 @@ export const TreeManagerController: React.FC = () => {
                                             connections: [{ id: observe(Utils.getUUID()), targetId: observe('2'), originId: observe('1'), isSelected: observe(false), connectionDescription: observe(''), connectionLabel: observe('') }],
                                             properties: [
                                                 {
-                                                    value: observe(188),
+                                                    value: observe(100),
                                                     id: observe(Utils.getUUID()),
                                                     type: observe(TypeOfValues.hidden),
                                                     name: observe(PropertieTypes.left),
@@ -217,7 +217,7 @@ export const TreeManagerController: React.FC = () => {
                                                 {
                                                     id: observe(Utils.getUUID()),
                                                     value: observe(IconFlowStart),
-                                                    type: observe(TypeOfValues.hidden),
+                                                    type: observe(TypeOfValues.binary),
                                                     name: observe(PropertieTypes.icon),
                                                     propertieType: observe(PropertieTypes.icon),
 
@@ -261,7 +261,7 @@ export const TreeManagerController: React.FC = () => {
                                                 {
                                                     id: observe(Utils.getUUID()),
                                                     value: observe(EItemType.START),
-                                                    type: observe(TypeOfValues.hidden),
+                                                    type: observe(TypeOfValues.string),
                                                     name: observe(PropertieTypes.label),
                                                     propertieType: observe(EItemType.START),
 
@@ -288,7 +288,7 @@ export const TreeManagerController: React.FC = () => {
                                             type: EItemType.END,
                                             properties: [
                                                 {
-                                                    value: observe(188),
+                                                    value: observe(100),
                                                     id: observe(Utils.getUUID()),
                                                     type: observe(TypeOfValues.hidden),
                                                     name: observe(PropertieTypes.left),
@@ -310,9 +310,9 @@ export const TreeManagerController: React.FC = () => {
                                                     onPickerValueClick: observe(undefined),
                                                 },
                                                 {
-                                                    id: observe(Utils.getUUID()),
                                                     value: observe(IconFlowEnd),
-                                                    type: observe(TypeOfValues.hidden),
+                                                    id: observe(Utils.getUUID()),
+                                                    type: observe(TypeOfValues.binary),
                                                     name: observe(PropertieTypes.icon),
                                                     propertieType: observe(PropertieTypes.icon),
 
@@ -335,7 +335,7 @@ export const TreeManagerController: React.FC = () => {
                                                     id: observe(Utils.getUUID()),
                                                     name: observe(PropertieTypes.top),
                                                     type: observe(TypeOfValues.hidden),
-                                                    value: observe(Math.round(128 / 15) * 15),
+                                                    value: observe(Math.round(328 / 15) * 15),
                                                     propertieType: observe(PropertieTypes.top),
 
                                                     group: observe(undefined),
@@ -356,7 +356,7 @@ export const TreeManagerController: React.FC = () => {
                                                 {
                                                     id: observe(Utils.getUUID()),
                                                     value: observe(EItemType.END),
-                                                    type: observe(TypeOfValues.hidden),
+                                                    type: observe(TypeOfValues.string),
                                                     name: observe(PropertieTypes.label),
                                                     propertieType: observe(PropertieTypes.label),
 
@@ -384,7 +384,7 @@ export const TreeManagerController: React.FC = () => {
                                 {
                                     value: observe(newName),
                                     id: observe(Utils.getUUID()),
-                                    type: observe(TypeOfValues.hidden),
+                                    type: observe(TypeOfValues.string),
                                     name: observe(PropertieTypes.label),
                                     propertieType: observe(PropertieTypes.label),
 
@@ -520,7 +520,7 @@ export const TreeManagerController: React.FC = () => {
                                 {
                                     value: observe(newName),
                                     id: observe(Utils.getUUID()),
-                                    type: observe(TypeOfValues.hidden),
+                                    type: observe(TypeOfValues.string),
                                     name: observe(PropertieTypes.label),
                                     propertieType: observe(PropertieTypes.label),
 
@@ -635,7 +635,7 @@ export const TreeManagerController: React.FC = () => {
                                     connections: [{ id: observe(Utils.getUUID()), targetId: observe('2'), originId: observe('1'), isSelected: observe(false), connectionDescription: observe(''), connectionLabel: observe('') }],
                                     properties: [
                                         {
-                                            value: observe(188),
+                                            value: observe(100),
                                             id: observe(Utils.getUUID()),
                                             type: observe(TypeOfValues.hidden),
                                             name: observe(PropertieTypes.left),
@@ -659,7 +659,7 @@ export const TreeManagerController: React.FC = () => {
                                         {
                                             id: observe(Utils.getUUID()),
                                             value: observe(IconFlowStart),
-                                            type: observe(TypeOfValues.hidden),
+                                            type: observe(TypeOfValues.binary),
                                             name: observe(PropertieTypes.icon),
                                             propertieType: observe(PropertieTypes.icon),
 
@@ -703,7 +703,7 @@ export const TreeManagerController: React.FC = () => {
                                         {
                                             id: observe(Utils.getUUID()),
                                             value: observe(EItemType.START),
-                                            type: observe(TypeOfValues.hidden),
+                                            type: observe(TypeOfValues.string),
                                             name: observe(PropertieTypes.label),
                                             propertieType: observe(EItemType.START),
 
@@ -730,7 +730,7 @@ export const TreeManagerController: React.FC = () => {
                                     type: EItemType.END,
                                     properties: [
                                         {
-                                            value: observe(188),
+                                            value: observe(100),
                                             id: observe(Utils.getUUID()),
                                             type: observe(TypeOfValues.hidden),
                                             name: observe(PropertieTypes.left),
@@ -752,9 +752,9 @@ export const TreeManagerController: React.FC = () => {
                                             onPickerValueClick: observe(undefined),
                                         },
                                         {
-                                            id: observe(Utils.getUUID()),
                                             value: observe(IconFlowEnd),
-                                            type: observe(TypeOfValues.hidden),
+                                            id: observe(Utils.getUUID()),
+                                            type: observe(TypeOfValues.binary),
                                             name: observe(PropertieTypes.icon),
                                             propertieType: observe(PropertieTypes.icon),
 
@@ -777,7 +777,7 @@ export const TreeManagerController: React.FC = () => {
                                             id: observe(Utils.getUUID()),
                                             name: observe(PropertieTypes.top),
                                             type: observe(TypeOfValues.hidden),
-                                            value: observe(Math.round(128 / 15) * 15),
+                                            value: observe(Math.round(328 / 15) * 15),
                                             propertieType: observe(PropertieTypes.top),
 
                                             group: observe(undefined),
@@ -798,7 +798,7 @@ export const TreeManagerController: React.FC = () => {
                                         {
                                             id: observe(Utils.getUUID()),
                                             value: observe(EItemType.END),
-                                            type: observe(TypeOfValues.hidden),
+                                            type: observe(TypeOfValues.string),
                                             name: observe(PropertieTypes.label),
                                             propertieType: observe(PropertieTypes.label),
 

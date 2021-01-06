@@ -20,7 +20,7 @@ interface IConstructor<T> {
  */
 export class BasicConfigurations<T> implements IBasicConfigurations<T> {
 
-    private _id: IObservable<string | undefined> = observe(undefined);
+    private _id: IObservable<string | undefined>;
     public get id(): IObservable<string | undefined> {
         if (!this._id.value) {
             this._id.value = Utils.getUUID();
@@ -57,7 +57,6 @@ export class BasicConfigurations<T> implements IBasicConfigurations<T> {
             {
                 value: prop,
                 id: observe(Utils.getUUID()),
-                focusOnRender: observe(true),
                 type: observe(TypeOfValues.string),
                 name: observe(PropertieTypes.label),
                 propertieType: observe(PropertieTypes.label),
@@ -68,6 +67,7 @@ export class BasicConfigurations<T> implements IBasicConfigurations<T> {
                 fileMaxSize: observe(undefined),
                 nameHasError: observe(undefined),
                 valueHasError: observe(undefined),
+                focusOnRender: observe(undefined),
                 nameHasWarning: observe(undefined),
                 valueHasWarning: observe(undefined),
                 nameSuggestions: observe(undefined),
@@ -403,7 +403,7 @@ export class BasicConfigurations<T> implements IBasicConfigurations<T> {
 
     constructor(props: IConstructor<T>) {
         this._type = observe(props.type);
-        this._id = props.id ? observe(props.id) : this._id;
         this._properties = observe(props.properties);
+        this._id = props.id ? observe(props.id) : observe(undefined);
     }
 }
