@@ -263,7 +263,7 @@ export const TreeManagerController: React.FC = () => {
                                                     value: observe(EItemType.START),
                                                     type: observe(TypeOfValues.string),
                                                     name: observe(PropertieTypes.label),
-                                                    propertieType: observe(EItemType.START),
+                                                    propertieType: observe(PropertieTypes.label),
 
                                                     group: observe(undefined),
                                                     suggestions: observe(undefined),
@@ -1029,6 +1029,8 @@ export const TreeManagerController: React.FC = () => {
             description: item.description,
             ascendantId: item.ascendantId,
             hasWarning: item.hasWarning,
+            isSelected: item.isSelected,
+            isEditing: item.isEditing,
             hasError: item.hasError,
             label: item.label,
             type: item.type,
@@ -1041,9 +1043,7 @@ export const TreeManagerController: React.FC = () => {
             showExpandIcon: observe(undefined),
             isDisabledDrop: observe(undefined),
             isDisabled: observe(undefined),
-            isEditing: observe(undefined),
             iconSize: observe(undefined),
-            isSelected: observe(false),
         }));
 
         return items;

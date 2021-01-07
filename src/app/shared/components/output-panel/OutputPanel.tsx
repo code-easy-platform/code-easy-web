@@ -1,4 +1,5 @@
 import React, { useState, memo } from 'react';
+import { observe } from 'react-observing';
 
 import { TreeManager, ITreeItem } from '../external';
 import { TabGroup, TabButtonSimple } from '../tabs';
@@ -15,7 +16,7 @@ interface OutputPanelProps {
     problems?: ITreeItem[];
     output?: ITreeItem[];
 }
-export const OutputPanel: React.FC<OutputPanelProps> = memo(({ notification, output, problems }) => {
+export const OutputPanel: React.FC<OutputPanelProps> = memo(({ notification = [], output = [], problems = [] }) => {
     const [currTab, setCurrtab] = useState(OutputTab.problems);
 
     return (
@@ -37,7 +38,7 @@ export const OutputPanel: React.FC<OutputPanelProps> = memo(({ notification, out
             <div className="flex1 overflow-auto">
                 {currTab === OutputTab.problems &&
                     <TreeManager
-                        items={problems || []}
+                        items={problems}
                         configs={{
                             isUseDrag: false,
                             isUseDrop: false,
@@ -46,7 +47,7 @@ export const OutputPanel: React.FC<OutputPanelProps> = memo(({ notification, out
                 }
                 {currTab === OutputTab.output &&
                     <TreeManager
-                        items={output || []}
+                        items={output}
                         configs={{
                             isUseDrag: false,
                             isUseDrop: false,
@@ -59,13 +60,33 @@ export const OutputPanel: React.FC<OutputPanelProps> = memo(({ notification, out
                             isUseDrag: false,
                             isUseDrop: false,
                         }}
-                        items={/* notification ||  */[/* {
-                            label: observe("No notifications detected"),
-                            nodeExpanded: observe(false),
-                            isSelected: observe(false),
-                            id: observe(undefined),
-                            type: observe("ITEM"),
-                        } */]}
+                        items={/* notification ||  */[
+                            {
+                                description: observe("No notifications detected"),
+                                label: observe("No notifications detected"),
+                                isAllowedToggleNodeExpand: observe(false),
+                                isDisabledDoubleClick: observe(true),
+                                isDisabledSelect: observe(true),
+                                isDisabledDrag: observe(true),
+                                isDisabledDrop: observe(true),
+                                showExpandIcon: observe(false),
+                                isDisabledClick: observe(true),
+                                nodeExpanded: observe(false),
+                                isSelected: observe(false),
+                                id: observe(undefined),
+                                type: observe("ITEM"),
+
+                                icon: observe(undefined),
+                                iconSize: observe(undefined),
+                                hasError: observe(undefined),
+                                isEditing: observe(undefined),
+                                hasWarning: observe(undefined),
+                                isDisabled: observe(undefined),
+                                ascendantId: observe(undefined),
+                                canDropList: observe(undefined),
+                                useCustomIconToExpand: observe(undefined),
+                            }
+                        ]}
                     />
                 }
             </div>

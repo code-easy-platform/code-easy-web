@@ -96,7 +96,6 @@ const useEditingItem = () => {
                     }
 
                     subscriptions.push(treeItem.isEditing.subscribe(isEditing => {
-                        console.log(isEditing)
                         if (isEditing) {
                             setFlowItems(treeItem.items.value.map<IFlowItem>(flowItem => ({
                                 id: flowItem.id,

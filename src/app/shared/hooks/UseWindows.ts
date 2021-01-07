@@ -23,10 +23,11 @@ export const useWindows = () => {
           setWindows(oldWindows => [
             ...oldWindows,
             {
+              icon: item.icon,
               title: item.label,
               hasError: item.hasError,
+              isSelected: item.isEditing,
               hasWarning: item.hasWarning,
-              isSelected: item.isSelected,
               description: item.description,
               id: transform(item.id, id => String(id), id => id),
             }
@@ -47,10 +48,11 @@ export const useWindows = () => {
               setWindows(oldWindows => [
                 ...oldWindows,
                 {
+                  icon: item.icon,
                   title: item.label,
                   hasError: item.hasError,
+                  isSelected: item.isEditing,
                   hasWarning: item.hasWarning,
-                  isSelected: item.isSelected,
                   description: item.description,
                   id: transform(item.id, id => String(id), id => id),
                 }

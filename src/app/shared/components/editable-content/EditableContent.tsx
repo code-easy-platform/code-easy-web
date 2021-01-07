@@ -10,7 +10,7 @@ export const EditableContent: React.FC<{ itemId: string, removeModal: Function }
     const modalRef = useRef<ModalElement>(null);
     const editorRef = useRef<MonacoEditor>(null);
 
-    const { project, setProject } = useEditorContext();
+    const { project } = useEditorContext();
     const tabs = useObserverValue(project.tabs);
     let selectedItem: any;
 
@@ -64,7 +64,7 @@ export const EditableContent: React.FC<{ itemId: string, removeModal: Function }
                 value={selectedItem?.value}
                 width={modalRef.current?.width}
                 height={modalRef.current?.height}
-                onChange={value => { selectedItem.value = value; setProject(project) }}
+                // onChange={value => { selectedItem.value = value; setProject(project) }}
                 options={{
                     autoClosingQuotes: "always",
                     mouseWheelZoom: true,

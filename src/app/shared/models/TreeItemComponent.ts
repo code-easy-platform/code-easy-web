@@ -1,4 +1,4 @@
-import { IObservable, observe } from "react-observing";
+import { IObservable, observe, set, transform } from "react-observing";
 import { Utils } from "code-easy-components";
 
 import { IFlowItemComponent, ITreeItemComponent } from "./../interfaces";
@@ -6,6 +6,8 @@ import { IProperty, TypeOfValues } from "./../components/external";
 import { EComponentType, PropertieTypes } from "./../enuns";
 import { BasicConfigurations } from "./BasicConfigurations";
 import { FlowItemComponent } from "./FlowItemComponent";
+import { PropertiesEditorStore } from "../stores";
+import { openModal } from "../services";
 
 /**
  * Fields passeds in constructor
@@ -58,6 +60,27 @@ export class TreeItemComponent extends BasicConfigurations<EComponentType> imple
     ];
 
     return prop;
+  }
+
+  public get isSelected(): IObservable<boolean> {
+    const handleSelect = (value: boolean): boolean => {
+      if (value) {
+        set(PropertiesEditorStore, {
+          id: this.id,
+          name: this.label,
+          subname: this.type,
+          properties: this.properties.value.map(prop => {
+              return {
+                ...prop,
+                onPickerValueClick: observe(() => openModal(prop.id.value || ''))
+              };
+            })
+        });
+      }
+      return value;
+    }
+
+    return transform(super.isSelected, value => value, handleSelect);
   }
 
   constructor(props: IConstructor) {

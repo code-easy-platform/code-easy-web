@@ -1,19 +1,15 @@
 import React, { useCallback, memo } from 'react';
+import { set } from 'react-observing';
 
 import { TabButton } from './components/TabButton';
 import { IOpenedWindow } from '../../interfaces';
 import { FontSize } from '../../types';
 import './Tabs.css';
-import { set } from 'react-observing';
-
-interface OpenWindowWithIcon extends IOpenedWindow {
-    icon?: any;
-}
 
 interface TabsManagerProps {
     useClose?: boolean;
     fontSize?: FontSize;
-    tabs: OpenWindowWithIcon[];
+    tabs: IOpenedWindow[];
     onCloseWindowTab?(tabId: string): void;
     onContextWindowTab?(tabId: string): void;
 }

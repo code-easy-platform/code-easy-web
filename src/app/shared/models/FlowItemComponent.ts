@@ -1,10 +1,12 @@
-import { IObservable, observe } from "react-observing";
+import { IObservable, observe, set, transform } from "react-observing";
 import { Utils } from "code-easy-components";
 
 import { EFlowItemType, EItemType, IConnection, IProperty, TypeOfValues } from "./../components/external";
 import { BasicConfigurations } from "./BasicConfigurations";
 import { IFlowItemComponent } from "./../interfaces";
+import { PropertiesEditorStore } from "../stores";
 import { PropertieTypes } from "./../enuns";
+import { openModal } from "../services";
 
 /**
  * Fields passeds in constructor
@@ -278,6 +280,27 @@ export class FlowItemComponent extends BasicConfigurations<EItemType> implements
     ];
 
     return prop;
+  }
+
+  public get isSelected() {
+    const handleSelect = (value: boolean): boolean => {
+      if (value) {
+        set(PropertiesEditorStore, {
+          id: this.id,
+          name: this.label,
+          subname: this.type,
+          properties: this.properties.value.map(prop => {
+              return {
+                ...prop,
+                onPickerValueClick: observe(() => openModal(prop.id.value || ''))
+              };
+            })
+        });
+      }
+      return value;
+    }
+
+    return transform(super.isSelected, value => value, handleSelect);
   }
 
   private _connections: IObservable<IConnection[]>;
