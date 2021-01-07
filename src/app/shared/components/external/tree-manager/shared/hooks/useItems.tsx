@@ -1,14 +1,13 @@
-import { useCallback, useEffect, useState } from "react"
-import { IObservable, ISubscription, set, useObserver, useObserverValue } from "react-observing";
+import { useCallback, useContext, useEffect, useState } from "react"
+import { IObservable, ISubscription, set } from "react-observing";
 
-import { TreeItemsStore } from "../stores";
-
+import { ItemsContext } from './../contexts';
 
 /**
  * Get all base items
  */
 export const useBaseItems = () => {
-    const items = useObserverValue(TreeItemsStore);
+    const { items } = useContext(ItemsContext);
     return items.filter(item => !item.ascendantId.value);
 }
 
@@ -16,7 +15,7 @@ export const useBaseItems = () => {
  * Get all childs by id
  */
 export const useItemsByAscendentId = (id: string | undefined) => {
-    const items = useObserverValue(TreeItemsStore);
+    const { items } = useContext(ItemsContext);
     const [childs, setChilds] = useState(items.filter(item => item.ascendantId.value === id));
 
     useEffect(() => {
@@ -53,7 +52,7 @@ export const useItemsByAscendentId = (id: string | undefined) => {
 }
 
 export const useItems = () => {
-    const [items] = useObserver(TreeItemsStore);
+    const { items } = useContext(ItemsContext);
 
     const selectItem = useCallback((observeble: IObservable<boolean | undefined>, keepSelection?: boolean) => {
         if (keepSelection) {

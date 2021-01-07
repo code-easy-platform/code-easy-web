@@ -16,20 +16,29 @@ interface OutputPanelProps {
     problems?: ITreeItem[];
     output?: ITreeItem[];
 }
-export const OutputPanel: React.FC<OutputPanelProps> = memo(({ notification = [], output = [], problems = [] }) => {
+export const OutputPanel: React.FC<OutputPanelProps> = memo(({ notification, output, problems }) => {
     const [currTab, setCurrtab] = useState(OutputTab.problems);
 
     return (
         <div className="flex1 background-panels flex-column">
             <div className="background-bars">
                 <TabGroup className="flex-justfy-start">
-                    <TabButtonSimple id="problems" onClick={() => setCurrtab(OutputTab.problems)} isSelected={currTab === OutputTab.problems}>
+                    <TabButtonSimple
+                        isSelected={currTab === OutputTab.problems}
+                        onClick={() => setCurrtab(OutputTab.problems)}
+                    >
                         Problems
                     </TabButtonSimple>
-                    <TabButtonSimple onClick={() => setCurrtab(OutputTab.output)} isSelected={currTab === OutputTab.output} id="output">
+                    <TabButtonSimple
+                        isSelected={currTab === OutputTab.output}
+                        onClick={() => setCurrtab(OutputTab.output)}
+                    >
                         Output
                     </TabButtonSimple>
-                    <TabButtonSimple onClick={() => setCurrtab(OutputTab.notifications)} isSelected={currTab === OutputTab.notifications} id="notifications">
+                    <TabButtonSimple
+                        isSelected={currTab === OutputTab.notifications}
+                        onClick={() => setCurrtab(OutputTab.notifications)}
+                    >
                         Notifications
                     </TabButtonSimple>
                 </TabGroup>
@@ -38,20 +47,72 @@ export const OutputPanel: React.FC<OutputPanelProps> = memo(({ notification = []
             <div className="flex1 overflow-auto">
                 {currTab === OutputTab.problems &&
                     <TreeManager
-                        items={problems}
                         configs={{
                             isUseDrag: false,
                             isUseDrop: false,
                         }}
+                        items={problems || [
+                            {
+                                description: observe("No problems detected"),
+                                label: observe("No problems detected"),
+                                isAllowedToggleNodeExpand: observe(false),
+                                isDisabledDoubleClick: observe(true),
+                                isDisabledSelect: observe(true),
+                                isDisabledDrag: observe(true),
+                                isDisabledDrop: observe(true),
+                                showExpandIcon: observe(false),
+                                isDisabledClick: observe(true),
+                                nodeExpanded: observe(false),
+                                isSelected: observe(false),
+                                id: observe(undefined),
+                                type: observe("ITEM"),
+
+                                icon: observe(undefined),
+                                iconSize: observe(undefined),
+                                hasError: observe(undefined),
+                                isEditing: observe(undefined),
+                                hasWarning: observe(undefined),
+                                isDisabled: observe(undefined),
+                                ascendantId: observe(undefined),
+                                canDropList: observe(undefined),
+                                useCustomIconToExpand: observe(undefined),
+                            }
+                        ]}
                     />
                 }
                 {currTab === OutputTab.output &&
                     <TreeManager
-                        items={output}
                         configs={{
                             isUseDrag: false,
                             isUseDrop: false,
                         }}
+                        items={output || [
+                            {
+                                description: observe("No output detected"),
+                                label: observe("No output detected"),
+                                isAllowedToggleNodeExpand: observe(false),
+                                isDisabledDoubleClick: observe(true),
+                                isDisabledSelect: observe(true),
+                                isDisabledDrag: observe(true),
+                                isDisabledDrop: observe(true),
+                                showExpandIcon: observe(false),
+                                isDisabledClick: observe(true),
+                                nodeExpanded: observe(false),
+                                isSelected: observe(false),
+                                id: observe(undefined),
+                                type: observe("ITEM"),
+
+                                icon: observe(undefined),
+                                iconSize: observe(undefined),
+                                hasError: observe(undefined),
+                                isEditing: observe(undefined),
+                                hasWarning: observe(undefined),
+                                isDisabled: observe(undefined),
+                                ascendantId: observe(undefined),
+                                canDropList: observe(undefined),
+                                useCustomIconToExpand: observe(undefined),
+                            }
+                        ]}
                     />
                 }
                 {currTab === OutputTab.notifications &&
@@ -60,7 +121,7 @@ export const OutputPanel: React.FC<OutputPanelProps> = memo(({ notification = []
                             isUseDrag: false,
                             isUseDrop: false,
                         }}
-                        items={/* notification ||  */[
+                        items={notification || [
                             {
                                 description: observe("No notifications detected"),
                                 label: observe("No notifications detected"),

@@ -51,7 +51,7 @@ export const HomePage = () => {
 
             <hr className="hr" />
 
-            <div className="flex1 fade-in" style={{ height: "calc(100vh - 60px)" }}>
+            <div className="flex1 fade-in" style={{ height: "calc(100vh - (var(--tool-bar-height) + var(--status-bar-height)))" }}>
                 <div className="background-panels flex-column" style={{ width: 350 }}>
                     <div className="flex-space-between">
                         <div>

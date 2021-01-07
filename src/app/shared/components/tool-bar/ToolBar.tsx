@@ -1,21 +1,20 @@
 import React, { useState, memo } from 'react';
-import { set, transform, useObserverValue } from 'react-observing';
+import { observe, set, transform, useObserver } from 'react-observing';
 import { VscHome, VscSymbolProperty } from 'react-icons/vsc';
 import { useHistory } from 'react-router-dom';
 
 import { PropertiesTab } from '../../../pages/editor/properties-tab/PropertiesTab';
-import { useEditorContext, useWindows } from '../../hooks';
+import { FlowItemsStore, WindowsStore } from '../../stores';
 import { TabButtonSimple, TabsManager } from '../tabs';
+import { useEditorContext } from '../../hooks';
 import { Modal } from '../modal';
 import './ToolBar.css';
 
 export const ToolBar: React.FC = memo(() => {
     const [isOpenModalProps, setIsOpenModalProps] = useState(false);
+    const [windows, setWindows] = useObserver(WindowsStore);
+    const { tabs } = useEditorContext();
     const history = useHistory();
-
-    const { project } = useEditorContext();
-    const tabs = useObserverValue(project.tabs);
-    const windows = useWindows();
 
     return (<>
         <div className="tool-bar background-bars">
@@ -42,7 +41,29 @@ export const ToolBar: React.FC = memo(() => {
             <TabsManager
                 tabs={windows}
                 onCloseWindowTab={windowId => {
-                    windows.forEach(window => set(window.isSelected, window.id.value === windowId));
+                    windows.forEach((window, index, array) => {
+                        if (window.id.value === windowId) {
+                            set(window.isSelected, false);
+
+                            if (array.length > 1) {
+                                if (index === 0) {
+                                    set(array[index + 1].isSelected, true);
+                                } else {
+                                    set(array[index - 1].isSelected, true);
+                                }
+                            }
+                        }
+                    });
+
+                    setWindows(oldWindws => {
+                        const newWindows = oldWindws.filter(window => window.id.value !== windowId);
+
+                        if (newWindows.length === 0) {
+                            set(FlowItemsStore, { items: observe([]) });
+                        }
+
+                        return newWindows;
+                    });
                 }}
             />
             <hr className="hr hr-vertical" />

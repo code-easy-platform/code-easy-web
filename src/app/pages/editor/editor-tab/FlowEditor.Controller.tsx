@@ -4,74 +4,32 @@ import { set, useObserverValue, observe, useSetObserver, ISubscription } from 'r
 
 import { FlowEditor, IFlowItem, IBreadCrumbButton, EItemType, EFlowItemType, parseEItemType, EItemTypeList } from '../../../shared/components/external';
 import { BackgroundEmpty, BackgroundEmptyLeft, BackgroundEmptyLeftToTop } from '../../../assets';
+import { CurrentFocusStore, FlowItemsStore } from '../../../shared/stores';
 import { EComponentType, ECurrentFocus } from '../../../shared/enuns';
 import { IContextItemList } from '../../../shared/interfaces';
 import { FlowItemComponent } from '../../../shared/models';
 import { openContextMenu } from '../../../shared/services';
-import { CurrentFocusStore } from '../../../shared/stores';
 import { useIdeConfigs } from '../../../shared/contexts';
 import { useEditorContext } from '../../../shared/hooks';
 
 const useEditingItem = () => {
     const [hasSomethingToEdit, setHasSomethingToEdit] = useState<boolean>(false);
     const [breadcamps, setBreadcamps] = useState<IBreadCrumbButton[]>([]);
-    const [flowItems, setFlowItems] = useState<IFlowItem[]>([]);
-
-    const { project } = useEditorContext();
-    const tabs = useObserverValue(project.tabs);
+    const selectedTreeItem = useObserverValue(FlowItemsStore);
+    const items = useObserverValue(selectedTreeItem.items);
+    const { tabs } = useEditorContext();
 
     useEffect(() => {
         const subscriptions: ISubscription[] = [];
 
-        tabs.forEach(tab => {
-            tab.items.value.forEach(treeItem => {
-                if (treeItem.isEditing.value) {
-                    setFlowItems(treeItem.items.value.map<IFlowItem>(flowItem => ({
-                        id: flowItem.id,
-                        top: flowItem.top,
-                        left: flowItem.left,
-                        icon: flowItem.icon,
-                        label: flowItem.label,
-                        width: flowItem.width,
-                        height: flowItem.height,
-                        itemType: flowItem.type,
-                        hasError: flowItem.hasError,
-                        hasWarning: flowItem.hasWarning,
-                        isSelected: flowItem.isSelected,
-                        isDisabled: flowItem.isDisabled,
-                        connections: flowItem.connections,
-                        description: flowItem.description,
-                        flowItemType: flowItem.flowItemType,
-                        isEnabledNewConnetion: flowItem.isEnabledNewConnetion,
-                        /* description: item.type.value !== EItemType.COMMENT
-                            ? selectedActionDescription?.value || item.description
-                            : item.properties.value?.find(prop => prop.propertieType.value === PropertieTypes.comment), */
-                    })));
-                }
-            });
+        setHasSomethingToEdit(tabs.some(tab => tab.items.value.length > 0));
 
-            subscriptions.push(tab.items.subscribe(items => {
-                items.forEach(treeItem => {
-                    if (treeItem.isEditing.value) {
-                        setFlowItems(treeItem.items.value.map<IFlowItem>(flowItem => ({
-                            id: flowItem.id,
-                            top: flowItem.top,
-                            left: flowItem.left,
-                            icon: flowItem.icon,
-                            label: flowItem.label,
-                            width: flowItem.width,
-                            height: flowItem.height,
-                            itemType: flowItem.type,
-                            hasError: flowItem.hasError,
-                            hasWarning: flowItem.hasWarning,
-                            isSelected: flowItem.isSelected,
-                            isDisabled: flowItem.isDisabled,
-                            connections: flowItem.connections,
-                            description: flowItem.description,
-                            flowItemType: flowItem.flowItemType,
-                            isEnabledNewConnetion: flowItem.isEnabledNewConnetion,
-                        })));
-
+        if (!selectedTreeItem.treeItemId) {
+            setBreadcamps([]);
+        } else {
+            tabs.forEach(tab => {
+                tab.items.value.forEach(treeItem => {
+                    if (treeItem.id.value === selectedTreeItem.treeItemId) {
                         setBreadcamps([
                             {
                                 label: tab.label,
@@ -82,8 +40,8 @@ const useEditingItem = () => {
                             {
                                 label: treeItem.label,
                                 onClick: observe(() => {
-                                    tabs.forEach(tabToUpdate => set(tabToUpdate.isEditing, tabToUpdate.id.value === tab.id.value));
                                     tabs.forEach(tabToUpdate => {
+                                        set(tabToUpdate.isEditing, tabToUpdate.id.value === tab.id.value)
                                         tabToUpdate.items.value.forEach(item => {
                                             set(item.isSelected, item.id.value === treeItem.id.value);
                                         });
@@ -91,44 +49,36 @@ const useEditingItem = () => {
                                 }),
                             }
                         ]);
-
-                        setHasSomethingToEdit(true);
                     }
-
-                    subscriptions.push(treeItem.isEditing.subscribe(isEditing => {
-                        if (isEditing) {
-                            setFlowItems(treeItem.items.value.map<IFlowItem>(flowItem => ({
-                                id: flowItem.id,
-                                top: flowItem.top,
-                                left: flowItem.left,
-                                icon: flowItem.icon,
-                                label: flowItem.label,
-                                width: flowItem.width,
-                                height: flowItem.height,
-                                itemType: flowItem.type,
-                                hasError: flowItem.hasError,
-                                hasWarning: flowItem.hasWarning,
-                                isSelected: flowItem.isSelected,
-                                isDisabled: flowItem.isDisabled,
-                                connections: flowItem.connections,
-                                description: flowItem.description,
-                                flowItemType: flowItem.flowItemType,
-                                isEnabledNewConnetion: flowItem.isEnabledNewConnetion,
-                            })));
-                        }
-                    }));
                 });
-            }));
-        });
+            });
+        }
 
         return () => subscriptions.forEach(subs => subs?.unsubscribe());
-    }, [tabs]);
+    }, [tabs, selectedTreeItem.treeItemId]);
 
     return {
-        flowItems,
         breadcamps,
         hasSomethingToEdit,
-        hasSomethingEditing: !!(flowItems.length > 0),
+        hasSomethingEditing: !!(items.length > 0),
+        flowItems: items.map<IFlowItem>(flowItem => ({
+            id: flowItem.id,
+            top: flowItem.top,
+            left: flowItem.left,
+            icon: flowItem.icon,
+            label: flowItem.label,
+            width: flowItem.width,
+            height: flowItem.height,
+            itemType: flowItem.type,
+            hasError: flowItem.hasError,
+            hasWarning: flowItem.hasWarning,
+            isSelected: flowItem.isSelected,
+            isDisabled: flowItem.isDisabled,
+            connections: flowItem.connections,
+            description: flowItem.description,
+            flowItemType: flowItem.flowItemType,
+            isEnabledNewConnetion: flowItem.isEnabledNewConnetion,
+        })),
     };
 }
 

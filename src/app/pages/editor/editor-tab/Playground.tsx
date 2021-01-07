@@ -20,8 +20,8 @@ export const Playground: React.FC = memo(() => {
                     bottom={
                         <div className="flex1 z1">
                             <OutputPanel
-                                problems={[]}
-                                output={[]}
+                                // problems={[]}
+                                // output={[]}
                             />
                         </div>
                     }

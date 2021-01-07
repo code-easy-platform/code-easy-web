@@ -12,7 +12,7 @@ export const Editor: React.FC = () => {
                 <ToolBar />
                 <hr className="hr" />
 
-                <div className="fade-in" style={{ height: "calc(100vh - 62px)" }}>
+                <div className="fade-in" style={{ height: "calc(100vh - (var(--tool-bar-height) + var(--status-bar-height)))" }}>
                     <Playground />
                 </div>
 

@@ -1,12 +1,12 @@
 import { IObservable, observe, set, transform } from "react-observing";
 import { Utils } from "code-easy-components";
 
+import { FlowItemsStore, PropertiesEditorStore, WindowsStore } from "../stores";
 import { IFlowItemComponent, ITreeItemComponent } from "./../interfaces";
 import { IProperty, TypeOfValues } from "./../components/external";
 import { EComponentType, PropertieTypes } from "./../enuns";
 import { BasicConfigurations } from "./BasicConfigurations";
 import { FlowItemComponent } from "./FlowItemComponent";
-import { PropertiesEditorStore } from "../stores";
 import { openModal } from "../services";
 
 /**
@@ -64,23 +64,55 @@ export class TreeItemComponent extends BasicConfigurations<EComponentType> imple
 
   public get isSelected(): IObservable<boolean> {
     const handleSelect = (value: boolean): boolean => {
-      if (value) {
+      if (value && PropertiesEditorStore.value?.id.value !== this.id.value) {
         set(PropertiesEditorStore, {
           id: this.id,
           name: this.label,
           subname: this.type,
           properties: this.properties.value.map(prop => {
-              return {
-                ...prop,
-                onPickerValueClick: observe(() => openModal(prop.id.value || ''))
-              };
-            })
+            return {
+              ...prop,
+              onPickerValueClick: observe(() => openModal(prop.id.value || ''))
+            };
+          })
         });
       }
       return value;
     }
 
     return transform(super.isSelected, value => value, handleSelect);
+  }
+
+  public get isEditing(): IObservable<boolean> {
+    const handleEdit = (value: boolean): boolean => {
+      if (value) {
+        if (!WindowsStore.value.some(window => window.id.value === this.id.value)) {
+          set(WindowsStore, oldWindows => {
+            return [
+              ...oldWindows,
+              {
+                icon: this.icon,
+                title: this.label,
+                hasError: this.hasError,
+                isSelected: this.isEditing,
+                hasWarning: this.hasWarning,
+                description: this.description,
+                id: transform(this.id, id => String(id), id => id),
+              }
+            ];
+          });
+        }
+
+        set(FlowItemsStore, {
+          treeItemId: this.id.value,
+          items: this.items,
+        });
+      }
+
+      return value;
+    }
+
+    return transform(super.isEditing, value => value, handleEdit);
   }
 
   constructor(props: IConstructor) {
