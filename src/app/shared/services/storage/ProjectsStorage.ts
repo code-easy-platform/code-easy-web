@@ -519,16 +519,18 @@ export class ProjectsStorage {
     }
 
     /** Get a project by id */
-    public static getProjectById(id?: string): Project {
-        const projects = ProjectsStorage.getProjects();
+    public static getProjectById(id?: string): Promise<Project> {
+        return new Promise(resolve => {
+            const projects = ProjectsStorage.getProjects();
 
-        let project = projects.find(proj => proj.id.value === id);
+            let project = projects.find(proj => proj.id.value === id);
 
-        if (project) {
-            return project;
-        } else {
-            return new Project({ properties: [], tabs: [], type: EProjectType.api });
-        }
+            if (project) {
+                return resolve(project);
+            } else {
+                return resolve(new Project({ properties: [], tabs: [], type: EProjectType.api }));
+            }
+        });
     }
 
     /** Remove a project by id from localstorage */

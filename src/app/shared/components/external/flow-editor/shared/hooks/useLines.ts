@@ -1,18 +1,18 @@
 import { useEffect, useState } from "react";
-import { ISubscription, useObserverValue } from "react-observing";
+import { ISubscription } from "react-observing";
 
 import { IConnection } from "../interfaces";
-import { FlowItemsState } from "../stores";
+import { useItems } from "../hooks";
 
 export const useLines = () => {
-    const items = useObserverValue(FlowItemsState);
+    const itemsStore = useItems();
 
     const [lines, setLines] = useState<IConnection[]>([]);
     useEffect(() => {
-        const conns: IConnection[] = [];
         const subscriptions: ISubscription[] = [];
+        const conns: IConnection[] = [];
 
-        items.forEach(item => {
+        itemsStore.value.forEach(item => {
             item.connections.value.forEach(connection => {
                 conns.push(connection);
             });
@@ -21,7 +21,7 @@ export const useLines = () => {
                 setLines(oldLines => {
                     oldLines = [];
 
-                    items.forEach(_item => {
+                    itemsStore.value.forEach(_item => {
                         _item.connections.value.forEach(connection => {
                             oldLines.push(connection);
                         });
@@ -35,12 +35,12 @@ export const useLines = () => {
         setLines(conns);
 
         return () => subscriptions.forEach(subs => subs?.unsubscribe())
-    }, [items]);
+    }, [itemsStore.value]);
 
     useEffect(() => {
         const subscriptions: ISubscription[] = [];
 
-        items.forEach(item => {
+        itemsStore.value.forEach(item => {
             subscriptions.push(
                 item.connections.subscribe(connections => {
                     connections.forEach(connection => {
@@ -68,7 +68,7 @@ export const useLines = () => {
         });
 
         return () => subscriptions.forEach(subscription => subscription.unsubscribe());
-    }, [items]);
+    }, [itemsStore.value]);
 
     return lines.map(line => ({
         id: line.id.value,

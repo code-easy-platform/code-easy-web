@@ -1,6 +1,6 @@
 import { IObservable } from "react-observing";
 
-import { EItemType, IConnection, IFlowItem } from "./../../components/external";
+import { EItemType, IConnection, IFileContent, IFlowItem } from "./../../components/external";
 import { IBasicConfigurations } from "./IBasicConfigurations";
 
 /**
@@ -11,6 +11,10 @@ export interface IFlowItemComponent extends IBasicConfigurations<EItemType>, Omi
      * Used to name a record visually only
      */
     label: IObservable<string>;
+    /**
+     * Used to display some image
+     */
+    icon: IObservable<IFileContent | undefined>;
     /** 
      * Indicates where the item is selected in the tree.
      */

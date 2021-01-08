@@ -88,7 +88,7 @@ export const Acorn: React.FC<FlowComponentProps> = ({ item, parentRef, useEvents
                 top={top}
             />
             <ImageView
-                imageSrc={icon}
+                imageSrc={typeof icon === 'string' ? icon : String(icon?.content)}
                 height={height}
                 width={width}
                 left={left}

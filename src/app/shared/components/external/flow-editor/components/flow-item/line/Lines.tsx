@@ -10,7 +10,7 @@ interface ILinesProps {
      * Executed when a item is dropped in the line
      * @param item Item dropped
      * @param monitor Dnd current monitor
-     * @param connectionId Used to idicate the line target  
+     * @param connectionId Used to idicate the line target
      */
     onDropItem?(item: any, monitor: DropTargetMonitor, connectionId: string | undefined): void;
     /**
@@ -28,9 +28,9 @@ export const Lines: React.FC<ILinesProps> = ({ parentRef, onContextMenu, onDropI
                 id={id}
                 key={index}
                 parentRef={parentRef}
+                onDropItem={onDropItem}
                 originIdStore={originId}
                 targetIdStore={targetId}
-                onDropItem={onDropItem}
                 onContextMenu={onContextMenu}
                 allowedsInDrop={typesAllowedToDrop}
             />

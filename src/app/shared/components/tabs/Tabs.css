@@ -14,7 +14,6 @@
 }
 
 .window-tabs-manager .window-tab-item {
-    background-color: #ffffff0f;
     max-width: 200px;
 }
 
@@ -30,6 +29,11 @@
     height: var(--size-g);
     width: var(--size-g);
     padding: unset;
+}
+
+.window-tabs-manager .window-tab-item.window-tab-highlighted {
+    background-color: #ffffff0f;
+    opacity: 1;
 }
 
 .window-tabs-manager .window-tab-item.window-tab-selected {

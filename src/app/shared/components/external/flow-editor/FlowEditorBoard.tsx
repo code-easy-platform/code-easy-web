@@ -4,11 +4,10 @@ import { DropTargetMonitor } from 'react-dnd';
 import { Utils } from 'code-easy-components';
 
 import { ICoords, IFlowItem, IDroppableItem, IFlowEditorBoardProps, IConnection } from './shared/interfaces';
+import { useConfigs, useDeleteSelecteds, useItems, useSelectItemById } from './shared/hooks';
 import { EmptyFeedback, FlowItem, SelectorArea, EditorPanel, Toolbar } from './components';
 import BreandCrumbs from './components/breadcrumbs/BreandCrumbs';
-import { useConfigs, useDeleteSelecteds, useSelectItemById } from './shared/hooks';
 import { Lines } from './components/flow-item/line/Lines';
-import { FlowItemsState } from './shared/stores';
 
 export const FlowEditorBoard: React.FC<IFlowEditorBoardProps> = (props) => {
     const {
@@ -22,10 +21,11 @@ export const FlowEditorBoard: React.FC<IFlowEditorBoardProps> = (props) => {
     const { id, childrenWhenItemsEmpty = "Nothing here to edit", breadcrumbs = [], toolItems = [] } = props;
     const { onMouseEnter, onMouseLeave, onContextMenu, onDropItem, onFocus, onChangeItems } = props;
     const { onAnyKeyDown, onKeyDownCtrlC, onKeyDownCtrlD, onKeyDownCtrlV } = props;
-    const [items, setItems] = useObserver(FlowItemsState);
     const deleteSelectedItems = useDeleteSelecteds();
     const boardRef = useRef<SVGSVGElement>(null);
     const selectItemById = useSelectItemById();
+    const itemsStore = useItems();
+    const [items, setItems] = useObserver(itemsStore);
 
     const handleOnCoordsChange = useCallback((coords: ICoords) => {
 

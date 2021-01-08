@@ -10,10 +10,11 @@ interface TabButtonProps extends IOpenedWindow {
     onSelect?(tabId: string | undefined): void;
     onClose?(tabId: string | undefined): void;
     icon: IObservable<IFileContent | string>;
+    isHighlighted?: boolean;
     useClose?: boolean;
     className?: string;
 }
-export const TabButton: React.FC<TabButtonProps> = ({ className, useClose = true, onSelect, onContext, onClose, ...props }) => {
+export const TabButton: React.FC<TabButtonProps> = ({ className, useClose = true, isHighlighted = false, onSelect, onContext, onClose, ...props }) => {
     const description = useObserverValue(props.description);
     const isSelected = useObserverValue(props.isSelected);
     const hasWarning = useObserverValue(props.hasWarning);
@@ -46,8 +47,6 @@ export const TabButton: React.FC<TabButtonProps> = ({ className, useClose = true
         } else {
             onSelect && onSelect(id);
         }
-
-        onSelect && onSelect(id);
     }, [id, onClose, onSelect]);
 
     const handleClose = useCallback((e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
@@ -75,7 +74,7 @@ export const TabButton: React.FC<TabButtonProps> = ({ className, useClose = true
                 onKeyDown={handleKeyDown}
                 onMouseDown={handleMouseDown}
                 onContextMenu={handleContext}
-                className={`window-tab-item flex-items-center outline-none opacity-6 cursor-pointer border-none ${isSelected ? "window-tab-selected" : ""} ${className}`}
+                className={`window-tab-item flex-items-center outline-none opacity-6 cursor-pointer border-none ${isSelected ? "window-tab-selected" : isHighlighted ? "window-tab-highlighted" : ""} ${className}`}
             >
                 <img height="50%" className="margin-left-s" style={{ maxWidth: 20 }} src={getIconContent(icon)} alt="" />
                 <span className={`padding-horizontal-s text-ellipsis ${hasError ? "main-text-error-color" : hasWarning ? "main-text-warning-color" : ""}`}>{title}</span>

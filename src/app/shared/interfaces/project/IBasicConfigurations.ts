@@ -1,6 +1,6 @@
 import { IObservable } from "react-observing";
 
-import { IProperty, EItemType } from "./../../components/external";
+import { IProperty, EItemType, IFileContent } from "./../../components/external";
 import { EComponentType, EProjectType } from "./../../enuns";
 
 /**
@@ -24,9 +24,9 @@ export interface IBasicConfigurations<T = EComponentType | EProjectType | EItemT
      */
     readonly name: IObservable<string>;
     /**
-     * Used to visually represent the record
+     * Used to display some image
      */
-    icon: IObservable<any | undefined>;
+    icon: IObservable<IFileContent | undefined>;
     /**
      * Uuid used as identifier
      * 

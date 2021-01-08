@@ -11,46 +11,32 @@ export interface ICodeEditorContext {
 export const CodeEditorContext = React.createContext<ICodeEditorContext>({} as ICodeEditorContext);
 
 export const CodeEditorProvider: React.FC = ({ children }) => {
-
     const { id } = useParams<{ id: string }>();
     const history = useHistory();
 
-    /** Usada para atualizar o state global do projeto e para atualizar o localstorage */
-    /* const handleSetProject = useCallback((project: Project) => {
-
-        // Valida o projeto e encontra os problemas
-        // project = ProblemsHelper.getProblems(project).project;
-
-        // Salva a nova versão do projeto no local storage
-        ProjectsStorage.setProjectById(project);
-    }, []); */
-
-    const [state, setState] = useState<ICodeEditorContext>({
-        project: ProjectsStorage.getProjectById(id),
-    });
+    const [project, setProject] = useState<Project>();
     useEffect(() => {
-        if (id === undefined) history.replace('/');
-
-        setState(oldState => ({
-            ...oldState,
-            project: ProjectsStorage.getProjectById(id)
-        }));
-
+        if (id) {
+            ProjectsStorage.getProjectById(id)
+                .then(setProject)
+                .catch(console.error);
+        } else {
+            history.replace('/');
+        }
     }, [id, history]);
 
+    // Subscribe in the label of the project to change the browser tab title
     useEffect(() => {
-        return state.project.label.subscribe(label => {
+        return project?.label.subscribe(label => {
             document.title = label === '' ? 'Code Easy' : label + ' - Code Easy'
         }).unsubscribe;
-    }, [state.project]);
+    }, [project]);
+
+    if (!project) return <CenterLoadingIndicator />;
 
     return (
-        <CodeEditorContext.Provider value={state}>
-            {
-                state.project
-                    ? children
-                    : <CenterLoadingIndicator />
-            }
+        <CodeEditorContext.Provider value={{ project }}>
+            {children}
         </CodeEditorContext.Provider>
     );
 }

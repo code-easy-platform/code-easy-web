@@ -1,12 +1,12 @@
 import { useEffect, useState } from "react";
-import { ISubscription, useObserverValue } from "react-observing";
+import { ISubscription } from "react-observing";
 
-import { FlowItemsState } from "../stores";
 import { IConnection } from "../interfaces";
+import { useItems } from "./useFlowItems";
 import { EFlowItemType } from "../enums";
 
 export const useLineProps = (id: string | undefined, originId: string, targetId: string) => {
-    const items = useObserverValue(FlowItemsState);
+    const itemsStore = useItems();
 
     const [originFlowItemType, setOriginFlowItemType] = useState<EFlowItemType>(EFlowItemType.acorn);
     const [originConnections, setOriginConnections] = useState<IConnection[]>([]);
@@ -17,7 +17,7 @@ export const useLineProps = (id: string | undefined, originId: string, targetId:
     const [originTop, setOriginTop] = useState<number>(0);
     useEffect(() => {
         const subscriptions: ISubscription[] = [];
-        const originItem = items.find(item => item.id.value === originId);
+        const originItem = itemsStore.value.find(item => item.id.value === originId);
         if (originItem) {
             subscriptions.push(originItem.height.subscribe((value = 0) => setOriginHeight(value)));
             subscriptions.push(originItem.width.subscribe((value = 0) => setOriginWidth(value)));
@@ -36,7 +36,7 @@ export const useLineProps = (id: string | undefined, originId: string, targetId:
             setOriginTop(originItem.top.value);
         }
         return () => subscriptions.forEach(subscription => subscription.unsubscribe());
-    }, [items, originId]);
+    }, [itemsStore.value, originId]);
 
 
     const [targetConnections, setTargetConnections] = useState<IConnection[]>([]);
@@ -46,7 +46,7 @@ export const useLineProps = (id: string | undefined, originId: string, targetId:
     const [targetTop, setTargetTop] = useState<number>(0);
     useEffect(() => {
         const subscriptions: ISubscription[] = [];
-        const targetItem = items.find(item => item.id.value === targetId);
+        const targetItem = itemsStore.value.find(item => item.id.value === targetId);
         if (targetItem) {
             subscriptions.push(targetItem.height.subscribe((value = 0) => setTargetHeight(value)));
             subscriptions.push(targetItem.width.subscribe((value = 0) => setTargetWidth(value)));
@@ -61,7 +61,7 @@ export const useLineProps = (id: string | undefined, originId: string, targetId:
             setTargetTop(targetItem.top.value);
         }
         return () => subscriptions.forEach(subscription => subscription.unsubscribe());
-    }, [items, targetId]);
+    }, [itemsStore.value, targetId]);
 
 
     const [connectionDescription, setConnectionDescription] = useState<string | undefined>();

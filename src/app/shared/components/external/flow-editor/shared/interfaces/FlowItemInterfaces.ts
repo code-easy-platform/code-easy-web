@@ -22,16 +22,16 @@ export interface IConnection {
      */
     isSelected: IObservable<boolean>;
     /**
-     * Identifier of the element that is connected by the line 
+     * Identifier of the element that is connected by the line
      */
     originId: IObservable<string>;
     /**
-     * Identifier of the element that is connected by the line 
+     * Identifier of the element that is connected by the line
      */
     targetId: IObservable<string>;
 }
 /**
- * 
+ *
  */
 export interface IBasicFlowItem {
     top: IObservable<number | 0>;
@@ -47,7 +47,7 @@ export interface IBasicFlowItem {
     flowItemType: IObservable<EFlowItemType>;
 }
 /**
- * 
+ *
  */
 export interface ILine {
     /**
@@ -58,20 +58,30 @@ export interface ILine {
     targetId?: IObservable<string | undefined>;
 }
 /**
- * 
+ * Default file structure
+ */
+interface IFileContent {
+    content?: string | ArrayBuffer | null,
+    lastModified?: number,
+    name?: string,
+    size?: number,
+    type?: string,
+}
+/**
+ *
  */
 export interface IFlowItem extends IBasicFlowItem {
-    icon: IObservable<any | undefined>;
-    width: IObservable<number | undefined>;
-    height: IObservable<number | undefined>;
     /**
      * Used to define a type of the item.
      * Ex: start, assign, foreach, etc...
      */
     itemType?: IObservable<string>;
+    width: IObservable<number | undefined>;
+    height: IObservable<number | undefined>;
     connections: IObservable<IConnection[]>;
     hasError: IObservable<boolean | undefined>;
     hasWarning: IObservable<boolean | undefined>;
+    icon: IObservable<string | IFileContent | undefined>;
     /**
      * Used to validate that this item can be connected with another item
      */

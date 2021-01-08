@@ -10,10 +10,11 @@ interface TabsManagerProps {
     useClose?: boolean;
     fontSize?: FontSize;
     tabs: IOpenedWindow[];
+    isHighlighted?: boolean;
     onCloseWindowTab?(tabId: string): void;
     onContextWindowTab?(tabId: string): void;
 }
-export const TabsManager: React.FC<TabsManagerProps> = memo(({ tabs, useClose, fontSize = 'xg', onContextWindowTab, onCloseWindowTab }) => {
+export const TabsManager: React.FC<TabsManagerProps> = memo(({ tabs, useClose, isHighlighted = false, fontSize = 'xg', onContextWindowTab, onCloseWindowTab }) => {
 
     const onWeel = useCallback((e: React.WheelEvent<HTMLElement>) => {
         if (e.deltaY > 0) {
@@ -32,6 +33,7 @@ export const TabsManager: React.FC<TabsManagerProps> = memo(({ tabs, useClose, f
                     icon={tab.icon}
                     useClose={useClose}
                     onClose={onCloseWindowTab}
+                    isHighlighted={isHighlighted}
                     onContext={onContextWindowTab}
                     onSelect={() => {
                         tabs.forEach(oldTab => set(oldTab.isSelected, oldTab.id.value === tab.id.value))

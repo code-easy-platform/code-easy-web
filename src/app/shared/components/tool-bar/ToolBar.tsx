@@ -40,6 +40,7 @@ export const ToolBar: React.FC = memo(() => {
             <hr className="hr hr-vertical" />
             <TabsManager
                 tabs={windows}
+                isHighlighted={true}
                 onCloseWindowTab={windowId => {
                     windows.forEach((window, index, array) => {
                         if (window.id.value === windowId) {
