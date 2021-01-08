@@ -34,18 +34,6 @@ export enum EComponentType {
      */
     extension = "Extension",
     /**
-     * Aba do sistema onde é definido as rotas das APIs
-    */
-    tabRoutes = "Routes tab",
-    /**
-     * Aba do sistema onde é definido as actions globais
-    */
-    tabActions = "Actions tab",
-    /**
-     * Aba do sistema onde é definido as tabelas ou as estruturas de dados
-    */
-    tabDates = "Data tab",
-    /**
      * Tipa um item que será considerado um metodo que consome API
      */
     routerConsume = "Router consume",

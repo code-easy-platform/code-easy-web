@@ -2,9 +2,9 @@ import { IObservable, observe, set, transform } from "react-observing";
 import { Utils } from "code-easy-components";
 
 import { FlowItemsStore, PropertiesEditorStore, WindowsStore } from "../stores";
+import { EComponentType, ETabType, PropertieTypes } from "./../enuns";
 import { IProperty, TypeOfValues } from "./../components/external";
 import { BasicConfigurations } from "./BasicConfigurations";
-import { EComponentType, PropertieTypes } from "./../enuns";
 import { ITreeItemComponent, ITab } from "./../interfaces";
 import { TreeItemComponent } from "./TreeItemComponent";
 import { openModal } from "../services";
@@ -15,14 +15,14 @@ import { openModal } from "../services";
 interface IConstructor {
   items: ITreeItemComponent[];
   properties: IProperty[];
-  type: EComponentType;
+  type: ETabType;
   id?: string;
 }
 
 /**
  * Represents a full Tab implementation
  */
-export class Tab extends BasicConfigurations<EComponentType> implements ITab {
+export class Tab extends BasicConfigurations<ETabType> implements ITab {
   public items: IObservable<TreeItemComponent[]>;
 
   public addItem(label: string, type: EComponentType, ascendantId?: string) {

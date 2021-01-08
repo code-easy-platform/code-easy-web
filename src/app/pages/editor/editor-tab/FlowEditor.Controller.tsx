@@ -60,7 +60,7 @@ const useEditingItem = () => {
     return {
         breadcamps,
         hasSomethingToEdit,
-        hasSomethingEditing: !!(items.length > 0),
+        hasSomethingEditing: !!selectedTreeItem.treeItemId,
         flowItems: items.map<IFlowItem>(flowItem => ({
             id: flowItem.id,
             top: flowItem.top,

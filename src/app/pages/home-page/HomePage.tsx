@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { Utils, IconOpenGithub, IconDownload, IconImport, IconConfig } from 'code-easy-components';
+import { VscHome, VscSettingsGear, VscCloudDownload, VscCloudUpload, VscGithub } from 'react-icons/vsc';
 import { useHistory } from 'react-router-dom';
-import { VscHome } from 'react-icons/vsc';
+import { Utils } from 'code-easy-components';
 import dataformat from 'dateformat';
 
 import { BottonStatusBar, TabButtonSimple } from '../../shared/components';
@@ -60,7 +60,7 @@ export const HomePage = () => {
                                 onClick={() => setOpenConfig(true)}
                                 style={{ height: 'var(--tool-bar-height)' }}
                                 className="btn background-transparent outline-none padding-s"
-                                children={<img src={IconConfig} style={{ height: "70%" }} alt={IconConfig} draggable="false" />}
+                                children={<VscSettingsGear className="padding-horizontal-s" style={{ height: 15, width: 15 }} />}
                             />
                         </div>
                         <div>
@@ -69,92 +69,101 @@ export const HomePage = () => {
                                 style={{ height: 'var(--tool-bar-height)' }}
                                 title={"Import a list of projects from your files"}
                                 className="btn background-transparent outline-none padding-s"
-                                children={<img src={IconImport} style={{ height: "70%" }} alt={IconOpenGithub} draggable="false" />}
+                                children={<VscCloudUpload className="padding-horizontal-s" style={{ height: 15, width: 15 }} />}
                             />
                             <button
                                 disabled
                                 title={"Download your projects"}
                                 style={{ height: 'var(--tool-bar-height)' }}
                                 className="btn background-transparent outline-none padding-s"
+                                children={<VscCloudDownload className="padding-horizontal-s" style={{ height: 15, width: 15 }} />}
                                 onClick={() => Utils.downloadFile('MyProjects', 'json', ProjectParser.stringifyProjects(projects))}
-                                children={<img src={IconDownload} style={{ height: "70%" }} alt={IconOpenGithub} draggable="false" />}
                             />
                             <button
                                 title={"Open on github"}
                                 style={{ height: 'var(--tool-bar-height)' }}
                                 className="btn background-transparent outline-none padding-s"
                                 onClick={() => window.open('https://github.com/code-easy-platform')}
-                                children={<img src={IconOpenGithub} style={{ height: "70%" }} alt={IconOpenGithub} draggable="false" />}
+                                children={<VscGithub className="padding-horizontal-s" style={{ height: 15, width: 15 }} />}
                             />
                         </div>
                     </div>
                     <hr className="hr" />
-                    <div className="flex1 padding-s padding-top-m flex-column overflow-auto overflow-contrast">
-                        <div>Recents</div>
-                        <div className="flex1 padding-top-s padding-top-m flex-column">
-                            {projects.sort((a, b) => Utils.compareDate(b.updatedDate.value, a.updatedDate.value)).map((card, index) => {
-                                return <CardItem
-                                    listMode
-                                    key={index}
-                                    onDelete={() => setProjects(ProjectsStorage.removeProjectById(card.id.value))}
-                                    onClick={() => {
-                                        ProjectsStorage.setProjectById(card);
-                                        history.push(`/editor/${card.id.value}`);
-                                    }}
-                                    item={{
-                                        type: card.type.value,
-                                        name: card.label.value,
-                                        id: card.id.value || '',
-                                        version: card.version.value,
-                                        description: card.description.value,
-                                        lastUpdate: dataformat(new Date(card.updatedDate.value), "yyyy-mm-dd hh:mm"),
-                                    }}
-                                />
-                            })}
-                            {projects.length === 0 && <span style={{ opacity: 0.5 }}>No recently open items to show...</span>}
-                        </div>
-                    </div>
+                    <nav className="flex1 padding-s padding-top-m flex-column overflow-auto overflow-contrast">
+                        <header>Recents</header>
+                        <main className="flex1 padding-top-s padding-top-m flex-column">
+                            <ul>
+                                {(projects.length === 0 && !isAdding) && (
+                                    <button
+                                        type="button"
+                                        onClick={() => setIsAdding(true)}
+                                        className="cursor-pointer hover padding-horizontal-s padding-xs background-transparent border-default text-white"
+                                    >New project</button>
+                                )}
+                                {projects.sort((a, b) => Utils.compareDate(b.updatedDate.value, a.updatedDate.value)).map((card, index) => {
+                                    return <CardItem
+                                        listMode
+                                        key={index}
+                                        onClick={() => history.push(`/editor/${card.id.value}`)}
+                                        onDelete={() => setProjects(ProjectsStorage.removeProjectById(card.id.value))}
+                                        item={{
+                                            type: card.type.value,
+                                            name: card.label.value,
+                                            id: card.id.value || '',
+                                            version: card.version.value,
+                                            description: card.description.value,
+                                            lastUpdate: dataformat(new Date(card.updatedDate.value), "yyyy-mm-dd hh:mm"),
+                                        }}
+                                    />
+                                })}
+                            </ul>
+                        </main>
+                    </nav>
                 </div>
                 <div className="full-width padding-xg flex-column">
-                    <div>
-                        <label htmlFor="projects-seach" className="main-header codicon-word-wrap">My projects</label>
-                    </div>
-                    <div>
-                        <input id="projects-seach" className="padding-m margin-top-m" onChange={e => setFilter(e.target.value)} style={{ width: '40%' }} placeholder="Type here to search ..." />
-                        <button
-                            disabled={isAdding}
-                            children="New project"
-                            onClick={() => setIsAdding(true)}
-                            className={`outline-none padding-m background-primary border-none margin-top-m margin-left-s border-radius cursor-pointer text-white hover active ${isAdding ? 'opacity-5' : ''}`}
-                        />
-                    </div>
+                    <section>
+                        <header>
+                            <label htmlFor="projects-seach" className="main-header codicon-word-wrap">My projects</label>
+                        </header>
+                        <main>
+                            <input id="projects-seach" className="padding-m margin-top-m" onChange={e => setFilter(e.target.value)} style={{ width: '40%' }} placeholder="Type here to search ..." />
+                            <button
+                                disabled={isAdding}
+                                children="New project"
+                                onClick={() => setIsAdding(true)}
+                                className={`outline-none padding-m background-primary border-none margin-top-m margin-left-s border-radius cursor-pointer text-white hover active ${isAdding ? 'opacity-5' : ''}`}
+                            />
+                        </main>
+                    </section>
                     <hr className="hr margin-bottom-s margin-top-s" style={{ backgroundColor: 'var(--main-background-highlighted)' }} />
-                    <div className="flex-wrap overflow-auto">
-                        {isAdding && <CardNewProject
-                            onSave={addNewProject}
-                            onCancel={() => setIsAdding(false)}
-                        />}
-                        {projects
-                            .filter(item => (item.label.value.toLowerCase().indexOf(filter.toLowerCase()) >= 0))
-                            .sort((a, b) => a.label.value.localeCompare(b.label.value))
-                            .map((card, index) => {
-                                return <CardItem
-                                    key={index}
-                                    onClick={() => history.push(`/editor/${card.id.value}`)}
-                                    onDelete={() => setProjects(ProjectsStorage.removeProjectById(card.id.value))}
-                                    item={{
-                                        type: card.type.value,
-                                        name: card.label.value,
-                                        id: card.id.value || '',
-                                        version: card.version.value,
-                                        description: card.description.value,
-                                        lastUpdate: dataformat(new Date(card.updatedDate.value), "yyyy-mm-dd hh:mm"),
-                                    }}
-                                />
-                            })
-                        }
-                        {(projects.length === 0 && !isAdding) && <div className="font-size-m margin-s" style={{ opacity: 0.5 }}>No items to ahow...</div>}
-                    </div>
+                    <section className="overflow-auto">
+                        <ul className="display-flex flex-wrap">
+                            {(projects.length === 0 && !isAdding) && <span className="margin-s opacity-5 font-size-g">No items to show...</span>}
+                            {isAdding && <CardNewProject onSave={addNewProject} onCancel={() => setIsAdding(false)} />}
+                            {projects
+                                .filter(item => (item.label.value.toLowerCase().indexOf(filter.toLowerCase()) >= 0))
+                                .sort((a, b) => a.label.value.localeCompare(b.label.value))
+                                .map((card, index) => {
+                                    return (
+                                        <CardItem
+                                            key={index}
+                                            onClick={() => history.push(`/editor/${card.id.value}`)}
+                                            onDelete={() => setProjects(ProjectsStorage.removeProjectById(card.id.value))}
+                                            item={{
+                                                type: card.type.value,
+                                                name: card.label.value,
+                                                id: card.id.value || '',
+                                                version: card.version.value,
+                                                icon: card.icon.value.content,
+                                                description: card.description.value,
+                                                lastUpdate: dataformat(new Date(card.updatedDate.value), "yyyy-mm-dd hh:mm"),
+                                            }}
+                                        />
+                                    );
+                                })
+                            }
+                        </ul>
+                    </section>
                 </div>
             </div>
 

@@ -1,7 +1,7 @@
 import { IconAction, IconRouter, Utils } from "code-easy-components";
 import { observe, set } from "react-observing";
 
-import { EComponentType, EProjectType, PropertieTypes, StorageEnum } from "./../../enuns";
+import { EProjectType, ETabType, PropertieTypes, StorageEnum } from "./../../enuns";
 import { Project, Tab, ProjectParser } from "../../models";
 import { TypeOfValues } from "../../components/external";
 
@@ -12,7 +12,7 @@ const newProject = (name: string, version: string, type: EProjectType, descripti
         new Tab({
             items: [],
             id: Utils.getUUID(),
-            type: EComponentType.tabRoutes,
+            type: ETabType.tabRoutes,
             properties: [
                 {
                     value: observe(false),
@@ -82,8 +82,8 @@ const newProject = (name: string, version: string, type: EProjectType, descripti
                 },
                 {
                     id: observe(Utils.getUUID()),
+                    value: observe(ETabType.tabRoutes),
                     type: observe(TypeOfValues.bigstring),
-                    value: observe(EComponentType.tabRoutes),
                     name: observe(PropertieTypes.description),
                     propertieType: observe(PropertieTypes.description),
 
@@ -151,7 +151,7 @@ const newProject = (name: string, version: string, type: EProjectType, descripti
         new Tab({
             items: [],
             id: Utils.getUUID(),
-            type: EComponentType.tabActions,
+            type: ETabType.tabActions,
             properties: [
                 {
                     value: observe(false),
@@ -221,8 +221,8 @@ const newProject = (name: string, version: string, type: EProjectType, descripti
                 },
                 {
                     id: observe(Utils.getUUID()),
+                    value: observe(ETabType.tabActions),
                     type: observe(TypeOfValues.bigstring),
-                    value: observe(EComponentType.tabActions),
                     name: observe(PropertieTypes.description),
                     propertieType: observe(PropertieTypes.description),
 
@@ -356,11 +356,11 @@ const newProject = (name: string, version: string, type: EProjectType, descripti
             onPickerValueClick: observe(undefined),
         },
         {
-            value: observe(version),
             id: observe(Utils.getUUID()),
             type: observe(TypeOfValues.number),
             name: observe(PropertieTypes.version),
             propertieType: observe(PropertieTypes.version),
+            value: observe(version !== '' ? version : '0.0.1'),
 
             group: observe(undefined),
             suggestions: observe(undefined),
@@ -505,7 +505,6 @@ export class ProjectsStorage {
 
     /** Update in localstorage a list of projects */
     public static setProjectById(project: Project) {
-
         let projects: Project[] = ProjectsStorage.getProjects();
 
         let itemIndex = projects.findIndex(itemProject => itemProject.id.value === project.id.value);

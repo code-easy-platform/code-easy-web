@@ -51,7 +51,7 @@ export class ProjectConfigurations extends BasicConfigurations<EProjectType> imp
             return prop;
         }
 
-        prop = observe('');
+        prop = observe('0.0.1');
 
         this.properties.value = [
             ...this.properties.value,

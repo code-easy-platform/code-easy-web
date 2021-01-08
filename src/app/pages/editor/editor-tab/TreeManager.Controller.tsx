@@ -3,15 +3,15 @@ import { ISubscription, observe, useObserver, useObserverValue, useSetObserver }
 import { IconTrash, Utils } from 'code-easy-components';
 
 import { TreeManager, ITreeItem, CustomDragLayer } from '../../../shared/components/external';
+import { ECurrentFocus, EComponentType, ETabType, } from '../../../shared/enuns';
 import { AssetsService, openContextMenu } from '../../../shared/services';
-import { ECurrentFocus, EComponentType, } from '../../../shared/enuns';
 import { IContextItemList } from '../../../shared/interfaces';
 import { CurrentFocusStore } from '../../../shared/stores';
 import { useEditorContext } from '../../../shared/hooks';
 import { Tab } from '../../../shared/models';
 
 const useCurrentTab = () => {
-    const [currentTab, setCurrentTab] = useState<Tab>(new Tab({ items: [], type: EComponentType.tabRoutes, properties: [] }));
+    const [currentTab, setCurrentTab] = useState<Tab>(new Tab({ items: [], type: ETabType.tabRoutes, properties: [] }));
 
     const { project } = useEditorContext();
     const tabs = useObserverValue(project.tabs);
@@ -73,11 +73,13 @@ export const TreeManagerController: React.FC = () => {
     const treeManagerContextMenu = useCallback((itemId: string | undefined) => {
         let options: IContextItemList[] = [];
 
+        /** Add a new param */
         const addParam = (inputItemId: string | undefined, paramType: EComponentType.inputVariable | EComponentType.localVariable | EComponentType.outputVariable) => {
             const newName = Utils.newName('NewParam', itemsCurrent.map(item => item.label.value));
             currentTab.addItem(newName, paramType, inputItemId);
         }
 
+        /** Add a new route */
         const addRoute = (inputItemId: string | undefined, routerType: EComponentType.routerConsume | EComponentType.routerExpose) => {
             if (inputItemId === undefined) {
                 const newName = Utils.newName('NewRouter', itemsCurrent.map(item => item.label.value));
@@ -85,6 +87,7 @@ export const TreeManagerController: React.FC = () => {
             }
         }
 
+        /** Add a new global action */
         const addAction = (inputItemId: string | undefined) => {
             if (inputItemId === undefined) {
                 const newName = Utils.newName('NewAction', itemsCurrent.map(item => item.label.value));
@@ -92,7 +95,20 @@ export const TreeManagerController: React.FC = () => {
             }
         }
 
-        if (currentTab.type.value === EComponentType.tabRoutes) {
+        /** Add a new folder */
+        const addFolder = () => {
+            const newName = Utils.newName('NewFolder', itemsCurrent.map(item => item.label.value));
+            currentTab.addItem(newName, EComponentType.grouper);
+        }
+
+        options.push({
+            icon: AssetsService.getIcon(EComponentType.grouper),
+            disabled: itemId !== undefined,
+            action: () => addFolder(),
+            label: 'New folder',
+        });
+
+        if (currentTab.type.value === ETabType.tabRoutes) {
 
             options.push({
                 action: () => addRoute(itemId, EComponentType.routerExpose),
@@ -108,7 +124,7 @@ export const TreeManagerController: React.FC = () => {
                 label: 'Consume a new route'
             });
 
-        } else if (currentTab.type.value === EComponentType.tabActions) {
+        } else if (currentTab.type.value === ETabType.tabActions) {
 
             options.push({
                 icon: AssetsService.getIcon(EComponentType.globalAction),
@@ -117,7 +133,7 @@ export const TreeManagerController: React.FC = () => {
                 label: 'Add new action'
             });
 
-        } else if (currentTab.type.value === EComponentType.tabDates) {
+        } else if (currentTab.type.value === ETabType.tabDates) {
 
         }
 
