@@ -13,5 +13,5 @@ export enum ETabType {
     /**
      * Aba do sistema onde é definido as tabelas ou as estruturas de dados
     */
-    tabDates = "Data tab",
+    tabDatas = "Data tab",
 }

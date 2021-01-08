@@ -22,6 +22,14 @@ export enum EComponentType {
      */
     localVariable = "Local variable",
     /**
+     * Tipa um item que será considerado um metodo que consome API
+     */
+    routerConsume = "Router consume",
+    /**
+     * Tipa um item que será considerado um metodo que expõem um metodo de API
+     * */
+    routerExpose = "Router expose",
+    /**
      * Principal grupo de actions, usadas para definir regras de negócio que pode3 ser acessada em toda a aplicação.
      */
     globalAction = "Global action",
@@ -33,12 +41,4 @@ export enum EComponentType {
      * Tipo de item que será conseiderado para executar algum tipo de código JS dentro do servidor node.
      */
     extension = "Extension",
-    /**
-     * Tipa um item que será considerado um metodo que consome API
-     */
-    routerConsume = "Router consume",
-    /**
-     * Tipa um item que será considerado um metodo que expõem um metodo de API
-     * */
-    routerExpose = "Router expose",
 }

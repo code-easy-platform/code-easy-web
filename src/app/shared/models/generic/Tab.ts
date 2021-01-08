@@ -1,28 +1,28 @@
 import { IObservable, observe, set, transform } from "react-observing";
 import { Utils } from "code-easy-components";
 
-import { FlowItemsStore, PropertiesEditorStore, WindowsStore } from "../stores";
-import { EComponentType, ETabType, PropertieTypes } from "./../enuns";
-import { IProperty, TypeOfValues } from "./../components/external";
-import { BasicConfigurations } from "./BasicConfigurations";
-import { ITreeItemComponent, ITab } from "./../interfaces";
-import { TreeItemComponent } from "./TreeItemComponent";
-import { openModal } from "../services";
+import { FlowItemsStore, PropertiesEditorStore, WindowsStore } from "./../../stores";
+import { EComponentType, ETabType, PropertieTypes } from "./../../enuns";
+import { IProperty, TypeOfValues } from "./../../components/external";
+import { BasicConfigurations } from "./../BasicConfigurations";
+import { ITreeItemComponent, ITab } from "./../../interfaces";
+import { TreeItemComponent } from "./../TreeItemComponent";
+import { openModal } from "./../../services";
 
 /**
  * Fields passeds in constructor
  */
-interface IConstructor {
+interface IConstructor<T> {
   items: ITreeItemComponent[];
   properties: IProperty[];
-  type: ETabType;
   id?: string;
+  type: T;
 }
 
 /**
  * Represents a full Tab implementation
  */
-export class Tab extends BasicConfigurations<ETabType> implements ITab {
+export class Tab<T = ETabType> extends BasicConfigurations<T> implements ITab<T> {
   public items: IObservable<TreeItemComponent[]>;
 
   public addItem(label: string, type: EComponentType, ascendantId?: string) {
@@ -213,7 +213,7 @@ export class Tab extends BasicConfigurations<ETabType> implements ITab {
     })
   }
 
-  constructor(props: IConstructor) {
+  constructor(props: IConstructor<T>) {
     super(props);
 
     this.items = observe(

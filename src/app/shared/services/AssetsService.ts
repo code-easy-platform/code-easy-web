@@ -65,7 +65,7 @@ class Assets {
             case ETabType.tabRoutes:
                 return IconRouter;
 
-            case ETabType.tabDates:
+            case ETabType.tabDatas:
                 return IconRouter;
 
             default:

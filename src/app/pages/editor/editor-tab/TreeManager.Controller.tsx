@@ -133,7 +133,7 @@ export const TreeManagerController: React.FC = () => {
                 label: 'Add new action'
             });
 
-        } else if (currentTab.type.value === ETabType.tabDates) {
+        } else if (currentTab.type.value === ETabType.tabDatas) {
 
         }
 

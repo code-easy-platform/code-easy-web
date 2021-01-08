@@ -4,7 +4,7 @@ import { ProjectConfigurations } from "./ProjectConfigurations";
 import { IProperty } from "./../components/external";
 import { IProject, ITab } from "./../interfaces";
 import { EProjectType } from "./../enuns";
-import { Tab } from "./Tab";
+import { Tab } from "./generic";
 
 /**
  * Fields passeds in constructor

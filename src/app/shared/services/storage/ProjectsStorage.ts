@@ -2,17 +2,15 @@ import { IconAction, IconRouter, Utils } from "code-easy-components";
 import { observe, set } from "react-observing";
 
 import { EProjectType, ETabType, PropertieTypes, StorageEnum } from "./../../enuns";
-import { Project, Tab, ProjectParser } from "../../models";
+import { Project, ProjectParser, TabAction } from "../../models";
 import { TypeOfValues } from "../../components/external";
+import { TabRoute } from "../../models/TabRoute";
 
 const newProject = (name: string, version: string, type: EProjectType, description: string) => new Project({
     type,
     id: Utils.getUUID(),
     tabs: [
-        new Tab({
-            items: [],
-            id: Utils.getUUID(),
-            type: ETabType.tabRoutes,
+        new TabRoute({
             properties: [
                 {
                     value: observe(false),
@@ -148,10 +146,7 @@ const newProject = (name: string, version: string, type: EProjectType, descripti
                 },
             ]
         }),
-        new Tab({
-            items: [],
-            id: Utils.getUUID(),
-            type: ETabType.tabActions,
+        new TabAction({
             properties: [
                 {
                     value: observe(false),

@@ -4,7 +4,7 @@ import { TreeItemComponent } from "./TreeItemComponent";
 import { FlowItemComponent } from "./FlowItemComponent";
 import { IProperty } from "../components/external";
 import { Project } from "./Project";
-import { Tab } from "./Tab";
+import { Tab } from "./generic";
 
 export class ProjectParser {
     /**
