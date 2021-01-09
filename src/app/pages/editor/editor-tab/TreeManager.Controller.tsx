@@ -6,7 +6,7 @@ import { TreeManager, ITreeItem, CustomDragLayer } from '../../../shared/compone
 import { ECurrentFocus, EComponentType, ETabType, } from '../../../shared/enuns';
 import { AssetsService, openContextMenu } from '../../../shared/services';
 import { IContextItemList } from '../../../shared/interfaces';
-import { Tab, TreeItemFolder } from '../../../shared/models';
+import { Tab, TreeItemFolder, TreeItemRouterConsume } from '../../../shared/models';
 import { CurrentFocusStore } from '../../../shared/stores';
 import { useEditorContext } from '../../../shared/hooks';
 
@@ -82,8 +82,13 @@ export const TreeManagerController: React.FC = () => {
         /** Add a new route */
         const addRoute = (inputItemId: string | undefined, routerType: EComponentType.routeConsume | EComponentType.routeExpose) => {
             if (inputItemId === undefined) {
-                // const newName = Utils.newName('NewRouter', itemsCurrent.map(item => item.label.value));
-                // currentTab.addItem(newName, routerType);
+                if (routerType === EComponentType.routeConsume) {
+                    const newName = Utils.newName('NewRouter', itemsCurrent.map(item => item.label.value));
+                    currentTab.addItem(TreeItemRouterConsume.newRoute(newName));
+                } else if (routerType === EComponentType.routeExpose) {
+                    // const newName = Utils.newName('NewRouter', itemsCurrent.map(item => item.label.value));
+                    // currentTab.addItem(newName, routerType);
+                }
             }
         }
 

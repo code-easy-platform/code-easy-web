@@ -36,7 +36,6 @@ export class TreeItemFolder extends TreeItemComponent<EComponentType.grouper> im
                     content: IconFolder,
                     type: 'png'
                 };
-
             }
         });
     }

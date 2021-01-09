@@ -45,6 +45,23 @@ export class Tab<T = ETabType> extends BasicConfigurations<T> implements ITab<T>
           });
           break;
 
+        case EComponentType.routeConsume:
+          oldItems.forEach(oldItem => set(oldItem.isSelected, false));
+
+          // Show new item in the properties editor
+          set(PropertiesEditorStore, {
+            id: newTreeItem.id,
+            name: newTreeItem.label,
+            subname: newTreeItem.type,
+            properties: newTreeItem.properties.value.map(prop => {
+              return {
+                ...prop,
+                onPickerValueClick: observe(() => openModal(prop.id.value || ''))
+              };
+            })
+          });
+          break;
+
         default:
           oldItems.forEach(oldItem => {
             set(oldItem.isEditing, false);

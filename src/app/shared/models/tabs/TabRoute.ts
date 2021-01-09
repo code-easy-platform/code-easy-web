@@ -47,8 +47,6 @@ export class TabRoute extends Tab<ETabType.tabRoutes> implements ITabRoute {
                 case EComponentType.routeConsume:
                     return new TreeItemRouterConsume({
                         properties: item.properties.value || [],
-                        items: item.items.value,
-                        type: item.type.value,
                         id: item.id.value,
                     });
                 case EComponentType.inputVariable:
