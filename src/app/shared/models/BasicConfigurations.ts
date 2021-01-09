@@ -1,5 +1,6 @@
-import { IObservable, observe, transform } from "react-observing";
+import { IObservable, observe, set, transform } from "react-observing";
 import { Utils } from "code-easy-components";
+import * as yup from 'yup';
 
 import { IFileContent, IProperty, TypeOfValues } from "./../components/external";
 import { IBasicConfigurations } from "./../interfaces";
@@ -19,7 +20,6 @@ interface IConstructor<T> {
  * Common implementation fields between the different project structures
  */
 export class BasicConfigurations<T> implements IBasicConfigurations<T> {
-
     private _id: IObservable<string | undefined>;
     public get id(): IObservable<string | undefined> {
         if (!this._id.value) {
@@ -39,7 +39,6 @@ export class BasicConfigurations<T> implements IBasicConfigurations<T> {
                 newName.shift();
                 name = newName.join('');
             }
-
             return name;
         });
     }
@@ -60,16 +59,16 @@ export class BasicConfigurations<T> implements IBasicConfigurations<T> {
                 type: observe(TypeOfValues.string),
                 name: observe(PropertieTypes.label),
                 propertieType: observe(PropertieTypes.label),
+                nameHasError: transform(this._hasError, values => values.includes(prop?.id || '')),
+                valueHasError: transform(this._hasError, values => values.includes(prop?.id || '')),
+                nameHasWarning: transform(this._hasWarning, values => values.includes(prop?.id || '')),
+                valueHasWarning: transform(this._hasWarning, values => values.includes(prop?.id || '')),
 
                 group: observe(undefined),
                 suggestions: observe(undefined),
                 information: observe(undefined),
                 fileMaxSize: observe(undefined),
-                nameHasError: observe(undefined),
-                valueHasError: observe(undefined),
                 focusOnRender: observe(undefined),
-                nameHasWarning: observe(undefined),
-                valueHasWarning: observe(undefined),
                 nameSuggestions: observe(undefined),
                 editNameDisabled: observe(undefined),
                 onPickerNameClick: observe(undefined),
@@ -164,14 +163,14 @@ export class BasicConfigurations<T> implements IBasicConfigurations<T> {
         return this._properties
     };
 
-    private _hasError: IObservable<boolean> = observe(false);
+    private _hasError: IObservable<string[]> = observe([]);
     public get hasError(): IObservable<boolean> {
-        return this._hasError;
+        return transform(this._hasError, value => value.length > 0);
     }
 
-    private _hasWarning: IObservable<boolean> = observe(false);
+    private _hasWarning: IObservable<string[]> = observe([]);
     public get hasWarning(): IObservable<boolean> {
-        return this._hasWarning;
+        return transform(this._hasWarning, value => value.length > 0);
     }
 
     private _type: IObservable<T>;
@@ -195,7 +194,7 @@ export class BasicConfigurations<T> implements IBasicConfigurations<T> {
                 type: observe(TypeOfValues.viewOnly),
                 name: observe(PropertieTypes.updatedDate),
                 propertieType: observe(PropertieTypes.updatedDate),
-                
+
                 group: observe(undefined),
                 suggestions: observe(undefined),
                 information: observe(undefined),
@@ -232,7 +231,7 @@ export class BasicConfigurations<T> implements IBasicConfigurations<T> {
                 type: observe(TypeOfValues.viewOnly),
                 name: observe(PropertieTypes.createdDate),
                 propertieType: observe(PropertieTypes.createdDate),
-                
+
                 group: observe(undefined),
                 suggestions: observe(undefined),
                 information: observe(undefined),
@@ -269,7 +268,7 @@ export class BasicConfigurations<T> implements IBasicConfigurations<T> {
                 type: observe(TypeOfValues.hidden),
                 name: observe(PropertieTypes.isEditing),
                 propertieType: observe(PropertieTypes.isEditing),
-                
+
                 group: observe(undefined),
                 suggestions: observe(undefined),
                 information: observe(undefined),
@@ -306,7 +305,7 @@ export class BasicConfigurations<T> implements IBasicConfigurations<T> {
                 type: observe(TypeOfValues.hidden),
                 name: observe(PropertieTypes.isSelected),
                 propertieType: observe(PropertieTypes.isSelected),
-                
+
                 group: observe(undefined),
                 suggestions: observe(undefined),
                 information: observe(undefined),
@@ -343,7 +342,7 @@ export class BasicConfigurations<T> implements IBasicConfigurations<T> {
                 type: observe(TypeOfValues.hidden),
                 name: observe(PropertieTypes.ordem),
                 propertieType: observe(PropertieTypes.ordem),
-                
+
                 group: observe(undefined),
                 suggestions: observe(undefined),
                 information: observe(undefined),
@@ -380,7 +379,7 @@ export class BasicConfigurations<T> implements IBasicConfigurations<T> {
                 type: observe(TypeOfValues.hidden),
                 name: observe(PropertieTypes.isExpanded),
                 propertieType: observe(PropertieTypes.isExpanded),
-                
+
                 group: observe(undefined),
                 suggestions: observe(undefined),
                 information: observe(undefined),
@@ -405,5 +404,76 @@ export class BasicConfigurations<T> implements IBasicConfigurations<T> {
         this._type = observe(props.type);
         this._properties = observe(props.properties);
         this._id = props.id ? observe(props.id) : observe(undefined);
+
+        this._validations();
+        this._defaultProperties();
+    }
+
+    private _defaultProperties() {
+        this.properties.value.forEach(propertie => {
+            if (propertie.propertieType.value === PropertieTypes.label) {
+                propertie.nameHasError = transform(this._hasError, values => values.includes(propertie.value.id));
+                propertie.valueHasError = transform(this._hasError, values => values.includes(propertie.value.id));
+                propertie.nameHasWarning = transform(this._hasWarning, values => values.includes(propertie.value.id));
+                propertie.valueHasWarning = transform(this._hasWarning, values => values.includes(propertie.value.id));
+            }
+        });
+    }
+
+    private _validations() {
+        this._valideLabel();
+    }
+
+    private _valideLabel() {
+        const labelSchema = yup.string().min(3).max(200).trim();
+
+        labelSchema.validate(this.label.value)
+            .then(() => {
+                set(this._hasError, oldErros => {
+                    if (oldErros.includes(this.label.id)) {
+                        return oldErros.filter(oldErros => oldErros !== this.label.id);
+                    } else {
+                        return oldErros;
+                    }
+                });
+            })
+            .catch(() => {
+                set(this._hasError, oldErros => {
+                    if (!oldErros.includes(this.label.id)) {
+                        return [
+                            ...oldErros,
+                            this.label.id,
+                        ];
+                    } else {
+                        return oldErros;
+                    }
+                });
+            });
+
+        // Subscribe to all changes
+        this.label.subscribe(label => {
+            labelSchema.validate(label)
+                .then(() => {
+                    set(this._hasError, oldErros => {
+                        if (oldErros.includes(this.label.id)) {
+                            return oldErros.filter(oldErros => oldErros !== this.label.id);
+                        } else {
+                            return oldErros;
+                        }
+                    });
+                })
+                .catch(() => {
+                    set(this._hasError, oldErros => {
+                        if (!oldErros.includes(this.label.id)) {
+                            return [
+                                ...oldErros,
+                                this.label.id,
+                            ];
+                        } else {
+                            return oldErros;
+                        }
+                    });
+                });
+        });
     }
 }

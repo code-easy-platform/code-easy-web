@@ -1,28 +1,28 @@
 import { IObservable, observe, set, transform } from "react-observing";
-import { IconFlowEnd, IconFlowStart, Utils } from "code-easy-components";
+import { Utils } from "code-easy-components";
 
-import { FlowItemsStore, PropertiesEditorStore, WindowsStore } from "../stores";
-import { IFlowItemComponent, ITreeItemComponent } from "./../interfaces";
-import { EItemType, IProperty, TypeOfValues } from "./../components/external";
-import { EComponentType, PropertieTypes } from "./../enuns";
-import { BasicConfigurations } from "./BasicConfigurations";
-import { FlowItemComponent } from "./FlowItemComponent";
-import { openModal } from "../services";
+import { FlowItemsStore, PropertiesEditorStore, WindowsStore } from "../../stores";
+import { IFlowItemComponent, ITreeItemComponent } from "../../interfaces";
+import { IProperty, TypeOfValues } from "../../components/external";
+import { EComponentType, PropertieTypes } from "../../enuns";
+import { BasicConfigurations } from "../BasicConfigurations";
+import { FlowItemComponent } from "../FlowItemComponent";
+import { openModal } from "../../services";
 
 /**
  * Fields passeds in constructor
  */
-interface IConstructor {
+interface IConstructor<T> {
   items?: IFlowItemComponent[];
   properties: IProperty[];
-  type: EComponentType;
   id?: string;
+  type: T;
 }
 
 /**
- * Represents a full Tab implementation
+ * Represents a full tree item implementation
  */
-export class TreeItemComponent extends BasicConfigurations<EComponentType> implements ITreeItemComponent {
+export class TreeItemComponent<T = EComponentType> extends BasicConfigurations<T> implements ITreeItemComponent<T> {
   public items: IObservable<IFlowItemComponent[]>;
 
   public get ascendantId() {
@@ -68,7 +68,7 @@ export class TreeItemComponent extends BasicConfigurations<EComponentType> imple
         set(PropertiesEditorStore, {
           id: this.id,
           name: this.label,
-          subname: this.type,
+          subname: transform(this.type, value => String(value)),
           properties: this.properties.value.map(prop => {
             return {
               ...prop,
@@ -115,7 +115,7 @@ export class TreeItemComponent extends BasicConfigurations<EComponentType> imple
     return transform(super.isEditing, value => value, handleEdit);
   }
 
-  constructor(props: IConstructor) {
+  constructor(props: IConstructor<T>) {
     super(props);
 
     if (props.items) {
@@ -126,8 +126,8 @@ export class TreeItemComponent extends BasicConfigurations<EComponentType> imple
         properties: item.properties.value || [],
       })));
     } else {
-      if (props.type === EComponentType.routerConsume || props.type === EComponentType.grouper) {
-        this.items = observe([]);
+      this.items = observe([]);
+      /* if (props.type === EComponentType.routeConsume || props.type === EComponentType.grouper) {
       } else {
         this.items = observe([
           new FlowItemComponent({
@@ -321,7 +321,7 @@ export class TreeItemComponent extends BasicConfigurations<EComponentType> imple
             ],
           })
         ]);
-      }
+      } */
     }
   }
 }

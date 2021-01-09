@@ -24,11 +24,11 @@ export enum EComponentType {
     /**
      * Tipa um item que será considerado um metodo que consome API
      */
-    routerConsume = "Router consume",
+    routeConsume = "Route consume",
     /**
      * Tipa um item que será considerado um metodo que expõem um metodo de API
      * */
-    routerExpose = "Router expose",
+    routeExpose = "Route expose",
     /**
      * Principal grupo de actions, usadas para definir regras de negócio que pode3 ser acessada em toda a aplicação.
      */

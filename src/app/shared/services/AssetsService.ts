@@ -35,10 +35,10 @@ class Assets {
             case EItemType.SWITCH:
                 return IconFlowSwitch;
 
-            case EComponentType.routerConsume:
+            case EComponentType.routeConsume:
                 return IconRouterConsume;
 
-            case EComponentType.routerExpose:
+            case EComponentType.routeExpose:
                 return IconRouterExpose;
 
             case EComponentType.globalAction:

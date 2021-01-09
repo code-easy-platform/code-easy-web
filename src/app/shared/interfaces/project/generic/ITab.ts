@@ -1,7 +1,7 @@
 import { IObservable } from "react-observing";
 
 import { IBasicConfigurations } from "./../IBasicConfigurations";
-import { ITreeItemComponent } from "./../ITreeItemComponent";
+import { ITreeItemComponent } from "./ITreeItemComponent";
 import { ETabType } from "./../../../enuns";
 
 /**

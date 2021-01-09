@@ -6,9 +6,9 @@ import { TreeManager, ITreeItem, CustomDragLayer } from '../../../shared/compone
 import { ECurrentFocus, EComponentType, ETabType, } from '../../../shared/enuns';
 import { AssetsService, openContextMenu } from '../../../shared/services';
 import { IContextItemList } from '../../../shared/interfaces';
+import { Tab, TreeItemFolder } from '../../../shared/models';
 import { CurrentFocusStore } from '../../../shared/stores';
 import { useEditorContext } from '../../../shared/hooks';
-import { Tab } from '../../../shared/models';
 
 const useCurrentTab = () => {
     const [currentTab, setCurrentTab] = useState<Tab>(new Tab({ items: [], type: ETabType.tabRoutes, properties: [] }));
@@ -75,30 +75,30 @@ export const TreeManagerController: React.FC = () => {
 
         /** Add a new param */
         const addParam = (inputItemId: string | undefined, paramType: EComponentType.inputVariable | EComponentType.localVariable | EComponentType.outputVariable) => {
-            const newName = Utils.newName('NewParam', itemsCurrent.map(item => item.label.value));
-            currentTab.addItem(newName, paramType, inputItemId);
+            // const newName = Utils.newName('NewParam', itemsCurrent.map(item => item.label.value));
+            // currentTab.addItem(newName, paramType, inputItemId);
         }
 
         /** Add a new route */
-        const addRoute = (inputItemId: string | undefined, routerType: EComponentType.routerConsume | EComponentType.routerExpose) => {
+        const addRoute = (inputItemId: string | undefined, routerType: EComponentType.routeConsume | EComponentType.routeExpose) => {
             if (inputItemId === undefined) {
-                const newName = Utils.newName('NewRouter', itemsCurrent.map(item => item.label.value));
-                currentTab.addItem(newName, routerType);
+                // const newName = Utils.newName('NewRouter', itemsCurrent.map(item => item.label.value));
+                // currentTab.addItem(newName, routerType);
             }
         }
 
         /** Add a new global action */
         const addAction = (inputItemId: string | undefined) => {
             if (inputItemId === undefined) {
-                const newName = Utils.newName('NewAction', itemsCurrent.map(item => item.label.value));
-                currentTab.addItem(newName, EComponentType.globalAction);
+                // const newName = Utils.newName('NewAction', itemsCurrent.map(item => item.label.value));
+                // currentTab.addItem(newName, EComponentType.globalAction);
             }
         }
 
         /** Add a new folder */
         const addFolder = () => {
             const newName = Utils.newName('NewFolder', itemsCurrent.map(item => item.label.value));
-            currentTab.addItem(newName, EComponentType.grouper);
+            currentTab.addItem(TreeItemFolder.newFolder(newName));
         }
 
         options.push({
@@ -111,15 +111,15 @@ export const TreeManagerController: React.FC = () => {
         if (currentTab.type.value === ETabType.tabRoutes) {
 
             options.push({
-                action: () => addRoute(itemId, EComponentType.routerExpose),
-                icon: AssetsService.getIcon(EComponentType.routerExpose),
+                action: () => addRoute(itemId, EComponentType.routeExpose),
+                icon: AssetsService.getIcon(EComponentType.routeExpose),
                 disabled: itemId !== undefined,
                 label: 'Expose a new route'
             });
 
             options.push({
-                icon: AssetsService.getIcon(EComponentType.routerConsume),
-                action: () => addRoute(itemId, EComponentType.routerConsume),
+                icon: AssetsService.getIcon(EComponentType.routeConsume),
+                action: () => addRoute(itemId, EComponentType.routeConsume),
                 disabled: itemId !== undefined,
                 label: 'Consume a new route'
             });
@@ -192,7 +192,7 @@ export const TreeManagerController: React.FC = () => {
                         });
                         break;
 
-                    case EComponentType.routerExpose:
+                    case EComponentType.routeExpose:
                         options.push({
                             action: () => { },
                             label: '-',
@@ -218,7 +218,7 @@ export const TreeManagerController: React.FC = () => {
                         });
                         break;
 
-                    case EComponentType.routerConsume:
+                    case EComponentType.routeConsume:
                         options.push({
                             action: () => { },
                             label: '-',
@@ -268,7 +268,7 @@ export const TreeManagerController: React.FC = () => {
                     return true;
                 case EComponentType.outputVariable:
                     return true;
-                case EComponentType.routerConsume:
+                case EComponentType.routeConsume:
                     return true;
 
                 default:
@@ -287,15 +287,15 @@ export const TreeManagerController: React.FC = () => {
                     return [];
                 case EComponentType.outputVariable:
                     return [];
-                case EComponentType.routerConsume:
+                case EComponentType.routeConsume:
                     return [EComponentType.inputVariable];
                 case EComponentType.extension:
                     return [EComponentType.inputVariable, EComponentType.outputVariable];
                 case EComponentType.globalAction:
                     return [EComponentType.inputVariable, EComponentType.localVariable, EComponentType.outputVariable];
                 case EComponentType.grouper:
-                    return [EComponentType.localAction, EComponentType.globalAction, EComponentType.extension, EComponentType.routerConsume, EComponentType.routerExpose];
-                case EComponentType.routerExpose:
+                    return [EComponentType.localAction, EComponentType.globalAction, EComponentType.extension, EComponentType.routeConsume, EComponentType.routeExpose];
+                case EComponentType.routeExpose:
                     return [EComponentType.inputVariable, EComponentType.localVariable, EComponentType.outputVariable];
                 default:
                     return [];
@@ -304,7 +304,7 @@ export const TreeManagerController: React.FC = () => {
 
         let items: ITreeItem[] = itemsCurrent.map((item): ITreeItem => ({
             isDisabledDoubleClick: observe(cannotPerformDoubleClick(item.type.value)),
-            isDisabledDrag: observe(item.type.value === EComponentType.routerExpose),
+            isDisabledDrag: observe(item.type.value === EComponentType.routeExpose),
             canDropList: observe(getCanDropList(item.type.value)),
             nodeExpanded: observe(Boolean(item.isExpanded)),
             icon: observe(item.icon.value.content),

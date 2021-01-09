@@ -2,9 +2,8 @@ import { IconAction, IconRouter, Utils } from "code-easy-components";
 import { observe, set } from "react-observing";
 
 import { EProjectType, ETabType, PropertieTypes, StorageEnum } from "./../../enuns";
-import { Project, ProjectParser, TabAction } from "../../models";
+import { Project, ProjectParser, TabAction, TabRoute } from "../../models";
 import { TypeOfValues } from "../../components/external";
-import { TabRoute } from "../../models/TabRoute";
 
 const newProject = (name: string, version: string, type: EProjectType, description: string) => new Project({
     type,

@@ -1,7 +1,7 @@
-import { ITabData, ITreeItemComponent } from "../interfaces";
-import { IProperty } from "../components/external";
-import { ETabType } from "../enuns";
-import { Tab } from "./generic";
+import { ITabData, ITreeItemComponent } from "../../interfaces";
+import { IProperty } from "../../components/external";
+import { ETabType } from "../../enuns";
+import { Tab } from "../generic";
 
 interface IConstrutor {
     items?: ITreeItemComponent[];

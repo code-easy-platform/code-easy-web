@@ -1,10 +1,9 @@
 import { observe } from "react-observing";
 
-import { TreeItemComponent } from "./TreeItemComponent";
 import { FlowItemComponent } from "./FlowItemComponent";
 import { IProperty } from "../components/external";
+import { Tab, TreeItemComponent } from "./generic";
 import { Project } from "./Project";
-import { Tab } from "./generic";
 
 export class ProjectParser {
     /**

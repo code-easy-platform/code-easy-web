@@ -1,13 +1,13 @@
 import { IObservable } from "react-observing";
 
-import { IBasicConfigurations } from "./IBasicConfigurations";
-import { IFlowItemComponent } from "./IFlowItemComponent";
-import { EComponentType } from "./../../enuns";
+import { IBasicConfigurations } from "./../IBasicConfigurations";
+import { IFlowItemComponent } from "./../IFlowItemComponent";
+import { EComponentType } from "./../../../enuns";
 
 /**
  * Tree item representation with all its properties
  */
-export interface ITreeItemComponent extends IBasicConfigurations<EComponentType> {
+export interface ITreeItemComponent<T = EComponentType> extends IBasicConfigurations<T> {
     /**
      * Used to contain items in a stream
      */
