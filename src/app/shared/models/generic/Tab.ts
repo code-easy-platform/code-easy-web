@@ -24,6 +24,19 @@ interface IConstructor<T> {
 export class Tab<T = ETabType> extends BasicConfigurations<T> implements ITab<T> {
   public items: IObservable<TreeItemComponent[]>;
 
+  constructor(props: IConstructor<T>) {
+    super(props);
+
+    this.items = observe(
+      props.items.map(item => new TreeItemComponent({
+        properties: item.properties.value || [],
+        items: item.items.value,
+        type: item.type.value,
+        id: item.id.value,
+      }))
+    );
+  }
+
   public addItem(newTreeItem: TreeItemComponent) {
     set(this.items, oldItems => {
 
@@ -158,16 +171,40 @@ export class Tab<T = ETabType> extends BasicConfigurations<T> implements ITab<T>
     });
   }
 
-  constructor(props: IConstructor<T>) {
-    super(props);
+  public removeItem(itemId: string) {
 
-    this.items = observe(
-      props.items.map(item => new TreeItemComponent({
-        properties: item.properties.value || [],
-        items: item.items.value,
-        type: item.type.value,
-        id: item.id.value,
-      }))
-    );
+    // Remove all dependents items
+    const removeRecursive = (itemId: string, items: TreeItemComponent[]): TreeItemComponent[] => {
+      const dependents = items.filter(item => item.ascendantId.value === itemId);
+
+      dependents.forEach(item => {
+        if (item.id.value) {
+          items = removeRecursive(item.id.value, items);
+        }
+      });
+
+      // Show new item in the tabs
+      set(WindowsStore, oldWindows => {
+        return oldWindows.filter(oldWindow => oldWindow.id.value !== itemId);
+      });
+
+      // Show new item in the properties editor
+      if (PropertiesEditorStore.value?.id.value === itemId) {
+        set(PropertiesEditorStore, undefined);
+      }
+
+      // Show new item in the flow editor
+      if (FlowItemsStore.value?.treeItemId === itemId) {
+        set(FlowItemsStore, {
+          treeItemId: undefined,
+          items: observe([]),
+        });
+      }
+
+      return items.filter(item => item.id.value !== itemId);
+    }
+
+    // Remove the item by their id
+    set(this.items, oldItems => removeRecursive(itemId, oldItems));
   }
 }

@@ -44,14 +44,19 @@ const useCurrentTab = () => {
 }
 
 export const TreeManagerController: React.FC = () => {
-    const { itemsCurrent, setItemsCurrent, currentTab } = useCurrentTab();
     const setCurrentFocus = useSetObserver(CurrentFocusStore);
+    const { itemsCurrent, currentTab } = useCurrentTab();
 
     const treeManagerOnKeyDowm = useCallback((e: React.FocusEvent<HTMLDivElement> | any) => {
         if (e.key === 'Delete') {
-            setItemsCurrent(oldCurrentItems => oldCurrentItems.filter(item => !item.isSelected.value));
+            const itemsToRemove = itemsCurrent.filter(itemCurrent => itemCurrent.isSelected.value);
+            itemsToRemove.forEach(itemToRemove => {
+                if (itemToRemove.id.value) {
+                    currentTab.removeItem(itemToRemove.id.value);
+                }
+            });
         }
-    }, [setItemsCurrent])
+    }, [itemsCurrent, currentTab])
 
     /** Quando clicado com o botão esquerdo do mouse no interior da árvore esta função é acionada. */
     const treeManagerContextMenu = useCallback((itemId: string | undefined) => {
@@ -96,11 +101,7 @@ export const TreeManagerController: React.FC = () => {
         /** Remove tree items */
         const removeItem = (inputItemId: string | undefined) => {
             if (!inputItemId) return;
-
-            setItemsCurrent(oldCurrentItems => oldCurrentItems
-                .filter(item => item.id.value !== inputItemId)
-                .filter(item => item.ascendantId.value !== inputItemId)
-            );
+            currentTab.removeItem(inputItemId);
         };
 
         switch (currentTab.type.value) {
@@ -262,7 +263,7 @@ export const TreeManagerController: React.FC = () => {
         }
 
         return options;
-    }, [currentTab, itemsCurrent, setItemsCurrent]);
+    }, [currentTab, itemsCurrent]);
 
     /** Monta a estrutura da árvore e devolve no return */
     const treeManagerItems = ((): ITreeItem[] => {
@@ -355,9 +356,7 @@ export const TreeManagerController: React.FC = () => {
                 focusedItemBackgroundColor: '#ffffff05',
                 editingItemBackgroundColor: '#ffffff10',
                 showEmptyMessage: treeManagerItems.length === 0,
-                customDragLayer: (item) => (
-                    <CustomDragLayer children={item} />
-                )
+                customDragLayer: item => <CustomDragLayer children={item} />
             }}
         />
     );
