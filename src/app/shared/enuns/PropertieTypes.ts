@@ -14,6 +14,7 @@ export enum PropertieTypes {
     isExpanded = "Is expanded",
     sourceList = "Source list",
     isDisabled = "Is disabled",
+    httpMethod = "Http method",
     isEditing = "Is editing",
     condition = "Condition",
     dataType = "Data type",
@@ -33,6 +34,7 @@ export enum PropertieTypes {
     type = "Type",
     icon = "Icon",
     left = "Left",
+    path = "Path",
     url = "Url",
     top = "Top",
 }

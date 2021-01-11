@@ -41,7 +41,6 @@ export class TabRoute extends Tab<ETabType.tabRoutes> implements ITabRoute {
                     return new TreeItemRouterExpose({
                         properties: item.properties.value || [],
                         items: item.items.value,
-                        type: item.type.value,
                         id: item.id.value,
                     });
                 case EComponentType.routeConsume:
@@ -52,22 +51,16 @@ export class TabRoute extends Tab<ETabType.tabRoutes> implements ITabRoute {
                 case EComponentType.inputVariable:
                     return new TreeItemInputVariable({
                         properties: item.properties.value || [],
-                        items: item.items.value,
-                        type: item.type.value,
                         id: item.id.value,
                     });
                 case EComponentType.localVariable:
                     return new TreeItemLocalVariable({
                         properties: item.properties.value || [],
-                        items: item.items.value,
-                        type: item.type.value,
                         id: item.id.value,
                     });
                 case EComponentType.outputVariable:
                     return new TreeItemOutpuVariable({
                         properties: item.properties.value || [],
-                        items: item.items.value,
-                        type: item.type.value,
                         id: item.id.value,
                     });
                 default:

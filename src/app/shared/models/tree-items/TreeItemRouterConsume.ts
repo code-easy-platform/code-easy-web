@@ -1,10 +1,10 @@
+import { IObservable, observe, set, transform } from "react-observing";
 import { IconRouterConsume, Utils } from "code-easy-components";
 
-import { IProperty, TypeOfValues } from "../../components/external";
-import { EComponentType, PropertieTypes } from "../../enuns";
+import { ApiMethods, ApiMethodsList, EComponentType, PropertieTypes } from "../../enuns";
+import { IProperty, ISuggestion, TypeOfValues } from "../../components/external";
 import { ITreeItemRouterConsume } from "../../interfaces";
 import { TreeItemComponent } from "../generic";
-import { IObservable, observe, set, transform } from "react-observing";
 
 interface IConstrutor {
     properties?: IProperty[];
@@ -60,9 +60,9 @@ export class TreeItemRouterConsume extends TreeItemComponent<EComponentType.rout
                 {
                     value: observe(''),
                     id: observe(Utils.getUUID()),
-                    name: observe(PropertieTypes.url),
-                    type: observe(TypeOfValues.string),
-                    propertieType: observe(PropertieTypes.url),
+                    type: observe(TypeOfValues.bigstring),
+                    name: observe(PropertieTypes.description),
+                    propertieType: observe(PropertieTypes.description),
 
                     group: observe(undefined),
                     suggestions: observe(undefined),
@@ -80,11 +80,39 @@ export class TreeItemRouterConsume extends TreeItemComponent<EComponentType.rout
                     onPickerValueClick: observe(undefined),
                 },
                 {
+                    id: observe(Utils.getUUID()),
+                    value: observe(ApiMethods.get),
+                    type: observe(TypeOfValues.selection),
+                    name: observe(PropertieTypes.httpMethod),
+                    propertieType: observe(PropertieTypes.httpMethod),
+                    suggestions: observe<ISuggestion<string | number>[]>(ApiMethodsList.map(method => ({
+                        description: observe(method),
+                        disabled: observe(false),
+                        label: observe(method),
+                        value: observe(method),
+                        name: observe(method),
+                    }))),
+
+                    group: observe(undefined),
+                    information: observe(undefined),
+                    fileMaxSize: observe(undefined),
+                    nameHasError: observe(undefined),
+                    valueHasError: observe(undefined),
+                    focusOnRender: observe(undefined),
+                    nameHasWarning: observe(undefined),
+                    valueHasWarning: observe(undefined),
+                    nameSuggestions: observe(undefined),
+                    editNameDisabled: observe(undefined),
+                    onPickerNameClick: observe(undefined),
+                    editValueDisabled: observe(undefined),
+                    onPickerValueClick: observe(undefined),
+                },
+                {
                     value: observe(''),
                     id: observe(Utils.getUUID()),
-                    type: observe(TypeOfValues.bigstring),
-                    name: observe(PropertieTypes.description),
-                    propertieType: observe(PropertieTypes.description),
+                    name: observe(PropertieTypes.url),
+                    type: observe(TypeOfValues.string),
+                    propertieType: observe(PropertieTypes.url),
 
                     group: observe(undefined),
                     suggestions: observe(undefined),

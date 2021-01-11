@@ -44,7 +44,6 @@ export class Tab<T = ETabType> extends BasicConfigurations<T> implements ITab<T>
             })
           });
           break;
-
         case EComponentType.routeConsume:
           oldItems.forEach(oldItem => set(oldItem.isSelected, false));
 
@@ -61,7 +60,54 @@ export class Tab<T = ETabType> extends BasicConfigurations<T> implements ITab<T>
             })
           });
           break;
+        case EComponentType.inputVariable:
+          oldItems.forEach(oldItem => set(oldItem.isSelected, false));
 
+          // Show new item in the properties editor
+          set(PropertiesEditorStore, {
+            id: newTreeItem.id,
+            name: newTreeItem.label,
+            subname: newTreeItem.type,
+            properties: newTreeItem.properties.value.map(prop => {
+              return {
+                ...prop,
+                onPickerValueClick: observe(() => openModal(prop.id.value || ''))
+              };
+            })
+          });
+          break;
+        case EComponentType.localVariable:
+          oldItems.forEach(oldItem => set(oldItem.isSelected, false));
+
+          // Show new item in the properties editor
+          set(PropertiesEditorStore, {
+            id: newTreeItem.id,
+            name: newTreeItem.label,
+            subname: newTreeItem.type,
+            properties: newTreeItem.properties.value.map(prop => {
+              return {
+                ...prop,
+                onPickerValueClick: observe(() => openModal(prop.id.value || ''))
+              };
+            })
+          });
+          break;
+        case EComponentType.outputVariable:
+          oldItems.forEach(oldItem => set(oldItem.isSelected, false));
+
+          // Show new item in the properties editor
+          set(PropertiesEditorStore, {
+            id: newTreeItem.id,
+            name: newTreeItem.label,
+            subname: newTreeItem.type,
+            properties: newTreeItem.properties.value.map(prop => {
+              return {
+                ...prop,
+                onPickerValueClick: observe(() => openModal(prop.id.value || ''))
+              };
+            })
+          });
+          break;
         default:
           oldItems.forEach(oldItem => {
             set(oldItem.isEditing, false);
@@ -109,7 +155,7 @@ export class Tab<T = ETabType> extends BasicConfigurations<T> implements ITab<T>
         ...oldItems,
         newTreeItem,
       ];
-    })
+    });
   }
 
   constructor(props: IConstructor<T>) {

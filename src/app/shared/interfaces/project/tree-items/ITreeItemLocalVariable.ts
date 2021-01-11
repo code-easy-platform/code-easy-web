@@ -8,7 +8,11 @@ import { EComponentType } from "../../../enuns";
  */
 export interface ITreeItemLocalVariable extends ITreeItemComponent<EComponentType.localVariable> {
     /**
-     * This propertie is used in a variable
+     * This propertie is not used in a folder
      */
     items: IObservable<[]>;
+    /**
+     * This propertie is not used in a folder
+     */
+    isEditing: IObservable<false>;
 }

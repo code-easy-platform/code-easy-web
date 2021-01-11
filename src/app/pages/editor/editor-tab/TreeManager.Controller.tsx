@@ -2,11 +2,11 @@ import React, { useCallback, useEffect, useState } from 'react';
 import { ISubscription, observe, useObserver, useObserverValue, useSetObserver } from 'react-observing';
 import { IconTrash, Utils } from 'code-easy-components';
 
+import { Tab, TreeItemFolder, TreeItemInputVariable, TreeItemLocalVariable, TreeItemOutpuVariable, TreeItemRouterConsume, TreeItemRouterExpose } from '../../../shared/models';
 import { TreeManager, ITreeItem, CustomDragLayer } from '../../../shared/components/external';
 import { ECurrentFocus, EComponentType, ETabType, } from '../../../shared/enuns';
 import { AssetsService, openContextMenu } from '../../../shared/services';
 import { IContextItemList } from '../../../shared/interfaces';
-import { Tab, TreeItemFolder, TreeItemRouterConsume } from '../../../shared/models';
 import { CurrentFocusStore } from '../../../shared/stores';
 import { useEditorContext } from '../../../shared/hooks';
 
@@ -47,27 +47,11 @@ export const TreeManagerController: React.FC = () => {
     const { itemsCurrent, setItemsCurrent, currentTab } = useCurrentTab();
     const setCurrentFocus = useSetObserver(CurrentFocusStore);
 
-    /** Remove tree items */
-    const treeManagerRemoveItem = useCallback((inputItemId: string | undefined) => {
-
-        // Se for undefined não faz nada
-        if (!inputItemId) return;
-
-        setItemsCurrent(oldCurrentItems => oldCurrentItems
-            .filter(item => item.id.value !== inputItemId)
-            .filter(item => item.ascendantId.value !== inputItemId)
-        );
-
-    }, [setItemsCurrent]);
-
     const treeManagerOnKeyDowm = useCallback((e: React.FocusEvent<HTMLDivElement> | any) => {
         if (e.key === 'Delete') {
-            const itemToEdit = itemsCurrent.find(item => item.isSelected.value);
-            if (itemToEdit) {
-                treeManagerRemoveItem(itemToEdit.id.value);
-            }
+            setItemsCurrent(oldCurrentItems => oldCurrentItems.filter(item => !item.isSelected.value));
         }
-    }, [itemsCurrent, treeManagerRemoveItem])
+    }, [setItemsCurrent])
 
     /** Quando clicado com o botão esquerdo do mouse no interior da árvore esta função é acionada. */
     const treeManagerContextMenu = useCallback((itemId: string | undefined) => {
@@ -75,29 +59,32 @@ export const TreeManagerController: React.FC = () => {
 
         /** Add a new param */
         const addParam = (inputItemId: string | undefined, paramType: EComponentType.inputVariable | EComponentType.localVariable | EComponentType.outputVariable) => {
-            // const newName = Utils.newName('NewParam', itemsCurrent.map(item => item.label.value));
-            // currentTab.addItem(newName, paramType, inputItemId);
+            if (paramType === EComponentType.inputVariable) {
+                const newName = Utils.newName('Input', itemsCurrent.map(item => item.label.value));
+                currentTab.addItem(TreeItemInputVariable.newVariable(newName, inputItemId));
+            } else if (paramType === EComponentType.localVariable) {
+                const newName = Utils.newName('Local', itemsCurrent.map(item => item.label.value));
+                currentTab.addItem(TreeItemLocalVariable.newVariable(newName, inputItemId));
+            } else if (paramType === EComponentType.outputVariable) {
+                const newName = Utils.newName('Out', itemsCurrent.map(item => item.label.value));
+                currentTab.addItem(TreeItemOutpuVariable.newVariable(newName, inputItemId));
+            }
         }
 
         /** Add a new route */
         const addRoute = (inputItemId: string | undefined, routerType: EComponentType.routeConsume | EComponentType.routeExpose) => {
-            if (inputItemId === undefined) {
-                if (routerType === EComponentType.routeConsume) {
-                    const newName = Utils.newName('NewRouter', itemsCurrent.map(item => item.label.value));
-                    currentTab.addItem(TreeItemRouterConsume.newRoute(newName));
-                } else if (routerType === EComponentType.routeExpose) {
-                    // const newName = Utils.newName('NewRouter', itemsCurrent.map(item => item.label.value));
-                    // currentTab.addItem(newName, routerType);
-                }
+            const newName = Utils.newName('NewRouter', itemsCurrent.map(item => item.label.value));
+            if (routerType === EComponentType.routeConsume) {
+                currentTab.addItem(TreeItemRouterConsume.newRoute(newName, inputItemId));
+            } else if (routerType === EComponentType.routeExpose) {
+                currentTab.addItem(TreeItemRouterExpose.newRoute(newName, inputItemId));
             }
         }
 
         /** Add a new global action */
         const addAction = (inputItemId: string | undefined) => {
-            if (inputItemId === undefined) {
-                // const newName = Utils.newName('NewAction', itemsCurrent.map(item => item.label.value));
-                // currentTab.addItem(newName, EComponentType.globalAction);
-            }
+            // const newName = Utils.newName('NewAction', itemsCurrent.map(item => item.label.value));
+            // currentTab.addItem(newName, EComponentType.globalAction);
         }
 
         /** Add a new folder */
@@ -106,51 +93,67 @@ export const TreeManagerController: React.FC = () => {
             currentTab.addItem(TreeItemFolder.newFolder(newName));
         }
 
-        options.push({
-            icon: AssetsService.getIcon(EComponentType.grouper),
-            disabled: itemId !== undefined,
-            action: () => addFolder(),
-            label: 'New folder',
-        });
+        /** Remove tree items */
+        const removeItem = (inputItemId: string | undefined) => {
+            if (!inputItemId) return;
 
-        if (currentTab.type.value === ETabType.tabRoutes) {
+            setItemsCurrent(oldCurrentItems => oldCurrentItems
+                .filter(item => item.id.value !== inputItemId)
+                .filter(item => item.ascendantId.value !== inputItemId)
+            );
+        };
 
-            options.push({
-                action: () => addRoute(itemId, EComponentType.routeExpose),
-                icon: AssetsService.getIcon(EComponentType.routeExpose),
-                disabled: itemId !== undefined,
-                label: 'Expose a new route'
-            });
+        switch (currentTab.type.value) {
+            case ETabType.tabRoutes:
+                const item = itemsCurrent.find(item => item.id.value === itemId);
 
-            options.push({
-                icon: AssetsService.getIcon(EComponentType.routeConsume),
-                action: () => addRoute(itemId, EComponentType.routeConsume),
-                disabled: itemId !== undefined,
-                label: 'Consume a new route'
-            });
-
-        } else if (currentTab.type.value === ETabType.tabActions) {
-
-            options.push({
-                icon: AssetsService.getIcon(EComponentType.globalAction),
-                action: () => addAction(itemId),
-                disabled: itemId !== undefined,
-                label: 'Add new action'
-            });
-
-        } else if (currentTab.type.value === ETabType.tabDatas) {
-
+                if (itemId === undefined || item?.type.value === EComponentType.grouper) {
+                    options.push({
+                        action: () => addRoute(itemId, EComponentType.routeExpose),
+                        icon: AssetsService.getIcon(EComponentType.routeExpose),
+                        label: 'Expose a new route'
+                    });
+                    options.push({
+                        action: () => addRoute(itemId, EComponentType.routeConsume),
+                        icon: AssetsService.getIcon(EComponentType.routeConsume),
+                        label: 'Consume a new route'
+                    });
+                }
+                if (itemId === undefined) {
+                    options.push({
+                        icon: AssetsService.getIcon(EComponentType.grouper),
+                        action: () => addFolder(),
+                        label: 'New folder',
+                    });
+                }
+                break;
+            case ETabType.tabActions:
+                options.push({
+                    icon: AssetsService.getIcon(EComponentType.globalAction),
+                    action: () => addAction(itemId),
+                    label: 'Add new action'
+                });
+                if (itemId === undefined) {
+                    options.push({
+                        icon: AssetsService.getIcon(EComponentType.grouper),
+                        action: () => addFolder(),
+                        label: 'New folder',
+                    });
+                }
+                break;
+            default: break;
         }
 
         itemsCurrent.forEach(item => {
             if (item.id.value === itemId) {
                 switch (item.type.value) {
                     case EComponentType.globalAction:
-                        options.push({
-                            action: () => { },
-                            label: '-',
-                        });
-
+                        if (options.length > 0) {
+                            options.push({
+                                action: () => { },
+                                label: '-',
+                            });
+                        }
                         options.push({
                             action: () => addParam(itemId, EComponentType.inputVariable),
                             icon: AssetsService.getIcon(EComponentType.inputVariable),
@@ -170,13 +173,13 @@ export const TreeManagerController: React.FC = () => {
                             label: 'Add local variable'
                         });
                         break;
-
                     case EComponentType.localAction:
-                        options.push({
-                            action: () => { },
-                            label: '-',
-                        });
-
+                        if (options.length > 0) {
+                            options.push({
+                                action: () => { },
+                                label: '-',
+                            });
+                        }
                         options.push({
                             action: () => addParam(itemId, EComponentType.inputVariable),
                             icon: AssetsService.getIcon(EComponentType.inputVariable),
@@ -196,13 +199,13 @@ export const TreeManagerController: React.FC = () => {
                             label: 'Add local variable'
                         });
                         break;
-
                     case EComponentType.routeExpose:
-                        options.push({
-                            action: () => { },
-                            label: '-',
-                        });
-
+                        if (options.length > 0) {
+                            options.push({
+                                action: () => { },
+                                label: '-',
+                            });
+                        }
                         options.push({
                             action: () => addParam(itemId, EComponentType.inputVariable),
                             icon: AssetsService.getIcon(EComponentType.inputVariable),
@@ -222,13 +225,13 @@ export const TreeManagerController: React.FC = () => {
                             label: 'Add local variable'
                         });
                         break;
-
                     case EComponentType.routeConsume:
-                        options.push({
-                            action: () => { },
-                            label: '-',
-                        });
-
+                        if (options.length > 0) {
+                            options.push({
+                                action: () => { },
+                                label: '-',
+                            });
+                        }
                         options.push({
                             action: () => addParam(itemId, EComponentType.inputVariable),
                             icon: AssetsService.getIcon(EComponentType.inputVariable),
@@ -236,19 +239,21 @@ export const TreeManagerController: React.FC = () => {
                             label: 'Add input param'
                         });
                         break;
-
                     default: break;
                 }
             }
         });
 
+        // Add delete option
         if (itemId !== undefined) {
+            if (options.length > 0) {
+                options.push({
+                    action: () => { },
+                    label: '-',
+                });
+            }
             options.push({
-                action: () => { },
-                label: '-',
-            });
-            options.push({
-                action: () => treeManagerRemoveItem(itemId),
+                action: () => removeItem(itemId),
                 disabled: itemId === undefined,
                 useConfirmation: false,
                 icon: IconTrash,
@@ -257,7 +262,7 @@ export const TreeManagerController: React.FC = () => {
         }
 
         return options;
-    }, [currentTab, itemsCurrent, treeManagerRemoveItem]);
+    }, [currentTab, itemsCurrent, setItemsCurrent]);
 
     /** Monta a estrutura da árvore e devolve no return */
     const treeManagerItems = ((): ITreeItem[] => {
@@ -275,7 +280,6 @@ export const TreeManagerController: React.FC = () => {
                     return true;
                 case EComponentType.routeConsume:
                     return true;
-
                 default:
                     return false;
             }
@@ -307,7 +311,7 @@ export const TreeManagerController: React.FC = () => {
             }
         }
 
-        let items: ITreeItem[] = itemsCurrent.map((item): ITreeItem => ({
+        return itemsCurrent.map(item => ({
             isDisabledDoubleClick: observe(cannotPerformDoubleClick(item.type.value)),
             isDisabledDrag: observe(item.type.value === EComponentType.routeExpose),
             canDropList: observe(getCanDropList(item.type.value)),
@@ -332,8 +336,6 @@ export const TreeManagerController: React.FC = () => {
             isDisabled: observe(undefined),
             iconSize: observe(undefined),
         }));
-
-        return items;
     })();
 
     return (
