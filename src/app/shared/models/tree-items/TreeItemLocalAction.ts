@@ -1,7 +1,7 @@
 import { IconAction, IconFlowEnd, IconFlowStart, Utils } from "code-easy-components";
 import { observe } from "react-observing";
 
-import { IFlowItemComponent, ITreeItemGlobalAction } from "../../interfaces";
+import { IFlowItemComponent, ITreeItemLocalAction } from "../../interfaces";
 import { EItemType, IProperty, TypeOfValues } from "../../components/external";
 import { EComponentType, PropertieTypes } from "../../enuns";
 import { FlowItemComponent } from "../FlowItemComponent";
@@ -14,21 +14,21 @@ interface IConstrutor {
 }
 
 /**
- * Represents a full global action implementation
+ * Represents a full local action implementation
  */
-export class TreeItemGlobalAction extends TreeItemComponent<EComponentType.globalAction> implements ITreeItemGlobalAction {
+export class TreeItemLocalAction extends TreeItemComponent<EComponentType.localAction> implements ITreeItemLocalAction {
 
     constructor(props: IConstrutor) {
         super({
             properties: props.properties || [],
-            type: EComponentType.globalAction,
+            type: EComponentType.localAction,
             items: props.items,
             id: props.id,
         });
     }
 
     public static newAction(label: string, ascendantId?: string) {
-        return new TreeItemGlobalAction({
+        return new TreeItemLocalAction({
             properties: [
                 {
                     value: observe(label),

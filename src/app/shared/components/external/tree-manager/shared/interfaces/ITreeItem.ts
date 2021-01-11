@@ -1,5 +1,16 @@
 import { IObservable } from 'react-observing';
 
+/**
+ * Default file structure
+ */
+interface IFileContent {
+    content?: string | ArrayBuffer | null,
+    lastModified?: number,
+    name?: string,
+    size?: number,
+    type?: string,
+}
+
 export interface ITreeItem {
     /**
      * Current item type
@@ -20,7 +31,7 @@ export interface ITreeItem {
     /**
      * Custom Icon
      */
-    icon: IObservable<any | undefined>;
+    icon: IObservable<string | IFileContent | undefined>;
     /**
      * Unique identifier
      */

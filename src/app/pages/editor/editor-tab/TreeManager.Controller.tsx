@@ -1,8 +1,8 @@
 import React, { useCallback, useEffect, useState } from 'react';
-import { ISubscription, observe, useObserver, useObserverValue, useSetObserver } from 'react-observing';
+import { ISubscription, observe, transform, useObserver, useObserverValue, useSetObserver } from 'react-observing';
 import { IconTrash, Utils } from 'code-easy-components';
 
-import { Tab, TreeItemFolder, TreeItemInputVariable, TreeItemLocalVariable, TreeItemOutpuVariable, TreeItemRouterConsume, TreeItemRouterExpose } from '../../../shared/models';
+import { Tab, TreeItemFolder, TreeItemGlobalAction, TreeItemInputVariable, TreeItemLocalVariable, TreeItemOutpuVariable, TreeItemRouterConsume, TreeItemRouterExpose } from '../../../shared/models';
 import { TreeManager, ITreeItem, CustomDragLayer } from '../../../shared/components/external';
 import { ECurrentFocus, EComponentType, ETabType, } from '../../../shared/enuns';
 import { AssetsService, openContextMenu } from '../../../shared/services';
@@ -88,8 +88,8 @@ export const TreeManagerController: React.FC = () => {
 
         /** Add a new global action */
         const addAction = (inputItemId: string | undefined) => {
-            // const newName = Utils.newName('NewAction', itemsCurrent.map(item => item.label.value));
-            // currentTab.addItem(newName, EComponentType.globalAction);
+            const newName = Utils.newName('NewAction', itemsCurrent.map(item => item.label.value));
+            currentTab.addItem(TreeItemGlobalAction.newAction(newName, inputItemId));
         }
 
         /** Add a new folder */
@@ -106,9 +106,8 @@ export const TreeManagerController: React.FC = () => {
 
         switch (currentTab.type.value) {
             case ETabType.tabRoutes:
-                const item = itemsCurrent.find(item => item.id.value === itemId);
-
-                if (itemId === undefined || item?.type.value === EComponentType.grouper) {
+                const itemTabRoutes = itemsCurrent.find(item => item.id.value === itemId);
+                if (itemId === undefined || itemTabRoutes?.type.value === EComponentType.grouper) {
                     options.push({
                         action: () => addRoute(itemId, EComponentType.routeExpose),
                         icon: AssetsService.getIcon(EComponentType.routeExpose),
@@ -129,11 +128,14 @@ export const TreeManagerController: React.FC = () => {
                 }
                 break;
             case ETabType.tabActions:
-                options.push({
-                    icon: AssetsService.getIcon(EComponentType.globalAction),
-                    action: () => addAction(itemId),
-                    label: 'Add new action'
-                });
+                const itemTabAction = itemsCurrent.find(item => item.id.value === itemId);
+                if (itemId === undefined || itemTabAction?.type.value === EComponentType.grouper) {
+                    options.push({
+                        icon: AssetsService.getIcon(EComponentType.globalAction),
+                        action: () => addAction(itemId),
+                        label: 'Add new action'
+                    });
+                }
                 if (itemId === undefined) {
                     options.push({
                         icon: AssetsService.getIcon(EComponentType.grouper),
@@ -313,11 +315,10 @@ export const TreeManagerController: React.FC = () => {
         }
 
         return itemsCurrent.map(item => ({
-            isDisabledDoubleClick: observe(cannotPerformDoubleClick(item.type.value)),
-            isDisabledDrag: observe(item.type.value === EComponentType.routeExpose),
-            canDropList: observe(getCanDropList(item.type.value)),
-            nodeExpanded: observe(Boolean(item.isExpanded)),
-            icon: observe(item.icon.value.content),
+            isDisabledDoubleClick: transform(item.type, value => cannotPerformDoubleClick(value)),
+            isDisabledDrag: transform(item.type, value => value === EComponentType.routeExpose),
+            nodeExpanded: transform(item.isExpanded, value => !!value, value => !!value),
+            canDropList: transform(item.type, value => getCanDropList(value)),
             description: item.description,
             ascendantId: item.ascendantId,
             hasWarning: item.hasWarning,
@@ -326,6 +327,7 @@ export const TreeManagerController: React.FC = () => {
             hasError: item.hasError,
             label: item.label,
             type: item.type,
+            icon: item.icon,
             id: item.id,
 
             isAllowedToggleNodeExpand: observe(undefined),

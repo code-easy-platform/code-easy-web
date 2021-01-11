@@ -110,6 +110,8 @@ export const TreeItem: React.FC<TreeItemProps> = (props) => {
 
     /** Permite que um elemento seja arrastado e dropado em outro lugar.. */
     const [{ isDragging }, dragRef, preview] = useDrag<IDroppableItem, any, { isDragging: boolean }>({
+        collect: monitor => ({ isDragging: monitor.isDragging() }),
+        canDrag: isUseDrag && !isDisabledDrag,
         item: {
             type,
             itemProps: {
@@ -121,8 +123,6 @@ export const TreeItem: React.FC<TreeItemProps> = (props) => {
                 id,
             }
         },
-        canDrag: isUseDrag && !isDisabledDrag,
-        collect: monitor => ({ isDragging: monitor.isDragging() }),
     });
     dragRef(itemRef); /** Agrupa as referências do drop com as da ref. */
 
@@ -173,10 +173,10 @@ export const TreeItem: React.FC<TreeItemProps> = (props) => {
                     iconName={nodeExpanded ? "btn-collapse-folder" : "btn-expand-folder"}
                 />
                 <Icon
-                    icon={icon}
                     iconName={label}
                     iconSize={iconSize || 16}
                     show={icon !== undefined}
+                    icon={typeof icon === 'string' ? icon : String(icon?.content)}
                     onClick={useCustomIconToExpand ? handleExpandNode : undefined}
                 />
                 {label}
@@ -185,10 +185,10 @@ export const TreeItem: React.FC<TreeItemProps> = (props) => {
                 // Usada para mostrar o preview com titulo do item que está sendo arrastado
                 customDragLayer(<>
                     <Icon
-                        icon={icon}
                         iconSize={12}
                         iconName={label}
                         show={icon !== undefined}
+                        icon={typeof icon === 'string' ? icon : String(icon?.content)}
                     />
                     {label}
                 </>)
