@@ -1,7 +1,7 @@
 import { IObservable } from "react-observing";
 
 import { IBasicConfigurations } from "./../IBasicConfigurations";
-import { IFlowItemComponent } from "./../IFlowItemComponent";
+import { IFlowItemComponent } from "./IFlowItemComponent";
 import { EComponentType } from "./../../../enuns";
 
 /**

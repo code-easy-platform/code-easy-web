@@ -1,7 +1,6 @@
 export * from './IProjectConfigurations';
 export * from './IBasicConfigurations';
 export * from './IProjectOpenedWindow';
-export * from './IFlowItemComponent';
 export * from './IOpenedWindow';
 export * from './tree-items';
 export * from './IProject';
