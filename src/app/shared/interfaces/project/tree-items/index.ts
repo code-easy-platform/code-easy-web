@@ -6,4 +6,5 @@ export * from './ITreeItemRouterExpose';
 export * from './ITreeItemGlobalAction';
 export * from './ITreeItemRouterExpose';
 export * from './ITreeItemLocalAction';
+export * from './ITreeItemExtension';
 export * from './ITreeItemFolder';
