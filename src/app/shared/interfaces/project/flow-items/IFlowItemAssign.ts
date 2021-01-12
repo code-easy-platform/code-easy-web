@@ -1,6 +1,6 @@
 import { IObservable } from "react-observing";
 
-import { EFlowItemType, EItemType } from "../../../components/external";
+import { EFlowItemType, EItemType, IProperty } from "../../../components/external";
 import { IFlowItemComponent } from "../generic";
 
 /**
@@ -8,13 +8,13 @@ import { IFlowItemComponent } from "../generic";
  */
 export interface IFlowItemAssign extends IFlowItemComponent<EItemType.ASSIGN> {
     /**
+     * Stores all assigments
+     */
+    assigments: IObservable<IProperty[]>;
+    /**
      * This propertie is not used
      */
     description: IObservable<undefined>;
-    /**
-     * This propertie must be a "ASSIGN"
-     */
-    itemType?: IObservable<EItemType.ASSIGN>;
     /**
      * This propertie must be a "acorn"
      */
