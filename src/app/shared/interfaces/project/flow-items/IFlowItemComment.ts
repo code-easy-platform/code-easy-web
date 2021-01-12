@@ -28,10 +28,6 @@ export interface IFlowItemComment extends IFlowItemComponent<EItemType.COMMENT> 
      */
     isEnabledNewConnetion: IObservable<true>;
     /**
-     * This propertie must be a "COMMENT"
-     */
-    itemType?: IObservable<EItemType.COMMENT>;
-    /**
      * This propertie must be a "comment"
      */
     flowItemType: IObservable<EFlowItemType.comment>;

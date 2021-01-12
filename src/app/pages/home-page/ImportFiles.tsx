@@ -96,7 +96,7 @@ export const ImportProjects = ({ open, close }: { open: boolean, close: Function
                                     name: project.label.value,
                                     type: project.type.value,
                                     version: project.version.value,
-                                    description: project.description.value,
+                                    description: project.description.value || '',
                                 }}
                                 onClick={() => { }}
                                 key={project.id.value}

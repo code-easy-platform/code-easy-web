@@ -1,10 +1,11 @@
 import { IconFlowEnd, IconFlowStart, IconRouterExpose, Utils } from "code-easy-components";
-import { observe } from "react-observing";
+import { observe, set } from "react-observing";
+import * as yup from 'yup';
 
 import { EItemType, IProperty, ISuggestion, TypeOfValues } from "../../components/external";
 import { ApiMethods, ApiMethodsList, EComponentType, PropertieTypes } from "../../enuns";
 import { IFlowItemComponent, ITreeItemRouterExpose } from "../../interfaces";
-import { FlowItemComponent } from "../FlowItemComponent";
+import { FlowItemComponent } from "../generic/FlowItemComponent";
 import { TreeItemComponent } from "../generic";
 
 interface IConstrutor {
@@ -25,6 +26,8 @@ export class TreeItemRouterExpose extends TreeItemComponent<EComponentType.route
             items: props.items,
             id: props.id,
         });
+
+        this._valide();
     }
 
     public static newRoute(label: string, ascendantId?: string) {
@@ -427,6 +430,66 @@ export class TreeItemRouterExpose extends TreeItemComponent<EComponentType.route
                     ],
                 })
             ]
+        });
+    }
+
+    private _valide() {
+        this._valideHttpMethod();
+    }
+
+    private _valideHttpMethod() {
+        const httpMethodSchema = yup.string().min(2);
+
+        const prop = this.properties.value.find(propertie => propertie.propertieType.value === PropertieTypes.httpMethod);
+        if (!prop) return;
+
+        httpMethodSchema.validate(prop.value.value)
+            .then(() => {
+                set(this.errosIds, oldErros => {
+                    if (oldErros.includes(prop.id.id)) {
+                        return oldErros.filter(oldErroId => oldErroId !== prop.id.value);
+                    } else {
+                        return oldErros;
+                    }
+                });
+            })
+            .catch(() => {
+                set(this.errosIds, oldErroId => {
+                    if (!oldErroId.includes(prop.id.id)) {
+                        return [
+                            ...oldErroId,
+                            prop.id.id,
+                        ];
+                    } else {
+                        return oldErroId;
+                    }
+                });
+            });
+
+        // Subscribe to all changes
+        prop.value.subscribe(value => {
+            httpMethodSchema.validate(value)
+                .then(() => {
+                    set(this.errosIds, oldErros => {
+                        if (oldErros.includes(prop.id.id)) {
+                            return oldErros.filter(oldErroId => oldErroId !== prop.id.value);
+                        } else {
+                            return oldErros;
+                        }
+                    });
+                })
+                .catch(() => {
+                    set(this.errosIds, oldErroId => {
+                        if (!oldErroId.includes(prop.id.id)) {
+                            return [
+                                ...oldErroId,
+                                prop.id.id,
+                            ];
+                        } else {
+                            return oldErroId;
+                        }
+                    });
+                });
         });
     }
 }

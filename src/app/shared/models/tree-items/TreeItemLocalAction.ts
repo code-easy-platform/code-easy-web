@@ -4,7 +4,7 @@ import { observe } from "react-observing";
 import { IFlowItemComponent, ITreeItemLocalAction } from "../../interfaces";
 import { EItemType, IProperty, TypeOfValues } from "../../components/external";
 import { EComponentType, PropertieTypes } from "../../enuns";
-import { FlowItemComponent } from "../FlowItemComponent";
+import { FlowItemComponent } from "../generic/FlowItemComponent";
 import { TreeItemComponent } from "../generic";
 
 interface IConstrutor {

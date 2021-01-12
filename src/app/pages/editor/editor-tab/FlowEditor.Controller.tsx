@@ -59,26 +59,9 @@ const useEditingItem = () => {
 
     return {
         breadcamps,
+        flowItems: items,
         hasSomethingToEdit,
         hasSomethingEditing: !!selectedTreeItem.treeItemId,
-        flowItems: items.map<IFlowItem>(flowItem => ({
-            id: flowItem.id,
-            top: flowItem.top,
-            left: flowItem.left,
-            icon: flowItem.icon,
-            label: flowItem.label,
-            width: flowItem.width,
-            height: flowItem.height,
-            itemType: flowItem.type,
-            hasError: flowItem.hasError,
-            hasWarning: flowItem.hasWarning,
-            isSelected: flowItem.isSelected,
-            isDisabled: flowItem.isDisabled,
-            connections: flowItem.connections,
-            description: flowItem.description,
-            flowItemType: flowItem.flowItemType,
-            isEnabledNewConnetion: flowItem.isEnabledNewConnetion,
-        })),
     };
 }
 

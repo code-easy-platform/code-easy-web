@@ -6,15 +6,11 @@ import { IFlowItemComponent } from "../generic";
 /**
  * Flow item representation with all its properties
  */
-export interface IFlowItemForeanch extends IFlowItemComponent<EItemType.FOREACH> {
+export interface IFlowItemForeach extends IFlowItemComponent<EItemType.FOREACH> {
     /**
-     * This propertie is not used
+     * Used to store the sourceList
      */
-    description: IObservable<undefined>;
-    /**
-     * This propertie must be a "FOREACH"
-     */
-    itemType?: IObservable<EItemType.FOREACH>;
+    sourceList: IObservable<string>;
     /**
      * This propertie must be a "acorn"
      */

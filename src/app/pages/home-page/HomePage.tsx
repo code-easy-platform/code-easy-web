@@ -111,7 +111,7 @@ export const HomePage = () => {
                                             name: card.label.value,
                                             id: card.id.value || '',
                                             version: card.version.value,
-                                            description: card.description.value,
+                                            description: card.description.value || '',
                                             lastUpdate: dataformat(new Date(card.updatedDate.value), "yyyy-mm-dd hh:mm"),
                                         }}
                                     />
@@ -154,8 +154,8 @@ export const HomePage = () => {
                                                 name: card.label.value,
                                                 id: card.id.value || '',
                                                 version: card.version.value,
-                                                icon: card.icon.value.content,
-                                                description: card.description.value,
+                                                icon: card.icon.value?.content,
+                                                description: card.description.value || '',
                                                 lastUpdate: dataformat(new Date(card.updatedDate.value), "yyyy-mm-dd hh:mm"),
                                             }}
                                         />

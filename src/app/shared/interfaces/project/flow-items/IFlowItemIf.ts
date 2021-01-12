@@ -8,13 +8,9 @@ import { IFlowItemComponent } from "../generic";
  */
 export interface IFlowItemIf extends IFlowItemComponent<EItemType.IF> {
     /**
-     * This propertie is not used
+     * Used to store the if condition
      */
-    description: IObservable<undefined>;
-    /**
-     * This propertie must be a "IF"
-     */
-    itemType?: IObservable<EItemType.IF>;
+    condition: IObservable<string>;
     /**
      * This propertie must be a "acorn"
      */

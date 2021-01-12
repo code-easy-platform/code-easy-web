@@ -8,13 +8,13 @@ import { IFlowItemComponent } from "../generic";
  */
 export interface IFlowItemSwitch extends IFlowItemComponent<EItemType.SWITCH> {
     /**
-     * This propertie is not used
+     * Store all condictions
      */
-    description: IObservable<undefined>;
+    conditions: IObservable<IObservable<string>[]>;
     /**
-     * This propertie must be a "SWITCH"
+     * This prop will be always true 
      */
-    itemType?: IObservable<EItemType.SWITCH>;
+    isEnabledNewConnetion: IObservable<true>;
     /**
      * This propertie must be a "acorn"
      */

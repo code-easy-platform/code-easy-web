@@ -80,7 +80,7 @@ export class BasicConfigurations<T> implements IBasicConfigurations<T> {
         return prop;
     }
 
-    public get description(): IObservable<string> {
+    public get description(): IObservable<string | undefined> {
         let prop = this._properties.value.find(prop => prop.propertieType.value === PropertieTypes.description)?.value;
         if (prop) {
             return prop;
@@ -117,7 +117,7 @@ export class BasicConfigurations<T> implements IBasicConfigurations<T> {
         return prop;
     }
 
-    public get icon(): IObservable<IFileContent> {
+    public get icon(): IObservable<IFileContent | undefined> {
         let prop = this._properties.value.find(prop => prop.propertieType.value === PropertieTypes.icon)?.value;
         if (prop) {
             return prop;
@@ -164,11 +164,17 @@ export class BasicConfigurations<T> implements IBasicConfigurations<T> {
     };
 
     private _hasError: IObservable<string[]> = observe([]);
+    public get errosIds(): IObservable<string[]> {
+        return this._hasError;
+    }
     public get hasError(): IObservable<boolean> {
         return transform(this._hasError, value => value.length > 0);
     }
 
     private _hasWarning: IObservable<string[]> = observe([]);
+    public get warningIds(): IObservable<string[]> {
+        return this._hasWarning;
+    }
     public get hasWarning(): IObservable<boolean> {
         return transform(this._hasWarning, value => value.length > 0);
     }
@@ -411,12 +417,10 @@ export class BasicConfigurations<T> implements IBasicConfigurations<T> {
 
     private _defaultProperties() {
         this.properties.value.forEach(propertie => {
-            if (propertie.propertieType.value === PropertieTypes.label) {
-                propertie.nameHasError = transform(this._hasError, values => values.includes(propertie.value.id));
-                propertie.valueHasError = transform(this._hasError, values => values.includes(propertie.value.id));
-                propertie.nameHasWarning = transform(this._hasWarning, values => values.includes(propertie.value.id));
-                propertie.valueHasWarning = transform(this._hasWarning, values => values.includes(propertie.value.id));
-            }
+            propertie.nameHasError = transform(this._hasError, values => values.includes(propertie.value.id));
+            propertie.valueHasError = transform(this._hasError, values => values.includes(propertie.value.id));
+            propertie.nameHasWarning = transform(this._hasWarning, values => values.includes(propertie.value.id));
+            propertie.valueHasWarning = transform(this._hasWarning, values => values.includes(propertie.value.id));
         });
     }
 

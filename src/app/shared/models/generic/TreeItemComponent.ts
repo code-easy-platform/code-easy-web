@@ -6,7 +6,7 @@ import { IFlowItemComponent, ITreeItemComponent } from "../../interfaces";
 import { IProperty, TypeOfValues } from "../../components/external";
 import { EComponentType, PropertieTypes } from "../../enuns";
 import { BasicConfigurations } from "../BasicConfigurations";
-import { FlowItemComponent } from "../FlowItemComponent";
+import { FlowItemComponent } from "./FlowItemComponent";
 import { openModal } from "../../services";
 
 /**

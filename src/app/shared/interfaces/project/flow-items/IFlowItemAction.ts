@@ -8,9 +8,9 @@ import { IFlowItemComponent } from "../generic";
  */
 export interface IFlowItemAction extends IFlowItemComponent<EItemType.ACTION> {
     /**
-     * This propertie must be a "ACTION"
+     * Used to store the action reference
      */
-    itemType?: IObservable<EItemType.ACTION>;
+    action: IObservable<string>;
     /**
      * This propertie must be a "acorn"
      */

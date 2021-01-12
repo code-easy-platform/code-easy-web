@@ -1,27 +1,27 @@
 import { IObservable, observe, set, transform } from "react-observing";
 import { Utils } from "code-easy-components";
 
-import { EFlowItemType, EItemType, IConnection, IProperty, TypeOfValues } from "./../components/external";
-import { BasicConfigurations } from "./BasicConfigurations";
-import { IFlowItemComponent } from "./../interfaces";
-import { PropertiesEditorStore } from "../stores";
-import { PropertieTypes } from "./../enuns";
-import { openModal } from "../services";
+import { EFlowItemType, EItemType, IConnection, IProperty, TypeOfValues } from "../../components/external";
+import { BasicConfigurations } from "../BasicConfigurations";
+import { IFlowItemComponent } from "../../interfaces";
+import { PropertiesEditorStore } from "../../stores";
+import { PropertieTypes } from "../../enuns";
+import { openModal } from "../../services";
 
 /**
  * Fields passeds in constructor
  */
-interface IConstructor {
+interface IConstructor<T> {
   connections?: IConnection[];
   properties: IProperty[];
-  type: EItemType;
   id?: string;
+  type: T;
 }
 
 /**
  * Represents a full FlowItemComponent implementation
  */
-export class FlowItemComponent extends BasicConfigurations<EItemType> implements IFlowItemComponent {
+export class FlowItemComponent<T = EItemType> extends BasicConfigurations<T> implements IFlowItemComponent<T> {
 
   public get top(): IObservable<number> {
     let prop = this.properties.value.find(prop => prop.propertieType.value === PropertieTypes.top)?.value;
@@ -288,13 +288,13 @@ export class FlowItemComponent extends BasicConfigurations<EItemType> implements
         set(PropertiesEditorStore, {
           id: this.id,
           name: this.label,
-          subname: this.type,
+          subname: transform(this.type, value => String(value)),
           properties: this.properties.value.map(prop => {
-              return {
-                ...prop,
-                onPickerValueClick: observe(() => openModal(prop.id.value || ''))
-              };
-            })
+            return {
+              ...prop,
+              onPickerValueClick: observe(() => openModal(prop.id.value || ''))
+            };
+          })
         });
       }
       return value;
@@ -308,7 +308,7 @@ export class FlowItemComponent extends BasicConfigurations<EItemType> implements
     return this._connections;
   }
 
-  constructor(props: IConstructor) {
+  constructor(props: IConstructor<T>) {
     super(props);
 
     this._connections = observe(props.connections || []);

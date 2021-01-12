@@ -16,10 +16,6 @@ export interface IFlowItemStart extends IFlowItemComponent<EItemType.START> {
      */
     description: IObservable<undefined>;
     /**
-     * This propertie must be a "Start"
-     */
-    itemType?: IObservable<EItemType.START>;
-    /**
      * This propertie must be a "acorn"
      */
     flowItemType: IObservable<EFlowItemType.acorn>;
