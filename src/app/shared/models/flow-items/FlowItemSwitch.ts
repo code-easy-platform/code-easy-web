@@ -28,13 +28,61 @@ export class FlowItemSwitch extends FlowItemComponent<EItemType.SWITCH> implemen
     }
 
     public get isEnabledNewConnetion(): IObservable<true> {
-        return transform(this.isEnabledNewConnetion, () => true, () => true);
+        return transform(super.isEnabledNewConnetion, () => true, () => true);
     }
 
     public get conditions(): IObservable<IObservable<string>[]> {
         return transform(this.properties, properties => {
             return properties.filter(prop => prop.propertieType.value === PropertieTypes.condition).map(prop => prop.value);
         });
+    }
+
+    public get connections() {
+        const updateCondiction = (connections: IConnection[]): IConnection[] => {
+
+            // Adding a missing condiction
+            connections.forEach(connection => {
+                if (!this.properties.value.some(propertie => propertie.id.value === connection.id.value)) {
+                    this.properties.value = [
+                        ...this.properties.value,
+                        {
+                            id: connection.id,
+                            value: observe(''),
+                            type: observe(TypeOfValues.expression),
+                            propertieType: observe(PropertieTypes.condition),
+                            name: observe(PropertieTypes.condition + ' ' + this.conditions.value.length),
+
+                            group: observe(undefined),
+                            suggestions: observe(undefined),
+                            information: observe(undefined),
+                            fileMaxSize: observe(undefined),
+                            nameHasError: observe(undefined),
+                            valueHasError: observe(undefined),
+                            focusOnRender: observe(undefined),
+                            nameHasWarning: observe(undefined),
+                            valueHasWarning: observe(undefined),
+                            nameSuggestions: observe(undefined),
+                            editNameDisabled: observe(undefined),
+                            onPickerNameClick: observe(undefined),
+                            editValueDisabled: observe(undefined),
+                            onPickerValueClick: observe(undefined),
+                        }
+                    ];
+                }
+            });
+
+            // Remvoing a condition
+            set(this.properties, properties => {
+                const others = properties.filter(prop => prop.propertieType.value !== PropertieTypes.condition);
+                return [
+                    ...others,
+                    ...properties.filter(prop => connections.some(connection => connection.id.value === prop.id.value))
+                ];
+            });
+
+            return connections;
+        }
+        return transform(super.connections, updateCondiction, updateCondiction);
     }
 
     constructor(props: IConstrutor) {
@@ -48,7 +96,7 @@ export class FlowItemSwitch extends FlowItemComponent<EItemType.SWITCH> implemen
         this._valide();
     }
 
-    public static newItem(top: number, left: number, targetId?: string) {
+    public static newItem(top: number, left: number, targetId?: string, isSelected: boolean = false) {
         const id = Utils.getUUID();
 
         return new FlowItemSwitch({
@@ -109,6 +157,50 @@ export class FlowItemSwitch extends FlowItemComponent<EItemType.SWITCH> implemen
                     name: observe(PropertieTypes.left),
                     value: observe(Math.round(left / 15) * 15),
                     propertieType: observe(PropertieTypes.left),
+
+                    group: observe(undefined),
+                    suggestions: observe(undefined),
+                    information: observe(undefined),
+                    fileMaxSize: observe(undefined),
+                    nameHasError: observe(undefined),
+                    valueHasError: observe(undefined),
+                    focusOnRender: observe(undefined),
+                    nameHasWarning: observe(undefined),
+                    valueHasWarning: observe(undefined),
+                    nameSuggestions: observe(undefined),
+                    editNameDisabled: observe(undefined),
+                    onPickerNameClick: observe(undefined),
+                    editValueDisabled: observe(undefined),
+                    onPickerValueClick: observe(undefined),
+                },
+                {
+                    id: observe(Utils.getUUID()),
+                    type: observe(TypeOfValues.hidden),
+                    name: observe(PropertieTypes.icon),
+                    value: observe({ content: IconFlowSwitch }),
+                    propertieType: observe(PropertieTypes.icon),
+
+                    group: observe(undefined),
+                    suggestions: observe(undefined),
+                    information: observe(undefined),
+                    fileMaxSize: observe(undefined),
+                    nameHasError: observe(undefined),
+                    valueHasError: observe(undefined),
+                    focusOnRender: observe(undefined),
+                    nameHasWarning: observe(undefined),
+                    valueHasWarning: observe(undefined),
+                    nameSuggestions: observe(undefined),
+                    editNameDisabled: observe(undefined),
+                    onPickerNameClick: observe(undefined),
+                    editValueDisabled: observe(undefined),
+                    onPickerValueClick: observe(undefined),
+                },
+                {
+                    value: observe(isSelected),
+                    id: observe(Utils.getUUID()),
+                    type: observe(TypeOfValues.hidden),
+                    name: observe(PropertieTypes.isSelected),
+                    propertieType: observe(PropertieTypes.isSelected),
 
                     group: observe(undefined),
                     suggestions: observe(undefined),

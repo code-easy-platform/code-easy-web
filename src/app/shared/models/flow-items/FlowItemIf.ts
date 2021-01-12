@@ -32,7 +32,7 @@ export class FlowItemIf extends FlowItemComponent<EItemType.IF> implements IFlow
     }
 
     public get connections(): IObservable<IConnection[]> {
-        return transform(this.connections, connections => connections, connections => {
+        return transform(super.connections, connections => connections, connections => {
             if (connections.length > 2) {
                 return [connections[0], connections[1]];
             }
@@ -88,7 +88,7 @@ export class FlowItemIf extends FlowItemComponent<EItemType.IF> implements IFlow
         this._valide();
     }
 
-    public static newItem(top: number, left: number, targetId?: string) {
+    public static newItem(top: number, left: number, targetId?: string, isSelected: boolean = false) {
         const id = Utils.getUUID();
 
         return new FlowItemIf({
@@ -149,6 +149,50 @@ export class FlowItemIf extends FlowItemComponent<EItemType.IF> implements IFlow
                     name: observe(PropertieTypes.left),
                     value: observe(Math.round(left / 15) * 15),
                     propertieType: observe(PropertieTypes.left),
+
+                    group: observe(undefined),
+                    suggestions: observe(undefined),
+                    information: observe(undefined),
+                    fileMaxSize: observe(undefined),
+                    nameHasError: observe(undefined),
+                    valueHasError: observe(undefined),
+                    focusOnRender: observe(undefined),
+                    nameHasWarning: observe(undefined),
+                    valueHasWarning: observe(undefined),
+                    nameSuggestions: observe(undefined),
+                    editNameDisabled: observe(undefined),
+                    onPickerNameClick: observe(undefined),
+                    editValueDisabled: observe(undefined),
+                    onPickerValueClick: observe(undefined),
+                },
+                {
+                    id: observe(Utils.getUUID()),
+                    type: observe(TypeOfValues.hidden),
+                    name: observe(PropertieTypes.icon),
+                    value: observe({ content: IconFlowIf }),
+                    propertieType: observe(PropertieTypes.icon),
+
+                    group: observe(undefined),
+                    suggestions: observe(undefined),
+                    information: observe(undefined),
+                    fileMaxSize: observe(undefined),
+                    nameHasError: observe(undefined),
+                    valueHasError: observe(undefined),
+                    focusOnRender: observe(undefined),
+                    nameHasWarning: observe(undefined),
+                    valueHasWarning: observe(undefined),
+                    nameSuggestions: observe(undefined),
+                    editNameDisabled: observe(undefined),
+                    onPickerNameClick: observe(undefined),
+                    editValueDisabled: observe(undefined),
+                    onPickerValueClick: observe(undefined),
+                },
+                {
+                    value: observe(isSelected),
+                    id: observe(Utils.getUUID()),
+                    type: observe(TypeOfValues.hidden),
+                    name: observe(PropertieTypes.isSelected),
+                    propertieType: observe(PropertieTypes.isSelected),
 
                     group: observe(undefined),
                     suggestions: observe(undefined),
@@ -228,7 +272,7 @@ export class FlowItemIf extends FlowItemComponent<EItemType.IF> implements IFlow
     }
 
     private _valideConnections() {
-        const connectionsSchema = yup.array().length(2);
+        const connectionsSchema = yup.array().min(2).max(2);
 
         connectionsSchema.validate(this.connections.value)
             .then(() => {

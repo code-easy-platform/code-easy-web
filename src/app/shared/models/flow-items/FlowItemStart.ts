@@ -34,11 +34,11 @@ export class FlowItemStart extends FlowItemComponent<EItemType.START> implements
     }
 
     public get connections(): IObservable<IConnection[]> {
-        return transform(this.connections, connections => connections, connections => {
-            if (connections.length > 0) {
-                return [connections[connections.length - 1]];
+        return transform(super.connections, connections => connections, connections => {
+            if (connections.length > 1) {
+                return [connections[0]];
             }
-            return [];
+            return connections;
         });
     }
 
@@ -51,7 +51,7 @@ export class FlowItemStart extends FlowItemComponent<EItemType.START> implements
         });
     }
 
-    public static newItem(top: number, left: number, targetId?: string) {
+    public static newItem(top: number, left: number, targetId?: string, isSelected: boolean = false) {
         const id = Utils.getUUID();
 
         return new FlowItemStart({
@@ -62,6 +62,50 @@ export class FlowItemStart extends FlowItemComponent<EItemType.START> implements
                     : []
             ),
             properties: [
+                {
+                    value: observe('Start'),
+                    id: observe(Utils.getUUID()),
+                    name: observe(PropertieTypes.label),
+                    type: observe(TypeOfValues.hidden),
+                    propertieType: observe(PropertieTypes.label),
+
+                    group: observe(undefined),
+                    suggestions: observe(undefined),
+                    information: observe(undefined),
+                    fileMaxSize: observe(undefined),
+                    nameHasError: observe(undefined),
+                    valueHasError: observe(undefined),
+                    focusOnRender: observe(undefined),
+                    nameHasWarning: observe(undefined),
+                    valueHasWarning: observe(undefined),
+                    nameSuggestions: observe(undefined),
+                    editNameDisabled: observe(undefined),
+                    onPickerNameClick: observe(undefined),
+                    editValueDisabled: observe(undefined),
+                    onPickerValueClick: observe(undefined),
+                },
+                {
+                    value: observe(undefined),
+                    id: observe(Utils.getUUID()),
+                    type: observe(TypeOfValues.hidden),
+                    name: observe(PropertieTypes.description),
+                    propertieType: observe(PropertieTypes.description),
+
+                    group: observe(undefined),
+                    suggestions: observe(undefined),
+                    information: observe(undefined),
+                    fileMaxSize: observe(undefined),
+                    nameHasError: observe(undefined),
+                    valueHasError: observe(undefined),
+                    focusOnRender: observe(undefined),
+                    nameHasWarning: observe(undefined),
+                    valueHasWarning: observe(undefined),
+                    nameSuggestions: observe(undefined),
+                    editNameDisabled: observe(undefined),
+                    onPickerNameClick: observe(undefined),
+                    editValueDisabled: observe(undefined),
+                    onPickerValueClick: observe(undefined),
+                },
                 {
                     id: observe(Utils.getUUID()),
                     name: observe(PropertieTypes.top),
@@ -90,6 +134,50 @@ export class FlowItemStart extends FlowItemComponent<EItemType.START> implements
                     name: observe(PropertieTypes.left),
                     value: observe(Math.round(left / 15) * 15),
                     propertieType: observe(PropertieTypes.left),
+
+                    group: observe(undefined),
+                    suggestions: observe(undefined),
+                    information: observe(undefined),
+                    fileMaxSize: observe(undefined),
+                    nameHasError: observe(undefined),
+                    valueHasError: observe(undefined),
+                    focusOnRender: observe(undefined),
+                    nameHasWarning: observe(undefined),
+                    valueHasWarning: observe(undefined),
+                    nameSuggestions: observe(undefined),
+                    editNameDisabled: observe(undefined),
+                    onPickerNameClick: observe(undefined),
+                    editValueDisabled: observe(undefined),
+                    onPickerValueClick: observe(undefined),
+                },
+                {
+                    id: observe(Utils.getUUID()),
+                    type: observe(TypeOfValues.hidden),
+                    name: observe(PropertieTypes.icon),
+                    value: observe({ content: IconFlowStart }),
+                    propertieType: observe(PropertieTypes.icon),
+
+                    group: observe(undefined),
+                    suggestions: observe(undefined),
+                    information: observe(undefined),
+                    fileMaxSize: observe(undefined),
+                    nameHasError: observe(undefined),
+                    valueHasError: observe(undefined),
+                    focusOnRender: observe(undefined),
+                    nameHasWarning: observe(undefined),
+                    valueHasWarning: observe(undefined),
+                    nameSuggestions: observe(undefined),
+                    editNameDisabled: observe(undefined),
+                    onPickerNameClick: observe(undefined),
+                    editValueDisabled: observe(undefined),
+                    onPickerValueClick: observe(undefined),
+                },
+                {
+                    value: observe(isSelected),
+                    id: observe(Utils.getUUID()),
+                    type: observe(TypeOfValues.hidden),
+                    name: observe(PropertieTypes.isSelected),
+                    propertieType: observe(PropertieTypes.isSelected),
 
                     group: observe(undefined),
                     suggestions: observe(undefined),

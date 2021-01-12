@@ -31,7 +31,7 @@ export class FlowItemEnd extends FlowItemComponent<EItemType.END> implements IFl
         return transform(super.isEnabledNewConnetion, () => false, () => false);
     }
     public get connections(): IObservable<[]> {
-        return transform(this.connections, () => [], () => []);
+        return transform(super.connections, () => [], () => []);
     }
 
     constructor(props: IConstrutor) {
@@ -42,10 +42,54 @@ export class FlowItemEnd extends FlowItemComponent<EItemType.END> implements IFl
         });
     }
 
-    public static newItem(top: number, left: number) {
+    public static newItem(top: number, left: number, isSelected: boolean = false) {
         return new FlowItemEnd({
             id: Utils.getUUID(),
             properties: [
+                {
+                    value: observe('End'),
+                    id: observe(Utils.getUUID()),
+                    name: observe(PropertieTypes.label),
+                    type: observe(TypeOfValues.hidden),
+                    propertieType: observe(PropertieTypes.label),
+
+                    group: observe(undefined),
+                    suggestions: observe(undefined),
+                    information: observe(undefined),
+                    fileMaxSize: observe(undefined),
+                    nameHasError: observe(undefined),
+                    valueHasError: observe(undefined),
+                    focusOnRender: observe(undefined),
+                    nameHasWarning: observe(undefined),
+                    valueHasWarning: observe(undefined),
+                    nameSuggestions: observe(undefined),
+                    editNameDisabled: observe(undefined),
+                    onPickerNameClick: observe(undefined),
+                    editValueDisabled: observe(undefined),
+                    onPickerValueClick: observe(undefined),
+                },
+                {
+                    value: observe(undefined),
+                    id: observe(Utils.getUUID()),
+                    type: observe(TypeOfValues.hidden),
+                    name: observe(PropertieTypes.description),
+                    propertieType: observe(PropertieTypes.description),
+
+                    group: observe(undefined),
+                    suggestions: observe(undefined),
+                    information: observe(undefined),
+                    fileMaxSize: observe(undefined),
+                    nameHasError: observe(undefined),
+                    valueHasError: observe(undefined),
+                    focusOnRender: observe(undefined),
+                    nameHasWarning: observe(undefined),
+                    valueHasWarning: observe(undefined),
+                    nameSuggestions: observe(undefined),
+                    editNameDisabled: observe(undefined),
+                    onPickerNameClick: observe(undefined),
+                    editValueDisabled: observe(undefined),
+                    onPickerValueClick: observe(undefined),
+                },
                 {
                     id: observe(Utils.getUUID()),
                     name: observe(PropertieTypes.top),
@@ -74,6 +118,50 @@ export class FlowItemEnd extends FlowItemComponent<EItemType.END> implements IFl
                     name: observe(PropertieTypes.left),
                     value: observe(Math.round(left / 15) * 15),
                     propertieType: observe(PropertieTypes.left),
+
+                    group: observe(undefined),
+                    suggestions: observe(undefined),
+                    information: observe(undefined),
+                    fileMaxSize: observe(undefined),
+                    nameHasError: observe(undefined),
+                    valueHasError: observe(undefined),
+                    focusOnRender: observe(undefined),
+                    nameHasWarning: observe(undefined),
+                    valueHasWarning: observe(undefined),
+                    nameSuggestions: observe(undefined),
+                    editNameDisabled: observe(undefined),
+                    onPickerNameClick: observe(undefined),
+                    editValueDisabled: observe(undefined),
+                    onPickerValueClick: observe(undefined),
+                },
+                {
+                    id: observe(Utils.getUUID()),
+                    type: observe(TypeOfValues.hidden),
+                    name: observe(PropertieTypes.icon),
+                    value: observe({content: IconFlowEnd}),
+                    propertieType: observe(PropertieTypes.icon),
+
+                    group: observe(undefined),
+                    suggestions: observe(undefined),
+                    information: observe(undefined),
+                    fileMaxSize: observe(undefined),
+                    nameHasError: observe(undefined),
+                    valueHasError: observe(undefined),
+                    focusOnRender: observe(undefined),
+                    nameHasWarning: observe(undefined),
+                    valueHasWarning: observe(undefined),
+                    nameSuggestions: observe(undefined),
+                    editNameDisabled: observe(undefined),
+                    onPickerNameClick: observe(undefined),
+                    editValueDisabled: observe(undefined),
+                    onPickerValueClick: observe(undefined),
+                },
+                {
+                    value: observe(isSelected),
+                    id: observe(Utils.getUUID()),
+                    type: observe(TypeOfValues.hidden),
+                    name: observe(PropertieTypes.isSelected),
+                    propertieType: observe(PropertieTypes.isSelected),
 
                     group: observe(undefined),
                     suggestions: observe(undefined),

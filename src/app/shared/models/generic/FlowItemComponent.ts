@@ -296,6 +296,8 @@ export class FlowItemComponent<T = EItemType> extends BasicConfigurations<T> imp
             };
           })
         });
+      } else if (PropertiesEditorStore.value?.id.value === this.id.value) {
+        set(PropertiesEditorStore, undefined);
       }
       return value;
     }
