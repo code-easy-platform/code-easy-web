@@ -316,7 +316,6 @@ export const TreeManagerController: React.FC = () => {
 
         return itemsCurrent.map(item => ({
             isDisabledDoubleClick: transform(item.type, value => cannotPerformDoubleClick(value)),
-            isDisabledDrag: transform(item.type, value => value === EComponentType.routeExpose),
             nodeExpanded: transform(item.isExpanded, value => !!value, value => !!value),
             canDropList: transform(item.type, value => getCanDropList(value)),
             description: item.description,
@@ -334,6 +333,7 @@ export const TreeManagerController: React.FC = () => {
             useCustomIconToExpand: observe(undefined),
             isDisabledSelect: observe(undefined),
             isDisabledClick: observe(undefined),
+            isDisabledDrag: observe(undefined),
             showExpandIcon: observe(undefined),
             isDisabledDrop: observe(undefined),
             isDisabled: observe(undefined),
