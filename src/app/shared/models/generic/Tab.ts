@@ -142,6 +142,9 @@ export class Tab<T = ETabType> extends BasicConfigurations<T> implements ITab<T>
 
           // Show new item in the tabs
           set(WindowsStore, oldWindows => {
+            oldWindows.forEach(oldWindow => {
+              set(oldWindow.isSelected, false);
+            });
             return [
               ...oldWindows,
               {

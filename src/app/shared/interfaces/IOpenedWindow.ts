@@ -1,6 +1,6 @@
 import { IObservable } from "react-observing";
 
-import { IFileContent } from "../../components/external";
+import { IFileContent } from "../components/external";
 
 export interface IOpenedWindow {
     id: IObservable<string>;

@@ -31,45 +31,82 @@ export class FlowItemSwitch extends FlowItemComponent<EItemType.SWITCH> implemen
         return transform(super.isEnabledNewConnetion, () => true, () => true);
     }
 
-    public get conditions(): IObservable<IObservable<string>[]> {
+    public get conditions(): IObservable<IProperty<any>[]> {
         return transform(this.properties, properties => {
-            return properties.filter(prop => prop.propertieType.value === PropertieTypes.condition).map(prop => prop.value);
+            return properties.filter(prop => prop.propertieType.value === PropertieTypes.condition);
         });
     }
 
     public get connections() {
-        const updateCondiction = (connections: IConnection[]): IConnection[] => {
+        const readConnections = (connections: IConnection[]): IConnection[] => {
 
-            // Adding a missing condiction
-            connections.forEach(connection => {
-                if (!this.properties.value.some(propertie => propertie.id.value === connection.id.value)) {
-                    this.properties.value = [
-                        ...this.properties.value,
-                        {
-                            id: connection.id,
-                            value: observe(''),
-                            type: observe(TypeOfValues.expression),
-                            propertieType: observe(PropertieTypes.condition),
-                            name: observe(PropertieTypes.condition + ' ' + this.conditions.value.length),
+            const firstIsDefault = connections.findIndex(connection => connection.connectionLabel.value === 'Default') === 0;
 
-                            group: observe(undefined),
-                            suggestions: observe(undefined),
-                            information: observe(undefined),
-                            fileMaxSize: observe(undefined),
-                            nameHasError: observe(undefined),
-                            valueHasError: observe(undefined),
-                            focusOnRender: observe(undefined),
-                            nameHasWarning: observe(undefined),
-                            valueHasWarning: observe(undefined),
-                            nameSuggestions: observe(undefined),
-                            editNameDisabled: observe(undefined),
-                            onPickerNameClick: observe(undefined),
-                            editValueDisabled: observe(undefined),
-                            onPickerValueClick: observe(undefined),
-                        }
-                    ];
+            // Update connection label
+            connections.forEach((connection, index, array) => {
+                if (connection.connectionLabel.value !== 'Default') {
+                    set(connection.connectionLabel, PropertieTypes.condition.toString() + ' ' + (index + (firstIsDefault ? 0 : 1)));
+                    const condictionToEditLabel = this.conditions.value.find(condiction => condiction.id.value === connection.id.value);
+                    if (condictionToEditLabel) {
+                        set(condictionToEditLabel.name, PropertieTypes.condition.toString() + ' ' + (index + (firstIsDefault ? 0 : 1)));
+                    }
                 }
             });
+
+            return connections;
+        }
+
+        const setConnections = (connections: IConnection[]): IConnection[] => {
+
+            if (connections.length === 1) {
+                set(connections[0].connectionLabel, 'Default');
+            } else if (connections.length > 1) {
+                // Adding a missing condiction propertie
+                connections.forEach((connection, index) => {
+                    if (index === 0 && connection.connectionLabel.value === 'Default') return;
+                    else if (index === 0 && connection.connectionLabel.value !== 'Default') {
+                        let defaultIndex = connections.findIndex(connection => connection.connectionLabel.value === 'Default');
+                        if (defaultIndex === -1) {
+                            defaultIndex = connections.findIndex(connection => connection.connectionLabel.value === '');
+                        }
+                        if (defaultIndex === -1) {
+                            return;
+                        }
+                        const defaultConnection = connections.splice(defaultIndex, 1)[0];
+                        set(defaultConnection.connectionLabel, 'Default');
+                        connections.unshift(defaultConnection);
+                    } else {
+                        if (!this.properties.value.some(propertie => propertie.id.value === connection.id.value)) {
+                            this.properties.value = [
+                                ...this.properties.value,
+                                {
+                                    id: connection.id,
+                                    value: observe(''),
+                                    type: observe(TypeOfValues.expression),
+                                    name: observe(PropertieTypes.condition),
+                                    propertieType: observe(PropertieTypes.condition),
+
+                                    group: observe(undefined),
+                                    suggestions: observe(undefined),
+                                    information: observe(undefined),
+                                    fileMaxSize: observe(undefined),
+                                    nameHasError: observe(undefined),
+                                    valueHasError: observe(undefined),
+                                    focusOnRender: observe(undefined),
+                                    nameHasWarning: observe(undefined),
+                                    valueHasWarning: observe(undefined),
+                                    nameSuggestions: observe(undefined),
+                                    editNameDisabled: observe(undefined),
+                                    onPickerNameClick: observe(undefined),
+                                    editValueDisabled: observe(undefined),
+                                    onPickerValueClick: observe(undefined),
+                                }
+                            ];
+                        }
+                    }
+                });
+            }
+
 
             // Remvoing a condition
             set(this.properties, properties => {
@@ -82,7 +119,8 @@ export class FlowItemSwitch extends FlowItemComponent<EItemType.SWITCH> implemen
 
             return connections;
         }
-        return transform(super.connections, updateCondiction, updateCondiction);
+
+        return transform(super.connections, readConnections, setConnections);
     }
 
     constructor(props: IConstrutor) {

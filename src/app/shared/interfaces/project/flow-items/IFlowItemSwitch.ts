@@ -1,6 +1,6 @@
 import { IObservable } from "react-observing";
 
-import { EFlowItemType, EItemType } from "../../../components/external";
+import { EFlowItemType, EItemType, IProperty } from "../../../components/external";
 import { IFlowItemComponent } from "../generic";
 
 /**
@@ -10,7 +10,7 @@ export interface IFlowItemSwitch extends IFlowItemComponent<EItemType.SWITCH> {
     /**
      * Store all condictions
      */
-    conditions: IObservable<IObservable<string>[]>;
+    conditions: IObservable<IProperty<any>[]>;
     /**
      * This prop will be always true 
      */
