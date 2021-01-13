@@ -16,11 +16,48 @@ interface IConstrutor {
  */
 export class TreeItemInputVariable extends TreeItemComponent<EComponentType.inputVariable> implements ITreeItemInputVariable {
     items: IObservable<[]> = observe([]);
-    get isEditing(): IObservable<false> {
+    public get isEditing(): IObservable<false> {
         if (super.isEditing.value) {
             set(super.isEditing, false);
         }
         return transform(super.isEditing, () => false, () => false);
+    }
+
+    public get isRequired(): IObservable<false> {
+        let prop = this.properties.value.find(prop => prop.propertieType.value === PropertieTypes.required)?.value;
+        if (prop) {
+            return prop;
+        }
+
+        prop = observe(true);
+
+        this.properties.value = [
+            ...this.properties.value,
+            {
+                value: prop,
+                id: observe(Utils.getUUID()),
+                type: observe(TypeOfValues.hidden),
+                name: observe(PropertieTypes.required),
+                propertieType: observe(PropertieTypes.required),
+
+                group: observe(undefined),
+                suggestions: observe(undefined),
+                information: observe(undefined),
+                fileMaxSize: observe(undefined),
+                nameHasError: observe(undefined),
+                valueHasError: observe(undefined),
+                focusOnRender: observe(undefined),
+                nameHasWarning: observe(undefined),
+                valueHasWarning: observe(undefined),
+                nameSuggestions: observe(undefined),
+                editNameDisabled: observe(undefined),
+                onPickerNameClick: observe(undefined),
+                editValueDisabled: observe(undefined),
+                onPickerValueClick: observe(undefined),
+            }
+        ];
+
+        return prop;
     }
 
     constructor(props: IConstrutor) {
@@ -30,6 +67,14 @@ export class TreeItemInputVariable extends TreeItemComponent<EComponentType.inpu
             id: props.id,
             items: [],
         });
+
+        this.isRequired.subscribe(value => {
+            this.properties.value.forEach(propertie => {
+                if (propertie.propertieType.value === PropertieTypes.defaultValue) {
+                    set(propertie.type, value ? TypeOfValues.hidden : TypeOfValues.string);
+                }
+            });
+        });
     }
 
     public static newVariable(label: string, ascendantId?: string) {
@@ -37,6 +82,7 @@ export class TreeItemInputVariable extends TreeItemComponent<EComponentType.inpu
             properties: [
                 {
                     value: observe(label),
+                    focusOnRender: observe(true),
                     id: observe(Utils.getUUID()),
                     type: observe(TypeOfValues.string),
                     name: observe(PropertieTypes.label),
@@ -48,7 +94,6 @@ export class TreeItemInputVariable extends TreeItemComponent<EComponentType.inpu
                     fileMaxSize: observe(undefined),
                     nameHasError: observe(undefined),
                     valueHasError: observe(undefined),
-                    focusOnRender: observe(undefined),
                     nameHasWarning: observe(undefined),
                     valueHasWarning: observe(undefined),
                     nameSuggestions: observe(undefined),
@@ -132,7 +177,7 @@ export class TreeItemInputVariable extends TreeItemComponent<EComponentType.inpu
                 {
                     value: observe(''),
                     id: observe(Utils.getUUID()),
-                    type: observe(TypeOfValues.string),
+                    type: observe(TypeOfValues.hidden),
                     name: observe(PropertieTypes.defaultValue),
                     propertieType: observe(PropertieTypes.defaultValue),
 

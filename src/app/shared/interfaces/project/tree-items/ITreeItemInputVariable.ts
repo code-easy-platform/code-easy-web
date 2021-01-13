@@ -8,6 +8,10 @@ import { EComponentType } from "../../../enuns";
  */
 export interface ITreeItemInputVariable extends ITreeItemComponent<EComponentType.inputVariable> {
     /**
+     * Indicates if the variable is required
+     */
+    isRequired: IObservable<boolean>;
+    /**
      * This propertie is not used in a folder
      */
     items: IObservable<[]>;

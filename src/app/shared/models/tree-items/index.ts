@@ -1,3 +1,4 @@
+export * from './TreeItemRouterInputVariable';
 export * from './TreeItemRouterConsume';
 export * from './TreeItemInputVariable';
 export * from './TreeItemLocalVariable';

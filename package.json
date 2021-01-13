@@ -36,6 +36,7 @@
     "@testing-library/react": "^9.3.2",
     "@testing-library/user-event": "^7.1.2",
     "axios": "^0.20.0",
+    "case": "^1.6.3",
     "code-easy-components": "^0.0.16",
     "cross-env": "^7.0.2",
     "dateformat": "^3.0.3",

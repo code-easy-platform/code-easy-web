@@ -78,6 +78,7 @@ export class FlowItemAssign extends FlowItemComponent<EItemType.ASSIGN> implemen
                 {
                     name: observe(''),
                     value: observe(''),
+                    focusOnRender: observe(true),
                     id: observe(Utils.getUUID()),
                     group: observe('Assigments'),
                     type: observe(TypeOfValues.assign),
@@ -88,7 +89,6 @@ export class FlowItemAssign extends FlowItemComponent<EItemType.ASSIGN> implemen
                     fileMaxSize: observe(undefined),
                     nameHasError: observe(undefined),
                     valueHasError: observe(undefined),
-                    focusOnRender: observe(undefined),
                     nameHasWarning: observe(undefined),
                     valueHasWarning: observe(undefined),
                     nameSuggestions: observe(undefined),

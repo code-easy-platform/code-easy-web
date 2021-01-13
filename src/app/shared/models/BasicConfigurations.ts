@@ -4,7 +4,7 @@ import * as yup from 'yup';
 
 import { IFileContent, IProperty, TypeOfValues } from "./../components/external";
 import { IBasicConfigurations } from "./../interfaces";
-import { AssetsService } from "./../services";
+import { AssetsService, toKebabCase } from "./../services";
 import { PropertieTypes } from "./../enuns";
 
 /**
@@ -30,17 +30,7 @@ export class BasicConfigurations<T> implements IBasicConfigurations<T> {
     }
 
     public get name(): IObservable<string> {
-        return transform(this.label, value => {
-            let name = value.replace(/[^\w\s]/gi, '_');
-            name = name.replaceAll(' ', '');
-            name = name.toLocaleLowerCase();
-            while (name.split('')[0] === '_') {
-                let newName = name.split('')
-                newName.shift();
-                name = newName.join('');
-            }
-            return name;
-        });
+        return transform(this.label, value => toKebabCase(value));
     }
 
     public get label(): IObservable<string> {
@@ -56,6 +46,7 @@ export class BasicConfigurations<T> implements IBasicConfigurations<T> {
             {
                 value: prop,
                 id: observe(Utils.getUUID()),
+                focusOnRender: observe(true),
                 type: observe(TypeOfValues.string),
                 name: observe(PropertieTypes.label),
                 propertieType: observe(PropertieTypes.label),
@@ -68,7 +59,6 @@ export class BasicConfigurations<T> implements IBasicConfigurations<T> {
                 suggestions: observe(undefined),
                 information: observe(undefined),
                 fileMaxSize: observe(undefined),
-                focusOnRender: observe(undefined),
                 nameSuggestions: observe(undefined),
                 editNameDisabled: observe(undefined),
                 onPickerNameClick: observe(undefined),
@@ -412,7 +402,7 @@ export class BasicConfigurations<T> implements IBasicConfigurations<T> {
         this._id = props.id ? observe(props.id) : observe(undefined);
 
         this._validations();
-        this._defaultProperties();
+        this._defaultProperties();       
     }
 
     private _defaultProperties() {
@@ -422,6 +412,14 @@ export class BasicConfigurations<T> implements IBasicConfigurations<T> {
             propertie.nameHasWarning = transform(this._hasWarning, values => values.includes(propertie.value.id));
             propertie.valueHasWarning = transform(this._hasWarning, values => values.includes(propertie.value.id));
         });
+
+        setTimeout(() => {
+            this.properties.value.forEach(propertie => {
+                if (propertie.focusOnRender.value) {
+                    set(propertie.focusOnRender, false);
+                }
+            });
+        }, 1);
     }
 
     private _validations() {

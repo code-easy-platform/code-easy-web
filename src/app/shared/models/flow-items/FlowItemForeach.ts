@@ -111,6 +111,7 @@ export class FlowItemForeach extends FlowItemComponent<EItemType.FOREACH> implem
             properties: [
                 {
                     value: observe('Foreach'),
+                    focusOnRender: observe(true),
                     id: observe(Utils.getUUID()),
                     type: observe(TypeOfValues.string),
                     name: observe(PropertieTypes.label),
@@ -122,7 +123,6 @@ export class FlowItemForeach extends FlowItemComponent<EItemType.FOREACH> implem
                     fileMaxSize: observe(undefined),
                     nameHasError: observe(undefined),
                     valueHasError: observe(undefined),
-                    focusOnRender: observe(undefined),
                     nameHasWarning: observe(undefined),
                     valueHasWarning: observe(undefined),
                     nameSuggestions: observe(undefined),

@@ -101,6 +101,7 @@ export class FlowItemAction extends FlowItemComponent<EItemType.ACTION> implemen
             properties: [
                 {
                     value: observe('Action'),
+                    focusOnRender: observe(true),
                     id: observe(Utils.getUUID()),
                     type: observe(TypeOfValues.string),
                     name: observe(PropertieTypes.label),
@@ -112,7 +113,6 @@ export class FlowItemAction extends FlowItemComponent<EItemType.ACTION> implemen
                     fileMaxSize: observe(undefined),
                     nameHasError: observe(undefined),
                     valueHasError: observe(undefined),
-                    focusOnRender: observe(undefined),
                     nameHasWarning: observe(undefined),
                     valueHasWarning: observe(undefined),
                     nameSuggestions: observe(undefined),

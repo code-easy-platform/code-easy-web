@@ -48,6 +48,7 @@ export class FlowItemComment extends FlowItemComponent<EItemType.COMMENT> implem
             {
                 value: prop,
                 id: observe(Utils.getUUID()),
+                focusOnRender: observe(true),
                 name: observe(PropertieTypes.comment),
                 type: observe(TypeOfValues.fullBigString),
                 propertieType: observe(PropertieTypes.comment),
@@ -58,7 +59,6 @@ export class FlowItemComment extends FlowItemComponent<EItemType.COMMENT> implem
                 fileMaxSize: observe(undefined),
                 nameHasError: observe(undefined),
                 valueHasError: observe(undefined),
-                focusOnRender: observe(undefined),
                 nameHasWarning: observe(undefined),
                 valueHasWarning: observe(undefined),
                 nameSuggestions: observe(undefined),

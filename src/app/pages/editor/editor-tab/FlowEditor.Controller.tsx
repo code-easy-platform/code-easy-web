@@ -308,9 +308,11 @@ export const FlowEditorController: React.FC = memo(() => {
     const handleOnContextMenu = useCallback((e: React.MouseEvent<any, MouseEvent>) => {
         if (e) {
             e.preventDefault();
-            openContextMenu(e.clientX, e.clientY, handleShowContextMenu((e.target as any).id));
+            if (hasSomethingToEdit && hasSomethingEditing) {
+                openContextMenu(e.clientX, e.clientY, handleShowContextMenu((e.target as any).id));
+            }
         }
-    }, [handleShowContextMenu]);
+    }, [hasSomethingToEdit, hasSomethingEditing, handleShowContextMenu]);
 
     const getBackgroundEmpty = useCallback(() => {
 

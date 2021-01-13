@@ -2,7 +2,7 @@ import React, { useCallback, useEffect, useState } from 'react';
 import { ISubscription, observe, transform, useObserver, useObserverValue, useSetObserver } from 'react-observing';
 import { IconTrash, Utils } from 'code-easy-components';
 
-import { Tab, TreeItemFolder, TreeItemGlobalAction, TreeItemInputVariable, TreeItemLocalVariable, TreeItemOutpuVariable, TreeItemRouterConsume, TreeItemRouterExpose } from '../../../shared/models';
+import { Tab, TreeItemFolder, TreeItemGlobalAction, TreeItemInputVariable, TreeItemLocalVariable, TreeItemOutpuVariable, TreeItemRouterConsume, TreeItemRouterExpose, TreeItemRouterInputVariable } from '../../../shared/models';
 import { TreeManager, ITreeItem, CustomDragLayer } from '../../../shared/components/external';
 import { ECurrentFocus, EComponentType, ETabType, } from '../../../shared/enuns';
 import { AssetsService, openContextMenu } from '../../../shared/services';
@@ -62,11 +62,25 @@ export const TreeManagerController: React.FC = () => {
     const treeManagerContextMenu = useCallback((itemId: string | undefined) => {
         let options: IContextItemList[] = [];
 
-        /** Add a new param */
+        /** Add a new param into other type of tree item */
         const addParam = (inputItemId: string | undefined, paramType: EComponentType.inputVariable | EComponentType.localVariable | EComponentType.outputVariable) => {
             if (paramType === EComponentType.inputVariable) {
                 const newName = Utils.newName('Input', itemsCurrent.map(item => item.label.value));
                 currentTab.addItem(TreeItemInputVariable.newVariable(newName, inputItemId));
+            } else if (paramType === EComponentType.localVariable) {
+                const newName = Utils.newName('Local', itemsCurrent.map(item => item.label.value));
+                currentTab.addItem(TreeItemLocalVariable.newVariable(newName, inputItemId));
+            } else if (paramType === EComponentType.outputVariable) {
+                const newName = Utils.newName('Out', itemsCurrent.map(item => item.label.value));
+                currentTab.addItem(TreeItemOutpuVariable.newVariable(newName, inputItemId));
+            }
+        }
+
+        /** Add a new param into a route */
+        const addParamToARoute = (inputItemId: string | undefined, paramType: EComponentType.inputVariable | EComponentType.localVariable | EComponentType.outputVariable) => {
+            if (paramType === EComponentType.inputVariable) {
+                const newName = Utils.newName('Input', itemsCurrent.map(item => item.label.value));
+                currentTab.addItem(TreeItemRouterInputVariable.newVariable(newName, inputItemId));
             } else if (paramType === EComponentType.localVariable) {
                 const newName = Utils.newName('Local', itemsCurrent.map(item => item.label.value));
                 currentTab.addItem(TreeItemLocalVariable.newVariable(newName, inputItemId));
@@ -210,19 +224,19 @@ export const TreeManagerController: React.FC = () => {
                             });
                         }
                         options.push({
-                            action: () => addParam(itemId, EComponentType.inputVariable),
+                            action: () => addParamToARoute(itemId, EComponentType.inputVariable),
                             icon: AssetsService.getIcon(EComponentType.inputVariable),
                             disabled: itemId === undefined,
                             label: 'Add input param'
                         });
                         options.push({
-                            action: () => addParam(itemId, EComponentType.outputVariable),
+                            action: () => addParamToARoute(itemId, EComponentType.outputVariable),
                             icon: AssetsService.getIcon(EComponentType.outputVariable),
                             disabled: itemId === undefined,
                             label: 'Add output param'
                         });
                         options.push({
-                            action: () => addParam(itemId, EComponentType.localVariable),
+                            action: () => addParamToARoute(itemId, EComponentType.localVariable),
                             icon: AssetsService.getIcon(EComponentType.localVariable),
                             disabled: itemId === undefined,
                             label: 'Add local variable'
@@ -236,7 +250,7 @@ export const TreeManagerController: React.FC = () => {
                             });
                         }
                         options.push({
-                            action: () => addParam(itemId, EComponentType.inputVariable),
+                            action: () => addParamToARoute(itemId, EComponentType.inputVariable),
                             icon: AssetsService.getIcon(EComponentType.inputVariable),
                             disabled: itemId === undefined,
                             label: 'Add input param'

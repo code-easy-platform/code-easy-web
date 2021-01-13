@@ -36,6 +36,7 @@ export class TreeItemGlobalAction extends TreeItemComponent<EComponentType.globa
             properties: [
                 {
                     value: observe(label),
+                    focusOnRender: observe(true),
                     id: observe(Utils.getUUID()),
                     type: observe(TypeOfValues.string),
                     name: observe(PropertieTypes.label),
@@ -47,7 +48,6 @@ export class TreeItemGlobalAction extends TreeItemComponent<EComponentType.globa
                     fileMaxSize: observe(undefined),
                     nameHasError: observe(undefined),
                     valueHasError: observe(undefined),
-                    focusOnRender: observe(undefined),
                     nameHasWarning: observe(undefined),
                     valueHasWarning: observe(undefined),
                     nameSuggestions: observe(undefined),

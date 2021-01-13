@@ -1,5 +1,5 @@
 import { IconRouterExpose, Utils } from "code-easy-components";
-import { observe, set } from "react-observing";
+import { IObservable, observe, set } from "react-observing";
 import * as yup from 'yup';
 
 import { IProperty, ISuggestion, TypeOfValues } from "../../components/external";
@@ -7,6 +7,7 @@ import { ApiMethods, ApiMethodsList, EComponentType, PropertieTypes } from "../.
 import { IFlowItemComponent, ITreeItemRouterExpose } from "../../interfaces";
 import { FlowItemEnd, FlowItemStart } from "../flow-items";
 import { TreeItemComponent } from "../generic";
+import { toKebabCase } from './../../services';
 
 interface IConstrutor {
     items?: IFlowItemComponent[];
@@ -18,7 +19,44 @@ interface IConstrutor {
  * Represents a full router expose implementation
  */
 export class TreeItemRouterExpose extends TreeItemComponent<EComponentType.routeExpose> implements ITreeItemRouterExpose {
-
+    
+    public get path(): IObservable<string> {
+        let prop = this.properties.value.find(prop => prop.propertieType.value === PropertieTypes.path)?.value;
+        if (prop) {
+          return prop;
+        }
+    
+        prop = observe('');
+    
+        this.properties.value = [
+          ...this.properties.value,
+          {
+            value: prop,
+            id: observe(Utils.getUUID()),
+            type: observe(TypeOfValues.hidden),
+            name: observe(PropertieTypes.path),
+            propertieType: observe(PropertieTypes.path),
+    
+            group: observe(undefined),
+            suggestions: observe(undefined),
+            information: observe(undefined),
+            fileMaxSize: observe(undefined),
+            nameHasError: observe(undefined),
+            valueHasError: observe(undefined),
+            focusOnRender: observe(undefined),
+            nameHasWarning: observe(undefined),
+            valueHasWarning: observe(undefined),
+            nameSuggestions: observe(undefined),
+            editNameDisabled: observe(undefined),
+            onPickerNameClick: observe(undefined),
+            editValueDisabled: observe(undefined),
+            onPickerValueClick: observe(undefined),
+          }
+        ];
+    
+        return prop;
+    }
+    
     constructor(props: IConstrutor) {
         super({
             properties: props.properties || [],
@@ -27,6 +65,7 @@ export class TreeItemRouterExpose extends TreeItemComponent<EComponentType.route
             id: props.id,
         });
 
+        this._Initialize();
         this._valide();
     }
 
@@ -39,6 +78,7 @@ export class TreeItemRouterExpose extends TreeItemComponent<EComponentType.route
             properties: [
                 {
                     value: observe(label),
+                    focusOnRender: observe(true),
                     id: observe(Utils.getUUID()),
                     type: observe(TypeOfValues.string),
                     name: observe(PropertieTypes.label),
@@ -50,7 +90,6 @@ export class TreeItemRouterExpose extends TreeItemComponent<EComponentType.route
                     fileMaxSize: observe(undefined),
                     nameHasError: observe(undefined),
                     valueHasError: observe(undefined),
-                    focusOnRender: observe(undefined),
                     nameHasWarning: observe(undefined),
                     valueHasWarning: observe(undefined),
                     nameSuggestions: observe(undefined),
@@ -62,6 +101,7 @@ export class TreeItemRouterExpose extends TreeItemComponent<EComponentType.route
                 {
                     value: observe(''),
                     id: observe(Utils.getUUID()),
+                    editValueDisabled: observe(true),
                     name: observe(PropertieTypes.path),
                     type: observe(TypeOfValues.string),
                     propertieType: observe(PropertieTypes.path),
@@ -78,7 +118,6 @@ export class TreeItemRouterExpose extends TreeItemComponent<EComponentType.route
                     nameSuggestions: observe(undefined),
                     editNameDisabled: observe(undefined),
                     onPickerNameClick: observe(undefined),
-                    editValueDisabled: observe(undefined),
                     onPickerValueClick: observe(undefined),
                 },
                 {
@@ -242,6 +281,13 @@ export class TreeItemRouterExpose extends TreeItemComponent<EComponentType.route
                     onPickerValueClick: observe(undefined),
                 },
             ],
+        });
+    }
+
+    private _Initialize() {
+        set(this.path, toKebabCase(this.label.value));
+        this.label.subscribe(label => {
+            set(this.path, toKebabCase(label));
         });
     }
 

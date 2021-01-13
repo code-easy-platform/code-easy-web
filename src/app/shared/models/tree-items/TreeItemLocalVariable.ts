@@ -38,6 +38,7 @@ export class TreeItemLocalVariable extends TreeItemComponent<EComponentType.loca
                 {
                     value: observe(label),
                     id: observe(Utils.getUUID()),
+                    focusOnRender: observe(true),
                     type: observe(TypeOfValues.string),
                     name: observe(PropertieTypes.label),
                     propertieType: observe(PropertieTypes.label),
@@ -48,7 +49,6 @@ export class TreeItemLocalVariable extends TreeItemComponent<EComponentType.loca
                     fileMaxSize: observe(undefined),
                     nameHasError: observe(undefined),
                     valueHasError: observe(undefined),
-                    focusOnRender: observe(undefined),
                     nameHasWarning: observe(undefined),
                     valueHasWarning: observe(undefined),
                     nameSuggestions: observe(undefined),
