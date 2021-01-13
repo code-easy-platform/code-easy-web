@@ -7,7 +7,6 @@ interface PropertiesEditorFormProps {
     item: IItem;
 }
 export const PropertiesEditorForm: React.FC<PropertiesEditorFormProps> = ({ item }) => {
-
     return (
         <div className="flex1 flex-column full-width">
             <Header

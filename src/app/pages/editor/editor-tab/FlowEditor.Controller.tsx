@@ -96,7 +96,7 @@ export const FlowEditorController: React.FC = memo(() => {
                 id: item.id,
                 name: item.label,
                 subname: item.type,
-                properties: item.properties.value,
+                properties: item.properties,
             });
         };
 

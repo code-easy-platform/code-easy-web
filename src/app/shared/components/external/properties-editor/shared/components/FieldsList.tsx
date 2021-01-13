@@ -1,16 +1,18 @@
 import React from 'react';
+import { IObservable, useObserverValue } from 'react-observing';
 
 import { FieldGroup } from './fields/FieldGroup';
 import { IProperty } from '../interfaces';
 import { Field } from './Field';
 
 interface FieldsListProps {
-    fields: IProperty[];
+    fields: IObservable<IProperty[]>;
 }
-export const FieldsList: React.FC<FieldsListProps> = ({ fields = [] }) => {
+export const FieldsList: React.FC<FieldsListProps> = ({ fields }) => {
+    const properties = useObserverValue(fields);
 
     let groups: string[] = [];
-    fields.forEach(prop => {
+    properties.forEach(prop => {
         if (prop.group.value && (!groups.some(group => group === prop.group.value))) {
             groups.push(prop.group.value);
         }
@@ -18,7 +20,7 @@ export const FieldsList: React.FC<FieldsListProps> = ({ fields = [] }) => {
 
     return (
         <div className="flex-column overflow-auto full-height">
-            {fields
+            {properties
                 .filter(field => field.group.value === undefined)
                 .map((field, index) => (
                     <Field
@@ -30,7 +32,7 @@ export const FieldsList: React.FC<FieldsListProps> = ({ fields = [] }) => {
             {groups.map((group, index) => {
                 return (
                     <FieldGroup key={index} group={group}>
-                        {fields.filter(prop => prop.group.value === group).map((field, index) => (
+                        {properties.filter(prop => prop.group.value === group).map((field, index) => (
                             <Field
                                 key={index}
                                 field={field}

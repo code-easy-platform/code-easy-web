@@ -289,12 +289,12 @@ export class FlowItemComponent<T = EItemType> extends BasicConfigurations<T> imp
           id: this.id,
           name: this.label,
           subname: transform(this.type, value => String(value)),
-          properties: this.properties.value.map(prop => {
+          properties: transform(this.properties, properties => properties.map(prop => {
             return {
               ...prop,
               onPickerValueClick: observe(() => openModal(prop.id.value || ''))
             };
-          })
+          }))
         });
       } else if (PropertiesEditorStore.value?.id.value === this.id.value) {
         set(PropertiesEditorStore, undefined);

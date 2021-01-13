@@ -43,12 +43,13 @@ export class FlowItemSwitch extends FlowItemComponent<EItemType.SWITCH> implemen
             const firstIsDefault = connections.findIndex(connection => connection.connectionLabel.value === 'Default') === 0;
 
             // Update connection label
-            connections.forEach((connection, index, array) => {
+            connections.forEach((connection, index) => {
                 if (connection.connectionLabel.value !== 'Default') {
                     set(connection.connectionLabel, PropertieTypes.condition.toString() + ' ' + (index + (firstIsDefault ? 0 : 1)));
                     const condictionToEditLabel = this.conditions.value.find(condiction => condiction.id.value === connection.id.value);
                     if (condictionToEditLabel) {
                         set(condictionToEditLabel.name, PropertieTypes.condition.toString() + ' ' + (index + (firstIsDefault ? 0 : 1)));
+                        set(connection.connectionDescription, condictionToEditLabel.value.value);
                     }
                 }
             });

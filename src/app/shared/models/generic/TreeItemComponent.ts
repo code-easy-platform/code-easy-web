@@ -69,12 +69,12 @@ export class TreeItemComponent<T = EComponentType> extends BasicConfigurations<T
           id: this.id,
           name: this.label,
           subname: transform(this.type, value => String(value)),
-          properties: this.properties.value.map(prop => {
+          properties: transform(this.properties, properties => properties.map(prop => {
             return {
               ...prop,
               onPickerValueClick: observe(() => openModal(prop.id.value || ''))
             };
-          })
+          }))
         });
       }
       return value;

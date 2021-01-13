@@ -49,12 +49,12 @@ export class Tab<T = ETabType> extends BasicConfigurations<T> implements ITab<T>
             id: newTreeItem.id,
             name: newTreeItem.label,
             subname: newTreeItem.type,
-            properties: newTreeItem.properties.value.map(prop => {
+            properties: transform(newTreeItem.properties, properties => properties.map(prop => {
               return {
                 ...prop,
                 onPickerValueClick: observe(() => openModal(prop.id.value || ''))
               };
-            })
+            }))
           });
           break;
         case EComponentType.routeConsume:
@@ -65,12 +65,12 @@ export class Tab<T = ETabType> extends BasicConfigurations<T> implements ITab<T>
             id: newTreeItem.id,
             name: newTreeItem.label,
             subname: newTreeItem.type,
-            properties: newTreeItem.properties.value.map(prop => {
+            properties: transform(newTreeItem.properties, properties => properties.map(prop => {
               return {
                 ...prop,
                 onPickerValueClick: observe(() => openModal(prop.id.value || ''))
               };
-            })
+            }))
           });
           break;
         case EComponentType.inputVariable:
@@ -81,12 +81,12 @@ export class Tab<T = ETabType> extends BasicConfigurations<T> implements ITab<T>
             id: newTreeItem.id,
             name: newTreeItem.label,
             subname: newTreeItem.type,
-            properties: newTreeItem.properties.value.map(prop => {
+            properties: transform(newTreeItem.properties, properties => properties.map(prop => {
               return {
                 ...prop,
                 onPickerValueClick: observe(() => openModal(prop.id.value || ''))
               };
-            })
+            }))
           });
           break;
         case EComponentType.localVariable:
@@ -97,12 +97,12 @@ export class Tab<T = ETabType> extends BasicConfigurations<T> implements ITab<T>
             id: newTreeItem.id,
             name: newTreeItem.label,
             subname: newTreeItem.type,
-            properties: newTreeItem.properties.value.map(prop => {
+            properties: transform(newTreeItem.properties, properties => properties.map(prop => {
               return {
                 ...prop,
                 onPickerValueClick: observe(() => openModal(prop.id.value || ''))
               };
-            })
+            }))
           });
           break;
         case EComponentType.outputVariable:
@@ -113,12 +113,12 @@ export class Tab<T = ETabType> extends BasicConfigurations<T> implements ITab<T>
             id: newTreeItem.id,
             name: newTreeItem.label,
             subname: newTreeItem.type,
-            properties: newTreeItem.properties.value.map(prop => {
+            properties: transform(newTreeItem.properties, properties => properties.map(prop => {
               return {
                 ...prop,
                 onPickerValueClick: observe(() => openModal(prop.id.value || ''))
               };
-            })
+            }))
           });
           break;
         default:
@@ -132,12 +132,12 @@ export class Tab<T = ETabType> extends BasicConfigurations<T> implements ITab<T>
             id: newTreeItem.id,
             name: newTreeItem.label,
             subname: newTreeItem.type,
-            properties: newTreeItem.properties.value.map(prop => {
+            properties: transform(newTreeItem.properties, properties => properties.map(prop => {
               return {
                 ...prop,
                 onPickerValueClick: observe(() => openModal(prop.id.value || ''))
               };
-            })
+            }))
           });
 
           // Show new item in the tabs
