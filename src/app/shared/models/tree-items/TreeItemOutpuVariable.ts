@@ -1,7 +1,7 @@
 import { IObservable, observe, set, transform } from "react-observing";
 import { IconOutpuParam, Utils } from "code-easy-components";
 
-import { DataTypes, DataTypesList, EComponentType, PropertieTypes } from "../../enuns";
+import { EDataTypes, DataTypesList, EComponentType, PropertieTypes } from "../../enuns";
 import { IProperty, ISuggestion, TypeOfValues } from "../../components/external";
 import { ITreeItemOutpuVariable } from "../../interfaces";
 import { TreeItemComponent } from "../generic";
@@ -81,11 +81,11 @@ export class TreeItemOutpuVariable extends TreeItemComponent<EComponentType.outp
                 },
                 {
                     id: observe(Utils.getUUID()),
-                    value: observe(DataTypes.string),
+                    value: observe(EDataTypes.string),
                     type: observe(TypeOfValues.selection),
                     name: observe(PropertieTypes.dataType),
                     propertieType: observe(PropertieTypes.dataType),
-                    suggestions: observe<ISuggestion<DataTypes>[]>(DataTypesList.map(dataType => ({
+                    suggestions: observe<ISuggestion<EDataTypes>[]>(DataTypesList.map(dataType => ({
                         description: observe(dataType),
                         disabled: observe(false),
                         value: observe(dataType),

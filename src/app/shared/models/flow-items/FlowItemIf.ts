@@ -35,6 +35,16 @@ export class FlowItemIf extends FlowItemComponent<EItemType.IF> implements IFlow
         return transform(super.connections, connections => connections, connections => {
             if (connections.length > 2) {
                 return [connections[0], connections[1]];
+            } else {
+                if (connections.length === 1 && connections[0].connectionLabel.value === "") {
+                    set(connections[0].connectionLabel, "True")
+                } else if (connections.length === 2) {
+                    if (connections[0].connectionLabel.value === "True") {
+                        set(connections[1].connectionLabel, "False");
+                    } else if (connections[0].connectionLabel.value === "False") {
+                        set(connections[1].connectionLabel, "True");
+                    }
+                }
             }
             return connections;
         });

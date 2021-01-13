@@ -35,6 +35,16 @@ export class FlowItemForeach extends FlowItemComponent<EItemType.FOREACH> implem
         return transform(super.connections, connections => connections, connections => {
             if (connections.length > 2) {
                 return [connections[0], connections[1]];
+            } else {
+                if (connections.length === 1 && connections[0].connectionLabel.value === "") {
+                    set(connections[0].connectionLabel, "Cycle")
+                } else if (connections.length === 2) {
+                    if (connections[0].connectionLabel.value === "Cycle") {
+                        set(connections[1].connectionLabel, " ");
+                    } else if (connections[0].connectionLabel.value === " ") {
+                        set(connections[1].connectionLabel, "Cycle");
+                    }
+                }
             }
             return connections;
         });

@@ -6,5 +6,5 @@ export * from './EProjectType';
 export * from './StorageEnum';
 export * from './ApiMethods';
 export * from './CurrentTab';
-export * from './DataType';
+export * from './EDataType';
 export * from './ETabType';

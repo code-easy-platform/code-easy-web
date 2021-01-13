@@ -108,6 +108,38 @@ export const FlowEditorController: React.FC = memo(() => {
                     if (!treeItem.items.value.some(oldItem => oldItem.id.value === updatedItem.id.value)) {
                         set(treeItem.items, items => {
                             switch (updatedItem.itemType?.value) {
+                                case EComponentType.inputVariable:
+                                    const inputVariable = new FlowItemAssign({
+                                        id: updatedItem.id.value,
+                                        connections: updatedItem.connections.value,
+                                        properties: FlowItemAssign.newItem(updatedItem.top.value, updatedItem.left.value, undefined, true).properties.value,
+                                    });
+                                    setPropertiesEditor(inputVariable);
+                                    return [...items, inputVariable];
+                                case EComponentType.localVariable:
+                                    const localVariable = new FlowItemAssign({
+                                        id: updatedItem.id.value,
+                                        connections: updatedItem.connections.value,
+                                        properties: FlowItemAssign.newItem(updatedItem.top.value, updatedItem.left.value, undefined, true).properties.value,
+                                    });
+                                    setPropertiesEditor(localVariable);
+                                    return [...items, localVariable];
+                                case EComponentType.outputVariable:
+                                    const outputVariable = new FlowItemAssign({
+                                        id: updatedItem.id.value,
+                                        connections: updatedItem.connections.value,
+                                        properties: FlowItemAssign.newItem(updatedItem.top.value, updatedItem.left.value, undefined, true).properties.value,
+                                    });
+                                    setPropertiesEditor(outputVariable);
+                                    return [...items, outputVariable];
+                                case EComponentType.globalAction:
+                                    const globalAction = new FlowItemAction({
+                                        id: updatedItem.id.value,
+                                        connections: updatedItem.connections.value,
+                                        properties: FlowItemAction.newItem(updatedItem.top.value, updatedItem.left.value, undefined, true).properties.value,
+                                    });
+                                    setPropertiesEditor(globalAction);
+                                    return [...items, globalAction];
                                 case EItemType.ACTION:
                                     const action = new FlowItemAction({
                                         id: updatedItem.id.value,

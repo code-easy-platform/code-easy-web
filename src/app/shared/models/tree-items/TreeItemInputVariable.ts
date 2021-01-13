@@ -3,7 +3,7 @@ import { IObservable, observe, set, transform } from "react-observing";
 import { ITreeItemInputVariable } from "../../interfaces";
 import { IProperty, ISuggestion, TypeOfValues } from "../../components/external";
 import { TreeItemComponent } from "../generic";
-import { DataTypes, DataTypesList, EComponentType, PropertieTypes } from "../../enuns";
+import { EDataTypes, DataTypesList, EComponentType, PropertieTypes } from "../../enuns";
 import { IconInputParam, Utils } from "code-easy-components";
 
 interface IConstrutor {
@@ -103,11 +103,11 @@ export class TreeItemInputVariable extends TreeItemComponent<EComponentType.inpu
                 },
                 {
                     id: observe(Utils.getUUID()),
-                    value: observe(DataTypes.string),
+                    value: observe(EDataTypes.string),
                     type: observe(TypeOfValues.selection),
                     name: observe(PropertieTypes.dataType),
                     propertieType: observe(PropertieTypes.dataType),
-                    suggestions: observe<ISuggestion<DataTypes>[]>(DataTypesList.map(dataType => ({
+                    suggestions: observe<ISuggestion<EDataTypes>[]>(DataTypesList.map(dataType => ({
                         description: observe(dataType),
                         disabled: observe(false),
                         value: observe(dataType),

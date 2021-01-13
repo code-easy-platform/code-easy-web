@@ -42,89 +42,15 @@ export class FlowItemAssign extends FlowItemComponent<EItemType.ASSIGN> implemen
 
     public get assigments(): IObservable<IProperty[]> {
         const handleReadAssigns = (properties: IProperty[]): IProperty[] => {
-            const assigns = properties.filter(prop => prop.propertieType.value === PropertieTypes.assigns);
-
-            const emptyAssigments = assigns.filter(prop => (prop.name.value === '' && prop.value.value === ''));
-            if (emptyAssigments.length === 0) {
-                // Adding a new assigm
-                assigns.push({
-                    name: observe(''),
-                    value: observe(''),
-                    id: observe(Utils.getUUID()),
-                    group: observe('Assigments'),
-                    type: observe(TypeOfValues.assign),
-                    propertieType: observe(PropertieTypes.assigns),
-
-                    suggestions: observe(undefined),
-                    information: observe(undefined),
-                    fileMaxSize: observe(undefined),
-                    nameHasError: observe(undefined),
-                    valueHasError: observe(undefined),
-                    focusOnRender: observe(undefined),
-                    nameHasWarning: observe(undefined),
-                    valueHasWarning: observe(undefined),
-                    nameSuggestions: observe(undefined),
-                    editNameDisabled: observe(undefined),
-                    onPickerNameClick: observe(undefined),
-                    editValueDisabled: observe(undefined),
-                    onPickerValueClick: observe(undefined),
-                });
-            } else if (emptyAssigments.length > 1) {
-                // Remove assigns
-                emptyAssigments.forEach((empAssig, index) => {
-                    let indexToRemove = assigns.findIndex(prop => prop.id === empAssig.id);
-                    if (index < (emptyAssigments.length - 1)) {
-                        assigns.splice(indexToRemove, 1);
-                    }
-                });
-            }
-
-            return assigns;
+            return properties.filter(prop => prop.propertieType.value === PropertieTypes.assigns);
         };
 
-        const handleSetAssigns = (properties: IProperty[]): IProperty[] => {
-            const assigns = properties.filter(prop => prop.propertieType.value === PropertieTypes.assigns);
-
-            const emptyAssigments = assigns.filter(prop => (prop.name.value === '' && prop.value.value === ''));
-            if (emptyAssigments.length === 0) {
-                // Adding a new assigm
-                assigns.push({
-                    name: observe(''),
-                    value: observe(''),
-                    id: observe(Utils.getUUID()),
-                    group: observe('Assigments'),
-                    type: observe(TypeOfValues.assign),
-                    propertieType: observe(PropertieTypes.assigns),
-
-                    suggestions: observe(undefined),
-                    information: observe(undefined),
-                    fileMaxSize: observe(undefined),
-                    nameHasError: observe(undefined),
-                    valueHasError: observe(undefined),
-                    focusOnRender: observe(undefined),
-                    nameHasWarning: observe(undefined),
-                    valueHasWarning: observe(undefined),
-                    nameSuggestions: observe(undefined),
-                    editNameDisabled: observe(undefined),
-                    onPickerNameClick: observe(undefined),
-                    editValueDisabled: observe(undefined),
-                    onPickerValueClick: observe(undefined),
-                });
-            } else if (emptyAssigments.length > 1) {
-                // Remove assigns
-                emptyAssigments.forEach((empAssig, index) => {
-                    let indexToRemove = assigns.findIndex(prop => prop.id === empAssig.id);
-                    if (index < (emptyAssigments.length - 1)) {
-                        assigns.splice(indexToRemove, 1);
-                    }
-                });
-            }
-
+        const handleSetAssigns = (assigns: IProperty[]): IProperty[] => {
             return [
-                ...properties.filter(prop => prop.propertieType.value !== PropertieTypes.assigns),
-                ...assigns
+                ...this.properties.value.filter(prop => prop.propertieType.value === PropertieTypes.assigns),
+                ...assigns,
             ];
-        };
+        }
 
         return transform(this.properties, handleReadAssigns, handleSetAssigns);
     }
@@ -138,6 +64,103 @@ export class FlowItemAssign extends FlowItemComponent<EItemType.ASSIGN> implemen
         });
 
         this._valide();
+        this._initializeAssigns();
+    }
+
+    private _initializeAssigns() {
+        const assigns = this.properties.value.filter(prop => prop.propertieType.value === PropertieTypes.assigns);
+        const emptyAssigments = assigns.filter(prop => (prop.name.value === '' && prop.value.value === ''));
+
+        if (emptyAssigments.length === 0) {
+            // Adding a new assigm
+            set(this.properties, properties => [
+                ...properties,
+                {
+                    name: observe(''),
+                    value: observe(''),
+                    id: observe(Utils.getUUID()),
+                    group: observe('Assigments'),
+                    type: observe(TypeOfValues.assign),
+                    propertieType: observe(PropertieTypes.assigns),
+
+                    suggestions: observe(undefined),
+                    information: observe(undefined),
+                    fileMaxSize: observe(undefined),
+                    nameHasError: observe(undefined),
+                    valueHasError: observe(undefined),
+                    focusOnRender: observe(undefined),
+                    nameHasWarning: observe(undefined),
+                    valueHasWarning: observe(undefined),
+                    nameSuggestions: observe(undefined),
+                    editNameDisabled: observe(undefined),
+                    onPickerNameClick: observe(undefined),
+                    editValueDisabled: observe(undefined),
+                    onPickerValueClick: observe(undefined),
+                }
+            ]);
+        } else if (emptyAssigments.length > 1) {
+            set(this.properties, properties => [
+                ...properties.filter(prop => (prop.name.value === '' && prop.value.value === '')),
+                emptyAssigments[0],
+            ]);
+        }
+    }
+
+    private _valide() {
+        this._valideConnections();
+    }
+
+    private _valideConnections() {
+        const schema = yup.array().length(2);
+
+        schema.validate(this.connections.value)
+            .then(() => {
+                set(this.errosIds, oldErros => {
+                    if (oldErros.includes(this.connections.id)) {
+                        return oldErros.filter(oldErros => oldErros !== this.connections.id);
+                    } else {
+                        return oldErros;
+                    }
+                });
+            })
+            .catch(() => {
+                set(this.errosIds, oldErros => {
+                    if (!oldErros.includes(this.connections.id)) {
+                        return [
+                            ...oldErros,
+                            this.connections.id,
+                        ];
+                    } else {
+                        return oldErros;
+                    }
+                });
+            });
+
+        // Subscribe to all changes
+        this.connections.subscribe(connections => {
+            schema.validate(connections)
+                .then(() => {
+                    set(this.errosIds, oldErros => {
+                        if (oldErros.includes(this.connections.id)) {
+                            return oldErros.filter(oldErros => oldErros !== this.connections.id);
+                        } else {
+                            return oldErros;
+                        }
+                    });
+                })
+                .catch(() => {
+                    set(this.errosIds, oldErros => {
+                        if (!oldErros.includes(this.connections.id)) {
+                            return [
+                                ...oldErros,
+                                this.connections.id,
+                            ];
+                        } else {
+                            return oldErros;
+                        }
+                    });
+                });
+        });
     }
 
     public static newItem(top: number, left: number, targetId?: string, isSelected: boolean = false) {
@@ -284,63 +307,6 @@ export class FlowItemAssign extends FlowItemComponent<EItemType.ASSIGN> implemen
                     onPickerValueClick: observe(undefined),
                 },
             ],
-        });
-    }
-
-    private _valide() {
-        this._valideConnections();
-    }
-
-    private _valideConnections() {
-        const schema = yup.array().length(2);
-
-        schema.validate(this.connections.value)
-            .then(() => {
-                set(this.errosIds, oldErros => {
-                    if (oldErros.includes(this.connections.id)) {
-                        return oldErros.filter(oldErros => oldErros !== this.connections.id);
-                    } else {
-                        return oldErros;
-                    }
-                });
-            })
-            .catch(() => {
-                set(this.errosIds, oldErros => {
-                    if (!oldErros.includes(this.connections.id)) {
-                        return [
-                            ...oldErros,
-                            this.connections.id,
-                        ];
-                    } else {
-                        return oldErros;
-                    }
-                });
-            });
-
-        // Subscribe to all changes
-        this.connections.subscribe(connections => {
-            schema.validate(connections)
-                .then(() => {
-                    set(this.errosIds, oldErros => {
-                        if (oldErros.includes(this.connections.id)) {
-                            return oldErros.filter(oldErros => oldErros !== this.connections.id);
-                        } else {
-                            return oldErros;
-                        }
-                    });
-                })
-                .catch(() => {
-                    set(this.errosIds, oldErros => {
-                        if (!oldErros.includes(this.connections.id)) {
-                            return [
-                                ...oldErros,
-                                this.connections.id,
-                            ];
-                        } else {
-                            return oldErros;
-                        }
-                    });
-                });
         });
     }
 }
