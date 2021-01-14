@@ -7,7 +7,7 @@ import { EComponentType } from "./../../../enuns";
 /**
  * Tree item representation with all its properties
  */
-export interface ITreeItemComponent<T = EComponentType> extends IBasicConfigurations<T> {
+export interface ITreeItemComponent<T extends EComponentType = EComponentType> extends IBasicConfigurations<T> {
     /**
      * Used to contain items in a stream
      */

@@ -1,12 +1,12 @@
 import { IObservable } from "react-observing";
 
 import { IProperty, EItemType, IFileContent } from "./../../components/external";
-import { EComponentType, EProjectType } from "./../../enuns";
+import { EComponentType, EProjectType, ETabType } from "./../../enuns";
 
 /**
  * Common fields between the different project structures
  */
-export interface IBasicConfigurations<T = EComponentType | EProjectType | EItemType> {
+export interface IBasicConfigurations<T extends EComponentType | EProjectType | EItemType | ETabType> {
     /**
      * Used for tree it helps to know if the item is a folder or a file
      */

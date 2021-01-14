@@ -63,50 +63,16 @@ export class FlowItemAssign extends FlowItemComponent<EItemType.ASSIGN> implemen
             id: props.id,
         });
 
-        this._valide();
+        this._validations();
+    }
+
+    protected _defaultProperties() {
+        super._defaultProperties();
         this._initializeAssigns();
     }
 
-    private _initializeAssigns() {
-        const assigns = this.properties.value.filter(prop => prop.propertieType.value === PropertieTypes.assigns);
-        const emptyAssigments = assigns.filter(prop => (prop.name.value === '' && prop.value.value === ''));
-
-        if (emptyAssigments.length === 0) {
-            // Adding a new assigm
-            set(this.properties, properties => [
-                ...properties,
-                {
-                    name: observe(''),
-                    value: observe(''),
-                    focusOnRender: observe(true),
-                    id: observe(Utils.getUUID()),
-                    group: observe('Assigments'),
-                    type: observe(TypeOfValues.assign),
-                    propertieType: observe(PropertieTypes.assigns),
-
-                    suggestions: observe(undefined),
-                    information: observe(undefined),
-                    fileMaxSize: observe(undefined),
-                    nameHasError: observe(undefined),
-                    valueHasError: observe(undefined),
-                    nameHasWarning: observe(undefined),
-                    valueHasWarning: observe(undefined),
-                    nameSuggestions: observe(undefined),
-                    editNameDisabled: observe(undefined),
-                    onPickerNameClick: observe(undefined),
-                    editValueDisabled: observe(undefined),
-                    onPickerValueClick: observe(undefined),
-                }
-            ]);
-        } else if (emptyAssigments.length > 1) {
-            set(this.properties, properties => [
-                ...properties.filter(prop => (prop.name.value === '' && prop.value.value === '')),
-                emptyAssigments[0],
-            ]);
-        }
-    }
-
-    private _valide() {
+    protected _validations() {
+        super._validations();
         this._valideConnections();
     }
 
@@ -161,6 +127,45 @@ export class FlowItemAssign extends FlowItemComponent<EItemType.ASSIGN> implemen
                     });
                 });
         });
+    }
+
+    private _initializeAssigns() {
+        const assigns = this.properties.value.filter(prop => prop.propertieType.value === PropertieTypes.assigns);
+        const emptyAssigments = assigns.filter(prop => (prop.name.value === '' && prop.value.value === ''));
+
+        if (emptyAssigments.length === 0) {
+            // Adding a new assigm
+            set(this.properties, properties => [
+                ...properties,
+                {
+                    name: observe(''),
+                    value: observe(''),
+                    focusOnRender: observe(true),
+                    id: observe(Utils.getUUID()),
+                    group: observe('Assigments'),
+                    type: observe(TypeOfValues.assign),
+                    propertieType: observe(PropertieTypes.assigns),
+
+                    suggestions: observe(undefined),
+                    information: observe(undefined),
+                    fileMaxSize: observe(undefined),
+                    nameHasError: observe(undefined),
+                    valueHasError: observe(undefined),
+                    nameHasWarning: observe(undefined),
+                    valueHasWarning: observe(undefined),
+                    nameSuggestions: observe(undefined),
+                    editNameDisabled: observe(undefined),
+                    onPickerNameClick: observe(undefined),
+                    editValueDisabled: observe(undefined),
+                    onPickerValueClick: observe(undefined),
+                }
+            ]);
+        } else if (emptyAssigments.length > 1) {
+            set(this.properties, properties => [
+                ...properties.filter(prop => (prop.name.value === '' && prop.value.value === '')),
+                emptyAssigments[0],
+            ]);
+        }
     }
 
     public static newItem(top: number, left: number, targetId?: string, isSelected: boolean = false) {

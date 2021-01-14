@@ -85,7 +85,7 @@ export class FlowItemAction extends FlowItemComponent<EItemType.ACTION> implemen
             id: props.id,
         });
 
-        this._valide();
+        this._validations();
     }
 
     public static newItem(top: number, left: number, targetId?: string, isSelected: boolean = false) {
@@ -235,7 +235,8 @@ export class FlowItemAction extends FlowItemComponent<EItemType.ACTION> implemen
         });
     }
 
-    private _valide() {
+    protected _validations() {
+        super._validations();
         this._valideAction();
         this._valideConnections();
     }

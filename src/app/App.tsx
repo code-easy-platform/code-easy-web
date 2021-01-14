@@ -4,7 +4,7 @@ import { IdeConfigurationProvider } from './shared/contexts';
 import { ContextMenu } from './shared/components';
 import { Routes } from './pages/Routes';
 
-function App() {
+export const App = () => {
   return (
     <div className="App">
       <IdeConfigurationProvider>
@@ -14,5 +14,3 @@ function App() {
     </div>
   );
 }
-
-export default App;

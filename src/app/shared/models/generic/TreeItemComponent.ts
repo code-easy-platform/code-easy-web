@@ -22,7 +22,7 @@ interface IConstructor<T> {
 /**
  * Represents a full tree item implementation
  */
-export class TreeItemComponent<T = EComponentType> extends BasicConfigurations<T> implements ITreeItemComponent<T> {
+export class TreeItemComponent<T extends EComponentType = EComponentType> extends BasicConfigurations<T> implements ITreeItemComponent<T> {
   public items: IObservable<IFlowItemComponent[]>;
 
   public get ascendantId() {

@@ -21,7 +21,7 @@ interface IConstructor<T> {
 /**
  * Represents a full FlowItemComponent implementation
  */
-export class FlowItemComponent<T = EItemType> extends BasicConfigurations<T> implements IFlowItemComponent<T> {
+export class FlowItemComponent<T extends EItemType = EItemType> extends BasicConfigurations<T> implements IFlowItemComponent<T> {
 
   public get top(): IObservable<number> {
     let prop = this.properties.value.find(prop => prop.propertieType.value === PropertieTypes.top)?.value;

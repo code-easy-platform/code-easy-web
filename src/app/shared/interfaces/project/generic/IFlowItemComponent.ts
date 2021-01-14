@@ -6,7 +6,7 @@ import { IBasicConfigurations } from "../IBasicConfigurations";
 /**
  * Flow item representation with all its properties
  */
-export interface IFlowItemComponent<T = EItemType> extends IBasicConfigurations<T>, Omit<IFlowItem, 'itemType'> {
+export interface IFlowItemComponent<T extends EItemType = EItemType> extends IBasicConfigurations<T>, Omit<IFlowItem, 'itemType'> {
     /**
      * Used to name a record visually only
      */

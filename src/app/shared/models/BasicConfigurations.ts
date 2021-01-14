@@ -2,10 +2,10 @@ import { IObservable, observe, set, transform } from "react-observing";
 import { Utils } from "code-easy-components";
 import * as yup from 'yup';
 
-import { IFileContent, IProperty, TypeOfValues } from "./../components/external";
-import { IBasicConfigurations } from "./../interfaces";
+import { EItemType, IFileContent, IProperty, TypeOfValues } from "./../components/external";
+import { EComponentType, EProjectType, ETabType, PropertieTypes } from "./../enuns";
 import { AssetsService, toKebabCase } from "./../services";
-import { PropertieTypes } from "./../enuns";
+import { IBasicConfigurations } from "./../interfaces";
 
 /**
  * Fields passeds in constructor
@@ -19,7 +19,7 @@ interface IConstructor<T> {
 /**
  * Common implementation fields between the different project structures
  */
-export class BasicConfigurations<T> implements IBasicConfigurations<T> {
+export abstract class BasicConfigurations<T extends EComponentType | EProjectType | EItemType | ETabType> implements IBasicConfigurations<T> {
     private _id: IObservable<string | undefined>;
     public get id(): IObservable<string | undefined> {
         if (!this._id.value) {
@@ -405,7 +405,7 @@ export class BasicConfigurations<T> implements IBasicConfigurations<T> {
         this._defaultProperties();       
     }
 
-    private _defaultProperties() {
+    protected _defaultProperties() {
         this.properties.value.forEach(propertie => {
             propertie.nameHasError = transform(this._hasError, values => values.includes(propertie.value.id));
             propertie.valueHasError = transform(this._hasError, values => values.includes(propertie.value.id));
@@ -422,7 +422,7 @@ export class BasicConfigurations<T> implements IBasicConfigurations<T> {
         }, 1);
     }
 
-    private _validations() {
+    protected _validations() {
         this._valideLabel();
     }
 

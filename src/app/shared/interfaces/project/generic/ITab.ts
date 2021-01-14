@@ -7,7 +7,7 @@ import { ETabType } from "./../../../enuns";
 /**
  * Represents a full Tab structure
  */
-export interface ITab<T = ETabType> extends IBasicConfigurations<T> {
+export interface ITab<T extends ETabType = ETabType> extends IBasicConfigurations<T> {
   /**
    * List of items that can represent 'actions', 'routes', 'extension' and etc ...
    */

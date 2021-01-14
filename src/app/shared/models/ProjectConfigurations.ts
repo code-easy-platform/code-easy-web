@@ -6,7 +6,7 @@ import { EProjectType, PropertieTypes } from "./../enuns";
 import { IProjectConfigurations } from "./../interfaces";
 import { TypeOfValues } from "./../components/external";
 
-export class ProjectConfigurations extends BasicConfigurations<EProjectType> implements IProjectConfigurations {
+export abstract class ProjectConfigurations extends BasicConfigurations<EProjectType> implements IProjectConfigurations {
 
     public get author(): IObservable<string> {
         let prop = this.properties.value.find(prop => prop.propertieType.value === PropertieTypes.author)?.value;

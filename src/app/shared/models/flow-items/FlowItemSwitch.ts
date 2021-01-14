@@ -132,7 +132,7 @@ export class FlowItemSwitch extends FlowItemComponent<EItemType.SWITCH> implemen
             id: props.id,
         });
 
-        this._valide();
+        this._validations();
     }
 
     public static newItem(top: number, left: number, targetId?: string, isSelected: boolean = false) {
@@ -260,7 +260,8 @@ export class FlowItemSwitch extends FlowItemComponent<EItemType.SWITCH> implemen
         });
     }
 
-    private _valide() {
+    protected _validations() {
+        super._validations();
         this._valideConnections();
     }
 

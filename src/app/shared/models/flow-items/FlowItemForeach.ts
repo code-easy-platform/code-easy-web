@@ -95,7 +95,7 @@ export class FlowItemForeach extends FlowItemComponent<EItemType.FOREACH> implem
             id: props.id,
         });
 
-        this._valide();
+        this._validations();
     }
 
     public static newItem(top: number, left: number, targetId?: string, isSelected: boolean = false) {
@@ -223,7 +223,8 @@ export class FlowItemForeach extends FlowItemComponent<EItemType.FOREACH> implem
         });
     }
 
-    private _valide() {
+    protected _validations() {
+        super._validations();
         this._valideSourceList();
         this._valideConnections();
     }

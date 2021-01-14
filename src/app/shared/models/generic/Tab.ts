@@ -21,7 +21,7 @@ interface IConstructor<T> {
 /**
  * Represents a full Tab implementation
  */
-export class Tab<T = ETabType> extends BasicConfigurations<T> implements ITab<T> {
+export class Tab<T extends ETabType = ETabType> extends BasicConfigurations<T> implements ITab<T> {
   public items: IObservable<TreeItemComponent[]>;
 
   constructor(props: IConstructor<T>) {

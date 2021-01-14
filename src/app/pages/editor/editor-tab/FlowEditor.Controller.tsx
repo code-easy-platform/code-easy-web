@@ -2,10 +2,10 @@ import React, { memo, useCallback, useEffect, useState } from 'react';
 import { IconTrash, Utils, IconFlowStart, IconFlowAction, IconFlowIf, IconFlowForeach, IconFlowSwitch, IconFlowAssign, IconFlowEnd, IconFlowComment } from 'code-easy-components';
 import { set, useObserverValue, observe, useSetObserver, ISubscription } from 'react-observing';
 
+import { FlowItemAction, FlowItemAssign, FlowItemComment, FlowItemComponent, FlowItemEnd, FlowItemForeach, FlowItemIf, FlowItemStart, FlowItemSwitch } from '../../../shared/models';
 import { FlowEditor, IFlowItem, IBreadCrumbButton, EItemType, EFlowItemType, parseEItemType, EItemTypeList } from '../../../shared/components/external';
 import { BackgroundEmpty, BackgroundEmptyLeft, BackgroundEmptyLeftToTop } from '../../../assets';
 import { CurrentFocusStore, FlowItemsStore, PropertiesEditorStore } from '../../../shared/stores';
-import { FlowItemAction, FlowItemAssign, FlowItemComment, FlowItemComponent, FlowItemEnd, FlowItemForeach, FlowItemIf, FlowItemStart, FlowItemSwitch } from '../../../shared/models';
 import { EComponentType, ECurrentFocus } from '../../../shared/enuns';
 import { IContextItemList } from '../../../shared/interfaces';
 import { openContextMenu } from '../../../shared/services';

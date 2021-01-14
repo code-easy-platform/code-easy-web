@@ -65,8 +65,8 @@ export class TreeItemRouterExpose extends TreeItemComponent<EComponentType.route
             id: props.id,
         });
 
-        this._Initialize();
-        this._valide();
+        this._defaultProperties();
+        this._validations();
     }
 
     public static newRoute(label: string, ascendantId?: string) {
@@ -284,14 +284,17 @@ export class TreeItemRouterExpose extends TreeItemComponent<EComponentType.route
         });
     }
 
-    private _Initialize() {
+    protected _defaultProperties() {
+        super._defaultProperties();
+
         set(this.path, toKebabCase(this.label.value));
         this.label.subscribe(label => {
             set(this.path, toKebabCase(label));
         });
     }
 
-    private _valide() {
+    protected _validations() {
+        super._validations();
         this._valideHttpMethod();
     }
 
