@@ -46,7 +46,7 @@ export const ConfigurationProvider: React.FC<{ configs: IFlowEditorConfigs }> = 
     configs.flowItemTextColor = configs.flowItemTextColor !== undefined ? configs.flowItemTextColor : 'white';
     configs.commentTextColor = configs.commentTextColor !== undefined ? configs.commentTextColor : 'white';
     configs.disableOpacity = configs.disableOpacity !== undefined ? configs.disableOpacity : 0.5;
-    configs.commentColor = configs.commentColor !== undefined ? configs.commentColor : 'green';
+    configs.commentColor = configs.commentColor !== undefined ? configs.commentColor : '#54a878';
     configs.linesColor = configs.linesColor !== undefined ? configs.linesColor : 'gray';
     configs.lineWidth = configs.lineWidth !== undefined ? configs.lineWidth : 1;
 

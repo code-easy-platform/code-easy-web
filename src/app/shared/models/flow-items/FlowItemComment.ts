@@ -41,7 +41,7 @@ export class FlowItemComment extends FlowItemComponent<EItemType.COMMENT> implem
             return prop;
         }
 
-        prop = observe('');
+        prop = observe('Your comment here...');
 
         this.properties.value = [
             ...this.properties.value,

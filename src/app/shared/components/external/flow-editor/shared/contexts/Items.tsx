@@ -1,5 +1,5 @@
 import React, { createContext, useEffect } from 'react';
-import { IObservable, observe, set } from 'react-observing';
+import { IObservable, ISubscription, observe, set } from 'react-observing';
 
 import { IFlowItem } from '../interfaces';
 import { EFlowItemType } from '../enums';
@@ -15,19 +15,33 @@ export const ItemsProvider: React.FC<ItemsProviderProps> = ({ children, items })
     const getSizeByText = useSizeByText();
 
     useEffect(() => {
-        set(ItemsStore, items.map(item => {
-            if (item.flowItemType.value !== EFlowItemType.comment) {
-                return item;
-            }
+        set(ItemsStore, items)
+    }, [ItemsStore, items]);
 
-            const commentSizes = getSizeByText(item.description.value || '');
-            return {
-                ...item,
-                height: observe(commentSizes.height),
-                width: observe(commentSizes.width),
-            };
-        }))
-    }, [getSizeByText, ItemsStore, items]);
+    useEffect(() => {
+        const subscriptions: ISubscription[] = [];
+
+        items.forEach(item => {
+            if (item.flowItemType.value === EFlowItemType.comment) {
+
+                const { height, width } = getSizeByText(item.description.value || '');
+                set(item.height, height);
+                set(item.width, width);
+
+                subscriptions.push(item.description.subscribe(value => {
+                    const { height, width } = getSizeByText(value || '');
+                    set(item.height, height);
+                    set(item.width, width);
+
+                    console.log("teste")
+                }));
+            }
+        });
+
+        return () => subscriptions.forEach(subs => subs.unsubscribe());
+    }, [getSizeByText, items]);
+
+    console.log(items)
 
     return (
         <ItemsContext.Provider value={ItemsStore}>

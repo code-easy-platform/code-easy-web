@@ -1,5 +1,5 @@
-import React from 'react';
-import { useObserverValue } from 'react-observing';
+import React, { useCallback, useState } from 'react';
+import { useObserver, useObserverValue } from 'react-observing';
 
 import { IFlowItem } from '../../shared/interfaces/FlowItemInterfaces';
 import NewConnectionBox from './line/NewConnectionBox';
@@ -7,11 +7,11 @@ import { useConfigs } from '../../shared/hooks';
 
 interface CommentProps {
     /**
-     * 
+     *
      */
     item: IFlowItem;
     /**
-     * 
+     *
      */
     parentRef: React.RefObject<SVGSVGElement>;
     /**
@@ -26,7 +26,9 @@ interface CommentProps {
 export const Comment: React.FC<CommentProps> = ({ item, parentRef, onMouseDown, onContextMenu }) => {
     const { flowItemSelectedColor, commentColor, lineWidth, flowItemErrorColor, flowItemWarningColor, commentTextColor } = useConfigs();
 
-    const description = useObserverValue(item.description);
+    const [isEditing, setIsEditing] = useState(false);
+
+    const [description, setDescription] = useObserver(item.description);
     const isSelected = useObserverValue(item.isSelected);
     const hasWarning = useObserverValue(item.hasWarning);
     const hasError = useObserverValue(item.hasError);
@@ -43,17 +45,17 @@ export const Comment: React.FC<CommentProps> = ({ item, parentRef, onMouseDown, 
                 ? `${flowItemWarningColor}`
                 : "transparent";
 
-    const handleOnContextMenu = (e: React.MouseEvent<SVGRectElement, MouseEvent>) => {
+    const handleOnContextMenu = useCallback((e: React.MouseEvent<SVGRectElement, MouseEvent>) => {
         e.stopPropagation();
         e.preventDefault();
         onContextMenu && onContextMenu(e);
-    }
+    }, [onContextMenu]);
 
-    const handleOnMouseDown = (e: React.MouseEvent<SVGRectElement, MouseEvent>) => {
-        onMouseDown && onMouseDown(e);
+    const handleOnMouseDown = useCallback((e: React.MouseEvent<SVGRectElement, MouseEvent>) => {
         e.stopPropagation();
         e.preventDefault();
-    }
+        onMouseDown && onMouseDown(e);
+    }, [onMouseDown]);
 
     return (
         <>
@@ -70,25 +72,31 @@ export const Comment: React.FC<CommentProps> = ({ item, parentRef, onMouseDown, 
                 y={top - 10}
                 x={left - 10}
                 id={item.id.value}
-                style={{ cursor: 'move' }}
-                onMouseDown={handleOnMouseDown}
-                onContextMenu={handleOnContextMenu}
+                onDoubleClick={() => setIsEditing(true)}
+                style={{ cursor: isEditing ? 'text' : 'move' }}
                 width={(width || 0) + ((lineWidth || 0) * 2) + 18}
                 height={(height || 0) + ((lineWidth || 0) * 2) + 16}
+                onMouseDown={!isEditing ? handleOnMouseDown : undefined}
+                onContextMenu={!isEditing ? handleOnContextMenu : undefined}
             >
-                <div
-                    children={description}
+                <textarea
+                    value={description}
+                    tabIndex={isEditing ? 0 : -1}
+                    onBlur={() => setIsEditing(false)}
+                    onChange={e => isEditing ? setDescription(e.currentTarget.value) : undefined}
                     style={{
-                        border: `${lineWidth}px solid ${strokeColor}`,
+                        border: `${lineWidth || 0}px solid ${strokeColor}`,
+                        pointerEvents: isEditing ? 'all' : 'none',
                         height: '-webkit-fill-available',
                         width: '-webkit-fill-available',
                         backgroundColor: commentColor,
                         color: commentTextColor,
                         whiteSpace: 'pre-line',
-                        pointerEvents: 'none',
+                        overflow: 'hidden',
                         lineHeight: '14px',
                         textAlign: 'start',
                         fontSize: 'small',
+                        resize: 'none',
                         padding: 8,
                     }}
                 />
