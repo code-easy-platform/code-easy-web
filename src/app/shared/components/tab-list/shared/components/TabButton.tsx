@@ -2,12 +2,11 @@ import React, { useCallback } from 'react';
 import { IObservable, useObserverValue } from 'react-observing';
 import { IconClose } from 'code-easy-components';
 
-import { IOpenedWindow } from '../../../interfaces';
-import { IFileContent } from '../../external';
+import { ITab, IFileContent } from './../interfaces';
 
-interface TabButtonProps extends IOpenedWindow {
+interface TabButtonProps extends ITab {
+    onContext?(tabId: string | undefined, e: React.MouseEvent<HTMLDivElement, MouseEvent>): void;
     icon: IObservable<IFileContent | string | undefined>;
-    onContext?(tabId: string | undefined): void;
     onSelect?(tabId: string | undefined): void;
     onClose?(tabId: string | undefined): void;
     isHighlighted?: boolean;
@@ -35,7 +34,7 @@ export const TabButton: React.FC<TabButtonProps> = ({ className, useClose = true
         e.stopPropagation();
         e.preventDefault();
 
-        onContext && onContext(id);
+        onContext && onContext(id, e);
     }, [id, onContext]);
 
     const handleMouseDown = useCallback((e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
@@ -44,6 +43,8 @@ export const TabButton: React.FC<TabButtonProps> = ({ className, useClose = true
 
         if (e.button === 1) {
             onClose && onClose(id);
+        } else if (e.button === 2) {
+            return;
         } else {
             onSelect && onSelect(id);
         }
@@ -74,19 +75,19 @@ export const TabButton: React.FC<TabButtonProps> = ({ className, useClose = true
                 onKeyDown={handleKeyDown}
                 onMouseDown={handleMouseDown}
                 onContextMenu={handleContext}
-                className={`window-tab-item flex-items-center outline-none opacity-6 cursor-pointer border-none ${isSelected ? "window-tab-selected" : isHighlighted ? "window-tab-highlighted" : ""} ${className}`}
+                className={`tab-item ${isSelected ? "tab-selected" : isHighlighted && "tab-highlighted"} flex-items-center outline-none opacity-6 cursor-pointer border-none ${className}`}
             >
-                <img height="50%" className="margin-left-s" style={{ maxWidth: 20 }} src={icon && getIconContent(icon)} alt="" />
-                <span className={`padding-horizontal-s text-ellipsis ${hasError ? "main-text-error-color" : hasWarning ? "main-text-warning-color" : ""}`}>{title}</span>
+                <img height="50%" className="margin-left-s no-events" style={{ maxWidth: 20 }} src={icon && getIconContent(icon)} alt="" />
+                <span className={`padding-horizontal-s no-events text-ellipsis ${hasError ? "main-text-error-color" : hasWarning ? "main-text-warning-color" : ""}`}>{title}</span>
                 {useClose && <img
-                    className="background-transparent btn-close no-draggable outline-none opacity-0 margin-right-xs"
-                    onMouseDown={e => e.stopPropagation()}
-                    onClick={handleClose}
                     src={IconClose}
-                    alt="tab-close"
+                    onClick={handleClose}
+                    alt="tab-button-close"
+                    onMouseDown={e => e.stopPropagation()}
+                    className="background-transparent btn-close no-draggable outline-none opacity-0 margin-right-xs"
                 />}
             </div>
-            <hr className="hr hr-vertical opacity-5" />
+            <hr className="hr hr-vertical opacity-5 no-events" />
         </>
     );
 }

@@ -1,20 +1,41 @@
-import React, { useState, memo } from 'react';
-import { observe, set, transform, useObserver } from 'react-observing';
+import React, { useState, memo, useEffect, useCallback } from 'react';
+import { observe, set, transform, useObserverValue } from 'react-observing';
 import { VscHome, VscSymbolProperty } from 'react-icons/vsc';
 import { useHistory } from 'react-router-dom';
 
 import { PropertiesTab } from '../../../pages/editor/properties-tab/PropertiesTab';
-import { FlowItemsStore, WindowsStore } from '../../stores';
-import { TabButtonSimple, TabsManager } from '../tabs';
+import { FlowItemsStore, tabListStore } from '../../stores';
+import { openContextMenu } from '../../services';
 import { useEditorContext } from '../../hooks';
+import { TabButtonSimple } from '../tabs';
+import { TabList } from '../tab-list';
 import { Modal } from '../modal';
 import './ToolBar.css';
 
 export const ToolBar: React.FC = memo(() => {
     const [isOpenModalProps, setIsOpenModalProps] = useState(false);
-    const [windows, setWindows] = useObserver(WindowsStore);
+    const tabList = useObserverValue(tabListStore.tabs);
     const { tabs } = useEditorContext();
     const history = useHistory();
+
+    useEffect(() => {
+        if (tabList.length === 0) {
+            set(FlowItemsStore, { items: observe([]) });
+        }
+    }, [tabList]);
+
+    const handleContextMenu = useCallback((tabId: string, e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
+        openContextMenu(e.clientX, 35, [
+            {
+                label: 'Close tab',
+                action: () => tabListStore.closeTab(tabId)
+            },
+            {
+                label: 'Close all',
+                action: () => tabListStore.closeAll()
+            },
+        ]);
+    }, []);
 
     return (<>
         <div className="tool-bar background-bars">
@@ -38,38 +59,15 @@ export const ToolBar: React.FC = memo(() => {
                 </TabButtonSimple>
             </div>
             <hr className="hr hr-vertical" />
-            <TabsManager
-                tabs={windows}
+            <TabList
+                tabs={tabList}
                 isHighlighted={true}
-                onCloseWindowTab={windowId => {
-                    windows.forEach((window, index, array) => {
-                        if (window.id.value === windowId) {
-                            set(window.isSelected, false);
-
-                            if (array.length > 1) {
-                                if (index === 0) {
-                                    set(array[index + 1].isSelected, true);
-                                } else {
-                                    set(array[index - 1].isSelected, true);
-                                }
-                            }
-                        }
-                    });
-
-                    setWindows(oldWindws => {
-                        const newWindows = oldWindws.filter(window => window.id.value !== windowId);
-
-                        if (newWindows.length === 0) {
-                            set(FlowItemsStore, { items: observe([]) });
-                        }
-
-                        return newWindows;
-                    });
-                }}
+                onContextTab={handleContextMenu}
+                onCloseTab={id => tabListStore.closeTab(id)}
             />
             <hr className="hr hr-vertical" />
             <div style={{ justifyContent: "flex-end" }}>
-                <TabsManager
+                <TabList
                     useClose={false}
                     tabs={tabs.map(tab => ({
                         icon: tab.icon,
@@ -90,7 +88,7 @@ export const ToolBar: React.FC = memo(() => {
             allowMaximize={false}
             isOpen={isOpenModalProps}
             children={<PropertiesTab />}
-            onClose={() => { setIsOpenModalProps(false); }}
+            onClose={() => setIsOpenModalProps(false)}
         />
     </>);
 });

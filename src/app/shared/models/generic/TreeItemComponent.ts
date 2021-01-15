@@ -1,7 +1,7 @@
 import { IObservable, observe, set, transform } from "react-observing";
 import { Utils } from "code-easy-components";
 
-import { FlowItemsStore, PropertiesEditorStore, WindowsStore } from "../../stores";
+import { FlowItemsStore, PropertiesEditorStore, tabListStore } from "../../stores";
 import { IFlowItemComponent, ITreeItemComponent } from "../../interfaces";
 import { IProperty, TypeOfValues } from "../../components/external";
 import { EComponentType, PropertieTypes } from "../../enuns";
@@ -86,22 +86,15 @@ export class TreeItemComponent<T extends EComponentType = EComponentType> extend
   public get isEditing(): IObservable<boolean> {
     const handleEdit = (value: boolean): boolean => {
       if (value) {
-        if (!WindowsStore.value.some(window => window.id.value === this.id.value)) {
-          set(WindowsStore, oldWindows => {
-            return [
-              ...oldWindows,
-              {
-                icon: this.icon,
-                title: this.label,
-                hasError: this.hasError,
-                isSelected: this.isEditing,
-                hasWarning: this.hasWarning,
-                description: this.description,
-                id: transform(this.id, id => String(id), id => id),
-              }
-            ];
-          });
-        }
+        tabListStore.addTab({
+          icon: this.icon,
+          title: this.label,
+          hasError: this.hasError,
+          isSelected: this.isEditing,
+          hasWarning: this.hasWarning,
+          description: this.description,
+          id: transform(this.id, id => String(id), id => id),
+        });
 
         set(FlowItemsStore, {
           treeItemId: this.id.value,

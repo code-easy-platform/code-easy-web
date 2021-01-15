@@ -1,6 +1,6 @@
 import { IObservable, observe, set, transform } from "react-observing";
 
-import { FlowItemsStore, PropertiesEditorStore, WindowsStore } from "./../../stores";
+import { FlowItemsStore, PropertiesEditorStore, tabListStore } from "./../../stores";
 import { BasicConfigurations } from "./../BasicConfigurations";
 import { ITreeItemComponent, ITab } from "./../../interfaces";
 import { EComponentType, ETabType } from "./../../enuns";
@@ -140,23 +140,15 @@ export class Tab<T extends ETabType = ETabType> extends BasicConfigurations<T> i
             }))
           });
 
-          // Show new item in the tabs
-          set(WindowsStore, oldWindows => {
-            oldWindows.forEach(oldWindow => {
-              set(oldWindow.isSelected, false);
-            });
-            return [
-              ...oldWindows,
-              {
-                icon: newTreeItem.icon,
-                title: newTreeItem.label,
-                hasError: newTreeItem.hasError,
-                isSelected: newTreeItem.isEditing,
-                hasWarning: newTreeItem.hasWarning,
-                description: newTreeItem.description,
-                id: transform(newTreeItem.id, id => String(id), id => id),
-              }
-            ];
+          // Add new item in the tabs
+          tabListStore.addTab({
+            icon: newTreeItem.icon,
+            title: newTreeItem.label,
+            hasError: newTreeItem.hasError,
+            isSelected: newTreeItem.isEditing,
+            hasWarning: newTreeItem.hasWarning,
+            description: newTreeItem.description,
+            id: transform(newTreeItem.id, id => String(id), id => id),
           });
 
           // Show new item in the flow editor
@@ -186,10 +178,8 @@ export class Tab<T extends ETabType = ETabType> extends BasicConfigurations<T> i
         }
       });
 
-      // Show new item in the tabs
-      set(WindowsStore, oldWindows => {
-        return oldWindows.filter(oldWindow => oldWindow.id.value !== itemId);
-      });
+      // Remove item from the tab
+      tabListStore.closeTab(itemId);
 
       // Show new item in the properties editor
       if (PropertiesEditorStore.value?.id.value === itemId) {

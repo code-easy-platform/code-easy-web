@@ -4,8 +4,8 @@ import { set, useObserverValue, observe, useSetObserver, ISubscription } from 'r
 
 import { FlowItemAction, FlowItemAssign, FlowItemComment, FlowItemComponent, FlowItemEnd, FlowItemForeach, FlowItemIf, FlowItemStart, FlowItemSwitch } from '../../../shared/models';
 import { FlowEditor, IFlowItem, IBreadCrumbButton, EItemType, EFlowItemType, parseEItemType, EItemTypeList } from '../../../shared/components/external';
-import { BackgroundEmpty, BackgroundEmptyLeft, BackgroundEmptyLeftToTop } from '../../../assets';
 import { CurrentFocusStore, FlowItemsStore, PropertiesEditorStore } from '../../../shared/stores';
+import { BackgroundEmpty, BackgroundEmptyLeft, BackgroundEmptyLeftToTop } from '../../../assets';
 import { EComponentType, ECurrentFocus } from '../../../shared/enuns';
 import { IContextItemList } from '../../../shared/interfaces';
 import { openContextMenu } from '../../../shared/services';
@@ -352,7 +352,6 @@ export const FlowEditorController: React.FC = memo(() => {
             onFocus={handleOnFocus}
             breadcrumbs={breadcamps}
             toolItems={toolBoxItems()}
-            // onDropItem={handleOnDropItem}
             onContextMenu={handleOnContextMenu}
             onChangeItems={handleOnChangeItems}
             childrenWhenItemsEmpty={getBackgroundEmpty()}
