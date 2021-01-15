@@ -1,5 +1,3 @@
-import { IObservable, observe } from "react-observing";
+import { FlowItemsStore } from "../models";
 
-import { IFlowItemComponent } from "../interfaces";
-
-export const FlowItemsStore: IObservable<{ treeItemId?: string | undefined, items: IObservable<IFlowItemComponent[]> }> = observe({ items: observe([]) });
+export const flowItemsStore = new FlowItemsStore();

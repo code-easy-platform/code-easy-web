@@ -1,7 +1,7 @@
 import { IObservable, observe, set, transform } from "react-observing";
 import { Utils } from "code-easy-components";
 
-import { FlowItemsStore, PropertiesEditorStore, tabListStore } from "./../../../stores";
+import { flowItemsStore, PropertiesEditorStore, tabListStore } from "./../../../stores";
 import { IFlowItemComponent, ITreeItemComponent } from "./../../../interfaces";
 import { IProperty, TypeOfValues } from "./../../../components/external";
 import { EComponentType, PropertieTypes } from "./../../../enuns";
@@ -96,9 +96,9 @@ export class TreeItemComponent<T extends EComponentType = EComponentType> extend
           id: transform(this.id, id => String(id), id => id),
         });
 
-        set(FlowItemsStore, {
-          treeItemId: this.id.value,
+        flowItemsStore.next({
           items: this.items,
+          itemId: this.id,
         });
       }
 

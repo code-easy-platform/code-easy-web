@@ -1,6 +1,6 @@
 import { IObservable, observe, set, transform } from "react-observing";
 
-import { FlowItemsStore, PropertiesEditorStore, tabListStore } from "./../../../stores";
+import { flowItemsStore, PropertiesEditorStore, tabListStore } from "./../../../stores";
 import { ITreeItemComponent, ITab } from "./../../../interfaces";
 import { BasicConfigurations } from "./../BasicConfigurations";
 import { EComponentType, ETabType } from "./../../../enuns";
@@ -152,8 +152,8 @@ export class Tab<T extends ETabType = ETabType> extends BasicConfigurations<T> i
           });
 
           // Show new item in the flow editor
-          set(FlowItemsStore, {
-            treeItemId: newTreeItem.id.value,
+          flowItemsStore.next({
+            itemId: newTreeItem.id,
             items: newTreeItem.items,
           });
           break;
@@ -181,17 +181,14 @@ export class Tab<T extends ETabType = ETabType> extends BasicConfigurations<T> i
       // Remove item from the tab
       tabListStore.closeTab(itemId);
 
-      // Show new item in the properties editor
+      // Remove item in the properties editor
       if (PropertiesEditorStore.value?.id.value === itemId) {
         set(PropertiesEditorStore, undefined);
       }
 
-      // Show new item in the flow editor
-      if (FlowItemsStore.value?.treeItemId === itemId) {
-        set(FlowItemsStore, {
-          treeItemId: undefined,
-          items: observe([]),
-        });
+      // Remove item in the flow editor
+      if (flowItemsStore.current.value?.itemId.value === itemId) {
+        flowItemsStore.clear();
       }
 
       return items.filter(item => item.id.value !== itemId);

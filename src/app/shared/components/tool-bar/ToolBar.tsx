@@ -1,10 +1,10 @@
 import React, { useState, memo, useEffect, useCallback } from 'react';
-import { observe, set, transform, useObserverValue } from 'react-observing';
+import { transform, useObserverValue } from 'react-observing';
 import { VscHome, VscSymbolProperty } from 'react-icons/vsc';
 import { useHistory } from 'react-router-dom';
 
 import { PropertiesTab } from '../../../pages/editor/properties-tab/PropertiesTab';
-import { FlowItemsStore, tabListStore } from '../../stores';
+import { flowItemsStore, tabListStore } from '../../stores';
 import { openContextMenu } from '../../services';
 import { useEditorContext } from '../../hooks';
 import { TabButtonSimple } from '../tabs';
@@ -20,7 +20,7 @@ export const ToolBar: React.FC = memo(() => {
 
     useEffect(() => {
         if (tabList.length === 0) {
-            set(FlowItemsStore, { items: observe([]) });
+            flowItemsStore.clear();
         }
     }, [tabList]);
 

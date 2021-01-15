@@ -4,7 +4,7 @@ import { set, useObserverValue, observe, useSetObserver, ISubscription } from 'r
 
 import { FlowItemAction, FlowItemAssign, FlowItemComment, FlowItemComponent, FlowItemEnd, FlowItemForeach, FlowItemIf, FlowItemStart, FlowItemSwitch } from '../../../shared/models';
 import { FlowEditor, IFlowItem, IBreadCrumbButton, EItemType, EFlowItemType, parseEItemType, EItemTypeList } from '../../../shared/components/external';
-import { CurrentFocusStore, FlowItemsStore, PropertiesEditorStore } from '../../../shared/stores';
+import { CurrentFocusStore, flowItemsStore, PropertiesEditorStore } from '../../../shared/stores';
 import { BackgroundEmpty, BackgroundEmptyLeft, BackgroundEmptyLeftToTop } from '../../../assets';
 import { EComponentType, ECurrentFocus } from '../../../shared/enuns';
 import { IContextItemList } from '../../../shared/interfaces';
@@ -15,8 +15,9 @@ import { useEditorContext } from '../../../shared/hooks';
 const useEditingItem = () => {
     const [hasSomethingToEdit, setHasSomethingToEdit] = useState<boolean>(false);
     const [breadcamps, setBreadcamps] = useState<IBreadCrumbButton[]>([]);
-    const selectedTreeItem = useObserverValue(FlowItemsStore);
-    const items = useObserverValue(selectedTreeItem.items);
+    const selectedTreeItem = useObserverValue(flowItemsStore.current);
+    const editingItemId = useObserverValue(selectedTreeItem.itemId);
+    const editingItems = useObserverValue(selectedTreeItem.items);
     const { tabs } = useEditorContext();
 
     useEffect(() => {
@@ -24,12 +25,12 @@ const useEditingItem = () => {
 
         setHasSomethingToEdit(tabs.some(tab => tab.items.value.length > 0));
 
-        if (!selectedTreeItem.treeItemId) {
+        if (!editingItemId) {
             setBreadcamps([]);
         } else {
             tabs.forEach(tab => {
                 tab.items.value.forEach(treeItem => {
-                    if (treeItem.id.value === selectedTreeItem.treeItemId) {
+                    if (treeItem.id.value === editingItemId) {
                         setBreadcamps([
                             {
                                 label: tab.label,
@@ -55,13 +56,13 @@ const useEditingItem = () => {
         }
 
         return () => subscriptions.forEach(subs => subs?.unsubscribe());
-    }, [tabs, selectedTreeItem.treeItemId]);
+    }, [tabs, editingItemId]);
 
     return {
         breadcamps,
         hasSomethingToEdit,
-        hasSomethingEditing: !!selectedTreeItem.treeItemId,
-        flowItems: items.map<IFlowItem>(flowItem => ({
+        hasSomethingEditing: !!editingItemId,
+        flowItems: editingItems.map<IFlowItem>(flowItem => ({
             id: flowItem.id,
             top: flowItem.top,
             left: flowItem.left,
