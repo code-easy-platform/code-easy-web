@@ -15,14 +15,17 @@ export class TabListStore implements ITabListStore {
     }
 
     public addTab(tab: ITab) {
-        const currentTab = this.tabs.value.find(currentTab => currentTab.id.value === tab.id.value);
-        if (!currentTab) {
-            set(this._tabs, oldTabs => {
-                oldTabs.forEach(oldTab => {
-                    set(oldTab.isSelected, false);
-                });
-                return [...oldTabs, tab]
-            });
+
+        // Unselect all tabs
+        this._tabs.value.forEach(oldTab => {
+            if (oldTab.id.value !== tab.id.value) {
+                set(oldTab.isSelected, false);
+            }
+        });
+
+        // Add tab to the list
+        if (!this.tabs.value.some(currentTab => currentTab.id.value === tab.id.value)) {
+            set(this._tabs, oldTabs => [...oldTabs, tab]);
         }
     }
 

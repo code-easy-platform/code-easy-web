@@ -17,6 +17,10 @@
     max-width: 200px;
 }
 
+.tab-list .tab-item:not(.tab-selected)>span {
+    opacity: 0.7;    
+}
+
 .tab-list .tab-item:focus {
     opacity: 1;
 }

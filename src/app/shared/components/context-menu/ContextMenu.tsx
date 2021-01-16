@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect, useRef } from 'react';
 import { useObserver } from 'react-observing';
-import { ContextMenuStore } from '../../stores';
 
+import { ContextMenuStore } from '../../stores';
 import './ContextMenu.css';
 
 export const ContextMenu: React.FC<{ title?: string }> = ({ title }) => {
@@ -56,10 +56,10 @@ export const ContextMenu: React.FC<{ title?: string }> = ({ title }) => {
 
                             if (useConfirmation) {
                                 if (window.confirm(confirmationMessage || 'Continue?')) {
-                                    action();
+                                    action && action();
                                 }
                             } else {
-                                action();
+                                action && action();
                             }
                         }}
                     >
