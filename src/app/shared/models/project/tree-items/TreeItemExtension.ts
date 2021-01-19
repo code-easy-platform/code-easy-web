@@ -1,4 +1,4 @@
-import { IObservable, observe, transform } from "react-observing";
+import { IObservable, observe } from "react-observing";
 import { Utils } from 'code-easy-components';
 
 import { IProperty, TypeOfValues } from "./../../../components/external";

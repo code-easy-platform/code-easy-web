@@ -2,7 +2,7 @@ import React, { useCallback, useEffect, useState } from 'react';
 import { ISubscription, observe, transform, useObserver, useObserverValue, useSetObserver } from 'react-observing';
 import { IconTrash, Utils } from 'code-easy-components';
 
-import { Tab, TreeItemFolder, TreeItemGlobalAction, TreeItemInputVariable, TreeItemLocalVariable, TreeItemOutpuVariable, TreeItemRouterConsume, TreeItemRouterExpose, TreeItemRouterInputVariable } from '../../../shared/models';
+import { Tab, TabRoute, TreeItemFolder, TreeItemGlobalAction, TreeItemInputVariable, TreeItemLocalVariable, TreeItemOutpuVariable, TreeItemRouterConsume, TreeItemRouterExpose, TreeItemRouterInputVariable } from '../../../shared/models';
 import { TreeManager, ITreeItem, CustomDragLayer } from '../../../shared/components/external';
 import { ECurrentFocus, EComponentType, ETabType, } from '../../../shared/enuns';
 import { AssetsService, openContextMenu } from '../../../shared/services';
@@ -11,7 +11,7 @@ import { CurrentFocusStore } from '../../../shared/stores';
 import { useEditorContext } from '../../../shared/hooks';
 
 const useCurrentTab = () => {
-    const [currentTab, setCurrentTab] = useState<Tab>(new Tab({ items: [], type: ETabType.tabRoutes, properties: [] }));
+    const [currentTab, setCurrentTab] = useState<Tab>(new TabRoute());
 
     const { project } = useEditorContext();
     const tabs = useObserverValue(project.tabs);

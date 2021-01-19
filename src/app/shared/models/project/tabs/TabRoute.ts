@@ -1,35 +1,35 @@
 import { IObservable, observe } from "react-observing";
 
-import { ITabRoute, ITreeItemFolder, ITreeItemInputVariable, ITreeItemLocalVariable, ITreeItemOutpuVariable, ITreeItemRouterConsume, ITreeItemRouterExpose } from "./../../../interfaces";
 import { TreeItemFolder, TreeItemInputVariable, TreeItemLocalVariable, TreeItemOutpuVariable, TreeItemRouterConsume, TreeItemRouterExpose } from "./../tree-items";
+import { ITabRoute, ITreeItemComponent } from "./../../../interfaces";
 import { EComponentType, ETabType } from "./../../../enuns";
 import { IProperty } from "./../../../components/external";
 import { Tab } from "../generic";
 
 interface IConstrutor {
-    items?: (ITreeItemFolder | ITreeItemRouterConsume | ITreeItemRouterExpose | ITreeItemInputVariable | ITreeItemLocalVariable | ITreeItemOutpuVariable)[];
+    items?: ITreeItemComponent[];
     properties?: IProperty[];
     id?: string;
 }
 export class TabRoute extends Tab<ETabType.tabRoutes> implements ITabRoute {
     public items: IObservable<(TreeItemFolder | TreeItemRouterConsume | TreeItemRouterExpose | TreeItemInputVariable | TreeItemLocalVariable | TreeItemOutpuVariable)[]>;
 
-    constructor(props: IConstrutor) {
+    constructor(props?: IConstrutor) {
         super({
-            properties: props.properties || [],
-            items: props.items || [],
+            properties: props?.properties || [],
+            items: props?.items || [],
             type: ETabType.tabRoutes,
-            id: props.id,
+            id: props?.id,
         });
 
-        if (props.items) {
+        if (props?.items) {
             this.items = this._initializeItems(props.items);
         } else {
             this.items = observe([]);
         }
     }
 
-    private _initializeItems(items: (ITreeItemFolder | ITreeItemRouterConsume | ITreeItemRouterExpose | ITreeItemInputVariable | ITreeItemLocalVariable | ITreeItemOutpuVariable)[]) {
+    private _initializeItems(items: ITreeItemComponent[]) {
         return observe(items.map(item => {
             switch (item.type.value) {
                 case EComponentType.grouper:

@@ -1,5 +1,6 @@
 import { IObservable, observe, set, transform } from "react-observing";
 
+import { TreeItemFolder, TreeItemGlobalAction, TreeItemInputVariable, TreeItemLocalVariable, TreeItemOutpuVariable, TreeItemRouterConsume, TreeItemRouterExpose, TreeItemExtension, TreeItemLocalAction } from "../tree-items";
 import { flowItemsStore, PropertiesEditorStore, tabListStore } from "./../../../stores";
 import { ITreeItemComponent, ITab } from "./../../../interfaces";
 import { BasicConfigurations } from "./../BasicConfigurations";
@@ -28,12 +29,66 @@ export class Tab<T extends ETabType = ETabType> extends BasicConfigurations<T> i
     super(props);
 
     this.items = observe(
-      props.items.map(item => new TreeItemComponent({
-        properties: item.properties.value || [],
-        items: item.items.value,
-        type: item.type.value,
-        id: item.id.value,
-      }))
+      props.items.map(item => {
+        switch (item.type.value) {
+          case EComponentType.extension:
+            return new TreeItemExtension({
+              properties: item.properties.value || [],
+              id: item.id.value,
+            });
+          case EComponentType.globalAction:
+            return new TreeItemGlobalAction({
+              properties: item.properties.value || [],
+              items: item.items.value,
+              id: item.id.value,
+            });
+          case EComponentType.grouper:
+            return new TreeItemFolder({
+              properties: item.properties.value || [],
+              id: item.id.value,
+            });
+          case EComponentType.inputVariable:
+            return new TreeItemInputVariable({
+              properties: item.properties.value || [],
+              id: item.id.value,
+            });
+          case EComponentType.localAction:
+            return new TreeItemLocalAction({
+              properties: item.properties.value || [],
+              items: item.items.value,
+              id: item.id.value,
+            });
+          case EComponentType.localVariable:
+            return new TreeItemLocalVariable({
+              properties: item.properties.value || [],
+              id: item.id.value,
+            });
+          case EComponentType.outputVariable:
+            return new TreeItemOutpuVariable({
+              properties: item.properties.value || [],
+              id: item.id.value,
+            });
+          case EComponentType.routeConsume:
+            return new TreeItemRouterConsume({
+              properties: item.properties.value || [],
+              id: item.id.value,
+            });
+          case EComponentType.routeExpose:
+            return new TreeItemRouterExpose({
+              properties: item.properties.value || [],
+              items: item.items.value,
+              id: item.id.value,
+            });
+
+          default:
+            return new TreeItemComponent({
+              properties: item.properties.value || [],
+              items: item.items.value,
+              type: item.type.value,
+              id: item.id.value,
+            });
+        }
+      })
     );
   }
 

@@ -1,8 +1,8 @@
 export interface IContextItemList {
   icon?: any;
   label: string;
-  action(): any;
   disabled?: boolean;
+  action?: () => void;
   useConfirmation?: boolean;
   confirmationMessage?: string;
 }
