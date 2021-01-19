@@ -5,7 +5,7 @@ import { EFlowItemType } from '../../../shared/enums';
 import { IDroppableItem } from '../../../shared/interfaces';
 
 interface ListItemProps {
-    icon?: any;
+    icon?: string;
     label?: string;
     width?: number;
     itemType?: string;

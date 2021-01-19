@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { useObserver, useObserverValue } from 'react-observing';
 
 import { IFlowItem } from '../../shared/interfaces/FlowItemInterfaces';
@@ -26,8 +26,11 @@ interface CommentProps {
 export const Comment: React.FC<CommentProps> = ({ item, parentRef, onMouseDown, onContextMenu }) => {
     const { flowItemSelectedColor, commentColor, lineWidth, flowItemErrorColor, flowItemWarningColor, commentTextColor } = useConfigs();
 
+    const textareaRef = useRef<HTMLTextAreaElement>(null);
     const [isEditing, setIsEditing] = useState(false);
 
+    const isEditableOnDoubleClick = useObserverValue(item.isEditableOnDoubleClick);
+    const isAcceptingConnections = useObserverValue(item.isAcceptingConnections);
     const [description, setDescription] = useObserver(item.description);
     const isSelected = useObserverValue(item.isSelected);
     const hasWarning = useObserverValue(item.hasWarning);
@@ -45,6 +48,13 @@ export const Comment: React.FC<CommentProps> = ({ item, parentRef, onMouseDown, 
                 ? `${flowItemWarningColor}`
                 : "transparent";
 
+    useEffect(() => {
+        if (textareaRef.current && isEditing) {
+            textareaRef.current.select();
+            textareaRef.current.focus();
+        }
+    }, [isEditing])
+
     const handleOnContextMenu = useCallback((e: React.MouseEvent<SVGRectElement, MouseEvent>) => {
         e.stopPropagation();
         e.preventDefault();
@@ -56,6 +66,14 @@ export const Comment: React.FC<CommentProps> = ({ item, parentRef, onMouseDown, 
         e.preventDefault();
         onMouseDown && onMouseDown(e);
     }, [onMouseDown]);
+
+    const handleKeyDown = useCallback((e: React.KeyboardEvent<HTMLTextAreaElement>) => {
+        if (e.key === 'Escape') {
+            textareaRef.current?.blur();
+            setIsEditing(false);
+        }
+        e.stopPropagation();
+    }, [setIsEditing]);
 
     return (
         <>
@@ -72,15 +90,18 @@ export const Comment: React.FC<CommentProps> = ({ item, parentRef, onMouseDown, 
                 y={top - 10}
                 x={left - 10}
                 id={item.id.value}
-                onDoubleClick={() => setIsEditing(true)}
                 style={{ cursor: isEditing ? 'text' : 'move' }}
                 width={(width || 0) + ((lineWidth || 0) * 2) + 18}
                 height={(height || 0) + ((lineWidth || 0) * 2) + 16}
                 onMouseDown={!isEditing ? handleOnMouseDown : undefined}
                 onContextMenu={!isEditing ? handleOnContextMenu : undefined}
+                data-allow-connection={String(isAcceptingConnections || true)}
+                onDoubleClick={isEditableOnDoubleClick ? () => setIsEditing(true) : undefined}
             >
                 <textarea
+                    ref={textareaRef}
                     value={description}
+                    onKeyDown={handleKeyDown}
                     tabIndex={isEditing ? 0 : -1}
                     onBlur={() => setIsEditing(false)}
                     onChange={e => isEditing ? setDescription(e.currentTarget.value) : undefined}
@@ -96,6 +117,7 @@ export const Comment: React.FC<CommentProps> = ({ item, parentRef, onMouseDown, 
                         lineHeight: '14px',
                         textAlign: 'start',
                         fontSize: 'small',
+                        borderRadius: 0,
                         resize: 'none',
                         padding: 8,
                     }}

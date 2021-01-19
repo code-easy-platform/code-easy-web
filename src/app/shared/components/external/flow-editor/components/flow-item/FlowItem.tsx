@@ -1,4 +1,4 @@
-import React, { useCallback, useRef } from 'react';
+import React, { memo, useCallback, useRef } from 'react';
 
 import { useDragAllElements, useConfigs, useSelectItemById } from '../../shared/hooks';
 import { IFlowItem } from '../../shared/interfaces';
@@ -11,7 +11,7 @@ interface FlowProps {
     parentRef: React.RefObject<SVGSVGElement>;
     onContextMenu?(event: React.MouseEvent<SVGGElement, MouseEvent>): void;
 }
-export const FlowItem: React.FC<FlowProps> = ({ item: flowItem, parentRef, onContextMenu }) => {
+export const FlowItem: React.FC<FlowProps> = memo(({ item: flowItem, parentRef, onContextMenu }) => {
     const { snapGridWhileDragging } = useConfigs();
     const dragAllFlowItems = useDragAllElements();
     const selectItemById = useSelectItemById();
@@ -89,4 +89,4 @@ export const FlowItem: React.FC<FlowProps> = ({ item: flowItem, parentRef, onCon
         default:
             return null;
     }
-};
+});

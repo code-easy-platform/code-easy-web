@@ -1,5 +1,5 @@
-import { useContext, useEffect, useState } from "react";
-import { set, observe, ISubscription, useObserver } from "react-observing";
+import { useContext } from "react";
+import { set, observe, useObserver } from "react-observing";
 import { Utils } from "code-easy-components";
 
 import { IConnection } from "../interfaces";
@@ -229,43 +229,4 @@ export const useSizeByText = () => (text: string) => {
         width: formattedWidth,
         height: formattedHeight,
     };
-};
-
-export const useBoardSize = () => {
-    const [coords, setCoords] = useState({ width: 0, height: 0 });
-    const itemsStore = useItems();
-
-    useEffect(() => {
-        const subscriptions: ISubscription[] = [];
-
-        itemsStore.value.forEach((item, _, arrayItems) => {
-            subscriptions.push(
-                item.top.subscribe(top => {
-                    setCoords(_coords => {
-                        if (!arrayItems.some(item => item.top.value > top)) {
-                            return { ..._coords, height: top + 300 };
-                        } else {
-                            return _coords;
-                        }
-                    });
-                })
-            );
-
-            subscriptions.push(
-                item.left.subscribe(left => {
-                    setCoords(_coords => {
-                        if (!arrayItems.some(item => item.left.value > left)) {
-                            return { ..._coords, width: left + 300 };
-                        } else {
-                            return _coords;
-                        }
-                    });
-                })
-            );
-        });
-
-        return () => subscriptions.forEach(subscrition => subscrition.unsubscribe());
-    }, [itemsStore.value]);
-
-    return coords;
 };

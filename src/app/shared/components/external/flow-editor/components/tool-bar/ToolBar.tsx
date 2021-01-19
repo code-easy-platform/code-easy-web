@@ -18,10 +18,10 @@ export const Toolbar: React.FC<ToolbarProps> = ({ items, isShow, itemWidth, back
             ? <div className="toolbar" onFocus={onFocus} style={{ backgroundColor, borderColor }}>
                 {items.map((item: IFlowItem, index) => {
                     return <ListItemDraggable
+                        icon={typeof item.icon?.value === 'string' ? item.icon?.value : String(item.icon?.value?.content)}
                         flowItemType={item.flowItemType.value}
                         itemType={item.itemType?.value}
                         label={item.label?.value}
-                        icon={item.icon?.value}
                         width={itemWidth}
                         key={index}
                     />;

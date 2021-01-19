@@ -20,6 +20,7 @@ export const ConfigurationProvider: React.FC<{ configs: IFlowEditorConfigs }> = 
     configs.useElevation = configs.useElevation !== undefined ? configs.useElevation : false;
     configs.dotColor = configs.dotColor !== undefined ? configs.dotColor : '#484848';
     configs.dottedSize = configs.dottedSize !== undefined ? configs.dottedSize : 15;
+    configs.rulers = configs.rulers !== undefined ? configs.rulers : [];
 
     // BREADCRUMBS
     configs.breadcrumbBackgroundColor = configs.breadcrumbBackgroundColor !== undefined ? configs.breadcrumbBackgroundColor : '#232323';

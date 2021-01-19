@@ -21,6 +21,7 @@ export const Acorn: React.FC<FlowComponentProps> = ({ item, parentRef, useEvents
     const { flowItemErrorColor, flowItemTextColor, flowItemWarningColor, flowItemSelectedColor, lineWidth, backgroundColor } = useConfigs();
     const selectItemById = useSelectItemById();
 
+    const isAcceptingConnections = useObserverValue(item.isAcceptingConnections);
     const isEnabledNewConnetion = useObserverValue(item.isEnabledNewConnetion);
     const description = useObserverValue(item.description);
     const isDisabled = useObserverValue(item.isDisabled);
@@ -69,13 +70,8 @@ export const Acorn: React.FC<FlowComponentProps> = ({ item, parentRef, useEvents
                 isRounded={true}
                 top={top - 10}
             />}
-            <TextOverItem
-                left={left + ((width || 0) / 2)}
-                textColor={flowItemTextColor}
-                label={item.label}
-                top={top}
-            />
             <SelectionBox
+                allowConnection={isAcceptingConnections}
                 fullDraggable={!isEnabledNewConnetion}
                 backgroundColor={backgroundColor}
                 onMouseDown={handleMouseDownMove}
@@ -92,6 +88,14 @@ export const Acorn: React.FC<FlowComponentProps> = ({ item, parentRef, useEvents
                 height={height}
                 width={width}
                 left={left}
+                top={top}
+            />
+            <TextOverItem
+                isEditableOnDoubleClick={item.isEditableOnDoubleClick}
+                left={left + ((width || 0) / 2)}
+                isEditing={item.isEditingTitle}
+                textColor={flowItemTextColor}
+                label={item.label}
                 top={top}
             />
             <title>{description}</title>

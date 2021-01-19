@@ -1,8 +1,11 @@
 export enum PropertieTypes {
     createdInPlatformVersion = "Created in platform version",
     currentPlatformVersion = "Current platform version",
+    isEditableOnDoubleClick = "isEditableOnDoubleClick",
     isEnabledNewConnetion = "Is enabled new connetion",
+    isAcceptingConnections = "isAcceptingConnections",
     platformVersion = "Platform version",
+    isEditingTitle = "isEditingTitle",
     defaultValue = "Default value",
     parametersIn = "Parameters in",
     flowItemType = "flowItemType",

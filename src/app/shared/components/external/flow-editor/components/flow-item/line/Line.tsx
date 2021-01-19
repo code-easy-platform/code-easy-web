@@ -15,7 +15,7 @@ interface LineProps {
      */
     id: string | undefined;
     /**
-     * 
+     *
      */
     allowedsInDrop?: string[];
     /**
@@ -29,8 +29,8 @@ interface LineProps {
     parentRef: React.RefObject<SVGSVGElement>;
     /**
      * Reference to the element used to create new connections between items
-     * 
-     * If this reference is not present, it represents that the line to be 
+     *
+     * If this reference is not present, it represents that the line to be
      * created is connected to another item in the flow
      */
     newConnectionBoxRef?: React.MutableRefObject<SVGRectElement | null>;
@@ -38,7 +38,7 @@ interface LineProps {
      * Executed when a item is dropped in the line
      * @param item Item dropped
      * @param monitor Dnd current monitor
-     * @param connectionId Used to idicate the line target  
+     * @param connectionId Used to idicate the line target
      */
     onDropItem?(item: any, monitor: DropTargetMonitor, connectionId: string | undefined): void;
     /**
@@ -113,7 +113,10 @@ export const Line: React.FC<LineProps> = ({ id, originIdStore, targetIdStore, pa
             parentRef.current.style.pointerEvents = 'auto';
         }
 
-        const hasChange = createOrUpdateConnection(id, String(originId), e.target.id);
+        let hasChange = false;
+        if (e.target.dataset.allowConnection === 'true') {
+            hasChange = createOrUpdateConnection(id, String(originId), e.target.id);
+        }
 
         window.onmouseup = null;
         window.onmousemove = null;

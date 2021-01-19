@@ -32,16 +32,12 @@ export const ItemsProvider: React.FC<ItemsProviderProps> = ({ children, items })
                     const { height, width } = getSizeByText(value || '');
                     set(item.height, height);
                     set(item.width, width);
-
-                    console.log("teste")
                 }));
             }
         });
 
         return () => subscriptions.forEach(subs => subs.unsubscribe());
     }, [getSizeByText, items]);
-
-    console.log(items)
 
     return (
         <ItemsContext.Provider value={ItemsStore}>

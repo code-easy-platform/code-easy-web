@@ -16,7 +16,7 @@ export interface IFlowEditorConfigs {
      */
     disableSelection?: boolean;
     /**
-     * Used when a flow item is disabled 
+     * Used when a flow item is disabled
      */
     disableOpacity?: number;
     /**
@@ -53,19 +53,19 @@ export interface IFlowEditorConfigs {
     commentColor?: string;
     /**
      * Color used in lines in the flow
-     * 
+     *
      * Default value: **gray**
      */
     linesColor?: string;
     /**
      * Stroke width used in lines in the flow
-     * 
+     *
      * Default value: **1**
      */
     lineWidth?: number;
     /**
      * Selection border type
-     * 
+     *
      * Default value: **normal**
      */
     selectionBorderType?: 'dash' | 'normal',
@@ -87,15 +87,15 @@ export interface IFlowEditorConfigs {
     backgroundColor?: string,
     /**
      * Dot color
-     * 
+     *
      * This property is used only when the background type is set to "dotted"
-     * 
+     *
      * Default value: **#484848**
      */
     dotColor?: string,
     /**
      * Toolbar border color
-     * 
+     *
      * Default value: **#000**
      */
     toolbarBorderColor?: string,
@@ -109,7 +109,7 @@ export interface IFlowEditorConfigs {
     toolbarItemWidth?: number;
     /**
      * When true show the tool bar in left side
-     * 
+     *
      * Default value: **True**
      */
     showToolbar?: boolean;
@@ -127,16 +127,22 @@ export interface IFlowEditorConfigs {
     breadcrumbBackgroundColor?: string;
     /**
      * Used to display an elevation of the toolbar and breadcrumb relative to the board
-     * 
+     *
      * Default value: **False**
      */
     useElevation?: boolean;
     /**
      * Elevation color
-     * 
+     *
      * Default value: **#000**
      */
     elevationColor?: string;
+    /**
+     * Render vertical rulers after a certain number of characters.
+     * Use multiple values for multiple rulers.
+     * No rulers are drawn if array is empty.
+     */
+    rulers?: number[];
 }
 
 /** Set of events used by FlowEditorBoard */
@@ -203,11 +209,11 @@ export interface IFlowEditorBoardProps extends IFlowEditorBoardEvents {
      */
     childrenWhenItemsEmpty?: React.ReactNode;
     /**
-     * 
+     *
      */
     breadcrumbs?: IBreadCrumbButton[];
     /**
-     * 
+     *
      */
     toolItems?: IFlowItem[];
 }

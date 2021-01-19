@@ -4,16 +4,18 @@ import { IFlowItemsStore, IFlowItemsStoreCurrent } from "../interfaces";
 
 export class FlowItemsStore implements IFlowItemsStore {
 
-    private _current: IObservable<IFlowItemsStoreCurrent>;
+    private _current: IObservable<IFlowItemsStoreCurrent> = observe({
+        itemId: observe(undefined),
+        items: observe([])
+    });
     public get current(): IObservable<IFlowItemsStoreCurrent> {
         return this._current;
     }
 
     constructor(initialCurrent?: IFlowItemsStoreCurrent) {
-        this._current = observe<IFlowItemsStoreCurrent>(initialCurrent || {
-            itemId: observe(undefined),
-            items: observe([])
-        })
+        if (initialCurrent) {
+            this._current = observe<IFlowItemsStoreCurrent>(initialCurrent);
+        }
     }
 
     public next(nextCurrent: IFlowItemsStoreCurrent) {
@@ -21,7 +23,7 @@ export class FlowItemsStore implements IFlowItemsStore {
     }
 
     public clear() {
-        set(this._current, {
+        set(this.current, {
             itemId: observe(undefined),
             items: observe([])
         });

@@ -106,6 +106,8 @@ export const useLineProps = (id: string | undefined, originId: string, targetId:
         connectionLabel: connectionLabel,
         isDisabled: originIsDisabled,
         left: newLeft,
+        targetHeight,
+        targetWidth,
         top: newTop,
         isComment,
         isCurved,

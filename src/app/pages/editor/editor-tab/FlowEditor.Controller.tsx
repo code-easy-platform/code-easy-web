@@ -80,7 +80,10 @@ const useEditingItem = () => {
             connections: flowItem.connections,
             description: flowItem.description,
             flowItemType: flowItem.flowItemType,
+            isEditingTitle: flowItem.isEditingTitle,
             isEnabledNewConnetion: flowItem.isEnabledNewConnetion,
+            isAcceptingConnections: flowItem.isAcceptingConnections,
+            isEditableOnDoubleClick: flowItem.isEditableOnDoubleClick,
         })),
     };
 }
@@ -103,108 +106,117 @@ export const FlowEditorController: React.FC = memo(() => {
 
         // Added a new item in the list of items.
         updatedItems.forEach(updatedItem => {
-            if (!selectedTreeItem.items.value.some(oldItem => oldItem.id.value === updatedItem.id.value)) {
-                console.log(selectedTreeItem.items)
-                setItems(items => {
-                    switch (updatedItem.itemType?.value) {
-                        case EComponentType.inputVariable:
-                            const inputVariable = new FlowItemAssign({
-                                id: updatedItem.id.value,
-                                connections: updatedItem.connections.value,
-                                properties: FlowItemAssign.newItem(updatedItem.top.value, updatedItem.left.value, undefined, true).properties.value,
-                            });
-                            setPropertiesEditor(inputVariable);
-                            return [...items, inputVariable];
-                        case EComponentType.localVariable:
-                            const localVariable = new FlowItemAssign({
-                                id: updatedItem.id.value,
-                                connections: updatedItem.connections.value,
-                                properties: FlowItemAssign.newItem(updatedItem.top.value, updatedItem.left.value, undefined, true).properties.value,
-                            });
-                            setPropertiesEditor(localVariable);
-                            return [...items, localVariable];
-                        case EComponentType.outputVariable:
-                            const outputVariable = new FlowItemAssign({
-                                id: updatedItem.id.value,
-                                connections: updatedItem.connections.value,
-                                properties: FlowItemAssign.newItem(updatedItem.top.value, updatedItem.left.value, undefined, true).properties.value,
-                            });
-                            setPropertiesEditor(outputVariable);
-                            return [...items, outputVariable];
-                        case EComponentType.globalAction:
-                            const globalAction = new FlowItemAction({
-                                id: updatedItem.id.value,
-                                connections: updatedItem.connections.value,
-                                properties: FlowItemAction.newItem(updatedItem.top.value, updatedItem.left.value, undefined, true).properties.value,
-                            });
-                            setPropertiesEditor(globalAction);
-                            return [...items, globalAction];
-                        case EItemType.ACTION:
-                            const action = new FlowItemAction({
-                                id: updatedItem.id.value,
-                                connections: updatedItem.connections.value,
-                                properties: FlowItemAction.newItem(updatedItem.top.value, updatedItem.left.value, undefined, true).properties.value,
-                            });
-                            setPropertiesEditor(action);
-                            return [...items, action];
-                        case EItemType.COMMENT:
-                            const comment = new FlowItemComment({
-                                id: updatedItem.id.value,
-                                connections: updatedItem.connections.value,
-                                properties: FlowItemComment.newItem(updatedItem.top.value, updatedItem.left.value, true).properties.value,
-                            });
-                            setPropertiesEditor(comment);
-                            return [...items, comment];
-                        case EItemType.ASSIGN:
-                            const assign = new FlowItemAssign({
-                                id: updatedItem.id.value,
-                                connections: updatedItem.connections.value,
-                                properties: FlowItemAssign.newItem(updatedItem.top.value, updatedItem.left.value, undefined, true).properties.value,
-                            });
-                            setPropertiesEditor(assign);
-                            return [...items, assign];
-                        case EItemType.END:
-                            const end = new FlowItemEnd({
-                                id: updatedItem.id.value,
-                                properties: FlowItemEnd.newItem(updatedItem.top.value, updatedItem.left.value, true).properties.value,
-                            });
-                            setPropertiesEditor(end);
-                            return [...items, end];
-                        case EItemType.FOREACH:
-                            const foreach = new FlowItemForeach({
-                                id: updatedItem.id.value,
-                                connections: updatedItem.connections.value,
-                                properties: FlowItemForeach.newItem(updatedItem.top.value, updatedItem.left.value, undefined, true).properties.value,
-                            });
-                            setPropertiesEditor(foreach);
-                            return [...items, foreach];
-                        case EItemType.IF:
-                            const ifComponent = new FlowItemIf({
-                                id: updatedItem.id.value,
-                                connections: updatedItem.connections.value,
-                                properties: FlowItemIf.newItem(updatedItem.top.value, updatedItem.left.value, undefined, true).properties.value,
-                            });
-                            setPropertiesEditor(ifComponent);
-                            return [...items, ifComponent];
-                        case EItemType.START:
-                            const start = new FlowItemStart({
-                                id: updatedItem.id.value,
-                                connections: updatedItem.connections.value,
-                                properties: FlowItemStart.newItem(updatedItem.top.value, updatedItem.left.value, undefined, true).properties.value,
-                            });
-                            setPropertiesEditor(start);
-                            return [...items, start];
-                        case EItemType.SWITCH:
-                            const switchComponent = new FlowItemSwitch({
-                                id: updatedItem.id.value,
-                                connections: updatedItem.connections.value,
-                                properties: FlowItemSwitch.newItem(updatedItem.top.value, updatedItem.left.value, undefined, true).properties.value,
-                            });
-                            setPropertiesEditor(switchComponent);
-                            return [...items, switchComponent];
-                        default: return items;
-                    }
-                });
+            if (!flowItems.some(oldItem => oldItem.id.value === updatedItem.id.value)) {
+                switch (updatedItem.itemType?.value) {
+                    case EComponentType.inputVariable:
+                        const inputVariable = new FlowItemAssign({
+                            id: updatedItem.id.value,
+                            connections: updatedItem.connections.value,
+                            properties: FlowItemAssign.newItem(updatedItem.top.value, updatedItem.left.value, undefined, true).properties.value,
+                        });
+                        setPropertiesEditor(inputVariable);
+                        setItems(oldItems => [...oldItems, inputVariable]);;
+                        break;
+                    case EComponentType.localVariable:
+                        const localVariable = new FlowItemAssign({
+                            id: updatedItem.id.value,
+                            connections: updatedItem.connections.value,
+                            properties: FlowItemAssign.newItem(updatedItem.top.value, updatedItem.left.value, undefined, true).properties.value,
+                        });
+                        setPropertiesEditor(localVariable);
+                        setItems(oldItems => [...oldItems, localVariable]);
+                        break;
+                    case EComponentType.outputVariable:
+                        const outputVariable = new FlowItemAssign({
+                            id: updatedItem.id.value,
+                            connections: updatedItem.connections.value,
+                            properties: FlowItemAssign.newItem(updatedItem.top.value, updatedItem.left.value, undefined, true).properties.value,
+                        });
+                        setPropertiesEditor(outputVariable);
+                        setItems(oldItems => [...oldItems, outputVariable]);
+                        break;
+                    case EComponentType.globalAction:
+                        const globalAction = new FlowItemAction({
+                            id: updatedItem.id.value,
+                            connections: updatedItem.connections.value,
+                            properties: FlowItemAction.newItem(updatedItem.top.value, updatedItem.left.value, undefined, true).properties.value,
+                        });
+                        setPropertiesEditor(globalAction);
+                        setItems(oldItems => [...oldItems, globalAction]);
+                        break;
+                    case EItemType.ACTION:
+                        const action = new FlowItemAction({
+                            id: updatedItem.id.value,
+                            connections: updatedItem.connections.value,
+                            properties: FlowItemAction.newItem(updatedItem.top.value, updatedItem.left.value, undefined, true).properties.value,
+                        });
+                        setPropertiesEditor(action);
+                        setItems(oldItems => [...oldItems, action]);
+                        break;
+                    case EItemType.COMMENT:
+                        const comment = new FlowItemComment({
+                            id: updatedItem.id.value,
+                            connections: updatedItem.connections.value,
+                            properties: FlowItemComment.newItem(updatedItem.top.value, updatedItem.left.value, true).properties.value,
+                        });
+                        setPropertiesEditor(comment);
+                        setItems(oldItems => [...oldItems, comment]);
+                        break;
+                    case EItemType.ASSIGN:
+                        const assign = new FlowItemAssign({
+                            id: updatedItem.id.value,
+                            connections: updatedItem.connections.value,
+                            properties: FlowItemAssign.newItem(updatedItem.top.value, updatedItem.left.value, undefined, true).properties.value,
+                        });
+                        setPropertiesEditor(assign);
+                        setItems(oldItems => [...oldItems, assign]);
+                        break;
+                    case EItemType.END:
+                        const end = new FlowItemEnd({
+                            id: updatedItem.id.value,
+                            properties: FlowItemEnd.newItem(updatedItem.top.value, updatedItem.left.value, true).properties.value,
+                        });
+                        setPropertiesEditor(end);
+                        setItems(oldItems => [...oldItems, end]);
+                        break;
+                    case EItemType.FOREACH:
+                        const foreach = new FlowItemForeach({
+                            id: updatedItem.id.value,
+                            connections: updatedItem.connections.value,
+                            properties: FlowItemForeach.newItem(updatedItem.top.value, updatedItem.left.value, undefined, true).properties.value,
+                        });
+                        setPropertiesEditor(foreach);
+                        setItems(oldItems => [...oldItems, foreach]);
+                        break;
+                    case EItemType.IF:
+                        const ifComponent = new FlowItemIf({
+                            id: updatedItem.id.value,
+                            connections: updatedItem.connections.value,
+                            properties: FlowItemIf.newItem(updatedItem.top.value, updatedItem.left.value, undefined, true).properties.value,
+                        });
+                        setPropertiesEditor(ifComponent);
+                        setItems(oldItems => [...oldItems, ifComponent]);
+                        break;
+                    case EItemType.START:
+                        const start = new FlowItemStart({
+                            id: updatedItem.id.value,
+                            connections: updatedItem.connections.value,
+                            properties: FlowItemStart.newItem(updatedItem.top.value, updatedItem.left.value, undefined, true).properties.value,
+                        });
+                        setPropertiesEditor(start);
+                        setItems(oldItems => [...oldItems, start]);
+                        break;
+                    case EItemType.SWITCH:
+                        const switchComponent = new FlowItemSwitch({
+                            id: updatedItem.id.value,
+                            connections: updatedItem.connections.value,
+                            properties: FlowItemSwitch.newItem(updatedItem.top.value, updatedItem.left.value, undefined, true).properties.value,
+                        });
+                        setPropertiesEditor(switchComponent);
+                        setItems(oldItems => [...oldItems, switchComponent]);
+                        break;
+                    default: break;
+                }
             }
         });
 
@@ -212,18 +224,18 @@ export const FlowEditorController: React.FC = memo(() => {
         setItems(oldItems => {
             return oldItems.filter(flowItem => updatedItems.some(oldItem => oldItem.id.value === flowItem.id.value))
         });
-    }, [selectedTreeItem.items, setItems]);
+    }, [flowItems, setItems]);
 
     /** Alimenta a toolbox, de onde pode ser arrastados items para o fluxo. */
     const toolBoxItems = useCallback((): IFlowItem[] => [
-        { id: observe('1'), top: observe(0), left: observe(0), flowItemType: observe(EFlowItemType.acorn), label: observe(EItemType.START), icon: observe(IconFlowStart), itemType: observe(EItemType.START), connections: observe([]), description: observe(''), hasError: observe(undefined), hasWarning: observe(undefined), height: observe(undefined), isDisabled: observe(false), isEnabledNewConnetion: observe(undefined), isSelected: observe(false), width: observe(undefined) },
-        { id: observe('2'), top: observe(0), left: observe(0), flowItemType: observe(EFlowItemType.acorn), label: observe(EItemType.ACTION), icon: observe(IconFlowAction), itemType: observe(EItemType.ACTION), connections: observe([]), description: observe(''), hasError: observe(undefined), hasWarning: observe(undefined), height: observe(undefined), isDisabled: observe(false), isEnabledNewConnetion: observe(undefined), isSelected: observe(false), width: observe(undefined) },
-        { id: observe('3'), top: observe(0), left: observe(0), flowItemType: observe(EFlowItemType.acorn), label: observe(EItemType.IF), icon: observe(IconFlowIf), itemType: observe(EItemType.IF), connections: observe([]), description: observe(''), hasError: observe(undefined), hasWarning: observe(undefined), height: observe(undefined), isDisabled: observe(false), isEnabledNewConnetion: observe(undefined), isSelected: observe(false), width: observe(undefined) },
-        { id: observe('4'), top: observe(0), left: observe(0), flowItemType: observe(EFlowItemType.acorn), label: observe(EItemType.FOREACH), icon: observe(IconFlowForeach), itemType: observe(EItemType.FOREACH), connections: observe([]), description: observe(''), hasError: observe(undefined), hasWarning: observe(undefined), height: observe(undefined), isDisabled: observe(false), isEnabledNewConnetion: observe(undefined), isSelected: observe(false), width: observe(undefined) },
-        { id: observe('6'), top: observe(0), left: observe(0), flowItemType: observe(EFlowItemType.acorn), label: observe(EItemType.SWITCH), icon: observe(IconFlowSwitch), itemType: observe(EItemType.SWITCH), connections: observe([]), description: observe(''), hasError: observe(undefined), hasWarning: observe(undefined), height: observe(undefined), isDisabled: observe(false), isEnabledNewConnetion: observe(undefined), isSelected: observe(false), width: observe(undefined) },
-        { id: observe('7'), top: observe(0), left: observe(0), flowItemType: observe(EFlowItemType.acorn), label: observe(EItemType.ASSIGN), icon: observe(IconFlowAssign), itemType: observe(EItemType.ASSIGN), connections: observe([]), description: observe(''), hasError: observe(undefined), hasWarning: observe(undefined), height: observe(undefined), isDisabled: observe(false), isEnabledNewConnetion: observe(undefined), isSelected: observe(false), width: observe(undefined) },
-        { id: observe('8'), top: observe(0), left: observe(0), flowItemType: observe(EFlowItemType.acorn), label: observe(EItemType.END), icon: observe(IconFlowEnd), itemType: observe(EItemType.END), connections: observe([]), description: observe(''), hasError: observe(undefined), hasWarning: observe(undefined), height: observe(undefined), isDisabled: observe(false), isEnabledNewConnetion: observe(undefined), isSelected: observe(false), width: observe(undefined) },
-        { id: observe('9'), top: observe(0), left: observe(0), flowItemType: observe(EFlowItemType.comment), label: observe(EItemType.COMMENT), icon: observe(IconFlowComment), itemType: observe(EItemType.COMMENT), connections: observe([]), description: observe(''), hasError: observe(undefined), hasWarning: observe(undefined), height: observe(undefined), isDisabled: observe(false), isEnabledNewConnetion: observe(undefined), isSelected: observe(false), width: observe(undefined) },
+        { itemType: observe(EItemType.START), ...FlowItemComponent.defaultProperties({ id: '1', icon: { content: IconFlowStart }, label: EItemType.START }) },
+        { itemType: observe(EItemType.ACTION), ...FlowItemComponent.defaultProperties({ id: '2', icon: { content: IconFlowAction }, label: EItemType.ACTION }) },
+        { itemType: observe(EItemType.IF), ...FlowItemComponent.defaultProperties({ id: '3', icon: { content: IconFlowIf }, label: EItemType.IF }) },
+        { itemType: observe(EItemType.FOREACH), ...FlowItemComponent.defaultProperties({ id: '4', icon: { content: IconFlowForeach }, label: EItemType.FOREACH }) },
+        { itemType: observe(EItemType.SWITCH), ...FlowItemComponent.defaultProperties({ id: '5', icon: { content: IconFlowSwitch }, label: EItemType.SWITCH }) },
+        { itemType: observe(EItemType.ASSIGN), ...FlowItemComponent.defaultProperties({ id: '6', icon: { content: IconFlowAssign }, label: EItemType.ASSIGN }) },
+        { itemType: observe(EItemType.END), ...FlowItemComponent.defaultProperties({ id: '7', icon: { content: IconFlowEnd }, label: EItemType.END }) },
+        { itemType: observe(EItemType.COMMENT), ...FlowItemComponent.defaultProperties({ id: '8', icon: { content: IconFlowComment }, label: EItemType.COMMENT, flowItemType: EFlowItemType.comment }) },
     ], []);
 
     /** Quando clicado com o botão esquerdo do mouse no interior do editor esta função é acionada. */
@@ -239,7 +251,7 @@ export const FlowEditorController: React.FC = memo(() => {
 
         const options: IContextItemList[] = [
             ...toolBoxItems().map(item => ({
-                icon: item.icon.value,
+                icon: (item.icon.value as any).content,
                 label: 'Add ' + item.label.value,
                 action: () => {
 
@@ -406,6 +418,8 @@ export const FlowEditorController: React.FC = memo(() => {
 
                 commentTextColor: '#ffffff',
                 commentColor: '#54a878',
+
+                rulers: [120]
             }}
         />
     );

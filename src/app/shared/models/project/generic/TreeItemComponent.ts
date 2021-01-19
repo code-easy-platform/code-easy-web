@@ -24,7 +24,7 @@ interface IConstructor<T> {
  * Represents a full tree item implementation
  */
 export class TreeItemComponent<T extends EComponentType = EComponentType> extends BasicConfigurations<T> implements ITreeItemComponent<T> {
-  public items: IObservable<FlowItemComponent[]>;
+  public items: IObservable<FlowItemComponent[]> = observe([]);
 
   public get ascendantId() {
     let prop = this.properties.value.find(prop => prop.propertieType.value === PropertieTypes.ascendantId)?.value;
@@ -171,8 +171,6 @@ export class TreeItemComponent<T extends EComponentType = EComponentType> extend
             });
         }
       }));
-    } else {
-      this.items = observe([]);
     }
   }
 }
