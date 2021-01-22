@@ -452,7 +452,7 @@ export class FlowItemComponent<T extends EItemType = EItemType> extends BasicCon
 
   constructor(props: IConstructor<T>) {
     super(props);
-
+    
     this._connections = observe(props.connections || []);
   }
 

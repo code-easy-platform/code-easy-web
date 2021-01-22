@@ -95,136 +95,6 @@ export class FlowItemIf extends FlowItemComponent<EItemType.IF> implements IFlow
             id: props.id,
         });
 
-        this._validations();
-    }
-
-    public static newItem(top: number, left: number, targetId?: string, isSelected: boolean = false) {
-        const id = Utils.getUUID();
-
-        return new FlowItemIf({
-            id,
-            connections: (
-                targetId
-                    ? [{ id: observe(Utils.getUUID()), targetId: observe(targetId), originId: observe(id), isSelected: observe(false), connectionDescription: observe(''), connectionLabel: observe('') }]
-                    : []
-            ),
-            properties: [
-                {
-                    value: observe('If'),
-                    focusOnRender: observe(true),
-                    id: observe(Utils.getUUID()),
-                    type: observe(TypeOfValues.string),
-                    name: observe(PropertieTypes.label),
-                    propertieType: observe(PropertieTypes.label),
-
-                    group: observe(undefined),
-                    suggestions: observe(undefined),
-                    information: observe(undefined),
-                    fileMaxSize: observe(undefined),
-                    nameHasError: observe(undefined),
-                    valueHasError: observe(undefined),
-                    nameHasWarning: observe(undefined),
-                    valueHasWarning: observe(undefined),
-                    nameSuggestions: observe(undefined),
-                    editNameDisabled: observe(undefined),
-                    onPickerNameClick: observe(undefined),
-                    editValueDisabled: observe(undefined),
-                    onPickerValueClick: observe(undefined),
-                },
-                {
-                    id: observe(Utils.getUUID()),
-                    name: observe(PropertieTypes.top),
-                    type: observe(TypeOfValues.hidden),
-                    value: observe(Math.round(top / 15) * 15),
-                    propertieType: observe(PropertieTypes.top),
-
-                    group: observe(undefined),
-                    suggestions: observe(undefined),
-                    information: observe(undefined),
-                    fileMaxSize: observe(undefined),
-                    nameHasError: observe(undefined),
-                    valueHasError: observe(undefined),
-                    focusOnRender: observe(undefined),
-                    nameHasWarning: observe(undefined),
-                    valueHasWarning: observe(undefined),
-                    nameSuggestions: observe(undefined),
-                    editNameDisabled: observe(undefined),
-                    onPickerNameClick: observe(undefined),
-                    editValueDisabled: observe(undefined),
-                    onPickerValueClick: observe(undefined),
-                },
-                {
-                    id: observe(Utils.getUUID()),
-                    type: observe(TypeOfValues.hidden),
-                    name: observe(PropertieTypes.left),
-                    value: observe(Math.round(left / 15) * 15),
-                    propertieType: observe(PropertieTypes.left),
-
-                    group: observe(undefined),
-                    suggestions: observe(undefined),
-                    information: observe(undefined),
-                    fileMaxSize: observe(undefined),
-                    nameHasError: observe(undefined),
-                    valueHasError: observe(undefined),
-                    focusOnRender: observe(undefined),
-                    nameHasWarning: observe(undefined),
-                    valueHasWarning: observe(undefined),
-                    nameSuggestions: observe(undefined),
-                    editNameDisabled: observe(undefined),
-                    onPickerNameClick: observe(undefined),
-                    editValueDisabled: observe(undefined),
-                    onPickerValueClick: observe(undefined),
-                },
-                {
-                    id: observe(Utils.getUUID()),
-                    type: observe(TypeOfValues.hidden),
-                    name: observe(PropertieTypes.icon),
-                    value: observe({ content: IconFlowIf }),
-                    propertieType: observe(PropertieTypes.icon),
-
-                    group: observe(undefined),
-                    suggestions: observe(undefined),
-                    information: observe(undefined),
-                    fileMaxSize: observe(undefined),
-                    nameHasError: observe(undefined),
-                    valueHasError: observe(undefined),
-                    focusOnRender: observe(undefined),
-                    nameHasWarning: observe(undefined),
-                    valueHasWarning: observe(undefined),
-                    nameSuggestions: observe(undefined),
-                    editNameDisabled: observe(undefined),
-                    onPickerNameClick: observe(undefined),
-                    editValueDisabled: observe(undefined),
-                    onPickerValueClick: observe(undefined),
-                },
-                {
-                    value: observe(isSelected),
-                    id: observe(Utils.getUUID()),
-                    type: observe(TypeOfValues.hidden),
-                    name: observe(PropertieTypes.isSelected),
-                    propertieType: observe(PropertieTypes.isSelected),
-
-                    group: observe(undefined),
-                    suggestions: observe(undefined),
-                    information: observe(undefined),
-                    fileMaxSize: observe(undefined),
-                    nameHasError: observe(undefined),
-                    valueHasError: observe(undefined),
-                    focusOnRender: observe(undefined),
-                    nameHasWarning: observe(undefined),
-                    valueHasWarning: observe(undefined),
-                    nameSuggestions: observe(undefined),
-                    editNameDisabled: observe(undefined),
-                    onPickerNameClick: observe(undefined),
-                    editValueDisabled: observe(undefined),
-                    onPickerValueClick: observe(undefined),
-                },
-            ],
-        });
-    }
-
-    protected _validations() {
-        super._validations();
         this._valideCondition();
         this._valideConnections();
     }
@@ -332,6 +202,175 @@ export class FlowItemIf extends FlowItemComponent<EItemType.IF> implements IFlow
                         }
                     });
                 });
+        });
+    }
+
+    public static newItem(top: number, left: number, targetId?: string, isSelected: boolean = false) {
+        const id = Utils.getUUID();
+
+        return new FlowItemIf({
+            id,
+            connections: (
+                targetId
+                    ? [{ id: observe(Utils.getUUID()), targetId: observe(targetId), originId: observe(id), isSelected: observe(false), connectionDescription: observe(''), connectionLabel: observe('') }]
+                    : []
+            ),
+            properties: [
+                {
+                    value: observe('If'),
+                    id: observe(Utils.getUUID()),
+                    type: observe(TypeOfValues.string),
+                    name: observe(PropertieTypes.label),
+                    propertieType: observe(PropertieTypes.label),
+                    
+                    group: observe(undefined),
+                    suggestions: observe(undefined),
+                    information: observe(undefined),
+                    fileMaxSize: observe(undefined),
+                    nameHasError: observe(undefined),
+                    focusOnRender: observe(undefined),
+                    valueHasError: observe(undefined),
+                    nameHasWarning: observe(undefined),
+                    valueHasWarning: observe(undefined),
+                    nameSuggestions: observe(undefined),
+                    editNameDisabled: observe(undefined),
+                    onPickerNameClick: observe(undefined),
+                    editValueDisabled: observe(undefined),
+                    onPickerValueClick: observe(undefined),
+                },
+                {
+                    id: observe(Utils.getUUID()),
+                    name: observe(PropertieTypes.top),
+                    type: observe(TypeOfValues.hidden),
+                    value: observe(Math.round(top / 15) * 15),
+                    propertieType: observe(PropertieTypes.top),
+
+                    group: observe(undefined),
+                    suggestions: observe(undefined),
+                    information: observe(undefined),
+                    fileMaxSize: observe(undefined),
+                    nameHasError: observe(undefined),
+                    valueHasError: observe(undefined),
+                    focusOnRender: observe(undefined),
+                    nameHasWarning: observe(undefined),
+                    valueHasWarning: observe(undefined),
+                    nameSuggestions: observe(undefined),
+                    editNameDisabled: observe(undefined),
+                    onPickerNameClick: observe(undefined),
+                    editValueDisabled: observe(undefined),
+                    onPickerValueClick: observe(undefined),
+                },
+                {
+                    id: observe(Utils.getUUID()),
+                    type: observe(TypeOfValues.hidden),
+                    name: observe(PropertieTypes.left),
+                    value: observe(Math.round(left / 15) * 15),
+                    propertieType: observe(PropertieTypes.left),
+
+                    group: observe(undefined),
+                    suggestions: observe(undefined),
+                    information: observe(undefined),
+                    fileMaxSize: observe(undefined),
+                    nameHasError: observe(undefined),
+                    valueHasError: observe(undefined),
+                    focusOnRender: observe(undefined),
+                    nameHasWarning: observe(undefined),
+                    valueHasWarning: observe(undefined),
+                    nameSuggestions: observe(undefined),
+                    editNameDisabled: observe(undefined),
+                    onPickerNameClick: observe(undefined),
+                    editValueDisabled: observe(undefined),
+                    onPickerValueClick: observe(undefined),
+                },
+                {
+                    id: observe(Utils.getUUID()),
+                    type: observe(TypeOfValues.hidden),
+                    name: observe(PropertieTypes.icon),
+                    value: observe({ content: IconFlowIf }),
+                    propertieType: observe(PropertieTypes.icon),
+
+                    group: observe(undefined),
+                    suggestions: observe(undefined),
+                    information: observe(undefined),
+                    fileMaxSize: observe(undefined),
+                    nameHasError: observe(undefined),
+                    valueHasError: observe(undefined),
+                    focusOnRender: observe(undefined),
+                    nameHasWarning: observe(undefined),
+                    valueHasWarning: observe(undefined),
+                    nameSuggestions: observe(undefined),
+                    editNameDisabled: observe(undefined),
+                    onPickerNameClick: observe(undefined),
+                    editValueDisabled: observe(undefined),
+                    onPickerValueClick: observe(undefined),
+                },
+                {
+                    value: observe(isSelected),
+                    id: observe(Utils.getUUID()),
+                    type: observe(TypeOfValues.hidden),
+                    name: observe(PropertieTypes.isSelected),
+                    propertieType: observe(PropertieTypes.isSelected),
+
+                    group: observe(undefined),
+                    suggestions: observe(undefined),
+                    information: observe(undefined),
+                    fileMaxSize: observe(undefined),
+                    nameHasError: observe(undefined),
+                    valueHasError: observe(undefined),
+                    focusOnRender: observe(undefined),
+                    nameHasWarning: observe(undefined),
+                    valueHasWarning: observe(undefined),
+                    nameSuggestions: observe(undefined),
+                    editNameDisabled: observe(undefined),
+                    onPickerNameClick: observe(undefined),
+                    editValueDisabled: observe(undefined),
+                    onPickerValueClick: observe(undefined),
+                },
+                {
+                  value: observe(true),
+                  id: observe(Utils.getUUID()),
+                  type: observe(TypeOfValues.hidden),
+                  name: observe(PropertieTypes.isEditableOnDoubleClick),
+                  propertieType: observe(PropertieTypes.isEditableOnDoubleClick),
+          
+                  group: observe(undefined),
+                  suggestions: observe(undefined),
+                  information: observe(undefined),
+                  fileMaxSize: observe(undefined),
+                  nameHasError: observe(undefined),
+                  valueHasError: observe(undefined),
+                  focusOnRender: observe(undefined),
+                  nameHasWarning: observe(undefined),
+                  valueHasWarning: observe(undefined),
+                  nameSuggestions: observe(undefined),
+                  editNameDisabled: observe(undefined),
+                  onPickerNameClick: observe(undefined),
+                  editValueDisabled: observe(undefined),
+                  onPickerValueClick: observe(undefined),
+                },
+                {
+                  value: observe(true),
+                  id: observe(Utils.getUUID()),
+                  type: observe(TypeOfValues.hidden),
+                  name: observe(PropertieTypes.isEditingTitle),
+                  propertieType: observe(PropertieTypes.isEditingTitle),
+          
+                  group: observe(undefined),
+                  suggestions: observe(undefined),
+                  information: observe(undefined),
+                  fileMaxSize: observe(undefined),
+                  nameHasError: observe(undefined),
+                  valueHasError: observe(undefined),
+                  focusOnRender: observe(undefined),
+                  nameHasWarning: observe(undefined),
+                  valueHasWarning: observe(undefined),
+                  nameSuggestions: observe(undefined),
+                  editNameDisabled: observe(undefined),
+                  onPickerNameClick: observe(undefined),
+                  editValueDisabled: observe(undefined),
+                  onPickerValueClick: observe(undefined),
+                }
+            ],
         });
     }
 }

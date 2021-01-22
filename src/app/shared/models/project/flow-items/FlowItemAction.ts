@@ -79,13 +79,14 @@ export class FlowItemAction extends FlowItemComponent<EItemType.ACTION> implemen
 
     constructor(props: IConstrutor) {
         super({
+            connections: props.connections || [],
             properties: props.properties || [],
-            connections: props.connections,
             type: EItemType.ACTION,
             id: props.id,
         });
 
-        this._validations();
+        this._valideAction();
+        this._valideConnections();
     }
 
     public static newItem(top: number, left: number, targetId?: string, isSelected: boolean = false) {
@@ -101,7 +102,6 @@ export class FlowItemAction extends FlowItemComponent<EItemType.ACTION> implemen
             properties: [
                 {
                     value: observe('Action'),
-                    focusOnRender: observe(true),
                     id: observe(Utils.getUUID()),
                     type: observe(TypeOfValues.string),
                     name: observe(PropertieTypes.label),
@@ -112,6 +112,7 @@ export class FlowItemAction extends FlowItemComponent<EItemType.ACTION> implemen
                     information: observe(undefined),
                     fileMaxSize: observe(undefined),
                     nameHasError: observe(undefined),
+                    focusOnRender: observe(undefined),
                     valueHasError: observe(undefined),
                     nameHasWarning: observe(undefined),
                     valueHasWarning: observe(undefined),
@@ -231,14 +232,52 @@ export class FlowItemAction extends FlowItemComponent<EItemType.ACTION> implemen
                     editValueDisabled: observe(undefined),
                     onPickerValueClick: observe(undefined),
                 },
+                {
+                  value: observe(true),
+                  id: observe(Utils.getUUID()),
+                  type: observe(TypeOfValues.hidden),
+                  name: observe(PropertieTypes.isEditableOnDoubleClick),
+                  propertieType: observe(PropertieTypes.isEditableOnDoubleClick),
+          
+                  group: observe(undefined),
+                  suggestions: observe(undefined),
+                  information: observe(undefined),
+                  fileMaxSize: observe(undefined),
+                  nameHasError: observe(undefined),
+                  valueHasError: observe(undefined),
+                  focusOnRender: observe(undefined),
+                  nameHasWarning: observe(undefined),
+                  valueHasWarning: observe(undefined),
+                  nameSuggestions: observe(undefined),
+                  editNameDisabled: observe(undefined),
+                  onPickerNameClick: observe(undefined),
+                  editValueDisabled: observe(undefined),
+                  onPickerValueClick: observe(undefined),
+                },
+                {
+                  value: observe(true),
+                  id: observe(Utils.getUUID()),
+                  type: observe(TypeOfValues.hidden),
+                  name: observe(PropertieTypes.isEditingTitle),
+                  propertieType: observe(PropertieTypes.isEditingTitle),
+          
+                  group: observe(undefined),
+                  suggestions: observe(undefined),
+                  information: observe(undefined),
+                  fileMaxSize: observe(undefined),
+                  nameHasError: observe(undefined),
+                  valueHasError: observe(undefined),
+                  focusOnRender: observe(undefined),
+                  nameHasWarning: observe(undefined),
+                  valueHasWarning: observe(undefined),
+                  nameSuggestions: observe(undefined),
+                  editNameDisabled: observe(undefined),
+                  onPickerNameClick: observe(undefined),
+                  editValueDisabled: observe(undefined),
+                  onPickerValueClick: observe(undefined),
+                }
             ],
         });
-    }
-
-    protected _validations() {
-        super._validations();
-        this._valideAction();
-        this._valideConnections();
     }
 
     private _valideAction() {

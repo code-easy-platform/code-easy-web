@@ -401,7 +401,7 @@ export abstract class BasicConfigurations<T extends EComponentType | EProjectTyp
         this._properties = observe(props.properties);
         this._id = props.id ? observe(props.id) : observe(undefined);
 
-        this._validations();
+        this._valideLabel();
         this._defaultProperties();       
     }
 
@@ -420,10 +420,6 @@ export abstract class BasicConfigurations<T extends EComponentType | EProjectTyp
                 }
             });
         }, 1);
-    }
-
-    protected _validations() {
-        this._valideLabel();
     }
 
     private _valideLabel() {

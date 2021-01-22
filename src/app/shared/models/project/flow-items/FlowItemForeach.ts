@@ -95,7 +95,8 @@ export class FlowItemForeach extends FlowItemComponent<EItemType.FOREACH> implem
             id: props.id,
         });
 
-        this._validations();
+        this._valideSourceList();
+        this._valideConnections();
     }
 
     public static newItem(top: number, left: number, targetId?: string, isSelected: boolean = false) {
@@ -219,14 +220,52 @@ export class FlowItemForeach extends FlowItemComponent<EItemType.FOREACH> implem
                     editValueDisabled: observe(undefined),
                     onPickerValueClick: observe(undefined),
                 },
+                {
+                  value: observe(true),
+                  id: observe(Utils.getUUID()),
+                  type: observe(TypeOfValues.hidden),
+                  name: observe(PropertieTypes.isEditableOnDoubleClick),
+                  propertieType: observe(PropertieTypes.isEditableOnDoubleClick),
+          
+                  group: observe(undefined),
+                  suggestions: observe(undefined),
+                  information: observe(undefined),
+                  fileMaxSize: observe(undefined),
+                  nameHasError: observe(undefined),
+                  valueHasError: observe(undefined),
+                  focusOnRender: observe(undefined),
+                  nameHasWarning: observe(undefined),
+                  valueHasWarning: observe(undefined),
+                  nameSuggestions: observe(undefined),
+                  editNameDisabled: observe(undefined),
+                  onPickerNameClick: observe(undefined),
+                  editValueDisabled: observe(undefined),
+                  onPickerValueClick: observe(undefined),
+                },
+                {
+                  value: observe(true),
+                  id: observe(Utils.getUUID()),
+                  type: observe(TypeOfValues.hidden),
+                  name: observe(PropertieTypes.isEditingTitle),
+                  propertieType: observe(PropertieTypes.isEditingTitle),
+          
+                  group: observe(undefined),
+                  suggestions: observe(undefined),
+                  information: observe(undefined),
+                  fileMaxSize: observe(undefined),
+                  nameHasError: observe(undefined),
+                  valueHasError: observe(undefined),
+                  focusOnRender: observe(undefined),
+                  nameHasWarning: observe(undefined),
+                  valueHasWarning: observe(undefined),
+                  nameSuggestions: observe(undefined),
+                  editNameDisabled: observe(undefined),
+                  onPickerNameClick: observe(undefined),
+                  editValueDisabled: observe(undefined),
+                  onPickerValueClick: observe(undefined),
+                }
             ],
         });
-    }
-
-    protected _validations() {
-        super._validations();
-        this._valideSourceList();
-        this._valideConnections();
     }
 
     private _valideSourceList() {

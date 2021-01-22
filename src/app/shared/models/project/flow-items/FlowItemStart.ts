@@ -42,6 +42,18 @@ export class FlowItemStart extends FlowItemComponent<EItemType.START> implements
         });
     }
 
+    public get isAcceptingConnections() {
+        return transform(super.isAcceptingConnections, () => false, () => false);
+    }
+
+    public get isEditingTitle() {
+        return transform(super.isEditingTitle, () => false, () => false);
+    }
+
+    public get isEditableOnDoubleClick() {
+        return transform(super.isEditableOnDoubleClick, () => false, () => false);
+    }
+
     constructor(props: IConstrutor) {
         super({
             properties: props.properties || [],
@@ -178,6 +190,72 @@ export class FlowItemStart extends FlowItemComponent<EItemType.START> implements
                     type: observe(TypeOfValues.hidden),
                     name: observe(PropertieTypes.isSelected),
                     propertieType: observe(PropertieTypes.isSelected),
+
+                    group: observe(undefined),
+                    suggestions: observe(undefined),
+                    information: observe(undefined),
+                    fileMaxSize: observe(undefined),
+                    nameHasError: observe(undefined),
+                    valueHasError: observe(undefined),
+                    focusOnRender: observe(undefined),
+                    nameHasWarning: observe(undefined),
+                    valueHasWarning: observe(undefined),
+                    nameSuggestions: observe(undefined),
+                    editNameDisabled: observe(undefined),
+                    onPickerNameClick: observe(undefined),
+                    editValueDisabled: observe(undefined),
+                    onPickerValueClick: observe(undefined),
+                },
+                {
+                    value: observe(false),
+                    id: observe(Utils.getUUID()),
+                    type: observe(TypeOfValues.hidden),
+                    name: observe(PropertieTypes.isAcceptingConnections),
+                    propertieType: observe(PropertieTypes.isAcceptingConnections),
+
+                    group: observe(undefined),
+                    suggestions: observe(undefined),
+                    information: observe(undefined),
+                    fileMaxSize: observe(undefined),
+                    nameHasError: observe(undefined),
+                    valueHasError: observe(undefined),
+                    focusOnRender: observe(undefined),
+                    nameHasWarning: observe(undefined),
+                    valueHasWarning: observe(undefined),
+                    nameSuggestions: observe(undefined),
+                    editNameDisabled: observe(undefined),
+                    onPickerNameClick: observe(undefined),
+                    editValueDisabled: observe(undefined),
+                    onPickerValueClick: observe(undefined),
+                },
+                {
+                    value: observe(false),
+                    id: observe(Utils.getUUID()),
+                    type: observe(TypeOfValues.hidden),
+                    name: observe(PropertieTypes.isEditingTitle),
+                    propertieType: observe(PropertieTypes.isEditingTitle),
+
+                    group: observe(undefined),
+                    suggestions: observe(undefined),
+                    information: observe(undefined),
+                    fileMaxSize: observe(undefined),
+                    nameHasError: observe(undefined),
+                    valueHasError: observe(undefined),
+                    focusOnRender: observe(undefined),
+                    nameHasWarning: observe(undefined),
+                    valueHasWarning: observe(undefined),
+                    nameSuggestions: observe(undefined),
+                    editNameDisabled: observe(undefined),
+                    onPickerNameClick: observe(undefined),
+                    editValueDisabled: observe(undefined),
+                    onPickerValueClick: observe(undefined),
+                },
+                {
+                    value: observe(false),
+                    id: observe(Utils.getUUID()),
+                    type: observe(TypeOfValues.hidden),
+                    name: observe(PropertieTypes.isEditableOnDoubleClick),
+                    propertieType: observe(PropertieTypes.isEditableOnDoubleClick),
 
                     group: observe(undefined),
                     suggestions: observe(undefined),

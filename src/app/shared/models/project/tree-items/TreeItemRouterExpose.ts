@@ -19,44 +19,43 @@ interface IConstrutor {
  * Represents a full router expose implementation
  */
 export class TreeItemRouterExpose extends TreeItemComponent<EComponentType.routeExpose> implements ITreeItemRouterExpose {
-    
     public get path(): IObservable<string> {
         let prop = this.properties.value.find(prop => prop.propertieType.value === PropertieTypes.path)?.value;
         if (prop) {
-          return prop;
+            return prop;
         }
-    
+
         prop = observe('');
-    
+
         this.properties.value = [
-          ...this.properties.value,
-          {
-            value: prop,
-            id: observe(Utils.getUUID()),
-            type: observe(TypeOfValues.hidden),
-            name: observe(PropertieTypes.path),
-            propertieType: observe(PropertieTypes.path),
-    
-            group: observe(undefined),
-            suggestions: observe(undefined),
-            information: observe(undefined),
-            fileMaxSize: observe(undefined),
-            nameHasError: observe(undefined),
-            valueHasError: observe(undefined),
-            focusOnRender: observe(undefined),
-            nameHasWarning: observe(undefined),
-            valueHasWarning: observe(undefined),
-            nameSuggestions: observe(undefined),
-            editNameDisabled: observe(undefined),
-            onPickerNameClick: observe(undefined),
-            editValueDisabled: observe(undefined),
-            onPickerValueClick: observe(undefined),
-          }
+            ...this.properties.value,
+            {
+                value: prop,
+                id: observe(Utils.getUUID()),
+                type: observe(TypeOfValues.hidden),
+                name: observe(PropertieTypes.path),
+                propertieType: observe(PropertieTypes.path),
+
+                group: observe(undefined),
+                suggestions: observe(undefined),
+                information: observe(undefined),
+                fileMaxSize: observe(undefined),
+                nameHasError: observe(undefined),
+                valueHasError: observe(undefined),
+                focusOnRender: observe(undefined),
+                nameHasWarning: observe(undefined),
+                valueHasWarning: observe(undefined),
+                nameSuggestions: observe(undefined),
+                editNameDisabled: observe(undefined),
+                onPickerNameClick: observe(undefined),
+                editValueDisabled: observe(undefined),
+                onPickerValueClick: observe(undefined),
+            }
         ];
-    
+
         return prop;
     }
-    
+
     constructor(props: IConstrutor) {
         super({
             properties: props.properties || [],
@@ -66,7 +65,7 @@ export class TreeItemRouterExpose extends TreeItemComponent<EComponentType.route
         });
 
         this._defaultProperties();
-        this._validations();
+        this._valideHttpMethod();
     }
 
     public static newRoute(label: string, ascendantId?: string) {
@@ -291,11 +290,6 @@ export class TreeItemRouterExpose extends TreeItemComponent<EComponentType.route
         this.label.subscribe(label => {
             set(this.path, toKebabCase(label));
         });
-    }
-
-    protected _validations() {
-        super._validations();
-        this._valideHttpMethod();
     }
 
     private _valideHttpMethod() {

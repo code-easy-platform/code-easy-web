@@ -132,7 +132,60 @@ export class FlowItemSwitch extends FlowItemComponent<EItemType.SWITCH> implemen
             id: props.id,
         });
 
-        this._validations();
+        this._valideConnections();
+    }
+
+    private _valideConnections() {
+        const schema = yup.array().min(1);
+
+        schema.validate(this.connections.value)
+            .then(() => {
+                set(this.errosIds, oldErros => {
+                    if (oldErros.includes(this.connections.id)) {
+                        return oldErros.filter(oldErros => oldErros !== this.connections.id);
+                    } else {
+                        return oldErros;
+                    }
+                });
+            })
+            .catch(() => {
+                set(this.errosIds, oldErros => {
+                    if (!oldErros.includes(this.connections.id)) {
+                        return [
+                            ...oldErros,
+                            this.connections.id,
+                        ];
+                    } else {
+                        return oldErros;
+                    }
+                });
+            });
+
+        // Subscribe to all changes
+        this.connections.subscribe(connections => {
+            schema.validate(connections)
+                .then(() => {
+                    set(this.errosIds, oldErros => {
+                        if (oldErros.includes(this.connections.id)) {
+                            return oldErros.filter(oldErros => oldErros !== this.connections.id);
+                        } else {
+                            return oldErros;
+                        }
+                    });
+                })
+                .catch(() => {
+                    set(this.errosIds, oldErros => {
+                        if (!oldErros.includes(this.connections.id)) {
+                            return [
+                                ...oldErros,
+                                this.connections.id,
+                            ];
+                        } else {
+                            return oldErros;
+                        }
+                    });
+                });
+        });
     }
 
     public static newItem(top: number, left: number, targetId?: string, isSelected: boolean = false) {
@@ -256,65 +309,51 @@ export class FlowItemSwitch extends FlowItemComponent<EItemType.SWITCH> implemen
                     editValueDisabled: observe(undefined),
                     onPickerValueClick: observe(undefined),
                 },
+                {
+                  value: observe(true),
+                  id: observe(Utils.getUUID()),
+                  type: observe(TypeOfValues.hidden),
+                  name: observe(PropertieTypes.isEditableOnDoubleClick),
+                  propertieType: observe(PropertieTypes.isEditableOnDoubleClick),
+          
+                  group: observe(undefined),
+                  suggestions: observe(undefined),
+                  information: observe(undefined),
+                  fileMaxSize: observe(undefined),
+                  nameHasError: observe(undefined),
+                  valueHasError: observe(undefined),
+                  focusOnRender: observe(undefined),
+                  nameHasWarning: observe(undefined),
+                  valueHasWarning: observe(undefined),
+                  nameSuggestions: observe(undefined),
+                  editNameDisabled: observe(undefined),
+                  onPickerNameClick: observe(undefined),
+                  editValueDisabled: observe(undefined),
+                  onPickerValueClick: observe(undefined),
+                },
+                {
+                  value: observe(true),
+                  id: observe(Utils.getUUID()),
+                  type: observe(TypeOfValues.hidden),
+                  name: observe(PropertieTypes.isEditingTitle),
+                  propertieType: observe(PropertieTypes.isEditingTitle),
+          
+                  group: observe(undefined),
+                  suggestions: observe(undefined),
+                  information: observe(undefined),
+                  fileMaxSize: observe(undefined),
+                  nameHasError: observe(undefined),
+                  valueHasError: observe(undefined),
+                  focusOnRender: observe(undefined),
+                  nameHasWarning: observe(undefined),
+                  valueHasWarning: observe(undefined),
+                  nameSuggestions: observe(undefined),
+                  editNameDisabled: observe(undefined),
+                  onPickerNameClick: observe(undefined),
+                  editValueDisabled: observe(undefined),
+                  onPickerValueClick: observe(undefined),
+                }
             ],
-        });
-    }
-
-    protected _validations() {
-        super._validations();
-        this._valideConnections();
-    }
-
-    private _valideConnections() {
-        const schema = yup.array().min(1);
-
-        schema.validate(this.connections.value)
-            .then(() => {
-                set(this.errosIds, oldErros => {
-                    if (oldErros.includes(this.connections.id)) {
-                        return oldErros.filter(oldErros => oldErros !== this.connections.id);
-                    } else {
-                        return oldErros;
-                    }
-                });
-            })
-            .catch(() => {
-                set(this.errosIds, oldErros => {
-                    if (!oldErros.includes(this.connections.id)) {
-                        return [
-                            ...oldErros,
-                            this.connections.id,
-                        ];
-                    } else {
-                        return oldErros;
-                    }
-                });
-            });
-
-        // Subscribe to all changes
-        this.connections.subscribe(connections => {
-            schema.validate(connections)
-                .then(() => {
-                    set(this.errosIds, oldErros => {
-                        if (oldErros.includes(this.connections.id)) {
-                            return oldErros.filter(oldErros => oldErros !== this.connections.id);
-                        } else {
-                            return oldErros;
-                        }
-                    });
-                })
-                .catch(() => {
-                    set(this.errosIds, oldErros => {
-                        if (!oldErros.includes(this.connections.id)) {
-                            return [
-                                ...oldErros,
-                                this.connections.id,
-                            ];
-                        } else {
-                            return oldErros;
-                        }
-                    });
-                });
         });
     }
 }

@@ -33,7 +33,15 @@ export class FlowItemEnd extends FlowItemComponent<EItemType.END> implements IFl
     public get connections(): IObservable<[]> {
         return transform(super.connections, () => [], () => []);
     }
-
+    public get isAcceptingConnections() {
+        return super.isAcceptingConnections;
+    }
+    public get isEditingTitle() {
+        return transform(super.isEditingTitle, () => false, () => false);
+    }
+    public get isEditableOnDoubleClick() {
+        return transform(super.isEditableOnDoubleClick, () => false, () => false);
+    }
     constructor(props: IConstrutor) {
         super({
             properties: props.properties || [],
