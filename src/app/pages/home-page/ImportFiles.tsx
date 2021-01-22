@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 
 import { ProjectsStorage } from '../../shared/services/storage/ProjectsStorage';
 import { Modal } from '../../shared/components';
@@ -57,13 +57,13 @@ export const ImportProjects = ({ open, close }: { open: boolean, close: Function
         } */
     }
 
-    const importProjects = () => {
-        ProjectsStorage.setProjects(projects);
+    const importProjects = useCallback(async () => {
+        await ProjectsStorage.setProjects(projects);
         window.alert("Projects imported successfully...");
         setProjectsRecognized(false);
         setProjects([]);
         close();
-    }
+    }, [close, projects]);
 
     return (
         <Modal

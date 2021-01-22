@@ -23,10 +23,12 @@ export const HomePage = () => {
 
     useEffect(() => {
         document.title = "Projects - Code easy";
-        setProjects(ProjectsStorage.getProjects());
+        ProjectsStorage.getProjects().then(storedProjects => {
+            setProjects(storedProjects);
+        })
     }, []);
 
-    const addNewProject = useCallback((item: any) => {
+    const handleAddNewProject = useCallback(async (item: any) => {
         setIsAdding(false);
 
         projects.push(ProjectsStorage.getNewProject(item.name, item.version, item.type, item.description));
@@ -34,8 +36,16 @@ export const HomePage = () => {
         projects.sort((a, b) => a.label.value.localeCompare(b.label.value));
 
         setProjects(projects);
-        ProjectsStorage.setProjects(projects);
+        await ProjectsStorage.setProjects(projects);
     }, [projects]);
+
+    const handleRemoveProject = useCallback((projectId: string | undefined) => {
+        if (!projectId) return;
+
+        ProjectsStorage.removeProjectById(projectId).then(newProjects => {
+            setProjects(newProjects);
+        });
+    }, []);
 
     return (
         <div className="main-page">
@@ -104,8 +114,8 @@ export const HomePage = () => {
                                     return <CardItem
                                         listMode
                                         key={index}
+                                        onDelete={() => handleRemoveProject(card.id.value)}
                                         onClick={() => history.push(`/editor/${card.id.value}`)}
-                                        onDelete={() => setProjects(ProjectsStorage.removeProjectById(card.id.value))}
                                         item={{
                                             type: card.type.value,
                                             name: card.label.value,
@@ -139,7 +149,7 @@ export const HomePage = () => {
                     <section className="overflow-auto">
                         <ul className="display-flex flex-wrap">
                             {(projects.length === 0 && !isAdding) && <span className="margin-s opacity-5 font-size-g">No items to show...</span>}
-                            {isAdding && <CardNewProject onSave={addNewProject} onCancel={() => setIsAdding(false)} />}
+                            {isAdding && <CardNewProject onSave={handleAddNewProject} onCancel={() => setIsAdding(false)} />}
                             {projects
                                 .filter(item => (item.label.value.toLowerCase().indexOf(filter.toLowerCase()) >= 0))
                                 .sort((a, b) => a.label.value.localeCompare(b.label.value))
@@ -147,8 +157,8 @@ export const HomePage = () => {
                                     return (
                                         <CardItem
                                             key={index}
+                                            onDelete={() => handleRemoveProject(card.id.value)}
                                             onClick={() => history.push(`/editor/${card.id.value}`)}
-                                            onDelete={() => setProjects(ProjectsStorage.removeProjectById(card.id.value))}
                                             item={{
                                                 type: card.type.value,
                                                 name: card.label.value,
@@ -173,7 +183,7 @@ export const HomePage = () => {
             <ImportProjects
                 open={openImportProjects}
                 close={() => {
-                    setProjects(ProjectsStorage.getProjects());
+                    ProjectsStorage.getProjects().then(setProjects)
                     setOpenImportProjects(false);
                 }}
             />

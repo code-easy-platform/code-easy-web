@@ -37,7 +37,7 @@ export const EditableContent: React.FC<{ itemId: string, removeModal: Function }
 
                     flowItem.properties.value?.forEach(flowItemProp => {
                         if (flowItemProp.id.value === itemId) {
-                            setSelectedItemTitle(flowItemProp.name);
+                            setSelectedItemTitle(flowItem.label);
                             setSelectedItem(flowItemProp.value);
                         }
                     });

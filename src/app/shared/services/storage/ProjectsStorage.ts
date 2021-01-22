@@ -476,7 +476,7 @@ export class ProjectsStorage {
     }
 
     /** Get from localstorage a list of projects */
-    public static getProjects(): Project[] {
+    public static async getProjects(): Promise<Project[]> {
         let res = localStorage.getItem(StorageEnum.projectsStorage);
 
         console.log('getProjects');
@@ -489,7 +489,7 @@ export class ProjectsStorage {
     }
 
     /** Save in localstorage a list of projects */
-    public static setProjects(projects: Project[]): Project[] {
+    public static async setProjects(projects: Project[]): Promise<Project[]> {
         localStorage.setItem(StorageEnum.projectsStorage, ProjectParser.stringifyProjects(projects));
 
         console.log('setProjects');
@@ -498,8 +498,8 @@ export class ProjectsStorage {
     }
 
     /** Update in localstorage a list of projects */
-    public static setProjectById(project: Project) {
-        let projects: Project[] = ProjectsStorage.getProjects();
+    public static async setProjectById(project: Project) {
+        let projects: Project[] = await ProjectsStorage.getProjects();
 
         let itemIndex = projects.findIndex(itemProject => itemProject.id.value === project.id.value);
 
@@ -508,27 +508,25 @@ export class ProjectsStorage {
             projects.splice(itemIndex, 1, project); // Remove elemento antigo e coloca um novo no lugar
         }
 
-        ProjectsStorage.setProjects(projects);
+        await ProjectsStorage.setProjects(projects);
     }
 
     /** Get a project by id */
-    public static getProjectById(id?: string): Promise<Project> {
-        return new Promise(resolve => {
-            const projects = ProjectsStorage.getProjects();
+    public static async getProjectById(id?: string): Promise<Project> {
+        const projects = await ProjectsStorage.getProjects();
 
-            let project = projects.find(proj => proj.id.value === id);
+        let project = projects.find(proj => proj.id.value === id);
 
-            if (project) {
-                return resolve(project);
-            } else {
-                return resolve(new Project({ properties: [], tabs: [], type: EProjectType.api }));
-            }
-        });
+        if (project) {
+            return project;
+        } else {
+            return new Project({ properties: [], tabs: [], type: EProjectType.api });
+        }
     }
 
     /** Remove a project by id from localstorage */
-    public static removeProjectById(id?: string): Project[] {
-        let projects = ProjectsStorage.getProjects();
+    public static async removeProjectById(id?: string): Promise<Project[]> {
+        let projects = await ProjectsStorage.getProjects();
         if (!id) { return projects; }
 
         const itemIndex = projects.findIndex(project => project.id.value === id);
@@ -537,22 +535,7 @@ export class ProjectsStorage {
             projects.splice(itemIndex, 1); // Remove item
         }
 
-        ProjectsStorage.setProjects(projects);
+        await ProjectsStorage.setProjects(projects);
         return projects;
-    }
-
-    /** Get the saved state from a ColumnResizable at localstorage */
-    public static getColumnsResizableSize(id: string): number {
-        let props = localStorage.getItem(id);
-        if (!props) {
-            props = ProjectsStorage.setColumnsResizableSize(id, 300).toString();
-        }
-        return parseInt(props);
-    }
-
-    /** Save the state from a ColumnResizable in the localstorage */
-    public static setColumnsResizableSize(id: string, size: number): number {
-        localStorage.setItem(id, size.toString());
-        return size;
     }
 }
