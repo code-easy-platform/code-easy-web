@@ -13,13 +13,12 @@ export class IdeConfigStorage {
      * Queries IDE settings in storage
      */
     public static getConfigs(): IConfigurations {
+        const res = localStorage.getItem(StorageEnum.ideConfigStorage);
         let configs: IConfigurations;
 
-        let res = localStorage.getItem(StorageEnum.ideConfigStorage);
-
-        if (res !== null && res !== "" && res !== undefined)
+        if (res !== null && res !== "" && res !== undefined) {
             configs = JSON.parse(res);
-        else {
+        } else {
             configs = this.setConfigs({
                 flowBackgroundType: FlowBackgroundType.dotted,
                 snapGridWhileDragging: true,

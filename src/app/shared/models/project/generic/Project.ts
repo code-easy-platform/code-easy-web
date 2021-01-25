@@ -1,11 +1,11 @@
 import { IObservable, observe } from "react-observing";
 
 import { ProjectConfigurations } from "./ProjectConfigurations";
-import { IProperty } from "./../../components/external";
-import { EProjectType, ETabType } from "./../../enuns";
-import { TabAction, TabData, TabRoute } from "./tabs";
-import { IProject, ITab } from "./../../interfaces";
-import { Tab } from "./generic";
+import { IProperty } from "./../../../components/external";
+import { EProjectType, ETabType } from "./../../../enuns";
+import { TabAction, TabData, TabRoute } from "./../tabs";
+import { IProject, ITab } from "./../../../interfaces";
+import { Tab } from "./../generic";
 
 /**
  * Fields passeds in constructor

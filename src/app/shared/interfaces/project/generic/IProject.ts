@@ -1,7 +1,7 @@
 import { IObservable } from "react-observing";
 
-import { IProperty } from "../../components/external";
-import { ITab } from "./generic";
+import { IProperty } from "./../../../components/external";
+import { ITab } from "./../generic";
 
 /**
  * Represents a full project structure

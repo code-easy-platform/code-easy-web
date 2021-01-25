@@ -1,7 +1,7 @@
 import { IObservable } from "react-observing";
 
-import { IBasicConfigurations } from "./IBasicConfigurations";
-import { EProjectType } from "./../../enuns";
+import { IBasicConfigurations } from "./../IBasicConfigurations";
+import { EProjectType } from "./../../../enuns";
 
 /**
  * Exclusively used in the project configuration.

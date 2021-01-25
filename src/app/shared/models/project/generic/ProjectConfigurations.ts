@@ -1,10 +1,10 @@
 import { Utils } from "code-easy-components";
 import { IObservable, observe } from "react-observing";
 
-import { EProjectType, PropertieTypes } from "./../../enuns";
-import { BasicConfigurations } from "./BasicConfigurations";
-import { IProjectConfigurations } from "./../../interfaces";
-import { TypeOfValues } from "./../../components/external";
+import { EProjectType, PropertieTypes } from "./../../../enuns";
+import { BasicConfigurations } from "./../BasicConfigurations";
+import { IProjectConfigurations } from "./../../../interfaces";
+import { TypeOfValues } from "./../../../components/external";
 
 export abstract class ProjectConfigurations extends BasicConfigurations<EProjectType> implements IProjectConfigurations {
 

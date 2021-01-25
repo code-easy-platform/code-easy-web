@@ -1,8 +1,8 @@
 import { observe } from "react-observing";
 
-import { FlowItemComponent } from "./generic/FlowItemComponent";
-import { IProperty } from "./../../components/external";
-import { Tab, TreeItemComponent } from "./generic";
+import { FlowItemComponent } from "./../generic/FlowItemComponent";
+import { IProperty } from "./../../../components/external";
+import { Tab, TreeItemComponent } from "./../generic";
 import { Project } from "./Project";
 
 export class ProjectParser {
@@ -194,15 +194,19 @@ export class ProjectParser {
         return new Project({
             id: json.id,
             type: json.type,
+            properties: json.properties.map((prop: any) => newPropertie(prop)),
             tabs: json.tabs.map((tab: any) => new Tab({
                 id: tab.id,
                 type: tab.type,
+                properties: tab.properties.map((prop: any) => newPropertie(prop)),
                 items: tab.items.map((treeItem: any) => new TreeItemComponent({
                     id: treeItem.id,
                     type: treeItem.type,
+                    properties: treeItem.properties.map((prop: any) => newPropertie(prop)),
                     items: tab.items.map((flowItem: any) => new FlowItemComponent({
                         id: flowItem.id,
                         type: flowItem.type,
+                        properties: flowItem.properties.map((prop: any) => newPropertie(prop)),
                         connections: flowItem.connections.map((connection: any) => ({
                             id: observe(connection.id),
                             originId: observe(connection.originId),
@@ -211,13 +215,9 @@ export class ProjectParser {
                             connectionLabel: observe(connection.connectionLabel),
                             connectionDescription: observe(connection.connectionDescription),
                         })),
-                        properties: flowItem.properties.map((prop: any) => newPropertie(prop)),
                     })),
-                    properties: treeItem.properties.map((prop: any) => newPropertie(prop)),
                 })),
-                properties: tab.properties.map((prop: any) => newPropertie(prop)),
             })),
-            properties: json.properties.map((prop: any) => newPropertie(prop)),
         });
     }
 

@@ -33,6 +33,8 @@ export const HomePage = () => {
 
         projects.push(ProjectsStorage.getNewProject(item.name, item.version, item.type, item.description));
 
+        console.log(projects);
+
         projects.sort((a, b) => a.label.value.localeCompare(b.label.value));
 
         setProjects(projects);

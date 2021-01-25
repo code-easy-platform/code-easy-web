@@ -62,29 +62,31 @@ export const EditableContent: React.FC<{ itemId: string, removeModal: Function }
         >
             <MonacoEditor
                 value={text}
-                language="json"
                 ref={editorRef}
                 theme={"vs-dark"}
+                language="javascript"
                 width={modalRef.current?.width}
                 height={modalRef.current?.height}
                 onChange={value => setText(value)}
                 options={{
+                    highlightActiveIndentGuide: true,
                     autoClosingQuotes: "always",
+                    selectionHighlight: false,
+                    fontFamily: 'Firacode',
                     mouseWheelZoom: true,
                     tabCompletion: "on",
                     dragAndDrop: true,
                     links: true,
-                    fontFamily: 'Firacode',
-                    comments: {
-                        insertSpace: true
-                    },
+                    tabSize: 4,
                     suggest: {
                         showFunctions: true,
                         showConstants: true,
                         showVariables: true,
                         showColors: true,
                     },
-                    highlightActiveIndentGuide: true,
+                    comments: {
+                        insertSpace: true
+                    },
                 }}
             />
         </Modal>
