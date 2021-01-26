@@ -1,11 +1,11 @@
 import React, { useState, memo, useEffect, useCallback } from 'react';
+import { VscHome, VscSymbolProperty, VscFileCode, VscSave } from 'react-icons/vsc';
 import { transform, useObserverValue } from 'react-observing';
-import { VscHome, VscSymbolProperty } from 'react-icons/vsc';
 import { useHistory } from 'react-router-dom';
 
 import { PropertiesTab } from '../../../pages/editor/properties-tab/PropertiesTab';
 import { flowItemsStore, tabListStore } from '../../stores';
-import { openContextMenu } from '../../services';
+import { DownloadService, openContextMenu, ProjectsStorage } from '../../services';
 import { useEditorContext } from '../../hooks';
 import { TabButtonSimple } from '../tabs';
 import { TabList } from '../tab-list';
@@ -15,7 +15,7 @@ import './ToolBar.css';
 export const ToolBar: React.FC = memo(() => {
     const [isOpenModalProps, setIsOpenModalProps] = useState(false);
     const tabList = useObserverValue(tabListStore.tabs);
-    const { tabs } = useEditorContext();
+    const { tabs, project } = useEditorContext();
     const history = useHistory();
 
     useEffect(() => {
@@ -37,6 +37,10 @@ export const ToolBar: React.FC = memo(() => {
         ]);
     }, []);
 
+    const handleExport = useCallback(() => {
+        DownloadService.downloadFilesAsZip([{ name: 'src', isFolder: true, children: [] }]);
+    }, []);
+
     return (<>
         <div className="tool-bar background-bars">
             <div>
@@ -56,6 +60,24 @@ export const ToolBar: React.FC = memo(() => {
                     onClick={() => setIsOpenModalProps(true)}
                 >
                     <VscSymbolProperty className="padding-horizontal-s" style={{ height: 20, width: 20 }} />
+                </TabButtonSimple>
+                <hr className="hr hr-vertical" />
+                <TabButtonSimple
+                    role="button-save"
+                    className="btn outline-none"
+                    title="Export project source code"
+                    onClick={() => ProjectsStorage.setProjectById(project)}
+                >
+                    <VscSave className="padding-horizontal-s" style={{ height: 20, width: 20 }} />
+                </TabButtonSimple>
+                <hr className="hr hr-vertical" />
+                <TabButtonSimple
+                    role="button-export"
+                    onClick={handleExport}
+                    className="btn outline-none"
+                    title="Export project source code"
+                >
+                    <VscFileCode className="padding-horizontal-s" style={{ height: 20, width: 20 }} />
                 </TabButtonSimple>
             </div>
             <hr className="hr hr-vertical" />

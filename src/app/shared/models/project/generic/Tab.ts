@@ -81,6 +81,8 @@ export class Tab<T extends ETabType = ETabType> extends BasicConfigurations<T> i
             });
 
           default:
+            console.log("Teste")
+            console.log(item)
             return new TreeItemComponent({
               properties: item.properties.value || [],
               items: item.items.value,

@@ -11,7 +11,7 @@ export class ProjectsStorage {
         switch (type) {
             case EProjectType.api:
                 return ApiProject.newProject(name, version, description);
-    
+
             default:
                 return new ApiProject();
         }
@@ -37,7 +37,8 @@ export class ProjectsStorage {
 
     /** Save in localstorage a list of projects */
     public static async setProjects(projects: Project[]): Promise<Project[]> {
-        localStorage.setItem(StorageEnum.projectsStorage, ProjectParser.stringifyProjects(projects));
+        const content = ProjectParser.stringifyProjects(projects);
+        localStorage.setItem(StorageEnum.projectsStorage, content);
 
         console.log('setProjects');
 

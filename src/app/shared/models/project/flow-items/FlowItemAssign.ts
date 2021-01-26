@@ -64,10 +64,6 @@ export class FlowItemAssign extends FlowItemComponent<EItemType.ASSIGN> implemen
         });
 
         this._valideConnections();
-    }
-
-    protected _defaultProperties() {
-        super._defaultProperties();
         this._initializeAssigns();
     }
 
@@ -125,7 +121,7 @@ export class FlowItemAssign extends FlowItemComponent<EItemType.ASSIGN> implemen
     }
 
     private _initializeAssigns() {
-        const assigns = this.properties.value.filter(prop => prop.propertieType.value === PropertieTypes.assigns);
+        const assigns = this.assigments.value;
         const emptyAssigments = assigns.filter(prop => (prop.name.value === '' && prop.value.value === ''));
 
         if (emptyAssigments.length === 0) {
@@ -157,7 +153,7 @@ export class FlowItemAssign extends FlowItemComponent<EItemType.ASSIGN> implemen
             ]);
         } else if (emptyAssigments.length > 1) {
             set(this.properties, properties => [
-                ...properties.filter(prop => (prop.name.value === '' && prop.value.value === '')),
+                ...properties.filter(prop => !(prop.name.value === '' && prop.value.value === '')),
                 emptyAssigments[0],
             ]);
         }

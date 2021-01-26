@@ -1,5 +1,6 @@
 export * from './context-menu/OpenContextMenuService';
 export * from './modal-context/OpenModalService';
+export * from './download-files/DownloadService';
 export * from './storage/IdeConfigStorage';
 export * from './storage/ProjectsStorage';
 export * from './helpers/ProblemsHelper';
