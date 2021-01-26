@@ -1,5 +1,5 @@
 import React, { useState, memo, useEffect, useCallback } from 'react';
-import { VscHome, VscSymbolProperty, VscFileCode, VscSave } from 'react-icons/vsc';
+import { VscHome, VscChevronDown, VscSaveAll, VscCheck } from 'react-icons/vsc';
 import { transform, useObserverValue } from 'react-observing';
 import { useHistory } from 'react-router-dom';
 
@@ -15,9 +15,36 @@ import './ToolBar.css';
 export const ToolBar: React.FC = memo(() => {
     const [isOpenModalProps, setIsOpenModalProps] = useState(false);
     const tabList = useObserverValue(tabListStore.tabs);
+    const [isSaved, setIsSaved] = useState(false);
     const { tabs, project } = useEditorContext();
     const history = useHistory();
 
+    // Add event listener to Crtl + s
+    useEffect(() => {
+        const handleOnSave = (e: KeyboardEvent) => {
+            if (e.ctrlKey && e.key === 's') {
+                e.preventDefault();
+                setIsSaved(true);
+
+                if (!isSaved) {
+                    ProjectsStorage.setProjectById(project);
+                }
+            }
+        };
+        window.addEventListener('keydown', handleOnSave);
+        return () => window.removeEventListener('keydown', handleOnSave)
+    }, [project, isSaved]);
+
+    // IsSaved timeout 
+    useEffect(() => {
+        if (isSaved) {
+            setTimeout(() => {
+                setIsSaved(false);
+            }, 2000);
+        }
+    }, [isSaved]);
+
+    // Clear opened tabs
     useEffect(() => {
         if (tabList.length === 0) {
             flowItemsStore.clear();
@@ -41,6 +68,20 @@ export const ToolBar: React.FC = memo(() => {
         DownloadService.downloadFilesAsZip([{ name: 'src', isFolder: true, children: [] }]);
     }, []);
 
+    const openMoreOption = useCallback((e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+        openContextMenu(e.clientX, 35, [
+            {
+                label: 'Properties',
+                action: () => setIsOpenModalProps(true)
+            },
+            {
+                action: handleExport,
+                icon: <VscChevronDown />,
+                label: 'Export JS source code',
+            },
+        ]);
+    }, [handleExport]);
+
     return (<>
         <div className="tool-bar background-bars">
             <div>
@@ -54,30 +95,27 @@ export const ToolBar: React.FC = memo(() => {
                 </TabButtonSimple>
                 <hr className="hr hr-vertical" />
                 <TabButtonSimple
-                    role="tab-propriedades"
-                    title="Project properties"
-                    className="btn outline-none"
-                    onClick={() => setIsOpenModalProps(true)}
-                >
-                    <VscSymbolProperty className="padding-horizontal-s" style={{ height: 20, width: 20 }} />
-                </TabButtonSimple>
-                <hr className="hr hr-vertical" />
-                <TabButtonSimple
                     role="button-save"
-                    className="btn outline-none"
-                    title="Export project source code"
-                    onClick={() => ProjectsStorage.setProjectById(project)}
+                    className={"btn outline-none"}
+                    title="Save project (Ctrl + s)"
+                    onClick={() => {
+                        ProjectsStorage.setProjectById(project);
+                        setIsSaved(true);
+                    }}
                 >
-                    <VscSave className="padding-horizontal-s" style={{ height: 20, width: 20 }} />
+                    {isSaved
+                        ? <VscCheck className="padding-horizontal-s fade-in" style={{ height: 20, width: 20 }} />
+                        : <VscSaveAll className="padding-horizontal-s fade-in" style={{ height: 20, width: 20 }} />
+                    }
                 </TabButtonSimple>
                 <hr className="hr hr-vertical" />
                 <TabButtonSimple
-                    role="button-export"
-                    onClick={handleExport}
+                    title="More options"
+                    role="tab-more-options"
+                    onClick={openMoreOption}
                     className="btn outline-none"
-                    title="Export project source code"
                 >
-                    <VscFileCode className="padding-horizontal-s" style={{ height: 20, width: 20 }} />
+                    <VscChevronDown className="padding-horizontal-s" style={{ height: 20, width: 20 }} />
                 </TabButtonSimple>
             </div>
             <hr className="hr hr-vertical" />
@@ -104,8 +142,8 @@ export const ToolBar: React.FC = memo(() => {
             </div>
         </div>
         <Modal
-            initialWidth={850}
-            initialHeight={640}
+            initialWidth={720}
+            initialHeight={470}
             title={"Properties"}
             allowMaximize={false}
             isOpen={isOpenModalProps}
