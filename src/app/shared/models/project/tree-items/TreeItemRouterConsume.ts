@@ -108,11 +108,11 @@ export class TreeItemRouterConsume extends TreeItemComponent<EComponentType.rout
                     onPickerValueClick: observe(undefined),
                 },
                 {
-                    value: observe(''),
                     id: observe(Utils.getUUID()),
                     name: observe(PropertieTypes.url),
                     type: observe(TypeOfValues.string),
                     propertieType: observe(PropertieTypes.url),
+                    value: observe('https://www.mydomain.com/api/v1/hello'),
 
                     group: observe(undefined),
                     suggestions: observe(undefined),

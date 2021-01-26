@@ -29,17 +29,13 @@ export const HomePage = () => {
     }, []);
 
     const handleAddNewProject = useCallback(async (item: any) => {
-        setIsAdding(false);
+        const newProject = ProjectsStorage.getNewProject(item.name, item.version, item.type, item.description);
+        projects.push(newProject);
 
-        projects.push(ProjectsStorage.getNewProject(item.name, item.version, item.type, item.description));
-
-        console.log(projects);
-
-        projects.sort((a, b) => a.label.value.localeCompare(b.label.value));
-
-        setProjects(projects);
         await ProjectsStorage.setProjects(projects);
-    }, [projects]);
+
+        history.push(`/editor/${newProject.id.value}`);
+    }, [projects, history]);
 
     const handleRemoveProject = useCallback((projectId: string | undefined) => {
         if (!projectId) return;
@@ -84,7 +80,6 @@ export const HomePage = () => {
                                 children={<VscCloudUpload className="padding-horizontal-s" style={{ height: 15, width: 15 }} />}
                             />
                             <button
-                                disabled
                                 title={"Download your projects"}
                                 style={{ height: 'var(--tool-bar-height)' }}
                                 className="btn background-transparent outline-none padding-s"

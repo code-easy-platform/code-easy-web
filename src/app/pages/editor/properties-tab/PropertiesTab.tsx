@@ -1,23 +1,38 @@
-import React from 'react';
-import { useObserver } from 'react-observing';
+import React, { useCallback, useMemo } from 'react';
+import { useObserver, useObserverValue } from 'react-observing';
+import { useHistory } from 'react-router-dom';
 
 import { IOptionListItem, ListDetail, OptionItemContent } from '../../../shared/components';
 import { useEditorContext } from '../../../shared/hooks';
+import { ProjectsStorage } from '../../../shared/services';
 
 export const PropertiesTab = () => {
     const { project } = useEditorContext();
+    const history = useHistory();
 
     const [description, setDescription] = useObserver(project.description);
     const [version, setVersion] = useObserver(project.version);
     const [author, setAuthor] = useObserver(project.author);
     const [label, setLabel] = useObserver(project.label);
+    const id = useObserverValue(project.id);
 
-    const options: IOptionListItem[] = [
+    const options: IOptionListItem[] = useMemo(() => [
         {
             title: 'Project properties',
             isSelected: true,
+        },
+        {
+            title: 'GitHub',
+            isSelected: false,
         }
-    ];
+    ], []);
+
+    const handleDelete = useCallback(() => {
+        if (!window.confirm('Really want to delete the project?')) return;
+
+        ProjectsStorage.removeProjectById(id);
+        history.replace('/');
+    }, [history, id]);
 
     return (
         <ListDetail menuOptions={options}>
@@ -67,19 +82,17 @@ export const PropertiesTab = () => {
                         />
                     </div>
 
-                    {/* <div className='flex-column margin-top-m'>
+                    <div className='flex-column margin-top-m'>
                         <button
-                            className='btn background-transparent border-radius'
-                            style={{ border: '1px solid var(--main-error-color)' }}
-                            onClick={() => {
-                                if (window.confirm('Really want to delete the project?')) {
-                                    ProjectsStorage.removeProjectById(id);
-                                    history.replace('/');
-                                }
-                            }}
+                            onClick={handleDelete}
+                            style={{ width: 150 }}
+                            className='padding-s outline-none border-default-transparent border-radius text-uppercase text-white main-error-color cursor-pointer hover active'
                         >Delete project</button>
-                    </div> */}
+                    </div>
                 </div>
+            </OptionItemContent>
+            <OptionItemContent>
+                Comming soon!
             </OptionItemContent>
         </ListDetail>
     );

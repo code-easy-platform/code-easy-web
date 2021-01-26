@@ -1,8 +1,8 @@
 import React, { useState, useEffect, useCallback } from 'react';
 
 import { ProjectsStorage } from '../../shared/services/storage/ProjectsStorage';
+import { Project, ProjectParser } from '../../shared/models';
 import { Modal } from '../../shared/components';
-import { Project } from '../../shared/models';
 import { CardItem } from './CardItem';
 
 export const ImportProjects = ({ open, close }: { open: boolean, close: Function }) => {
@@ -15,10 +15,10 @@ export const ImportProjects = ({ open, close }: { open: boolean, close: Function
     }, [open]);
 
     const onChangeFile = (e: any) => {
-        /* const file = new FileReader();
+        const file = new FileReader();
 
         file.onload = (e: any) => {
-            const projs = Project.parseProjects(e.target.result);
+            const projs = ProjectParser.parseProjects(e.target.result);
 
             // Valida se o conteúdo se é uma lista.
             if (projs.length === 0) {
@@ -30,10 +30,9 @@ export const ImportProjects = ({ open, close }: { open: boolean, close: Function
 
                 projs.forEach((proj: Project) => {
                     isProjetcs = (
-                        proj.configurations !== undefined &&
-                        proj.configurations.name !== undefined &&
-                        proj.configurations.id !== undefined &&
-                        proj.configurations.type !== undefined &&
+                        proj.name !== undefined &&
+                        proj.id !== undefined &&
+                        proj.type !== undefined &&
                         proj.tabs !== undefined
                     );
                 });
@@ -54,7 +53,7 @@ export const ImportProjects = ({ open, close }: { open: boolean, close: Function
             file.readAsText(e.target.files[0]);
         } else {
             setProjects([]);
-        } */
+        }
     }
 
     const importProjects = useCallback(async () => {
