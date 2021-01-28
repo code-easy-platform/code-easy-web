@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react';
+import React, { useCallback, useEffect, useRef } from 'react';
 import { IObservable, useObserverValue } from 'react-observing';
 import { IconClose } from 'code-easy-components';
 
@@ -14,6 +14,8 @@ interface TabButtonProps extends ITab {
     className?: string;
 }
 export const TabButton: React.FC<TabButtonProps> = ({ className, useClose = true, isHighlighted = false, onSelect, onContext, onClose, ...props }) => {
+    const tabRef = useRef<HTMLDivElement>(null);
+
     const description = useObserverValue(props.description);
     const isSelected = useObserverValue(props.isSelected);
     const hasWarning = useObserverValue(props.hasWarning);
@@ -21,6 +23,13 @@ export const TabButton: React.FC<TabButtonProps> = ({ className, useClose = true
     const title = useObserverValue(props.title);
     const icon = useObserverValue(props.icon);
     const id = useObserverValue(props.id);
+
+    // Scroll in to tab
+    useEffect(() => {
+        if (tabRef.current && isSelected) {
+            tabRef.current.scrollIntoView({ behavior: 'smooth' });
+        }
+    }, [isSelected]);
 
     const getIconContent = useCallback((icon: IFileContent | string) => {
         if (typeof icon === 'string') {
@@ -70,6 +79,7 @@ export const TabButton: React.FC<TabButtonProps> = ({ className, useClose = true
         <>
             <div
                 role="tab"
+                ref={tabRef}
                 tabIndex={0}
                 title={description}
                 onKeyDown={handleKeyDown}

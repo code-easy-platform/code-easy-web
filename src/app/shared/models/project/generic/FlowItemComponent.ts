@@ -8,9 +8,10 @@ import { PropertiesEditorStore } from "./../../../stores";
 import { PropertieTypes } from "./../../../enuns";
 import { openModal } from "./../../../services";
 
+/** Used in default properties */
 interface INewItemParams {
-  top: number;
   id: string;
+  top: number;
   left: number;
   name: string;
   ordem: number;
@@ -354,7 +355,7 @@ export class FlowItemComponent<T extends EItemType = EItemType> extends BasicCon
       return prop;
     }
 
-    prop = observe(false);
+    prop = observe(true);
 
     this.properties.value = [
       ...this.properties.value,

@@ -28,7 +28,6 @@ export const TabList: React.FC<TabListProps> = memo(({ tabs, useClose, isHighlig
                 <TabButton
                     {...tab}
                     key={index}
-                    icon={tab.icon}
                     useClose={useClose}
                     onClose={onCloseTab}
                     onContext={onContextTab}

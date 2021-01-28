@@ -1,4 +1,4 @@
-import React, { memo, useCallback, useEffect, useState } from 'react';
+import React, { memo, useCallback, useEffect, useMemo, useState } from 'react';
 import { IconTrash, IconFlowStart, IconFlowAction, IconFlowIf, IconFlowForeach, IconFlowSwitch, IconFlowAssign, IconFlowEnd, IconFlowComment } from 'code-easy-components';
 import { set, useObserverValue, observe, useSetObserver, ISubscription, useObserver } from 'react-observing';
 
@@ -92,6 +92,48 @@ export const FlowEditorController: React.FC = memo(() => {
     const { flowItems, breadcamps, hasSomethingEditing, hasSomethingToEdit, selectedTreeItem, setItems } = useEditingItem();
     const { flowBackgroundType, snapGridWhileDragging } = useIdeConfigs();
     const setCurrentFocus = useSetObserver(CurrentFocusStore);
+
+    /** Alimenta a toolbox, de onde pode ser arrastados items para o fluxo. */
+    const toolBoxItems = useMemo((): IFlowItem[] => [
+        { itemType: observe(EItemType.START), ...FlowItemComponent.defaultProperties({ id: '1', icon: { content: IconFlowStart }, label: EItemType.START }) },
+        { itemType: observe(EItemType.ACTION), ...FlowItemComponent.defaultProperties({ id: '2', icon: { content: IconFlowAction }, label: EItemType.ACTION }) },
+        { itemType: observe(EItemType.IF), ...FlowItemComponent.defaultProperties({ id: '3', icon: { content: IconFlowIf }, label: EItemType.IF }) },
+        { itemType: observe(EItemType.FOREACH), ...FlowItemComponent.defaultProperties({ id: '4', icon: { content: IconFlowForeach }, label: EItemType.FOREACH }) },
+        { itemType: observe(EItemType.SWITCH), ...FlowItemComponent.defaultProperties({ id: '5', icon: { content: IconFlowSwitch }, label: EItemType.SWITCH }) },
+        { itemType: observe(EItemType.ASSIGN), ...FlowItemComponent.defaultProperties({ id: '6', icon: { content: IconFlowAssign }, label: EItemType.ASSIGN }) },
+        { itemType: observe(EItemType.END), ...FlowItemComponent.defaultProperties({ id: '7', icon: { content: IconFlowEnd }, label: EItemType.END }) },
+        { itemType: observe(EItemType.COMMENT), ...FlowItemComponent.defaultProperties({ id: '8', icon: { content: IconFlowComment }, label: EItemType.COMMENT, flowItemType: EFlowItemType.comment }) },
+    ], []);
+
+    const getBackgroundEmpty = useMemo(() => {
+        if (flowItems.length !== 0) return null;
+
+        if (hasSomethingEditing) {
+            return (
+                <div className="opacity-6 flex-content-center flex-items-center no-events" style={{ height: '-webkit-fill-available', width: '-webkit-fill-available' }}>
+                    <BackgroundEmptyLeft className="opacity-9" width={600} style={{ position: 'absolute', top: 0, left: 0 }} />
+                    <BackgroundEmpty className="opacity-9" width={600} style={{ position: 'absolute', top: 0, right: 0 }} />
+                    <h1 style={{ textAlign: 'center' }}>Drag and drop something here</h1>
+                </div>
+            );
+        } else if (!hasSomethingToEdit) {
+            return (
+                <div className="opacity-6 flex-content-center flex-items-center no-events" style={{ height: '-webkit-fill-available', width: '-webkit-fill-available' }}>
+                    <h1 style={{ textAlign: 'center' }}>On the left,<br /> create a new feature to start</h1>
+                    <BackgroundEmptyLeftToTop className="opacity-9" width={600} style={{ position: 'absolute', top: 0, right: 0 }} />
+                </div>
+            );
+        } else if (hasSomethingToEdit && !hasSomethingEditing) {
+            return (
+                <div className="opacity-6 flex-content-center flex-items-center no-events" style={{ height: '-webkit-fill-available', width: '-webkit-fill-available' }}>
+                    <h1 style={{ textAlign: 'center' }}>On the left,<br />double click to edit</h1>
+                    <BackgroundEmptyLeftToTop className="opacity-9" width={600} style={{ position: 'absolute', top: 0, right: 0 }} />
+                </div>
+            );
+        } else {
+            return null;
+        }
+    }, [flowItems.length, hasSomethingEditing, hasSomethingToEdit]);
 
     const handleOnChangeItems = useCallback((updatedItems: IFlowItem[]) => {
 
@@ -226,20 +268,17 @@ export const FlowEditorController: React.FC = memo(() => {
         });
     }, [flowItems, setItems]);
 
-    /** Alimenta a toolbox, de onde pode ser arrastados items para o fluxo. */
-    const toolBoxItems = useCallback((): IFlowItem[] => [
-        { itemType: observe(EItemType.START), ...FlowItemComponent.defaultProperties({ id: '1', icon: { content: IconFlowStart }, label: EItemType.START }) },
-        { itemType: observe(EItemType.ACTION), ...FlowItemComponent.defaultProperties({ id: '2', icon: { content: IconFlowAction }, label: EItemType.ACTION }) },
-        { itemType: observe(EItemType.IF), ...FlowItemComponent.defaultProperties({ id: '3', icon: { content: IconFlowIf }, label: EItemType.IF }) },
-        { itemType: observe(EItemType.FOREACH), ...FlowItemComponent.defaultProperties({ id: '4', icon: { content: IconFlowForeach }, label: EItemType.FOREACH }) },
-        { itemType: observe(EItemType.SWITCH), ...FlowItemComponent.defaultProperties({ id: '5', icon: { content: IconFlowSwitch }, label: EItemType.SWITCH }) },
-        { itemType: observe(EItemType.ASSIGN), ...FlowItemComponent.defaultProperties({ id: '6', icon: { content: IconFlowAssign }, label: EItemType.ASSIGN }) },
-        { itemType: observe(EItemType.END), ...FlowItemComponent.defaultProperties({ id: '7', icon: { content: IconFlowEnd }, label: EItemType.END }) },
-        { itemType: observe(EItemType.COMMENT), ...FlowItemComponent.defaultProperties({ id: '8', icon: { content: IconFlowComment }, label: EItemType.COMMENT, flowItemType: EFlowItemType.comment }) },
-    ], []);
-
     /** Quando clicado com o botão esquerdo do mouse no interior do editor esta função é acionada. */
-    const handleShowContextMenu = useCallback((id: any, top: number, left: number): IContextItemList[] => {
+    const handleOnContextMenu = useCallback((e: React.MouseEvent<any, MouseEvent>) => {
+        e.preventDefault();
+
+        if (!e || !hasSomethingToEdit || !hasSomethingEditing) return;
+
+        const id = (e.target as any).id;
+        const left: number = e.clientX;
+        const top: number = e.clientY;
+
+
         const setPropertiesEditor = (item: FlowItemComponent) => {
             set(PropertiesEditorStore, {
                 id: item.id,
@@ -250,7 +289,7 @@ export const FlowEditorController: React.FC = memo(() => {
         };
 
         const options: IContextItemList[] = [
-            ...toolBoxItems().map(item => ({
+            ...toolBoxItems.map(item => ({
                 icon: (item.icon.value as any).content,
                 label: 'Add ' + item.label.value,
                 action: () => {
@@ -345,50 +384,12 @@ export const FlowEditorController: React.FC = memo(() => {
             }
         }
 
-        return options;
-    }, [selectedTreeItem.items, setItems, toolBoxItems]);
+        openContextMenu(left, top, options);
+    }, [hasSomethingEditing, hasSomethingToEdit, selectedTreeItem.items, setItems, toolBoxItems]);
 
     const handleOnFocus = useCallback(() => {
         setCurrentFocus(ECurrentFocus.flow);
     }, [setCurrentFocus]);
-
-    const handleOnContextMenu = useCallback((e: React.MouseEvent<any, MouseEvent>) => {
-        e.preventDefault();
-
-        if (e && hasSomethingToEdit && hasSomethingEditing) {
-            openContextMenu(e.clientX, e.clientY, handleShowContextMenu((e.target as any).id, e.clientY, e.clientX));
-        }
-    }, [hasSomethingToEdit, hasSomethingEditing, handleShowContextMenu]);
-
-    const getBackgroundEmpty = useCallback(() => {
-        if (flowItems.length !== 0) return null;
-
-        if (hasSomethingEditing) {
-            return (
-                <div className="opacity-6 flex-content-center flex-items-center no-events" style={{ height: '-webkit-fill-available', width: '-webkit-fill-available' }}>
-                    <BackgroundEmptyLeft className="opacity-9" width={600} style={{ position: 'absolute', top: 0, left: 0 }} />
-                    <BackgroundEmpty className="opacity-9" width={600} style={{ position: 'absolute', top: 0, right: 0 }} />
-                    <h1 style={{ textAlign: 'center' }}>Drag and drop something here</h1>
-                </div>
-            );
-        } else if (!hasSomethingToEdit) {
-            return (
-                <div className="opacity-6 flex-content-center flex-items-center no-events" style={{ height: '-webkit-fill-available', width: '-webkit-fill-available' }}>
-                    <h1 style={{ textAlign: 'center' }}>On the left,<br /> create a new feature to start</h1>
-                    <BackgroundEmptyLeftToTop className="opacity-9" width={600} style={{ position: 'absolute', top: 0, right: 0 }} />
-                </div>
-            );
-        } else if (hasSomethingToEdit && !hasSomethingEditing) {
-            return (
-                <div className="opacity-6 flex-content-center flex-items-center no-events" style={{ height: '-webkit-fill-available', width: '-webkit-fill-available' }}>
-                    <h1 style={{ textAlign: 'center' }}>On the left,<br />double click to edit</h1>
-                    <BackgroundEmptyLeftToTop className="opacity-9" width={600} style={{ position: 'absolute', top: 0, right: 0 }} />
-                </div>
-            );
-        } else {
-            return null;
-        }
-    }, [flowItems.length, hasSomethingEditing, hasSomethingToEdit]);
 
     return (
         <FlowEditor
@@ -396,10 +397,10 @@ export const FlowEditorController: React.FC = memo(() => {
             id={"CODE_EDITOR"}
             onFocus={handleOnFocus}
             breadcrumbs={breadcamps}
-            toolItems={toolBoxItems()}
+            toolItems={toolBoxItems}
             onContextMenu={handleOnContextMenu}
             onChangeItems={handleOnChangeItems}
-            childrenWhenItemsEmpty={getBackgroundEmpty()}
+            childrenWhenItemsEmpty={getBackgroundEmpty}
             configs={{
                 typesAllowedToDrop: [...EItemTypeList, EComponentType.globalAction, EComponentType.localAction, EComponentType.localVariable, EComponentType.inputVariable, EComponentType.outputVariable],
                 snapGridWhileDragging: snapGridWhileDragging,
