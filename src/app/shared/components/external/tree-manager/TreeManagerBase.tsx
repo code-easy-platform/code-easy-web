@@ -2,11 +2,11 @@ import React, { useCallback } from 'react';
 
 import { ITreeManagerProps, ITreeManagerEvents } from './shared/interfaces';
 import { useBaseItems, useConfigs } from './shared/hooks';
-import { EmptyFeedback, Tree } from './components';
+import { EmptyFeedback, OnEditListener, OnSelectListener, Tree } from './components';
 import './TreeManagerBase.css';
 
 interface TreeManagerBaseProps extends Omit<ITreeManagerProps, 'items'>, ITreeManagerEvents { }
-export const TreeManagerBase: React.FC<TreeManagerBaseProps> = ({ childrenWhenEmpty, onFocus, onContextMenu, onKeyDown }) => {
+export const TreeManagerBase: React.FC<TreeManagerBaseProps> = ({ childrenWhenEmpty, onFocus, onContextMenu, onKeyDown, onSelect, onEdit }) => {
     const { showEmptyMessage } = useConfigs();
     const baseItems = useBaseItems();
 
@@ -34,6 +34,8 @@ export const TreeManagerBase: React.FC<TreeManagerBaseProps> = ({ childrenWhenEm
             {!((childrenWhenEmpty && baseItems.length === 0) || showEmptyMessage) &&
                 <div style={{ padding: 50 }} />
             }
+            <OnEditListener onEdit={onEdit} />
+            <OnSelectListener onSelect={onSelect} />
             <EmptyFeedback
                 children={childrenWhenEmpty}
                 onContextMenu={handleContextMenu}

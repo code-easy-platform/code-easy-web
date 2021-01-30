@@ -10,10 +10,11 @@ interface TabButtonProps extends ITab {
     onSelect?(tabId: string | undefined): void;
     onClose?(tabId: string | undefined): void;
     isHighlighted?: boolean;
+    hasDivider?: boolean;
     useClose?: boolean;
     className?: string;
 }
-export const TabButton: React.FC<TabButtonProps> = ({ className, useClose = true, isHighlighted = false, onSelect, onContext, onClose, ...props }) => {
+export const TabButton: React.FC<TabButtonProps> = ({ className, useClose = true, isHighlighted = false, hasDivider = true, onSelect, onContext, onClose, ...props }) => {
     const tabRef = useRef<HTMLDivElement>(null);
 
     const description = useObserverValue(props.description);
@@ -97,7 +98,7 @@ export const TabButton: React.FC<TabButtonProps> = ({ className, useClose = true
                     className="background-transparent btn-close no-draggable outline-none opacity-0 margin-right-xs"
                 />}
             </div>
-            <hr className="hr hr-vertical opacity-5 no-events" />
+            {hasDivider && <hr className="hr hr-vertical opacity-5 no-events" />}
         </>
     );
 }

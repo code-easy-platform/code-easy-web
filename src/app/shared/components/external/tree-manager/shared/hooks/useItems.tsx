@@ -95,7 +95,15 @@ export const useItems = () => {
             set(observeble, oldValue => !oldValue);
         } else {
             items.forEach(item => {
-                set(item.isSelected, item.isSelected.id === observeble.id);
+                if (item.isSelected.id === observeble.id) {
+                    if (!item.isSelected.value) {
+                        set(item.isSelected, true);
+                    }
+                } else {
+                    if (item.isSelected.value) {
+                        set(item.isSelected, false);
+                    }
+                }
             });
         }
     }, [items]);

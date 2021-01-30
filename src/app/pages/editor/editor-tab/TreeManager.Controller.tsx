@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { ISubscription, observe, transform, useObserver, useObserverValue, useSetObserver } from 'react-observing';
 import { IconTrash, Utils } from 'code-easy-components';
 
@@ -282,7 +282,7 @@ export const TreeManagerController: React.FC = () => {
     }, [currentTab, itemsCurrent]);
 
     /** Monta a estrutura da árvore e devolve no return */
-    const treeManagerItems = ((): ITreeItem[] => {
+    const treeManagerItems = useMemo((): ITreeItem[] => {
 
         /** Disable doucle click by type */
         const cannotPerformDoubleClick = (type: EComponentType) => {
@@ -353,10 +353,12 @@ export const TreeManagerController: React.FC = () => {
             isDisabled: observe(undefined),
             iconSize: observe(undefined),
         }));
-    })();
+    }, [itemsCurrent]);
 
     return (
         <TreeManager
+            onEdit={console.log}
+            onSelect={console.log}
             items={treeManagerItems}
             onKeyDown={treeManagerOnKeyDowm}
             onFocus={() => setCurrentFocus(ECurrentFocus.tree)}

@@ -1,6 +1,6 @@
 import React, { memo, useCallback, useEffect, useMemo, useState } from 'react';
 import { IconTrash, IconFlowStart, IconFlowAction, IconFlowIf, IconFlowForeach, IconFlowSwitch, IconFlowAssign, IconFlowEnd, IconFlowComment } from 'code-easy-components';
-import { set, useObserverValue, observe, useSetObserver, ISubscription, useObserver } from 'react-observing';
+import { set, useObserverValue, observe, useSetObserver, ISubscription, useObserver, transform } from 'react-observing';
 
 import { FlowItemAction, FlowItemAssign, FlowItemComment, FlowItemComponent, FlowItemEnd, FlowItemForeach, FlowItemIf, FlowItemStart, FlowItemSwitch } from '../../../shared/models';
 import { FlowEditor, IFlowItem, IBreadCrumbButton, EItemType, EFlowItemType, EItemTypeList } from '../../../shared/components/external';
@@ -391,6 +391,20 @@ export const FlowEditorController: React.FC = memo(() => {
         setCurrentFocus(ECurrentFocus.flow);
     }, [setCurrentFocus]);
 
+    const handleOnSelect = useCallback((uids: string[]) => {
+        const selectedsItems = flowItems.filter(item => uids.includes(item.id.value || ''));
+        if (selectedsItems.length > 0) {
+            set(PropertiesEditorStore, {
+                id: selectedsItems[0].id,
+                name: transform(selectedsItems[0].label, value => String(value), value => String(value)),
+                subname: transform(selectedsItems[0].itemType || observe(''), value => String(value)),
+                properties: observe([]),
+            })
+        } else {
+            set(PropertiesEditorStore, undefined);
+        }
+    }, [flowItems]);
+
     return (
         <FlowEditor
             items={flowItems}
@@ -398,6 +412,7 @@ export const FlowEditorController: React.FC = memo(() => {
             onFocus={handleOnFocus}
             breadcrumbs={breadcamps}
             toolItems={toolBoxItems}
+            onSelect={handleOnSelect}
             onContextMenu={handleOnContextMenu}
             onChangeItems={handleOnChangeItems}
             childrenWhenItemsEmpty={getBackgroundEmpty}

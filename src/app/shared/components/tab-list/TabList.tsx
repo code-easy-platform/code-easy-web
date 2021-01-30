@@ -1,4 +1,4 @@
-import React, { useCallback, memo } from 'react';
+import React, { useCallback, memo, useState } from 'react';
 import { set } from 'react-observing';
 
 import { TabButton } from './shared/components';
@@ -13,6 +13,8 @@ interface TabListProps {
     onContextTab?(tabId: string, e: React.MouseEvent<HTMLDivElement, MouseEvent>): void;
 }
 export const TabList: React.FC<TabListProps> = memo(({ tabs, useClose, isHighlighted = false, onContextTab, onCloseTab }) => {
+    const [showRightShadow, setShowRightShadow] = useState(false);
+    const [showLeftShadow, setShowLeftShadow] = useState(false);
 
     const onWeel = useCallback((e: React.WheelEvent<HTMLElement>) => {
         if (e.deltaY > 0) {
@@ -22,12 +24,38 @@ export const TabList: React.FC<TabListProps> = memo(({ tabs, useClose, isHighlig
         }
     }, []);
 
+    const handleOnScroll = useCallback((e: React.UIEvent<HTMLElement, UIEvent>) => {
+        if (e.currentTarget.scrollLeft > 0) {
+            if (!showLeftShadow) {
+                setShowLeftShadow(true);
+            }
+        } else {
+            setShowLeftShadow(false);
+        }
+
+        if (Math.ceil(e.currentTarget.scrollLeft + e.currentTarget.offsetWidth) < e.currentTarget.scrollWidth) {
+            if (!showRightShadow) {
+                setShowRightShadow(true);
+            }
+        } else {
+            setShowRightShadow(false);
+        }
+    }, [showLeftShadow, showRightShadow]);
+
     return (
-        <nav role="tablist" className="tab-list font-size-xg" onWheel={onWeel} onContextMenu={e => e.preventDefault()}>
-            {tabs.map((tab, index) => (
+        <nav
+            role="tablist"
+            onWheel={onWeel}
+            onScroll={handleOnScroll}
+            className="tab-list font-size-xg"
+            onContextMenu={e => e.preventDefault()}
+            style={{ boxShadow: `inset 20px -10px 5px -20px ${showLeftShadow ? "black" : "transparent"}, inset -20px -10px 5px -20px ${showRightShadow ? "black" : "transparent"}` }}
+        >
+            {tabs.map((tab, index, array) => (
                 <TabButton
                     {...tab}
                     key={index}
+                    hasDivider={!(array.length - 1 === index)}
                     useClose={useClose}
                     onClose={onCloseTab}
                     onContext={onContextTab}
