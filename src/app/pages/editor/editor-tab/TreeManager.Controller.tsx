@@ -1,13 +1,13 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
-import { ISubscription, observe, transform, useObserver, useObserverValue, useSetObserver } from 'react-observing';
+import { ISubscription, observe, set, transform, useObserver, useObserverValue, useSetObserver } from 'react-observing';
 import { IconTrash, Utils } from 'code-easy-components';
 
 import { Tab, TabRoute, TreeItemFolder, TreeItemGlobalAction, TreeItemInputVariable, TreeItemLocalVariable, TreeItemOutpuVariable, TreeItemRouterConsume, TreeItemRouterExpose, TreeItemRouterInputVariable } from '../../../shared/models';
+import { CurrentFocusStore, PropertiesEditorStore, tabListStore } from '../../../shared/stores';
 import { TreeManager, ITreeItem, CustomDragLayer } from '../../../shared/components/external';
+import { AssetsService, openContextMenu, openModal } from '../../../shared/services';
 import { ECurrentFocus, EComponentType, ETabType, } from '../../../shared/enuns';
-import { AssetsService, openContextMenu } from '../../../shared/services';
 import { IContextItemList } from '../../../shared/interfaces';
-import { CurrentFocusStore } from '../../../shared/stores';
 import { useEditorContext } from '../../../shared/hooks';
 
 const useCurrentTab = () => {
@@ -66,13 +66,49 @@ export const TreeManagerController: React.FC = () => {
         const addParam = (inputItemId: string | undefined, paramType: EComponentType.inputVariable | EComponentType.localVariable | EComponentType.outputVariable) => {
             if (paramType === EComponentType.inputVariable) {
                 const newName = Utils.newName('Input', itemsCurrent.map(item => item.label.value));
-                currentTab.addItem(TreeItemInputVariable.newVariable(newName, inputItemId));
+                const newTreeItem = TreeItemInputVariable.newVariable(newName, inputItemId);
+                currentTab.addItem(newTreeItem);
+                set(PropertiesEditorStore, {
+                    id: newTreeItem.id,
+                    name: newTreeItem.label,
+                    subname: newTreeItem.type,
+                    properties: transform(newTreeItem.properties, properties => properties.map(prop => {
+                        return {
+                            ...prop,
+                            onPickerValueClick: observe(() => openModal(prop.id.value || ''))
+                        };
+                    }))
+                });
             } else if (paramType === EComponentType.localVariable) {
                 const newName = Utils.newName('Local', itemsCurrent.map(item => item.label.value));
-                currentTab.addItem(TreeItemLocalVariable.newVariable(newName, inputItemId));
+                const newTreeItem = TreeItemLocalVariable.newVariable(newName, inputItemId);
+                currentTab.addItem(newTreeItem);
+                set(PropertiesEditorStore, {
+                    id: newTreeItem.id,
+                    name: newTreeItem.label,
+                    subname: newTreeItem.type,
+                    properties: transform(newTreeItem.properties, properties => properties.map(prop => {
+                        return {
+                            ...prop,
+                            onPickerValueClick: observe(() => openModal(prop.id.value || ''))
+                        };
+                    }))
+                });
             } else if (paramType === EComponentType.outputVariable) {
                 const newName = Utils.newName('Out', itemsCurrent.map(item => item.label.value));
-                currentTab.addItem(TreeItemOutpuVariable.newVariable(newName, inputItemId));
+                const newTreeItem = TreeItemOutpuVariable.newVariable(newName, inputItemId);
+                currentTab.addItem(newTreeItem);
+                set(PropertiesEditorStore, {
+                    id: newTreeItem.id,
+                    name: newTreeItem.label,
+                    subname: newTreeItem.type,
+                    properties: transform(newTreeItem.properties, properties => properties.map(prop => {
+                        return {
+                            ...prop,
+                            onPickerValueClick: observe(() => openModal(prop.id.value || ''))
+                        };
+                    }))
+                });
             }
         }
 
@@ -80,13 +116,49 @@ export const TreeManagerController: React.FC = () => {
         const addParamToARoute = (inputItemId: string | undefined, paramType: EComponentType.inputVariable | EComponentType.localVariable | EComponentType.outputVariable) => {
             if (paramType === EComponentType.inputVariable) {
                 const newName = Utils.newName('Input', itemsCurrent.map(item => item.label.value));
-                currentTab.addItem(TreeItemRouterInputVariable.newVariable(newName, inputItemId));
+                const newTreeItem = TreeItemRouterInputVariable.newVariable(newName, inputItemId);
+                currentTab.addItem(newTreeItem);
+                set(PropertiesEditorStore, {
+                    id: newTreeItem.id,
+                    name: newTreeItem.label,
+                    subname: newTreeItem.type,
+                    properties: transform(newTreeItem.properties, properties => properties.map(prop => {
+                        return {
+                            ...prop,
+                            onPickerValueClick: observe(() => openModal(prop.id.value || ''))
+                        };
+                    }))
+                });
             } else if (paramType === EComponentType.localVariable) {
                 const newName = Utils.newName('Local', itemsCurrent.map(item => item.label.value));
-                currentTab.addItem(TreeItemLocalVariable.newVariable(newName, inputItemId));
+                const newTreeItem = TreeItemLocalVariable.newVariable(newName, inputItemId);
+                currentTab.addItem(newTreeItem);
+                set(PropertiesEditorStore, {
+                    id: newTreeItem.id,
+                    name: newTreeItem.label,
+                    subname: newTreeItem.type,
+                    properties: transform(newTreeItem.properties, properties => properties.map(prop => {
+                        return {
+                            ...prop,
+                            onPickerValueClick: observe(() => openModal(prop.id.value || ''))
+                        };
+                    }))
+                });
             } else if (paramType === EComponentType.outputVariable) {
                 const newName = Utils.newName('Out', itemsCurrent.map(item => item.label.value));
-                currentTab.addItem(TreeItemOutpuVariable.newVariable(newName, inputItemId));
+                const newTreeItem = TreeItemOutpuVariable.newVariable(newName, inputItemId);
+                currentTab.addItem(newTreeItem);
+                set(PropertiesEditorStore, {
+                    id: newTreeItem.id,
+                    name: newTreeItem.label,
+                    subname: newTreeItem.type,
+                    properties: transform(newTreeItem.properties, properties => properties.map(prop => {
+                        return {
+                            ...prop,
+                            onPickerValueClick: observe(() => openModal(prop.id.value || ''))
+                        };
+                    }))
+                });
             }
         }
 
@@ -94,22 +166,70 @@ export const TreeManagerController: React.FC = () => {
         const addRoute = (inputItemId: string | undefined, routerType: EComponentType.routeConsume | EComponentType.routeExpose) => {
             const newName = Utils.newName('NewRouter', itemsCurrent.map(item => item.label.value));
             if (routerType === EComponentType.routeConsume) {
-                currentTab.addItem(TreeItemRouterConsume.newRoute(newName, inputItemId));
+                const newTreeItem = TreeItemRouterConsume.newRoute(newName, inputItemId);
+                currentTab.addItem(newTreeItem);
+                set(PropertiesEditorStore, {
+                    id: newTreeItem.id,
+                    name: newTreeItem.label,
+                    subname: newTreeItem.type,
+                    properties: transform(newTreeItem.properties, properties => properties.map(prop => {
+                        return {
+                            ...prop,
+                            onPickerValueClick: observe(() => openModal(prop.id.value || ''))
+                        };
+                    }))
+                });
             } else if (routerType === EComponentType.routeExpose) {
-                currentTab.addItem(TreeItemRouterExpose.newRoute(newName, inputItemId));
+                const newTreeItem = TreeItemRouterExpose.newRoute(newName, inputItemId);
+                currentTab.addItem(newTreeItem);
+                set(PropertiesEditorStore, {
+                    id: newTreeItem.id,
+                    name: newTreeItem.label,
+                    subname: newTreeItem.type,
+                    properties: transform(newTreeItem.properties, properties => properties.map(prop => {
+                        return {
+                            ...prop,
+                            onPickerValueClick: observe(() => openModal(prop.id.value || ''))
+                        };
+                    }))
+                });
             }
         }
 
         /** Add a new global action */
         const addAction = (inputItemId: string | undefined) => {
             const newName = Utils.newName('NewAction', itemsCurrent.map(item => item.label.value));
-            currentTab.addItem(TreeItemGlobalAction.newAction(newName, inputItemId));
+            const newTreeItem = TreeItemGlobalAction.newAction(newName, inputItemId);
+            currentTab.addItem(newTreeItem);
+            set(PropertiesEditorStore, {
+                id: newTreeItem.id,
+                name: newTreeItem.label,
+                subname: newTreeItem.type,
+                properties: transform(newTreeItem.properties, properties => properties.map(prop => {
+                    return {
+                        ...prop,
+                        onPickerValueClick: observe(() => openModal(prop.id.value || ''))
+                    };
+                }))
+            });
         }
 
         /** Add a new folder */
         const addFolder = () => {
             const newName = Utils.newName('NewFolder', itemsCurrent.map(item => item.label.value));
-            currentTab.addItem(TreeItemFolder.newFolder(newName));
+            const newTreeItem = TreeItemFolder.newFolder(newName);
+            currentTab.addItem(newTreeItem);
+            set(PropertiesEditorStore, {
+                id: newTreeItem.id,
+                name: newTreeItem.label,
+                subname: newTreeItem.type,
+                properties: transform(newTreeItem.properties, properties => properties.map(prop => {
+                    return {
+                        ...prop,
+                        onPickerValueClick: observe(() => openModal(prop.id.value || ''))
+                    };
+                }))
+            });
         }
 
         /** Remove tree items */
@@ -355,11 +475,48 @@ export const TreeManagerController: React.FC = () => {
         }));
     }, [itemsCurrent]);
 
+    const handleOnSelect = useCallback((uids: string[]) => {
+        if (uids.length === 0) return;
+
+        const selectedItems = currentTab.items.value.filter(item => uids.includes(String(item.id.value)));
+        if (selectedItems.length === 0) return;
+
+        set(PropertiesEditorStore, {
+            id: selectedItems[0].id,
+            name: selectedItems[0].label,
+            subname: transform(selectedItems[0].type, value => String(value)),
+            properties: transform(selectedItems[0].properties, properties => properties.map(prop => {
+                return {
+                    ...prop,
+                    onPickerValueClick: observe(() => openModal(prop.id.value || ''))
+                };
+            }))
+        });
+
+    }, [currentTab.items.value]);
+
+    const handleOnEdit = useCallback((uid: string | undefined) => {
+        if (!uid) return;
+
+        const newEditingItem = currentTab.items.value.find(item => item.id.value === uid);
+        if (!newEditingItem) return;
+
+        tabListStore.addTab({
+            icon: newEditingItem.icon,
+            title: newEditingItem.label,
+            hasError: newEditingItem.hasError,
+            isSelected: newEditingItem.isEditing,
+            hasWarning: newEditingItem.hasWarning,
+            description: newEditingItem.description,
+            id: transform(newEditingItem.id, id => String(id), id => id),
+        });
+    }, [currentTab.items.value]);
+
     return (
         <TreeManager
-            onEdit={console.log}
-            onSelect={console.log}
+            onEdit={handleOnEdit}
             items={treeManagerItems}
+            onSelect={handleOnSelect}
             onKeyDown={treeManagerOnKeyDowm}
             onFocus={() => setCurrentFocus(ECurrentFocus.tree)}
             onContextMenu={(treeItemId, e) => {

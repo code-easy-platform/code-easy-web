@@ -1,95 +1,19 @@
-import React, { memo, useCallback, useEffect, useMemo, useState } from 'react';
+import React, { memo, useCallback, useMemo } from 'react';
 import { IconTrash, IconFlowStart, IconFlowAction, IconFlowIf, IconFlowForeach, IconFlowSwitch, IconFlowAssign, IconFlowEnd, IconFlowComment } from 'code-easy-components';
-import { set, useObserverValue, observe, useSetObserver, ISubscription, useObserver, transform } from 'react-observing';
+import { set, observe, useSetObserver, transform } from 'react-observing';
 
 import { FlowItemAction, FlowItemAssign, FlowItemComment, FlowItemComponent, FlowItemEnd, FlowItemForeach, FlowItemIf, FlowItemStart, FlowItemSwitch } from '../../../shared/models';
-import { FlowEditor, IFlowItem, IBreadCrumbButton, EItemType, EFlowItemType, EItemTypeList } from '../../../shared/components/external';
-import { CurrentFocusStore, flowItemsStore, PropertiesEditorStore } from '../../../shared/stores';
+import { FlowEditor, IFlowItem, EItemType, EFlowItemType, EItemTypeList } from '../../../shared/components/external';
+import { CurrentFocusStore, PropertiesEditorStore } from '../../../shared/stores';
 import { BackgroundEmpty, BackgroundEmptyLeft, BackgroundEmptyLeftToTop } from '../../../assets';
 import { EComponentType, ECurrentFocus } from '../../../shared/enuns';
 import { IContextItemList } from '../../../shared/interfaces';
 import { openContextMenu } from '../../../shared/services';
+import { useFlowEditorItems } from '../../../shared/hooks';
 import { useIdeConfigs } from '../../../shared/contexts';
-import { useEditorContext } from '../../../shared/hooks';
-
-const useEditingItem = () => {
-    const [hasSomethingToEdit, setHasSomethingToEdit] = useState<boolean>(false);
-    const [breadcamps, setBreadcamps] = useState<IBreadCrumbButton[]>([]);
-    const selectedTreeItem = useObserverValue(flowItemsStore.current);
-    const [editingItems, setItems] = useObserver(selectedTreeItem.items);
-    const editingItemId = useObserverValue(selectedTreeItem.itemId);
-    const { tabs } = useEditorContext();
-
-    useEffect(() => {
-        const subscriptions: ISubscription[] = [];
-
-        setHasSomethingToEdit(tabs.some(tab => tab.items.value.length > 0));
-
-        if (!editingItemId) {
-            setBreadcamps([]);
-        } else {
-            tabs.forEach(tab => {
-                tab.items.value.forEach(treeItem => {
-                    if (treeItem.id.value === editingItemId) {
-                        setBreadcamps([
-                            {
-                                label: tab.label,
-                                onClick: observe(() => {
-                                    tabs.forEach(tabToUpdate => set(tabToUpdate.isEditing, tabToUpdate.id.value === tab.id.value));
-                                })
-                            },
-                            {
-                                label: treeItem.label,
-                                onClick: observe(() => {
-                                    tabs.forEach(tabToUpdate => {
-                                        set(tabToUpdate.isEditing, tabToUpdate.id.value === tab.id.value)
-                                        tabToUpdate.items.value.forEach(item => {
-                                            set(item.isSelected, item.id.value === treeItem.id.value);
-                                        });
-                                    });
-                                }),
-                            }
-                        ]);
-                    }
-                });
-            });
-        }
-
-        return () => subscriptions.forEach(subs => subs?.unsubscribe());
-    }, [tabs, editingItemId]);
-
-    return {
-        setItems,
-        breadcamps,
-        selectedTreeItem,
-        hasSomethingToEdit,
-        hasSomethingEditing: !!editingItemId,
-        flowItems: editingItems.map<IFlowItem>(flowItem => ({
-            id: flowItem.id,
-            top: flowItem.top,
-            left: flowItem.left,
-            icon: flowItem.icon,
-            label: flowItem.label,
-            width: flowItem.width,
-            height: flowItem.height,
-            itemType: flowItem.type,
-            hasError: flowItem.hasError,
-            hasWarning: flowItem.hasWarning,
-            isSelected: flowItem.isSelected,
-            isDisabled: flowItem.isDisabled,
-            connections: flowItem.connections,
-            description: flowItem.description,
-            flowItemType: flowItem.flowItemType,
-            isEditingTitle: flowItem.isEditingTitle,
-            isEnabledNewConnetion: flowItem.isEnabledNewConnetion,
-            isAcceptingConnections: flowItem.isAcceptingConnections,
-            isEditableOnDoubleClick: flowItem.isEditableOnDoubleClick,
-        })),
-    };
-}
 
 export const FlowEditorController: React.FC = memo(() => {
-    const { flowItems, breadcamps, hasSomethingEditing, hasSomethingToEdit, selectedTreeItem, setItems } = useEditingItem();
+    const { flowItems, breadcamps, hasSomethingEditing, hasSomethingToEdit, setItems } = useFlowEditorItems();
     const { flowBackgroundType, snapGridWhileDragging } = useIdeConfigs();
     const setCurrentFocus = useSetObserver(CurrentFocusStore);
 
@@ -358,11 +282,11 @@ export const FlowEditorController: React.FC = memo(() => {
         ];
 
         if (id) {
-            const itemsToDelete = selectedTreeItem.items.value.filter(flowItem => flowItem.isSelected.value);
+            const itemsToDelete = flowItems.filter(flowItem => flowItem.isSelected.value);
 
             /** Delete a item */
             const handleContextDelete = () => {
-                set(selectedTreeItem.items, oldItems => oldItems.filter(oldItem => !oldItem.isSelected.value));
+                setItems(oldItems => oldItems.filter(oldItem => !oldItem.isSelected.value));
             }
 
             if (itemsToDelete.length > 0) {
@@ -385,7 +309,7 @@ export const FlowEditorController: React.FC = memo(() => {
         }
 
         openContextMenu(left, top, options);
-    }, [hasSomethingEditing, hasSomethingToEdit, selectedTreeItem.items, setItems, toolBoxItems]);
+    }, [flowItems, hasSomethingEditing, hasSomethingToEdit, setItems, toolBoxItems]);
 
     const handleOnFocus = useCallback(() => {
         setCurrentFocus(ECurrentFocus.flow);

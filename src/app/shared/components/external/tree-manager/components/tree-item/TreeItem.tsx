@@ -19,7 +19,7 @@ export const TreeItem: React.FC<TreeItemProps> = (props) => {
     const { editItem, selectItem, changeAscById } = useItems();
 
     const radioItemRef = useRef<HTMLInputElement>(null);
-    const itemRef = useRef(null);
+    const itemRef = useRef<HTMLLabelElement>(null);
 
     const {
         useCustomIconToExpand: _useCustomIconToExpand, iconSize: _iconSize, isDisabledDrop: _isDisabledDrop, isDisabledSelect: _isDisabledSelect, canDropList: _canDropList,
@@ -50,6 +50,13 @@ export const TreeItem: React.FC<TreeItemProps> = (props) => {
     const type = useObserverValue(_type);
     const icon = useObserverValue(_icon);
     const id = useObserverValue(_id);
+
+    // Scroll elements
+    useEffect(() => {
+        if (isSelected && itemRef.current) {
+            itemRef.current.scrollIntoView({ behavior: 'smooth' });
+        }
+    }, [isSelected]);
 
     const handleExpandNode = useCallback((e: React.MouseEvent<HTMLImageElement | HTMLInputElement, MouseEvent>) => {
         if (!isAllowedToggleNodeExpand) return;

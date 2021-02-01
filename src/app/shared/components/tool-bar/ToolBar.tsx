@@ -4,7 +4,7 @@ import { transform, useObserverValue } from 'react-observing';
 import { useHistory } from 'react-router-dom';
 
 import { PropertiesTab } from '../../../pages/editor/properties-tab/PropertiesTab';
-import { flowItemsStore, tabListStore } from '../../stores';
+import { tabListStore } from '../../stores';
 import { DownloadService, openContextMenu, ProjectsStorage } from '../../services';
 import { useEditorContext } from '../../hooks';
 import { TabButtonSimple } from '../tabs';
@@ -43,13 +43,6 @@ export const ToolBar: React.FC = memo(() => {
             }, 2000);
         }
     }, [isSaved]);
-
-    // Clear opened tabs
-    useEffect(() => {
-        if (tabList.length === 0) {
-            flowItemsStore.clear();
-        }
-    }, [tabList]);
 
     const handleContextMenu = useCallback((tabId: string, e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
         openContextMenu(e.clientX, 35, [

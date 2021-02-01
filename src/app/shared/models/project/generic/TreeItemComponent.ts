@@ -1,14 +1,12 @@
-import { IObservable, observe, set, transform } from "react-observing";
+import { IObservable, observe } from "react-observing";
 import { Utils } from "code-easy-components";
 
 import { FlowItemAction, FlowItemAssign, FlowItemComment, FlowItemEnd, FlowItemForeach, FlowItemIf, FlowItemStart, FlowItemSwitch } from "../flow-items";
-import { flowItemsStore, PropertiesEditorStore, tabListStore } from "./../../../stores";
 import { EItemType, IProperty, TypeOfValues } from "./../../../components/external";
 import { IFlowItemComponent, ITreeItemComponent } from "./../../../interfaces";
 import { EComponentType, PropertieTypes } from "./../../../enuns";
 import { BasicConfigurations } from "../BasicConfigurations";
 import { FlowItemComponent } from "./FlowItemComponent";
-import { openModal } from "./../../../services";
 
 /**
  * Fields passeds in constructor
@@ -61,52 +59,6 @@ export class TreeItemComponent<T extends EComponentType = EComponentType> extend
     ];
 
     return prop;
-  }
-
-  public get isSelected(): IObservable<boolean> {
-    const handleSelect = (value: boolean): boolean => {
-      if (value && PropertiesEditorStore.value?.id.value !== this.id.value) {
-        set(PropertiesEditorStore, {
-          id: this.id,
-          name: this.label,
-          subname: transform(this.type, value => String(value)),
-          properties: transform(this.properties, properties => properties.map(prop => {
-            return {
-              ...prop,
-              onPickerValueClick: observe(() => openModal(prop.id.value || ''))
-            };
-          }))
-        });
-      }
-      return value;
-    }
-
-    return transform(super.isSelected, value => value, handleSelect);
-  }
-
-  public get isEditing(): IObservable<boolean> {
-    const handleEdit = (value: boolean): boolean => {
-      if (value) {
-        tabListStore.addTab({
-          icon: this.icon,
-          title: this.label,
-          hasError: this.hasError,
-          isSelected: this.isEditing,
-          hasWarning: this.hasWarning,
-          description: this.description,
-          id: transform(this.id, id => String(id), id => id),
-        });
-
-        flowItemsStore.next({
-          items: this.items,
-          itemId: this.id,
-        });
-      }
-
-      return value;
-    }
-
-    return transform(super.isEditing, value => value, handleEdit);
   }
 
   constructor(props: IConstructor<T>) {
