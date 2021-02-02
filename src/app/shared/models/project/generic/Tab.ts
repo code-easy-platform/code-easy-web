@@ -6,7 +6,6 @@ import { BasicConfigurations } from "./../BasicConfigurations";
 import { EComponentType, ETabType } from "./../../../enuns";
 import { IProperty } from "./../../../components/external";
 import { TreeItemComponent } from "./TreeItemComponent";
-import { tabListStore } from "./../../../stores";
 
 /**
  * Fields passeds in constructor
@@ -108,9 +107,6 @@ export class Tab<T extends ETabType = ETabType> extends BasicConfigurations<T> i
           items = removeRecursive(item.id.value, items);
         }
       });
-
-      // Remove item from the tab
-      tabListStore.closeTab(itemId);
 
       return items.filter(item => item.id.value !== itemId);
     }

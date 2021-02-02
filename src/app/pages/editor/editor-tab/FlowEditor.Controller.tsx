@@ -1,21 +1,20 @@
 import React, { memo, useCallback, useMemo } from 'react';
 import { IconTrash, IconFlowStart, IconFlowAction, IconFlowIf, IconFlowForeach, IconFlowSwitch, IconFlowAssign, IconFlowEnd, IconFlowComment } from 'code-easy-components';
-import { set, observe, useSetObserver } from 'react-observing';
+import { set, observe } from 'react-observing';
 
 import { FlowItemAction, FlowItemAssign, FlowItemComment, FlowItemComponent, FlowItemEnd, FlowItemForeach, FlowItemIf, FlowItemStart, FlowItemSwitch } from '../../../shared/models';
 import { FlowEditor, IFlowItem, EItemType, EFlowItemType, EItemTypeList } from '../../../shared/components/external';
 import { BackgroundEmpty, BackgroundEmptyLeft, BackgroundEmptyLeftToTop } from '../../../assets';
+import { useCurrentFocus, useFlowEditorItems } from '../../../shared/hooks';
 import { EComponentType, ECurrentFocus } from '../../../shared/enuns';
 import { IContextItemList } from '../../../shared/interfaces';
 import { openContextMenu } from '../../../shared/services';
-import { CurrentFocusStore } from '../../../shared/stores';
-import { useFlowEditorItems } from '../../../shared/hooks';
 import { useIdeConfigs } from '../../../shared/contexts';
 
 export const FlowEditorController: React.FC = memo(() => {
     const { flowItems, breadcamps, hasSomethingEditing, hasSomethingToEdit, setItems } = useFlowEditorItems();
     const { flowBackgroundType, snapGridWhileDragging } = useIdeConfigs();
-    const setCurrentFocus = useSetObserver(CurrentFocusStore);
+    const { setCurrentFocus } = useCurrentFocus();
 
     /** Alimenta a toolbox, de onde pode ser arrastados items para o fluxo. */
     const toolBoxItems = useMemo((): IFlowItem[] => [

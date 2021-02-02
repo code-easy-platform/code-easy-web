@@ -1,14 +1,13 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
-import { ISubscription, observe, transform, useObserver, useObserverValue, useSetObserver } from 'react-observing';
+import { ISubscription, observe, transform, useObserver, useObserverValue } from 'react-observing';
 import { IconTrash, Utils } from 'code-easy-components';
 
 import { Tab, TabRoute, TreeItemFolder, TreeItemGlobalAction, TreeItemInputVariable, TreeItemLocalVariable, TreeItemOutpuVariable, TreeItemRouterConsume, TreeItemRouterExpose, TreeItemRouterInputVariable } from '../../../shared/models';
 import { TreeManager, ITreeItem, CustomDragLayer } from '../../../shared/components/external';
 import { ECurrentFocus, EComponentType, ETabType, } from '../../../shared/enuns';
 import { AssetsService, openContextMenu } from '../../../shared/services';
-import { CurrentFocusStore, tabListStore } from '../../../shared/stores';
+import { useEditorContext, useTabList, useCurrentFocus } from '../../../shared/hooks';
 import { IContextItemList } from '../../../shared/interfaces';
-import { useEditorContext } from '../../../shared/hooks';
 
 const useCurrentTab = () => {
     const [currentTab, setCurrentTab] = useState<Tab>(new TabRoute());
@@ -44,8 +43,9 @@ const useCurrentTab = () => {
 }
 
 export const TreeManagerController: React.FC = () => {
-    const setCurrentFocus = useSetObserver(CurrentFocusStore);
     const { itemsCurrent, currentTab } = useCurrentTab();
+    const { setCurrentFocus } = useCurrentFocus();
+    const { tabListStore } = useTabList();
 
     const treeManagerOnKeyDowm = useCallback((e: React.FocusEvent<HTMLDivElement> | any) => {
         if (e.key === 'Delete') {
@@ -53,10 +53,13 @@ export const TreeManagerController: React.FC = () => {
             itemsToRemove.forEach(itemToRemove => {
                 if (itemToRemove.id.value) {
                     currentTab.removeItem(itemToRemove.id.value);
+
+                    // Remove item from the tab
+                    tabListStore.closeTab(itemToRemove.id.value);
                 }
             });
         }
-    }, [itemsCurrent, currentTab])
+    }, [itemsCurrent, currentTab, tabListStore])
 
     /** Quando clicado com o botão esquerdo do mouse no interior da árvore esta função é acionada. */
     const treeManagerContextMenu = useCallback((itemId: string | undefined) => {
@@ -126,6 +129,9 @@ export const TreeManagerController: React.FC = () => {
         const removeItem = (inputItemId: string | undefined) => {
             if (!inputItemId) return;
             currentTab.removeItem(inputItemId);
+
+            // Remove item from the tab
+            tabListStore.closeTab(inputItemId);
         };
 
         switch (currentTab.type.value) {
@@ -289,7 +295,7 @@ export const TreeManagerController: React.FC = () => {
         }
 
         return options;
-    }, [currentTab, itemsCurrent]);
+    }, [currentTab, itemsCurrent, tabListStore]);
 
     /** Monta a estrutura da árvore e devolve no return */
     const treeManagerItems = useMemo((): ITreeItem[] => {
@@ -388,15 +394,19 @@ export const TreeManagerController: React.FC = () => {
             description: newEditingItem.description,
             id: transform(newEditingItem.id, id => String(id), id => id),
         });
-    }, [currentTab.items.value]);
+    }, [currentTab.items.value, tabListStore]);
+
+    const handleOnFocus = useCallback(() => {
+        setCurrentFocus(ECurrentFocus.tree);
+    }, [setCurrentFocus]);
 
     return (
         <TreeManager
             onEdit={handleOnEdit}
+            onFocus={handleOnFocus}
             items={treeManagerItems}
             onSelect={handleOnSelect}
             onKeyDown={treeManagerOnKeyDowm}
-            onFocus={() => setCurrentFocus(ECurrentFocus.tree)}
             onContextMenu={(treeItemId, e) => {
                 e.preventDefault();
                 openContextMenu(e.clientX, e.clientY, treeManagerContextMenu(treeItemId));

@@ -3,10 +3,9 @@ import { VscHome, VscChevronDown, VscSaveAll, VscCheck } from 'react-icons/vsc';
 import { transform, useObserverValue } from 'react-observing';
 import { useHistory } from 'react-router-dom';
 
-import { PropertiesTab } from '../../../pages/editor/properties-tab/PropertiesTab';
-import { tabListStore } from '../../stores';
 import { DownloadService, FlowToJs, openContextMenu, ProjectsStorage } from '../../services';
-import { useEditorContext } from '../../hooks';
+import { PropertiesTab } from '../../../pages/editor/properties-tab/PropertiesTab';
+import { useEditorContext, useTabList } from '../../hooks';
 import { TabButtonSimple } from '../tabs';
 import { TabList } from '../tab-list';
 import { Modal } from '../modal';
@@ -16,10 +15,12 @@ import { EComponentType } from '../../enuns';
 
 export const ToolBar: React.FC = memo(() => {
     const [isOpenModalProps, setIsOpenModalProps] = useState(false);
-    const tabList = useObserverValue(tabListStore.tabs);
     const [isSaved, setIsSaved] = useState(false);
     const { tabs, project } = useEditorContext();
     const history = useHistory();
+
+    const { tabListStore } = useTabList();
+    const tabList = useObserverValue(tabListStore.tabs);
 
     // Add event listener to Crtl + s
     useEffect(() => {
@@ -57,7 +58,7 @@ export const ToolBar: React.FC = memo(() => {
                 action: () => tabListStore.closeAll()
             },
         ]);
-    }, []);
+    }, [tabListStore]);
 
     const handleExport = useCallback(() => {
         DownloadService.downloadFilesAsZip([

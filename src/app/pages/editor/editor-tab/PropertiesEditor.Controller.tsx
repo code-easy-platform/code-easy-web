@@ -3,8 +3,7 @@ import { ISubscription, useObserverValue } from 'react-observing';
 
 import { IItem, PropertiesEditor } from '../../../shared/components/external';
 import { FlowItemComponent, TreeItemComponent } from '../../../shared/models';
-import { CurrentFocusStore } from '../../../shared/stores';
-import { useEditorContext } from '../../../shared/hooks';
+import { useCurrentFocus, useEditorContext } from '../../../shared/hooks';
 import { EComponentType, ECurrentFocus } from '../../../shared/enuns';
 
 const useTreeSelectedItem = (): IItem | undefined => {
@@ -279,7 +278,9 @@ const useFlowSelectedItem = (): IItem | undefined => {
 export const PropertiesEditorController: React.FC = () => {
     const selectedFlowItemProperties = useFlowSelectedItem();
     const selectedTreeItemProperties = useTreeSelectedItem();
-    const currentFocus = useObserverValue(CurrentFocusStore);
+
+    const { currentFocusStore } = useCurrentFocus();
+    const currentFocus = useObserverValue(currentFocusStore);
 
     if (selectedTreeItemProperties && currentFocus === ECurrentFocus.tree) {
         return (

@@ -4,17 +4,18 @@ import { ISubscription, observe, set, useSetObserver } from "react-observing";
 import { IBreadCrumbButton, IFlowItem } from "../components/external";
 import { EComponentType, ECurrentFocus } from "../enuns";
 import { useEditorContext } from "./useEditorContext";
+import { useCurrentFocus } from "./useCurrentFocus";
 import { TreeItemComponent } from "../models";
-import { CurrentFocusStore } from "../stores";
 
 
 export const useFlowEditorItems = () => {
     const { tabs } = useEditorContext();
     const [editingTreeItem, setEditingTreeItem] = useState<TreeItemComponent<EComponentType>>();
     const [hasSomethingToEdit, setHasSomethingToEdit] = useState<boolean>(false);
+    const setItems = useSetObserver(editingTreeItem?.items || observe([]));
     const [breadcamps, setBreadcamps] = useState<IBreadCrumbButton[]>([]);
     const [flowItems, setFlowItems] = useState<IFlowItem[]>([]);
-    const setItems = useSetObserver(editingTreeItem?.items || observe([]));
+    const { currentFocusStore } = useCurrentFocus();
 
     // Find tree item
     useEffect(() => {
@@ -147,7 +148,7 @@ export const useFlowEditorItems = () => {
                             {
                                 label: treeItem.label,
                                 onClick: observe(() => {
-                                    set(CurrentFocusStore, ECurrentFocus.tree);
+                                    set(currentFocusStore, ECurrentFocus.tree);
 
                                     tabs.forEach(tabToUpdate => {
                                         set(tabToUpdate.isEditing, tabToUpdate.id.value === tab.id.value)
@@ -164,7 +165,7 @@ export const useFlowEditorItems = () => {
         }
 
         return () => subscriptions.forEach(subs => subs?.unsubscribe());
-    }, [editingTreeItem, tabs]);
+    }, [editingTreeItem, tabs, currentFocusStore]);
 
     // Set has something to edit
     useEffect(() => {
