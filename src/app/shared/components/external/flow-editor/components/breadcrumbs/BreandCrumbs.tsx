@@ -1,6 +1,7 @@
 import React, { memo, useRef, useEffect } from 'react';
 
 import { IBreadCrumbButton } from '../../shared/interfaces';
+import { BreadCrumpButton } from './BreadCrumpButton';
 import './BreandCrumbs.css';
 
 interface BreandCrumbsProps {
@@ -12,7 +13,6 @@ interface BreandCrumbsProps {
     textColor?: string;
 }
 const BreandCrumbs: React.FC<BreandCrumbsProps> = ({ breadcrumbs = [], backgroundColor, textColor, borderColor, useElevation = false, elevationColor = 'black' }) => {
-
     const ulRef = useRef<any>(null);
     useEffect(() => {
         if (ulRef.current) {
@@ -31,31 +31,17 @@ const BreandCrumbs: React.FC<BreandCrumbsProps> = ({ breadcrumbs = [], backgroun
                 color: textColor, borderColor,
                 boxShadow: useElevation ? `5px 0px 6px 0px ${elevationColor}` : 'unset',
             }}>
-            {breadcrumbs.map(({ label, onClick, disabled }, index) => {
+            {breadcrumbs.map((breadcrumb, index) => {
                 return (
-                    <li key={index} className="breadcrumb-item">
-                        <input
-                            tabIndex={0}
-                            type={"radio"}
-                            id={String(index)}
-                            name={"breadcrumb"}
-                            disabled={disabled}
-                            onFocus={e => ulRef.current.scrollTo(e.currentTarget.offsetLeft - 100, 0)}
-                            onKeyDown={e => {
-                                if (!disabled && (e.keyCode === 13 || e.keyCode === 32)) {
-                                    onClick(e);
-                                }
-                            }}
-                        />
-                        <label
-                            htmlFor={String(index)}
-                            style={{ cursor: disabled ? 'default' : 'pointer' }}
-                            onClick={disabled ? undefined : e => {
-                                ulRef.current.scrollTo(e.currentTarget.offsetLeft - 100, 0);
-                                onClick(e);
-                            }}
-                        >{label}</label>
-                    </li>
+                    <BreadCrumpButton
+                        id={index}
+                        key={index}
+                        label={breadcrumb.label}
+                        onClick={breadcrumb.onClick}
+                        disabled={breadcrumb.disabled}
+                        onFocus={e => ulRef.current.scrollTo(e.currentTarget.offsetLeft - 100, 0)}
+                        onLabelClick={e => ulRef.current.scrollTo(e.currentTarget.offsetLeft - 100, 0)}
+                    />
                 );
             })}
         </ul>

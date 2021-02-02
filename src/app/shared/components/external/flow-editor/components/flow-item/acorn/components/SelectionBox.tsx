@@ -2,6 +2,7 @@ import React, { memo } from 'react';
 
 interface SelectionBoxProps {
     onMouseDown?(event: React.MouseEvent<SVGRectElement, MouseEvent>): void;
+    allowConnection?: boolean;
     backgroundColor?: string;
     fullDraggable?: boolean;
     strokeColor?: string;
@@ -13,7 +14,7 @@ interface SelectionBoxProps {
     id: string;
 }
 /** Render image icon */
-export const SelectionBox: React.FC<SelectionBoxProps> = memo(({ height, left, top, width, id, strokeColor, strokeWidth, fullDraggable, backgroundColor, onMouseDown }) => {
+export const SelectionBox: React.FC<SelectionBoxProps> = memo(({ height, left, top, width, id, strokeColor, strokeWidth, fullDraggable, backgroundColor, allowConnection, onMouseDown }) => {
     return (
         <>
             <rect // Help in the background
@@ -28,6 +29,7 @@ export const SelectionBox: React.FC<SelectionBoxProps> = memo(({ height, left, t
                 ry={50}
             />
             <rect // Move element
+                data-allow-connection={String(allowConnection === undefined ? true : !!allowConnection)}
                 height={(height || 0) + (fullDraggable ? ((height || 0) / 3) : 0)}
                 y={top - ((height || 0) / 3)}
                 style={{ cursor: 'move' }}

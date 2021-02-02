@@ -1,75 +1,51 @@
-import React, { useState, useCallback, useEffect } from 'react';
+import React from 'react';
+import { useObserver, useObserverValue } from 'react-observing';
 
 import { ExpressionInput } from '../../expression-input/ExpressionInput';
-import { IProperty, ISuggestion } from '../../../interfaces';
 import { FieldWrapper } from '../field-wrapper/FieldWrapper';
+import { IProperty } from '../../../interfaces';
 import { useConfigs } from '../../../contexts';
 
-interface SimpleStringProps extends IProperty<string> {
-    onChange?(data: IProperty<string>): void;
-}
-export const InputExpression: React.FC<SimpleStringProps> = ({ onChange, ...props }) => {
+interface SimpleStringProps extends IProperty<string> { }
+export const InputExpression: React.FC<SimpleStringProps> = ({ ...props }) => {
     const { inputBorderError, inputBorderWarning, inputBorderDefault, inputTextError, inputTextWarning, inputTextDefault } = useConfigs();
 
-    const [value, setValue] = useState(props.value);
-    useEffect(() => setValue(props.value), [props.value]);
-
-    const handleOnChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
-        if (props.useOnChange && onChange) {
-            onChange({ ...props, value: e.currentTarget.value });
-            setValue(e.currentTarget.value);
-        } else {
-            setValue(e.currentTarget.value);
-        }
-    }, [onChange, props]);
-
-    const handleOnBlur = useCallback((e: React.FocusEvent<HTMLInputElement>) => {
-        if (props.value !== value && onChange) {
-            onChange({ ...props, value });
-        }
-    }, [onChange, props, value]);
-
-    const handleOnSelect = useCallback((option: ISuggestion<string>) => {
-        if (option.value !== value && onChange) {
-            onChange({ ...props, value: option.value });
-            setValue(option.value);
-        } else if (option.value !== value) {
-            setValue(option.value);
-        }
-    }, [onChange, props, value]);
-
-    const hadleOnKeyPress = useCallback((e: React.KeyboardEvent<HTMLInputElement>) => {
-        if (e.key === 'Enter' && onChange) {
-            onChange({ ...props, value: e.currentTarget.value });
-            setValue(e.currentTarget.value);
-        }
-    }, [onChange, props]);
+    const onPickerValueClick = useObserverValue(props.onPickerValueClick);
+    const editValueDisabled = useObserverValue(props.editValueDisabled);
+    const valueHasWarning = useObserverValue(props.valueHasWarning);
+    const nameHasWarning = useObserverValue(props.nameHasWarning);
+    const focusOnRender = useObserverValue(props.focusOnRender);
+    const valueHasError = useObserverValue(props.valueHasError);
+    const nameHasError = useObserverValue(props.nameHasError);
+    const suggestions = useObserverValue(props.suggestions);
+    const information = useObserverValue(props.information);
+    const [value, setValue] = useObserver(props.value);
+    const name = useObserverValue(props.name);
+    const id = useObserverValue(props.id);
 
     return (
         <FieldWrapper
             minWidth={60}
-            id={props.id || ''}
-            name={props.name || ''}
-            information={props.information}
-            nameHasError={props.nameHasError}
-            nameHasWarning={props.nameHasWarning}
+            id={id || ''}
+            name={name || ''}
+            information={information}
+            nameHasError={nameHasError}
+            nameHasWarning={nameHasWarning}
         >
             {inputId => (
                 <ExpressionInput
-                    onPickerClick={props.onPickerValueClick}
+                    onSelectSuggest={option => setValue(option.value.value.toString())}
+                    onChange={e => setValue(e.currentTarget.value)}
                     className="full-width background-bars"
-                    disabled={props.editValueDisabled}
-                    onSelectSuggest={handleOnSelect}
-                    autoFocus={props.focusOnRender}
-                    suggestions={props.suggestions}
-                    onKeyPress={hadleOnKeyPress}
-                    onChange={handleOnChange}
-                    onBlur={handleOnBlur}
+                    onPickerClick={onPickerValueClick}
+                    disabled={editValueDisabled}
+                    autoFocus={focusOnRender}
+                    suggestions={suggestions}
                     value={value}
                     id={inputId}
                     style={{
-                        textDecoration: props.valueHasError ? inputTextError : props.valueHasWarning ? inputTextWarning : inputTextDefault,
-                        border: props.valueHasError ? inputBorderError : props.valueHasWarning ? inputBorderWarning : inputBorderDefault,
+                        textDecoration: valueHasError ? inputTextError : valueHasWarning ? inputTextWarning : inputTextDefault,
+                        border: valueHasError ? inputBorderError : valueHasWarning ? inputBorderWarning : inputBorderDefault,
                     }}
                 />
             )}

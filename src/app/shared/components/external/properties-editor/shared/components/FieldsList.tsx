@@ -1,51 +1,41 @@
-import React, { useCallback } from 'react';
+import React from 'react';
+import { IObservable, useObserverValue } from 'react-observing';
 
 import { FieldGroup } from './fields/FieldGroup';
 import { IProperty } from '../interfaces';
 import { Field } from './Field';
 
 interface FieldsListProps {
-    fields: IProperty[];
-    onChange?(fields: IProperty[]): void;
+    fields: IObservable<IProperty[]>;
 }
-export const FieldsList: React.FC<FieldsListProps> = ({ fields = [], onChange }) => {
+export const FieldsList: React.FC<FieldsListProps> = ({ fields }) => {
+    const properties = useObserverValue(fields);
 
     let groups: string[] = [];
-    fields.forEach(prop => {
-        if (prop.group && (!groups.some(group => group === prop.group))) {
-            groups.push(prop.group);
+    properties.forEach(prop => {
+        if (prop.group.value && (!groups.some(group => group === prop.group.value))) {
+            groups.push(prop.group.value);
         }
     });
 
-    const handleOnChange = useCallback((data: IProperty<any>) => {
-        onChange && onChange(fields.map(current => {
-            if (current.id === data.id) {
-                return data;
-            }
-            return current;
-        }));
-    }, [fields, onChange]);
-
     return (
         <div className="flex-column overflow-auto full-height">
-            {fields
-                .filter(field => field.group === undefined)
+            {properties
+                .filter(field => field.group.value === undefined)
                 .map((field, index) => (
                     <Field
                         key={index}
                         field={field}
-                        onChange={handleOnChange}
                     />
                 ))
             }
             {groups.map((group, index) => {
                 return (
                     <FieldGroup key={index} group={group}>
-                        {fields.filter(prop => prop.group === group).map((field, index) => (
+                        {properties.filter(prop => prop.group.value === group).map((field, index) => (
                             <Field
                                 key={index}
                                 field={field}
-                                onChange={handleOnChange}
                             />
                         ))}
                     </FieldGroup>

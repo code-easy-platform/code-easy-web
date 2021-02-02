@@ -1,8 +1,8 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 
 import { ProjectsStorage } from '../../shared/services/storage/ProjectsStorage';
+import { Project, ProjectParser } from '../../shared/models';
 import { Modal } from '../../shared/components';
-import { Project } from '../../shared/models';
 import { CardItem } from './CardItem';
 
 export const ImportProjects = ({ open, close }: { open: boolean, close: Function }) => {
@@ -18,7 +18,7 @@ export const ImportProjects = ({ open, close }: { open: boolean, close: Function
         const file = new FileReader();
 
         file.onload = (e: any) => {
-            const projs = Project.parseProjects(e.target.result);
+            const projs = ProjectParser.parseProjects(e.target.result);
 
             // Valida se o conteúdo se é uma lista.
             if (projs.length === 0) {
@@ -30,10 +30,9 @@ export const ImportProjects = ({ open, close }: { open: boolean, close: Function
 
                 projs.forEach((proj: Project) => {
                     isProjetcs = (
-                        proj.configurations !== undefined &&
-                        proj.configurations.name !== undefined &&
-                        proj.configurations.id !== undefined &&
-                        proj.configurations.type !== undefined &&
+                        proj.name !== undefined &&
+                        proj.id !== undefined &&
+                        proj.type !== undefined &&
                         proj.tabs !== undefined
                     );
                 });
@@ -57,13 +56,13 @@ export const ImportProjects = ({ open, close }: { open: boolean, close: Function
         }
     }
 
-    const importProjects = () => {
-        ProjectsStorage.setProjects(projects);
+    const importProjects = useCallback(async () => {
+        await ProjectsStorage.setProjects(projects);
         window.alert("Projects imported successfully...");
         setProjectsRecognized(false);
         setProjects([]);
         close();
-    }
+    }, [close, projects]);
 
     return (
         <Modal
@@ -92,14 +91,14 @@ export const ImportProjects = ({ open, close }: { open: boolean, close: Function
                         {projects.map(project => (
                             <CardItem
                                 item={{
-                                    id: project.configurations.id || '',
-                                    name: project.configurations.label,
-                                    type: project.configurations.type,
-                                    version: project.configurations.version,
-                                    description: project.configurations.description,
+                                    id: project.id.value || '',
+                                    name: project.label.value,
+                                    type: project.type.value,
+                                    version: project.version.value,
+                                    description: project.description.value || '',
                                 }}
                                 onClick={() => { }}
-                                key={project.configurations.id}
+                                key={project.id.value}
                             />
                         ))}
                     </div>

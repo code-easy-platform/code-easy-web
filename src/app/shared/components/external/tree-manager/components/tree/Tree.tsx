@@ -1,7 +1,9 @@
 import React from 'react';
-import { TreeItem } from '../tree-item/TreeItem';
+import { observe, useObserverValue } from 'react-observing';
+
+import { useConfigs, useItemsByAscendentId } from '../../shared/hooks';
 import { ITreeItem } from '../../shared/interfaces';
-import { useItems } from '../../shared/hooks';
+import { TreeItem } from '../tree-item/TreeItem';
 
 interface TreeProps {
     item: ITreeItem;
@@ -10,9 +12,12 @@ interface TreeProps {
     onContextMenu?(itemTreeId: string | undefined, e: React.MouseEvent<HTMLDivElement, MouseEvent>): void | undefined;
 }
 export const Tree: React.FC<TreeProps> = ({ item, paddingLeft = 0, disabledToDrop = [], onContextMenu }) => {
-    const { itemsByAscId } = useItems();
+    const { leftPadding = 16 } = useConfigs();
 
-    const childs = itemsByAscId(item.id);
+    const showExpandIcon = useObserverValue(item.showExpandIcon);
+    const nodeExpanded = useObserverValue(item.nodeExpanded);
+    const itemId = useObserverValue(item.id);
+    const childs = useItemsByAscendentId(itemId);
 
     return (
         <>
@@ -21,16 +26,16 @@ export const Tree: React.FC<TreeProps> = ({ item, paddingLeft = 0, disabledToDro
                 paddingLeft={paddingLeft}
                 onContextMenu={onContextMenu}
                 disabledToDrop={[...disabledToDrop]}
-                showExpandIcon={childs.length > 0 && (item.showExpandIcon === undefined ? true : item.showExpandIcon)}
+                showExpandIcon={observe(childs.length > 0 && (showExpandIcon === undefined ? true : showExpandIcon))}
             />
-            {(item.nodeExpanded && item.id) &&
+            {(nodeExpanded && itemId) &&
                 childs.map((child, index) => (
                     <Tree
                         key={index}
                         item={child}
                         onContextMenu={onContextMenu}
-                        paddingLeft={paddingLeft + 16}
-                        disabledToDrop={[...disabledToDrop, String(item.id)]}
+                        paddingLeft={paddingLeft + leftPadding}
+                        disabledToDrop={[...disabledToDrop, String(itemId)]}
                     />
                 ))
             }

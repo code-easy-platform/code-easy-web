@@ -1,331 +1,292 @@
-import React, { useCallback } from 'react';
-import { IconTrash, Utils, IconFlowStart, IconFlowEnd } from 'code-easy-components';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import { ISubscription, observe, transform, useObserver, useObserverValue } from 'react-observing';
+import { IconTrash, Utils } from 'code-easy-components';
 
-import { TreeManager, ITreeItem, CustomDragLayer, EItemType } from '../../../shared/components/external';
-import { ContextMenuService, IContextItemList } from '../../../shared/components';
-import { TreeItemComponent, FlowItemComponent, Tab } from '../../../shared/models';
-import { ECurrentFocus, EComponentType } from '../../../shared/enuns';
-import { useEditorContext } from '../../../shared/contexts';
-import { AssetsService } from '../../../shared/services';
+import { Tab, TabRoute, TreeItemFolder, TreeItemGlobalAction, TreeItemInputVariable, TreeItemLocalVariable, TreeItemOutpuVariable, TreeItemRouterConsume, TreeItemRouterExpose, TreeItemRouterInputVariable } from '../../../shared/models';
+import { TreeManager, ITreeItem, CustomDragLayer } from '../../../shared/components/external';
+import { ECurrentFocus, EComponentType, ETabType, } from '../../../shared/enuns';
+import { AssetsService, openContextMenu } from '../../../shared/services';
+import { useEditorContext, useTabList, useCurrentFocus } from '../../../shared/hooks';
+import { IContextItemList } from '../../../shared/interfaces';
 
-export const TreeManagerController: React.FC = () => {
+const useCurrentTab = () => {
+    const [currentTab, setCurrentTab] = useState<Tab>(new TabRoute());
 
-    const { project, setProject } = useEditorContext();
+    const { project } = useEditorContext();
+    const tabs = useObserverValue(project.tabs);
+    const [itemsCurrent, setItemsCurrent] = useObserver(currentTab.items);
 
-    /** Remove tree items */
-    const treeManagerRemoveItem = useCallback((inputItemId: string | undefined) => {
+    useEffect(() => {
+        const subscriptions: ISubscription[] = [];
 
-        // Se for undefined não faz nada
-        if (!inputItemId) return;
+        tabs.forEach(tab => {
 
-        let indexTabToRemove: number | any;
-        let indexItemToRemove: number | any;
+            if (tab.isEditing.value) {
+                setCurrentTab(tab);
+            }
 
-        // Pega a lista de items corrente na árvore
-        project.tabs.forEach((tab: Tab, indexTab) => {
-            tab.items.forEach((item, index) => {
-                if (item.id === inputItemId) {
-                    indexTabToRemove = indexTab;
-                    indexItemToRemove = index;
+            subscriptions.push(tab.isEditing.subscribe(isEditing => {
+                if (isEditing) {
+                    setCurrentTab(tab);
                 }
-            });
+            }));
         });
 
-        if (indexItemToRemove !== undefined && indexTabToRemove !== undefined) {
+        return () => subscriptions.forEach(subs => subs?.unsubscribe());
+    }, [tabs]);
 
-            // Select a new item
-            if ((indexItemToRemove - 1) >= 0) {
-                project.tabs[indexTabToRemove].items[indexItemToRemove - 1].isSelected = true;
-            }
+    return {
+        currentTab,
+        itemsCurrent,
+        setItemsCurrent
+    };
+}
 
-            // Remove o item e retorna ele mesmo para que possa ser removido os seus dependentes
-            const deletedItem = project.tabs[indexTabToRemove].items.splice(indexItemToRemove, 1)[0];
-
-            // Busca para o caso de ter um dependente
-            let indexToRemove = project.tabs[indexTabToRemove].items.findIndex(item => item.ascendantId === deletedItem.id);
-            while (indexToRemove > -1) {
-                //Remove o item dependente
-                project.tabs[indexTabToRemove].items.splice(indexToRemove, 1);
-                //Busca para o caso de ter outro item dependente
-                indexToRemove = project.tabs[indexTabToRemove].items.findIndex(item => item.ascendantId === deletedItem.id);
-            }
-        }
-
-        setProject(project);
-    }, [project, setProject]);
+export const TreeManagerController: React.FC = () => {
+    const { itemsCurrent, currentTab } = useCurrentTab();
+    const { setCurrentFocus } = useCurrentFocus();
+    const { tabListStore } = useTabList();
 
     const treeManagerOnKeyDowm = useCallback((e: React.FocusEvent<HTMLDivElement> | any) => {
         if (e.key === 'Delete') {
-            let items: TreeItemComponent[] = [];
-            project.tabs.forEach((tab: Tab) => {
-                if (tab.isEditing) {
-                    items = tab.items;
+            const itemsToRemove = itemsCurrent.filter(itemCurrent => itemCurrent.isSelected.value);
+            itemsToRemove.forEach(itemToRemove => {
+                if (itemToRemove.id.value) {
+                    currentTab.removeItem(itemToRemove.id.value);
+
+                    // Remove item from the tab
+                    tabListStore.closeTab(itemToRemove.id.value);
                 }
             });
-
-            const itemToEdit = items.find(item => item.isSelected);
-            if (itemToEdit) {
-                treeManagerRemoveItem(itemToEdit.id);
-            }
         }
-    }, [project.tabs, treeManagerRemoveItem])
+    }, [itemsCurrent, currentTab, tabListStore])
 
     /** Quando clicado com o botão esquerdo do mouse no interior da árvore esta função é acionada. */
     const treeManagerContextMenu = useCallback((itemId: string | undefined) => {
         let options: IContextItemList[] = [];
 
+        /** Add a new param into other type of tree item */
         const addParam = (inputItemId: string | undefined, paramType: EComponentType.inputVariable | EComponentType.localVariable | EComponentType.outputVariable) => {
-            let tabIndex: number | undefined;
-
-            project.tabs.forEach((tab: Tab, indexTab) => {
-                tab.items.forEach(item => {
-                    if (item.id === inputItemId) {
-                        tabIndex = indexTab;
-                    }
-                    // Garante não existirá duas tabs sendo editadas ao mesmo tempo.
-                    tab.items.forEach(item => {
-                        item.isSelected = false;
-                    });
-                });
-            });
-
-            if (tabIndex !== undefined) {
-                const newName = Utils.newName('NewParam', project.tabs[tabIndex].items.map(item => item.label));
-
-                project.tabs[tabIndex].items.push(new TreeItemComponent({
-                    items: [],
-                    label: newName,
-                    type: paramType,
-                    description: '',
-                    isSelected: true,
-                    isEditing: false,
-                    isExpanded: false,
-                    id: Utils.getUUID(),
-                    ascendantId: inputItemId,
-                }));
+            if (paramType === EComponentType.inputVariable) {
+                const newName = Utils.newName('Input', itemsCurrent.map(item => item.label.value));
+                const newTreeItem = TreeItemInputVariable.newVariable(newName, inputItemId);
+                currentTab.addItem(newTreeItem);
+            } else if (paramType === EComponentType.localVariable) {
+                const newName = Utils.newName('Local', itemsCurrent.map(item => item.label.value));
+                const newTreeItem = TreeItemLocalVariable.newVariable(newName, inputItemId);
+                currentTab.addItem(newTreeItem);
+            } else if (paramType === EComponentType.outputVariable) {
+                const newName = Utils.newName('Out', itemsCurrent.map(item => item.label.value));
+                const newTreeItem = TreeItemOutpuVariable.newVariable(newName, inputItemId);
+                currentTab.addItem(newTreeItem);
             }
-
-            setProject(project);
         }
 
-        const addRoute = (inputItemId: string | undefined, routerType: EComponentType.routerConsume | EComponentType.routerExpose) => {
-            if (inputItemId === undefined) {
-                let tabIndex: number | undefined;
-                project.tabs.forEach((tab: Tab, indexTab) => {
-                    if (tab.isEditing) {
-                        tabIndex = indexTab;
-                    }
-                    // Garante não existirá duas tabs sendo editadas ao mesmo tempo.
-                    tab.items.forEach(item => {
-                        item.isEditing = false;
-                        item.isSelected = false;
-                    });
-                });
-
-                if (tabIndex !== undefined) {
-                    const newName = Utils.newName('NewRouter', project.tabs[tabIndex].items.map(item => item.label));
-
-                    project.tabs[tabIndex].items.push(new TreeItemComponent({
-                        items: (
-                            routerType === EComponentType.routerExpose
-                                ? [
-                                    new FlowItemComponent({ id: '1', label: EItemType.START, icon: IconFlowStart, type: EItemType.START, left: 188, top: Math.round(128 / 15) * 15, connections: [{ id: Utils.getUUID(), targetId: '2', originId: '1', isSelected: false }] }),
-                                    new FlowItemComponent({ id: '2', label: EItemType.END, icon: IconFlowEnd, type: EItemType.END, left: 188, top: Math.round(384 / 15) * 15, connections: [] })
-                                ]
-                                : []
-                        ),
-                        label: newName,
-                        description: '',
-                        type: routerType,
-                        isSelected: true,
-                        isExpanded: true,
-                        id: Utils.getUUID(),
-                        ascendantId: inputItemId,
-                        isEditing: routerType === EComponentType.routerExpose,
-                    }));
-                }
+        /** Add a new param into a route */
+        const addParamToARoute = (inputItemId: string | undefined, paramType: EComponentType.inputVariable | EComponentType.localVariable | EComponentType.outputVariable) => {
+            if (paramType === EComponentType.inputVariable) {
+                const newName = Utils.newName('Input', itemsCurrent.map(item => item.label.value));
+                const newTreeItem = TreeItemRouterInputVariable.newVariable(newName, inputItemId);
+                currentTab.addItem(newTreeItem);
+            } else if (paramType === EComponentType.localVariable) {
+                const newName = Utils.newName('Local', itemsCurrent.map(item => item.label.value));
+                const newTreeItem = TreeItemLocalVariable.newVariable(newName, inputItemId);
+                currentTab.addItem(newTreeItem);
+            } else if (paramType === EComponentType.outputVariable) {
+                const newName = Utils.newName('Out', itemsCurrent.map(item => item.label.value));
+                const newTreeItem = TreeItemOutpuVariable.newVariable(newName, inputItemId);
+                currentTab.addItem(newTreeItem);
             }
-            setProject(project);
         }
 
+        /** Add a new route */
+        const addRoute = (inputItemId: string | undefined, routerType: EComponentType.routeConsume | EComponentType.routeExpose) => {
+            const newName = Utils.newName('NewRouter', itemsCurrent.map(item => item.label.value));
+            if (routerType === EComponentType.routeConsume) {
+                const newTreeItem = TreeItemRouterConsume.newRoute(newName, inputItemId);
+                currentTab.addItem(newTreeItem);
+            } else if (routerType === EComponentType.routeExpose) {
+                const newTreeItem = TreeItemRouterExpose.newRoute(newName, inputItemId);
+                currentTab.addItem(newTreeItem);
+            }
+        }
+
+        /** Add a new global action */
         const addAction = (inputItemId: string | undefined) => {
-            if (inputItemId === undefined) {
-                let tabIndex: number | undefined;
-                project.tabs.forEach((tab: Tab, indexTab) => {
-                    if (tab.isEditing) {
-                        tabIndex = indexTab;
-                    }
-                    // Garante não existirá duas tabs sendo editadas ao mesmo tempo.
-                    tab.items.forEach(item => {
-                        item.isEditing = false;
-                        item.isSelected = false;
-                    });
-                });
-
-                if (tabIndex !== undefined) {
-                    const newName = Utils.newName('NewAction', project.tabs[tabIndex].items.map(item => item.label));
-
-                    project.tabs[tabIndex].items.push(new TreeItemComponent({
-                        label: newName,
-                        description: '',
-                        isEditing: true,
-                        isSelected: true,
-                        isExpanded: true,
-                        id: Utils.getUUID(),
-                        ascendantId: inputItemId,
-                        type: EComponentType.globalAction,
-                        items: [
-                            new FlowItemComponent({ id: '1', label: EItemType.START, icon: IconFlowStart, type: EItemType.START, left: 188, top: Math.round(128 / 15) * 15, isSelected: false, connections: [{ id: Utils.getUUID(), targetId: '2', originId: '1', isSelected: false }], properties: [] }),
-                            new FlowItemComponent({ id: '2', label: EItemType.END, icon: IconFlowEnd, type: EItemType.END, left: 188, top: Math.round(384 / 15) * 15, isSelected: false, connections: [], properties: [] })
-                        ],
-                    }));
-                }
-            }
-
-            setProject(project);
+            const newName = Utils.newName('NewAction', itemsCurrent.map(item => item.label.value));
+            const newTreeItem = TreeItemGlobalAction.newAction(newName, inputItemId);
+            currentTab.addItem(newTreeItem);
         }
 
-        project.tabs.forEach((tab: Tab) => {
-            if (tab.isEditing) {
-                if (tab.type === EComponentType.tabRoutes) {
+        /** Add a new folder */
+        const addFolder = () => {
+            const newName = Utils.newName('NewFolder', itemsCurrent.map(item => item.label.value));
+            const newTreeItem = TreeItemFolder.newFolder(newName);
+            currentTab.addItem(newTreeItem);
+        }
 
+        /** Remove tree items */
+        const removeItem = (inputItemId: string | undefined) => {
+            if (!inputItemId) return;
+            currentTab.removeItem(inputItemId);
+
+            // Remove item from the tab
+            tabListStore.closeTab(inputItemId);
+        };
+
+        switch (currentTab.type.value) {
+            case ETabType.tabRoutes:
+                const itemTabRoutes = itemsCurrent.find(item => item.id.value === itemId);
+                if (itemId === undefined || itemTabRoutes?.type.value === EComponentType.grouper) {
                     options.push({
-                        action: () => addRoute(itemId, EComponentType.routerExpose),
-                        icon: AssetsService.getIcon(EComponentType.routerExpose),
-                        disabled: itemId !== undefined,
+                        action: () => addRoute(itemId, EComponentType.routeExpose),
+                        icon: AssetsService.getIcon(EComponentType.routeExpose),
                         label: 'Expose a new route'
                     });
-
                     options.push({
-                        icon: AssetsService.getIcon(EComponentType.routerConsume),
-                        action: () => addRoute(itemId, EComponentType.routerConsume),
-                        disabled: itemId !== undefined,
+                        action: () => addRoute(itemId, EComponentType.routeConsume),
+                        icon: AssetsService.getIcon(EComponentType.routeConsume),
                         label: 'Consume a new route'
                     });
-
-                } else if (tab.type === EComponentType.tabActions) {
-
+                }
+                if (itemId === undefined) {
+                    options.push({
+                        icon: AssetsService.getIcon(EComponentType.grouper),
+                        action: () => addFolder(),
+                        label: 'New folder',
+                    });
+                }
+                break;
+            case ETabType.tabActions:
+                const itemTabAction = itemsCurrent.find(item => item.id.value === itemId);
+                if (itemId === undefined || itemTabAction?.type.value === EComponentType.grouper) {
                     options.push({
                         icon: AssetsService.getIcon(EComponentType.globalAction),
                         action: () => addAction(itemId),
-                        disabled: itemId !== undefined,
                         label: 'Add new action'
                     });
-
-                } else if (tab.type === EComponentType.tabDates) {
-
                 }
+                if (itemId === undefined) {
+                    options.push({
+                        icon: AssetsService.getIcon(EComponentType.grouper),
+                        action: () => addFolder(),
+                        label: 'New folder',
+                    });
+                }
+                break;
+            default: break;
+        }
 
-                tab.items.forEach(item => {
-                    if (item.id === itemId) {
-                        switch (item.type) {
-                            case EComponentType.globalAction:
-                                options.push({
-                                    action: () => { },
-                                    label: '-',
-                                });
-
-                                options.push({
-                                    action: () => addParam(itemId, EComponentType.inputVariable),
-                                    icon: AssetsService.getIcon(EComponentType.inputVariable),
-                                    disabled: itemId === undefined,
-                                    label: 'Add input variable',
-                                });
-                                options.push({
-                                    action: () => addParam(itemId, EComponentType.outputVariable),
-                                    icon: AssetsService.getIcon(EComponentType.outputVariable),
-                                    disabled: itemId === undefined,
-                                    label: 'Add output variable'
-                                });
-                                options.push({
-                                    action: () => addParam(itemId, EComponentType.localVariable),
-                                    icon: AssetsService.getIcon(EComponentType.localVariable),
-                                    disabled: itemId === undefined,
-                                    label: 'Add local variable'
-                                });
-                                break;
-
-                            case EComponentType.localAction:
-                                options.push({
-                                    action: () => { },
-                                    label: '-',
-                                });
-
-                                options.push({
-                                    action: () => addParam(itemId, EComponentType.inputVariable),
-                                    icon: AssetsService.getIcon(EComponentType.inputVariable),
-                                    disabled: itemId === undefined,
-                                    label: 'Add input variable'
-                                });
-                                options.push({
-                                    action: () => addParam(itemId, EComponentType.outputVariable),
-                                    icon: AssetsService.getIcon(EComponentType.outputVariable),
-                                    disabled: itemId === undefined,
-                                    label: 'Add output variable'
-                                });
-                                options.push({
-                                    action: () => addParam(itemId, EComponentType.localVariable),
-                                    icon: AssetsService.getIcon(EComponentType.localVariable),
-                                    disabled: itemId === undefined,
-                                    label: 'Add local variable'
-                                });
-                                break;
-
-                            case EComponentType.routerExpose:
-                                options.push({
-                                    action: () => { },
-                                    label: '-',
-                                });
-
-                                options.push({
-                                    action: () => addParam(itemId, EComponentType.inputVariable),
-                                    icon: AssetsService.getIcon(EComponentType.inputVariable),
-                                    disabled: itemId === undefined,
-                                    label: 'Add input param'
-                                });
-                                options.push({
-                                    action: () => addParam(itemId, EComponentType.outputVariable),
-                                    icon: AssetsService.getIcon(EComponentType.outputVariable),
-                                    disabled: itemId === undefined,
-                                    label: 'Add output param'
-                                });
-                                options.push({
-                                    action: () => addParam(itemId, EComponentType.localVariable),
-                                    icon: AssetsService.getIcon(EComponentType.localVariable),
-                                    disabled: itemId === undefined,
-                                    label: 'Add local variable'
-                                });
-                                break;
-
-                            case EComponentType.routerConsume:
-                                options.push({
-                                    action: () => { },
-                                    label: '-',
-                                });
-
-                                options.push({
-                                    action: () => addParam(itemId, EComponentType.inputVariable),
-                                    icon: AssetsService.getIcon(EComponentType.inputVariable),
-                                    disabled: itemId === undefined,
-                                    label: 'Add input param'
-                                });
-                                break;
-
-                            default: break;
+        itemsCurrent.forEach(item => {
+            if (item.id.value === itemId) {
+                switch (item.type.value) {
+                    case EComponentType.globalAction:
+                        if (options.length > 0) {
+                            options.push({
+                                action: () => { },
+                                label: '-',
+                            });
                         }
-                    }
-                });
-
+                        options.push({
+                            action: () => addParam(itemId, EComponentType.inputVariable),
+                            icon: AssetsService.getIcon(EComponentType.inputVariable),
+                            disabled: itemId === undefined,
+                            label: 'Add input variable',
+                        });
+                        options.push({
+                            action: () => addParam(itemId, EComponentType.outputVariable),
+                            icon: AssetsService.getIcon(EComponentType.outputVariable),
+                            disabled: itemId === undefined,
+                            label: 'Add output variable'
+                        });
+                        options.push({
+                            action: () => addParam(itemId, EComponentType.localVariable),
+                            icon: AssetsService.getIcon(EComponentType.localVariable),
+                            disabled: itemId === undefined,
+                            label: 'Add local variable'
+                        });
+                        break;
+                    case EComponentType.localAction:
+                        if (options.length > 0) {
+                            options.push({
+                                action: () => { },
+                                label: '-',
+                            });
+                        }
+                        options.push({
+                            action: () => addParam(itemId, EComponentType.inputVariable),
+                            icon: AssetsService.getIcon(EComponentType.inputVariable),
+                            disabled: itemId === undefined,
+                            label: 'Add input variable'
+                        });
+                        options.push({
+                            action: () => addParam(itemId, EComponentType.outputVariable),
+                            icon: AssetsService.getIcon(EComponentType.outputVariable),
+                            disabled: itemId === undefined,
+                            label: 'Add output variable'
+                        });
+                        options.push({
+                            action: () => addParam(itemId, EComponentType.localVariable),
+                            icon: AssetsService.getIcon(EComponentType.localVariable),
+                            disabled: itemId === undefined,
+                            label: 'Add local variable'
+                        });
+                        break;
+                    case EComponentType.routeExpose:
+                        if (options.length > 0) {
+                            options.push({
+                                action: () => { },
+                                label: '-',
+                            });
+                        }
+                        options.push({
+                            action: () => addParamToARoute(itemId, EComponentType.inputVariable),
+                            icon: AssetsService.getIcon(EComponentType.inputVariable),
+                            disabled: itemId === undefined,
+                            label: 'Add input param'
+                        });
+                        options.push({
+                            action: () => addParamToARoute(itemId, EComponentType.outputVariable),
+                            icon: AssetsService.getIcon(EComponentType.outputVariable),
+                            disabled: itemId === undefined,
+                            label: 'Add output param'
+                        });
+                        options.push({
+                            action: () => addParamToARoute(itemId, EComponentType.localVariable),
+                            icon: AssetsService.getIcon(EComponentType.localVariable),
+                            disabled: itemId === undefined,
+                            label: 'Add local variable'
+                        });
+                        break;
+                    case EComponentType.routeConsume:
+                        if (options.length > 0) {
+                            options.push({
+                                action: () => { },
+                                label: '-',
+                            });
+                        }
+                        options.push({
+                            action: () => addParamToARoute(itemId, EComponentType.inputVariable),
+                            icon: AssetsService.getIcon(EComponentType.inputVariable),
+                            disabled: itemId === undefined,
+                            label: 'Add input param'
+                        });
+                        break;
+                    default: break;
+                }
             }
         });
 
+        // Add delete option
         if (itemId !== undefined) {
+            if (options.length > 0) {
+                options.push({
+                    action: () => { },
+                    label: '-',
+                });
+            }
             options.push({
-                action: () => { },
-                label: '-',
-            });
-            options.push({
-                action: () => treeManagerRemoveItem(itemId),
+                action: () => removeItem(itemId),
                 disabled: itemId === undefined,
                 useConfirmation: false,
                 icon: IconTrash,
@@ -334,48 +295,10 @@ export const TreeManagerController: React.FC = () => {
         }
 
         return options;
-    }, [project, setProject, treeManagerRemoveItem]);
-
-    const handleOnChange = useCallback((updatedItems: ITreeItem[]) => {
-
-        project.tabs.forEach((tab: Tab) => {
-            if (tab.isEditing) {
-
-                tab.items = tab.items.map(item => {
-                    const updatedItem = updatedItems.find(updatedItem => updatedItem.id === item.id);
-                    if (!updatedItem) return item;
-
-                    return new TreeItemComponent({
-                        ...item,
-                        isEditing: updatedItem.isEditing || false,
-                        ascendantId: updatedItem.ascendantId,
-                        isExpanded: updatedItem.nodeExpanded,
-                        isSelected: updatedItem.isSelected,
-                        description: item.description,
-                        properties: item.properties,
-                        items: item.items,
-                        label: item.label,
-                        id: item.id,
-                    });
-                });
-
-            } else {
-
-                const isSelected = updatedItems.find(updatedItem => updatedItem.isSelected);
-                const isEditing = updatedItems.find(updatedItem => updatedItem.isEditing);
-
-                tab.items.forEach(item => {
-                    if (isSelected) item.isSelected = false;
-                    if (isEditing) item.isEditing = false;
-                });
-            }
-        });
-
-        setProject(project);
-    }, [project, setProject]);
+    }, [currentTab, itemsCurrent, tabListStore]);
 
     /** Monta a estrutura da árvore e devolve no return */
-    const treeManagerItems = ((): ITreeItem[] => {
+    const treeManagerItems = useMemo((): ITreeItem[] => {
 
         /** Disable doucle click by type */
         const cannotPerformDoubleClick = (type: EComponentType) => {
@@ -388,9 +311,8 @@ export const TreeManagerController: React.FC = () => {
                     return true;
                 case EComponentType.outputVariable:
                     return true;
-                case EComponentType.routerConsume:
+                case EComponentType.routeConsume:
                     return true;
-
                 default:
                     return false;
             }
@@ -407,51 +329,88 @@ export const TreeManagerController: React.FC = () => {
                     return [];
                 case EComponentType.outputVariable:
                     return [];
-                case EComponentType.routerConsume:
+                case EComponentType.routeConsume:
                     return [EComponentType.inputVariable];
                 case EComponentType.extension:
                     return [EComponentType.inputVariable, EComponentType.outputVariable];
                 case EComponentType.globalAction:
                     return [EComponentType.inputVariable, EComponentType.localVariable, EComponentType.outputVariable];
                 case EComponentType.grouper:
-                    return [EComponentType.localAction, EComponentType.globalAction, EComponentType.extension, EComponentType.routerConsume, EComponentType.routerExpose];
-                case EComponentType.routerExpose:
+                    return [EComponentType.localAction, EComponentType.globalAction, EComponentType.extension, EComponentType.routeConsume, EComponentType.routeExpose];
+                case EComponentType.routeExpose:
                     return [EComponentType.inputVariable, EComponentType.localVariable, EComponentType.outputVariable];
                 default:
                     return [];
             }
         }
 
-        let items: ITreeItem[] = [];
+        return itemsCurrent.map(item => ({
+            isDisabledDoubleClick: transform(item.type, value => cannotPerformDoubleClick(value)),
+            nodeExpanded: transform(item.isExpanded, value => !!value, value => !!value),
+            canDropList: transform(item.type, value => getCanDropList(value)),
+            description: item.description,
+            ascendantId: item.ascendantId,
+            hasWarning: item.hasWarning,
+            isSelected: item.isSelected,
+            isEditing: item.isEditing,
+            hasError: item.hasError,
+            label: item.label,
+            type: item.type,
+            icon: item.icon,
+            id: item.id,
 
-        project.tabs.forEach((tab: Tab) => {
-            if (tab.isEditing) {
-                items = tab.items.map((item): ITreeItem => ({
-                    ...item,
-                    isDisabledDoubleClick: cannotPerformDoubleClick(item.type),
-                    isDisabledDrag: item.type === EComponentType.routerExpose,
-                    canDropList: getCanDropList(item.type),
-                    nodeExpanded: Boolean(item.isExpanded),
-                    description: item.description,
-                    ascendantId: item.ascendantId,
-                    hasWarning: item.hasWarning,
-                    icon: item.icon.content,
-                    hasError: item.hasError,
-                    label: item.label,
-                    id: item.id,
-                }));
-            }
+            isAllowedToggleNodeExpand: observe(undefined),
+            useCustomIconToExpand: observe(undefined),
+            isDisabledSelect: observe(undefined),
+            isDisabledClick: observe(undefined),
+            isDisabledDrag: observe(undefined),
+            showExpandIcon: observe(undefined),
+            isDisabledDrop: observe(undefined),
+            isDisabled: observe(undefined),
+            iconSize: observe(undefined),
+        }));
+    }, [itemsCurrent]);
+
+    const handleOnSelect = useCallback((uids: string[]) => {
+        if (uids.length === 0) return;
+
+        const selectedItems = currentTab.items.value.filter(item => uids.includes(String(item.id.value)));
+        if (selectedItems.length === 0) return;
+
+    }, [currentTab.items.value]);
+
+    const handleOnEdit = useCallback((uid: string | undefined) => {
+        if (!uid) return;
+
+        const newEditingItem = currentTab.items.value.find(item => item.id.value === uid);
+        if (!newEditingItem) return;
+
+        tabListStore.addTab({
+            icon: newEditingItem.icon,
+            title: newEditingItem.label,
+            hasError: newEditingItem.hasError,
+            isSelected: newEditingItem.isEditing,
+            hasWarning: newEditingItem.hasWarning,
+            description: newEditingItem.description,
+            id: transform(newEditingItem.id, id => String(id), id => id),
         });
+    }, [currentTab.items.value, tabListStore]);
 
-        return items;
-    })();
+    const handleOnFocus = useCallback(() => {
+        setCurrentFocus(ECurrentFocus.tree);
+    }, [setCurrentFocus]);
 
     return (
         <TreeManager
+            onEdit={handleOnEdit}
+            onFocus={handleOnFocus}
             items={treeManagerItems}
-            onChangeItems={handleOnChange}
+            onSelect={handleOnSelect}
             onKeyDown={treeManagerOnKeyDowm}
-            onFocus={() => project.currentFocus = ECurrentFocus.tree}
+            onContextMenu={(treeItemId, e) => {
+                e.preventDefault();
+                openContextMenu(e.clientX, e.clientY, treeManagerContextMenu(treeItemId));
+            }}
             configs={{
                 id: 'Inspector',
                 isUseDrag: true,
@@ -460,13 +419,7 @@ export const TreeManagerController: React.FC = () => {
                 focusedItemBackgroundColor: '#ffffff05',
                 editingItemBackgroundColor: '#ffffff10',
                 showEmptyMessage: treeManagerItems.length === 0,
-                customDragLayer: (item) => (
-                    <CustomDragLayer children={item} />
-                )
-            }}
-            onContextMenu={(treeItemId, e) => {
-                e.preventDefault();
-                ContextMenuService.showMenu(e.clientX, e.clientY, treeManagerContextMenu(treeItemId));
+                customDragLayer: item => <CustomDragLayer children={item} />
             }}
         />
     );

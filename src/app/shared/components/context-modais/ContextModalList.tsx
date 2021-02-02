@@ -1,41 +1,25 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
+import { useObserver } from 'react-observing';
 
-import { ContextModalListService, IContextOpenedModal } from './ContextModalListService';
 import { EditableContent } from '../editable-content/EditableContent';
+import { ModalListStore } from '../../stores';
 import './ContextModalList.css';
 
-
-interface ContextModalListState {
-    modalList: IContextOpenedModal[]
-}
 export const ContextModalList = () => {
-    // let modaisSubscrition: any;
+    const [modals, setModals] = useObserver(ModalListStore);
 
-    const [state, setState] = useState<ContextModalListState>({
-        modalList: []
-    });
-
-    useEffect(() => {
-        /* modaisSubscrition =  */ContextModalListService.getMessage().subscribe(data => {
-        if (state.modalList.some(modal => modal.editingId === data.editingId)) {
-
-        } else {
-            state.modalList.push(data);
-        }
-        setState(state);
-    });
-    }, [state]);
-
-    // componentWillUnmount = () => this.modaisSubscrition.unsubscribe();
-
-    const removeModal = (editingId: string) => {
-        const indexToRemove = state.modalList.findIndex(modal => modal.editingId === editingId);
-        if (indexToRemove >= 0) {
-            state.modalList.splice(indexToRemove, 1);
-        }
-    }
-
-    return (<>
-        {state.modalList.map(modal => <EditableContent key={modal.editingId} itemId={modal.editingId} removeModal={() => removeModal(modal.editingId)} />)}
-    </>)
+    return (
+        <>
+            {modals.map((modalId, index) => (
+                <EditableContent
+                    key={modalId}
+                    itemId={modalId}
+                    removeModal={() => setModals(oldModals => {
+                        oldModals.splice(index, 1);
+                        return oldModals;
+                    })}
+                />
+            ))}
+        </>
+    );
 };

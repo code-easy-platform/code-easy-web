@@ -1,71 +1,54 @@
-import React, { useState, useCallback, useEffect, useRef } from 'react';
+import React, { useEffect, useRef } from 'react';
+import { useObserver, useObserverValue } from 'react-observing';
 
 import { FieldWrapper } from '../field-wrapper/FieldWrapper';
 import { IProperty } from '../../../interfaces';
 import { useConfigs } from '../../../contexts';
 
-interface SimpleStringProps extends IProperty<string> {
-    onChange?(data: IProperty<string>): void;
-}
-export const SimpleString: React.FC<SimpleStringProps> = ({ onChange, ...props }) => {
+interface SimpleStringProps extends IProperty<string> { }
+export const SimpleString: React.FC<SimpleStringProps> = ({ ...props }) => {
     const { inputBorderError, inputBorderWarning, inputBorderDefault, inputTextError, inputTextWarning, inputTextDefault } = useConfigs();
+
+    const editValueDisabled = useObserverValue(props.editValueDisabled);
+    const valueHasWarning = useObserverValue(props.valueHasWarning);
+    const nameHasWarning = useObserverValue(props.nameHasWarning);
+    const focusOnRender = useObserverValue(props.focusOnRender);
+    const valueHasError = useObserverValue(props.valueHasError);
+    const nameHasError = useObserverValue(props.nameHasError);
+    const information = useObserverValue(props.information);
+    const [value, setValue] = useObserver(props.value);
+    const name = useObserverValue(props.name);
+    const id = useObserverValue(props.id);
 
     const inputRef = useRef<HTMLInputElement>(null);
     useEffect(() => {
-        if (inputRef.current && props.focusOnRender) {
+        if (inputRef.current && focusOnRender) {
             inputRef.current.focus();
         }
-    }, [props]);
-
-    const [value, setValue] = useState(props.value);
-    useEffect(() => setValue(props.value), [props.value]);
-
-    const handleOnChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
-        if (props.useOnChange && onChange) {
-            onChange({ ...props, value: e.currentTarget.value });
-            setValue(e.currentTarget.value);
-        } else {
-            setValue(e.currentTarget.value);
-        }
-    }, [onChange, props]);
-
-    const handleOnBlur = useCallback((e: React.FocusEvent<HTMLInputElement>) => {
-        if (props.value !== value && onChange) {
-            onChange({ ...props, value });
-        }
-    }, [onChange, props, value]);
-
-    const hadleOnKeyPress = useCallback((e: React.KeyboardEvent<HTMLInputElement>) => {
-        if (e.key === 'Enter' && onChange) {
-            onChange({ ...props, value: e.currentTarget.value });
-            setValue(e.currentTarget.value);
-        }
-    }, [onChange, props]);
+    }, [focusOnRender]);
 
     return (
         <FieldWrapper
             minWidth={60}
-            id={props.id || ''}
-            name={props.name || ''}
-            information={props.information}
-            nameHasError={props.nameHasError}
-            nameHasWarning={props.nameHasWarning}
+            id={id || ''}
+            name={name || ''}
+            information={information}
+            nameHasError={nameHasError}
+            nameHasWarning={nameHasWarning}
         >
             {inputId => (
                 <input
+                    onChange={e => setValue(e.currentTarget.value)}
                     className={"full-width background-bars"}
-                    disabled={props.editValueDisabled}
-                    autoFocus={props.focusOnRender}
-                    onKeyPress={hadleOnKeyPress}
-                    onChange={handleOnChange}
-                    onBlur={handleOnBlur}
+                    disabled={editValueDisabled}
+                    autoFocus={focusOnRender}
                     autoComplete={'off'}
                     ref={inputRef}
                     value={value}
                     id={inputId}
                     style={{
-                        textDecoration: props.valueHasError ? inputTextError : props.valueHasWarning ? inputTextWarning : inputTextDefault,
-                        border: props.valueHasError ? inputBorderError : props.valueHasWarning ? inputBorderWarning : inputBorderDefault,
+                        textDecoration: valueHasError ? inputTextError : valueHasWarning ? inputTextWarning : inputTextDefault,
+                        border: valueHasError ? inputBorderError : valueHasWarning ? inputBorderWarning : inputBorderDefault,
                     }}
                 />
             )}

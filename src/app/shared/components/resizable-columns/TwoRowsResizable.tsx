@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 
-import { ProjectsStorage } from '../../services/storage/ProjectsStorage';
+import { IdeConfigStorage } from '../../services';
 import './ResizeTemplate.css';
 
 interface IRecipeProps {
@@ -18,7 +18,7 @@ export class TwoRowsResizable extends Component<IRecipeProps> {
 
     componentDidMount() {
         window.addEventListener("resize", () => this.setState({}));
-        this.setState({ bottomHeight: ProjectsStorage.getColumnsResizableSize(this.props.id) });
+        this.setState({ bottomHeight: IdeConfigStorage.getColumnsResizableSize(this.props.id) });
     }
 
     componentWillUnmount() {
@@ -33,7 +33,7 @@ export class TwoRowsResizable extends Component<IRecipeProps> {
         window.onmouseup = null;
         window.onmousemove = null;
         window.document.body.style.cursor = 'unset';
-        ProjectsStorage.setColumnsResizableSize(this.props.id, this.state.bottomHeight);
+        IdeConfigStorage.setColumnsResizableSize(this.props.id, this.state.bottomHeight);
     }
 
     mouseDown = () => {

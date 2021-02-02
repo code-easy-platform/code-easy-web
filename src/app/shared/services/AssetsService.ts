@@ -4,12 +4,12 @@ import {
     IconFlowIf, IconFlowStart, IconFlowSwitch, IconRouterConsume, IconRouterExpose, IconRouter
 } from 'code-easy-components';
 
-import { EComponentType, EProjectType } from "../enuns";
+import { EComponentType, EProjectType, ETabType } from "../enuns";
 import { EItemType } from '../components/external';
 
 
 class Assets {
-    public getIcon<T = any>(type: EComponentType | EItemType | EProjectType | T): string {
+    public getIcon<T = any>(type: EComponentType | ETabType | EItemType | EProjectType | T): string {
         switch (type) {
             case EItemType.ACTION:
                 return IconFlowAction;
@@ -35,10 +35,10 @@ class Assets {
             case EItemType.SWITCH:
                 return IconFlowSwitch;
 
-            case EComponentType.routerConsume:
+            case EComponentType.routeConsume:
                 return IconRouterConsume;
 
-            case EComponentType.routerExpose:
+            case EComponentType.routeExpose:
                 return IconRouterExpose;
 
             case EComponentType.globalAction:
@@ -59,10 +59,13 @@ class Assets {
             case EComponentType.outputVariable:
                 return IconOutpuParam;
 
-            case EComponentType.tabActions:
+            case ETabType.tabActions:
                 return IconAction;
 
-            case EComponentType.tabRoutes:
+            case ETabType.tabRoutes:
+                return IconRouter;
+
+            case ETabType.tabDatas:
                 return IconRouter;
 
             default:

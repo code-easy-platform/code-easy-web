@@ -1,6 +1,6 @@
 import React, { useRef, useEffect, useState } from 'react';
 import { IconMoreInfo } from 'code-easy-components';
-import { useRecoilState } from 'recoil';
+import { useObserver } from 'react-observing';
 
 import { LocalStorageService } from '../../../local-storage/LocalStorage';
 import { InputWidthStore } from './../../../stores/InputWidth';
@@ -24,7 +24,7 @@ interface FieldWrapperProps {
 }
 export const FieldWrapper: React.FC<FieldWrapperProps> = ({ children, id, name, information, minWidth, nameHasError, nameHasWarning, onDoubleClick }) => {
     const { inputTextError, inputTextWarning, inputTextDefault } = useConfigs();
-    const [inputWidth, setInputWidth] = useRecoilState(InputWidthStore);
+    const [inputWidth, setInputWidth] = useObserver(InputWidthStore);
     const containerWidth = useRef<any>(null);
     const infoIconRef = useRef<any>(null);
 

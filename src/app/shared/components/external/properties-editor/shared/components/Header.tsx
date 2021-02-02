@@ -1,13 +1,18 @@
 import React from 'react';
+import { IObservable, useObserverValue } from 'react-observing';
 
 interface IHeaderProps {
-    title: string;
-    subtitle?: string;
     titleFontSize?: string;
     backgroundColor?: string;
     subtitleFontSize?: string;
+    title: IObservable<string | undefined>;
+    subtitle: IObservable<string | undefined>;
 }
-export const Header: React.FC<IHeaderProps> = ({ title, subtitle, subtitleFontSize, titleFontSize, backgroundColor }) => {
+export const Header: React.FC<IHeaderProps> = ({ subtitleFontSize, titleFontSize, backgroundColor, ...props }) => {
+    const subtitle = useObserverValue(props.subtitle);
+    const title = useObserverValue(props.title);
+
+    if (!(title !== "" || (subtitle && subtitle !== ""))) return null;
 
     return (
         <div className="padding-m padding-left-s flex-column" style={{ backgroundColor, fontSize: titleFontSize }}>

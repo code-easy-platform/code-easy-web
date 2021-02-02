@@ -1,6 +1,4 @@
-import { ITreeItem, EItemType } from "../../components/external";
-import { EComponentType } from "../../enuns/ComponentType";
-import { PropertieTypes } from "../../enuns";
+import { ITreeItem } from "../../components/external";
 import { Project } from "../../models";
 
 class ProblemsHelperService {
@@ -8,7 +6,7 @@ class ProblemsHelperService {
      * Get all problems in a project
      */
     public getProblems(project: Project): { problems: ITreeItem[]; project: Project } {
-        project.tabs.forEach(tab => {
+        /* project.tabs.forEach(tab => {
             tab.items.forEach(treeItem => {
                 treeItem.items.forEach(flowItem => {
 
@@ -58,9 +56,9 @@ class ProblemsHelperService {
 
         if (project.problems.length === 0) {
             project.addProblem("No problems detected", 'success');
-        }
+        } */
 
-        return { problems: project.problems, project };
+        return { problems: /* project.problems */[], project };
     }
 }
 

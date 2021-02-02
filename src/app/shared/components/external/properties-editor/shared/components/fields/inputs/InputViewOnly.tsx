@@ -1,12 +1,21 @@
 import React from 'react';
+import { useObserverValue } from 'react-observing';
 
+import { FieldWrapper } from '../field-wrapper/FieldWrapper';
 import { IProperty } from '../../../interfaces';
 import { useConfigs } from '../../../contexts';
-import { FieldWrapper } from '../..';
 
-export const InputViewOnly: React.FC<IProperty> = (props) => {
-    const { valueHasError = false, nameHasError = false, nameHasWarning = false, valueHasWarning = false, id, value, information, name } = props;
+export const InputViewOnly: React.FC<IProperty<string | number>> = ({ ...props }) => {
     const { inputTextError, inputTextWarning, inputTextDefault } = useConfigs();
+
+    const valueHasWarning = useObserverValue(props.valueHasWarning);
+    const nameHasWarning = useObserverValue(props.nameHasWarning);
+    const valueHasError = useObserverValue(props.valueHasError);
+    const nameHasError = useObserverValue(props.nameHasError);
+    const information = useObserverValue(props.information);
+    const value = useObserverValue(props.value);
+    const name = useObserverValue(props.name);
+    const id = useObserverValue(props.id);
 
     return (
         <FieldWrapper

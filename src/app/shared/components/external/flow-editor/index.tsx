@@ -2,21 +2,18 @@ import React from 'react';
 import HTML5Backend from 'react-dnd-html5-backend';
 import { DndProvider } from 'react-dnd';
 
-import { IFlowEditorProps } from './shared/interfaces/FlowEditorInterfaces';
-import { OnChangeEmitter } from './components/on-change-emitter';
-import { ConfigurationProvider } from './shared/contexts';
+import { ConfigurationProvider, ItemsProvider } from './shared/contexts';
+import { IFlowEditorProps } from './shared/interfaces';
 import { FlowEditorBoard } from './FlowEditorBoard';
-import { RecoilContainer } from './shared/stores';
 
-export const FlowEditor = ({ configs, items, onChangeItems, ...rest }: IFlowEditorProps) => {
+export const FlowEditor: React.FC<IFlowEditorProps> = ({ configs, items, ...rest }) => {
     return (
         <ConfigurationProvider configs={configs}>
-            <RecoilContainer items={items}>
-                <DndProvider backend={HTML5Backend}>
-                    <OnChangeEmitter onChange={onChangeItems} />
+            <DndProvider backend={HTML5Backend}>
+                <ItemsProvider items={items}>
                     <FlowEditorBoard {...rest} />
-                </DndProvider>
-            </RecoilContainer>
+                </ItemsProvider>
+            </DndProvider>
         </ConfigurationProvider>
     );
 }

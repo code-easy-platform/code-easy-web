@@ -12,7 +12,8 @@ export const ConfigurationProvider: React.FC<{ configs: ITreeManagerConfigs }> =
     /** Default values from configs */
 
     // GENERAL
-    configs.showEmptyMessage = configs.showEmptyMessage || false
+    configs.showEmptyMessage = configs.showEmptyMessage || false;
+    configs.leftPadding = configs.leftPadding || 16;
 
     const setCSSVars = useCallback(() => {
         document.documentElement.style.setProperty('--selected-item-color', `${configs.activeItemBackgroundColor || '#1f724320'}`);

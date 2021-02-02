@@ -1,12 +1,9 @@
 import React, { memo } from 'react';
 
 import { TwoColumnsResizable, TwoRowsResizable, OutputPanel } from '../../../shared/components';
-import { ProblemsHelper } from '../../../shared/services/helpers/ProblemsHelper';
-import { OutputHelper } from '../../../shared/services/helpers/OutputHelper';
 import { PropertiesEditorController } from './PropertiesEditor.Controller';
 import { TreeManagerController } from './TreeManager.Controller';
 import { FlowEditorController } from './FlowEditor.Controller';
-import { useEditorContext } from '../../../shared/contexts';
 
 export const Playground: React.FC = memo(() => {
     return (
@@ -23,8 +20,8 @@ export const Playground: React.FC = memo(() => {
                     bottom={
                         <div className="flex1 z1">
                             <OutputPanel
-                                problems={ProblemsHelper.getProblems(useEditorContext().project).problems}
-                                output={OutputHelper.getOutput(useEditorContext().project)}
+                                // problems={[]}
+                                // output={[]}
                             />
                         </div>
                     }

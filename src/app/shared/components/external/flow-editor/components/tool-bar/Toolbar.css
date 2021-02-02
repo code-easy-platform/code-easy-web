@@ -1,10 +1,16 @@
 .toolbar {
   border: 0 solid;
+  scrollbar-color: transparent transparent;
   border-right-width: thin;
   flex-direction: column;
+  scrollbar-width: thin;
   align-items: center;
   overflow: auto;
   height: 100%;
+}
+
+.toolbar:hover {
+  scrollbar-color: var(--color-scroll-bar-hover) transparent;
 }
 
 .toolbar::-webkit-scrollbar {

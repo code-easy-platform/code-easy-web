@@ -1,3 +1,5 @@
+import { IObservable } from "react-observing";
+
 /**
  * Defines how a suggestion for a selection or expression input should be reported
  * 
@@ -7,21 +9,21 @@ export interface ISuggestion<T = string | number> {
     /**
      * Displayed as a "title" for any type of information that may be relevant at the time of selection
      */
-    description: string;
+    description: IObservable<string>;
     /**
      * When "true" disables the option and does not allow it to be selected
      */
-    disabled: boolean;
+    disabled: IObservable<boolean>;
     /**
      * Showing as option name to be selected
      */
-    label: string;
+    label: IObservable<string>;
     /**
      *  Name used internally by the component
      */
-    name: string;
+    name: IObservable<string>;
     /**
      * Value that will be assigned to input when the option is selected
      */
-    value: T;
+    value: IObservable<T>;
 }

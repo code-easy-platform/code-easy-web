@@ -1,317 +1,298 @@
-import React, { useCallback } from 'react';
+import React, { useEffect, useState } from 'react';
+import { ISubscription, useObserverValue } from 'react-observing';
 
-import { EItemType, PropertiesEditor, IProperty, TypeOfValues, IItem } from '../../../shared/components/external';
-import { EComponentType, ECurrentFocus, PropertieTypes } from '../../../shared/enuns';
-import { ContextModalListService } from '../../../shared/components';
-import { TreeItemComponent, Tab } from '../../../shared/models';
-import { useEditorContext } from '../../../shared/contexts';
+import { IItem, PropertiesEditor } from '../../../shared/components/external';
+import { FlowItemComponent, TreeItemComponent } from '../../../shared/models';
+import { useCurrentFocus, useEditorContext } from '../../../shared/hooks';
+import { EComponentType, ECurrentFocus } from '../../../shared/enuns';
 
-export const PropertiesEditorController: React.FC = () => {
+const useTreeSelectedItem = (): IItem | undefined => {
+    const [selectedTreeItem, setSelectedTreeItem] = useState<TreeItemComponent<EComponentType>>();
 
-    const { project, setProject, getItemTreeEditing, getItemTreeByName } = useEditorContext();
+    const { tabs } = useEditorContext();
 
-    /** O editor de propriedades emite a lista de propriedades alteradas */
-    const handleOnChangeItems = useCallback((item: IItem) => {
+    useEffect(() => {
+        const subscriptions: (ISubscription & { itemId: string | undefined })[] = [];
 
-        if (project.currentFocus === ECurrentFocus.tree) {
+        tabs.forEach(tab => {
+            tab.items.value.forEach(treeItem => {
+                if (treeItem.isSelected.value) {
+                    setSelectedTreeItem(treeItem);
+                }
 
-            if (!item.id) return;
-
-            project.tabs.forEach((tab: Tab) => {
-                tab.items.forEach(itemTree => {
-                    if (itemTree && itemTree.isSelected && itemTree.id === item.id) {
-
-                        // Atualizas as props
-                        itemTree.properties = item.properties;
-
-                        // Este bloco garante que se a label de uma routa muda o seu path será alterado junto.
-                        if (itemTree.type === EComponentType.routerConsume || itemTree.type === EComponentType.routerExpose) {
-                            item.properties.forEach(prop => {
-                                if (prop.propertieType === PropertieTypes.url) {
-                                    prop.value = `/${itemTree.name}`;
-                                }
-                            });
-                        }
-                    }
-                });
+                if (!subscriptions.some(subs => subs.itemId === treeItem.id.value)) {
+                    subscriptions.push({
+                        itemId: treeItem.id.value,
+                        ...treeItem.isSelected.subscribe(isSelected => {
+                            if (isSelected) {
+                                setSelectedTreeItem(treeItem);
+                            } else if (selectedTreeItem?.id.value === treeItem.id.value) {
+                                setSelectedTreeItem(undefined);
+                            }
+                        }),
+                    })
+                }
             });
 
-        } else if (project.currentFocus === ECurrentFocus.flow) {
-
-            project.tabs.forEach(tab => {
-
-                /** Tree item on is the flow item being edited */
-                let treeItemEditing = tab.items.find(treeItem => treeItem.items.some(flowItem => flowItem.id === item.id));
-                if (!treeItemEditing) return;
-
-                /** Flow item being edited */
-                let editingFlowItem = treeItemEditing.items.find(flowItem => flowItem.id === item.id);
-                if (!editingFlowItem) return;
-
-                if (editingFlowItem.type === EItemType.ACTION) {
-
-                    // Pega a antiga action
-                    const oldActionProp = editingFlowItem.properties.find(itemOld => itemOld.propertieType === PropertieTypes.action);
-                    if (!oldActionProp) return;
-
-                    // Pega a nova action
-                    const newSelectedActionProp = item.properties.find(itemNew => itemNew.propertieType === PropertieTypes.action);
-                    if (!newSelectedActionProp) return;
-
-                    // Compara os dois nomes, se mudou apaga todos os parâmetro da action anterior.
-                    if ((oldActionProp?.value !== '') && (oldActionProp?.value !== newSelectedActionProp?.value)) {
-                        // Encontra o promeiro parametro e remove, depois encontra os outros e irá remover eté não restar mais parâmetros
-                        let indexToRemove = item.properties.findIndex(itemOld => itemOld.propertieType === PropertieTypes.param);
-                        while (indexToRemove >= 0) {
-                            item.properties.splice(indexToRemove, 1);
-                            indexToRemove = item.properties.findIndex(itemOld => itemOld.propertieType === PropertieTypes.param);
+            subscriptions.push({
+                itemId: tab.items.id,
+                ...tab.items.subscribe(treeItems => {
+                    treeItems.forEach(treeItem => {
+                        if (treeItem.isSelected.value) {
+                            setSelectedTreeItem(treeItem);
                         }
-                    }
 
-                    // Altera a label do componente de fluxo
-                    item.properties.forEach(prop => {
-                        if (prop.propertieType === PropertieTypes.label) {
+                        if (!subscriptions.some(subs => subs.itemId === treeItem.id.value)) {
+                            subscriptions.push({
+                                itemId: treeItem.id.value,
+                                ...treeItem.isSelected.subscribe(isSelected => {
+                                    if (isSelected) {
+                                        setSelectedTreeItem(treeItem);
+                                    } else if (selectedTreeItem?.id.value === treeItem.id.value) {
+                                        setSelectedTreeItem(undefined);
+                                    }
+                                }),
+                            })
+                        }
+                    });
+                })
+            });
+        });
 
-                            // Pega a action selecionada pelo seu nome
-                            let actionByName: TreeItemComponent | undefined;
-                            project.tabs.forEach(currentTab => {
-                                actionByName = currentTab.items.find(treeItem => treeItem.name === newSelectedActionProp?.value);
+        return () => subscriptions.forEach(subs => subs?.unsubscribe());
+    }, [selectedTreeItem, tabs]);
+
+
+    if (!selectedTreeItem) return undefined;
+
+    return {
+        id: selectedTreeItem.id,
+        name: selectedTreeItem.label,
+        subname: selectedTreeItem.type,
+        properties: selectedTreeItem.properties,
+    };
+}
+
+const useFlowSelectedItem = (): IItem | undefined => {
+    const [selectedFlowItem, setSelectedFlowItem] = useState<FlowItemComponent>();
+
+    const { tabs } = useEditorContext();
+
+    useEffect(() => {
+        const subscriptions: (ISubscription & { itemId: string | undefined })[] = [];
+
+        tabs.forEach(tab => {
+            tab.items.value.forEach(treeItem => {
+                if (treeItem.isEditing.value) {
+                    treeItem.items.value.forEach(flowItem => {
+                        if (flowItem.isSelected.value) {
+                            setSelectedFlowItem(flowItem);
+                        }
+
+                        if (!subscriptions.some(subs => subs.itemId === flowItem.isSelected.id)) {
+                            subscriptions.push({
+                                itemId: flowItem.isSelected.id,
+                                ...flowItem.isSelected.subscribe(isSelected => {
+                                    if (isSelected) {
+                                        setSelectedFlowItem(flowItem);
+                                    } else if (selectedFlowItem?.id.value === flowItem.id.value) {
+                                        setSelectedFlowItem(undefined);
+                                    }
+                                })
                             });
-                            if (!actionByName) return;
-
-                            // Pega prop label da action selecionada
-                            const actionLabelProp = actionByName.properties.find(propAction => propAction.propertieType === PropertieTypes.label);
-                            if (!actionLabelProp) return;
-
-                            // Altera o valor da label
-                            prop.value = actionLabelProp.value || prop.value;
                         }
+                    });
+
+                    subscriptions.push({
+                        itemId: treeItem.items.id,
+                        ...treeItem.items.subscribe(items => {
+                            items.forEach(flowItem => {
+                                if (flowItem.isSelected.value) {
+                                    setSelectedFlowItem(flowItem);
+                                }
+
+                                if (!subscriptions.some(subs => subs.itemId === flowItem.isSelected.id)) {
+                                    subscriptions.push({
+                                        itemId: flowItem.isSelected.id,
+                                        ...flowItem.isSelected.subscribe(isSelected => {
+                                            if (isSelected) {
+                                                setSelectedFlowItem(flowItem);
+                                            } else if (selectedFlowItem?.id.value === flowItem.id.value) {
+                                                setSelectedFlowItem(undefined);
+                                            }
+                                        })
+                                    });
+                                }
+                            });
+                        }),
                     });
                 }
 
-                // Update flow item with the new properties
-                editingFlowItem.properties = item.properties;
-
-                tab.items = [
-                    ...tab.items.filter(flowItem => flowItem.id !== treeItemEditing?.id),
-                    treeItemEditing,
-                ];
-            });
-        };
-
-        setProject(project);
-    }, [project, setProject]);
-
-    /** Devolve para o editor de propriedades as propriedades do item selecionado no momento. */
-    const getSelectedItem = useCallback((currentFocus: ECurrentFocus): IItem => {
-        const nullRes = {
-            id: '',
-            name: '',
-            properties: [],
-            isHeader: false,
-        }
-
-        // Map a selected tree item.
-        if (currentFocus === ECurrentFocus.tree) {
-
-            const tab = project.tabs.find((tab: Tab) => tab.items.find(item => item.isSelected));
-            if (!tab) return nullRes;
-            const res = tab.items.find(item => item.isSelected);
-            if (!res) return nullRes;
-            else {
-                return {
-                    id: res.id,
-                    subname: res.type,
-                    name: res.properties.find(prop => prop.propertieType === PropertieTypes.label)?.value,
-                    properties: res.properties.map(prop => {
-                        if (prop.id && prop.name) {
-                            prop.onPickerValueClick = () => ContextModalListService.showModal({ editingId: prop.id || '' });
-                        }
-                        return prop;
-                    })
-                };
-            }
-
-        } else if (currentFocus === ECurrentFocus.flow) { // Mapeia os items de fluxo
-
-            /** Get editing item tree */
-            const editingItemTree = getItemTreeEditing();
-
-            /** Get all selected items in the flow editor */
-            const selectedItems = editingItemTree?.items.filter(flowItem => flowItem.isSelected);
-
-            // Found nothing to edit or selected
-            if (!editingItemTree || !selectedItems || selectedItems.length === 0) return nullRes;
-
-            // If more than one is selected, returns the selected quantity
-            if (selectedItems.length > 1) {
-                return {
-                    name: `${selectedItems.length} items selecteds`,
-                    subname: 'Selection',
-                    properties: [],
-                    id: undefined,
-                }
-            }
-
-            /** Item selected in the flow */
-            const selectedItem = selectedItems[0];
-
-            // Start mapped item
-            let mappedItem: IItem = {
-                id: selectedItem.id,
-                name: selectedItem.label,
-                subname: selectedItem.type,
-                properties: selectedItem.properties,
-            };
-
-            /**
-             * Return all local variables as suggestions.
-             */
-            const getAllLocalVariablesAsSuggestion = () => {
-
-                /** Current tab from editing item */
-                const currentTab = project.tabs.find(tab => tab.items.some(tabItem => tabItem.items.some(tabItemFlowItem => tabItemFlowItem.id === selectedItem.id)));
-                if (!currentTab) return [];
-
-                /** 
-                 * Take all variables from the tree item that is currently being
-                 * edited to put as suggestions of the item being mapped
-                 */
-                const allVariablesToSuggestions = currentTab.items.filter(treeItemToParams => (
-                    (treeItemToParams.ascendantId === editingItemTree.id) &&
-                    (
-                        treeItemToParams.type === EComponentType.inputVariable ||
-                        treeItemToParams.type === EComponentType.localVariable ||
-                        treeItemToParams.type === EComponentType.outputVariable
-                    )
-                ));
-
-                return allVariablesToSuggestions;
-            }
-
-            /**
-             * Return all input params by action name
-             * @param actionName Action name
-             */
-            const getAllInputParamsFromActionByName = (actionName: string) => {
-
-                /** Action selected */
-                const action = getItemTreeByName(actionName);
-                if (!action) return [];
-
-                const res: IProperty[] = [];
-
-                /** Get all input params from action selected */
-                let inputParams: TreeItemComponent[] = [];
-                project.tabs.forEach(tab => {
-                    inputParams = [
-                        ...inputParams,
-                        ...tab.items.filter(treeItem => (treeItem.ascendantId === action.id && treeItem.type === EComponentType.inputVariable)),
-                    ];
-                });
-
-                // Adiciona cada parâmetro como uma prop da action atual
-                inputParams.forEach(param => {
-
-                    // Se a prop/param já estiver no fluxo não acontece nada
-                    if (!mappedItem.properties.some(propertie => propertie.id === param.id)) {
-                        res.push({
-                            value: '',
-                            id: param.id,
-                            group: 'Params',
-                            name: param.label,
-                            type: TypeOfValues.expression,
-                            propertieType: PropertieTypes.param,
-                            information: param.description !== '' ? param.description : undefined,
-                            onPickerValueClick: () => !param.id ? null : ContextModalListService.showModal({ editingId: param.id }),
-                            suggestions: getAllLocalVariablesAsSuggestion()
-                                .map(suggest => ({
-                                    disabled: false,
-                                    name: suggest.name,
-                                    value: suggest.name,
-                                    label: suggest.label,
-                                    description: suggest.description,
-                                })),
-                        });
-                    }
-                });
-
-                return res;
-            }
-
-            /**
-             * Pega todos os parâmetros de entrada da action selecionada e adiciona como props
-             */
-            let allParamsToProps: IProperty[] = [];
-            mappedItem.properties = [
-                ...mappedItem.properties.map(mappedItemProp => {
-                    switch (mappedItemProp.propertieType) {
-                        case PropertieTypes.action:
-
-                            /** Tranforma a action atual em tipo de campo selection */
-                            mappedItemProp.type = TypeOfValues.selection;
-                            mappedItemProp.suggestions = [];
-
-                            project.tabs.forEach(tab => {
-                                tab.items.forEach(tabItem => {
-
-                                    // Filtra todas as actions globais ou extensions para criar as sugestões para a action.
-                                    if (tabItem.id && (tabItem.type === EComponentType.globalAction || tabItem.type === EComponentType.extension)) {
-                                        mappedItemProp = {
-                                            ...mappedItemProp,
-                                            suggestions: [
-                                                ...mappedItemProp.suggestions || [],
-                                                {
-                                                    disabled: false,
-                                                    name: tabItem.name,
-                                                    value: tabItem.name,
-                                                    label: tabItem.label,
-                                                    description: tabItem.description,
-                                                }
-                                            ]
-                                        }
+                if (!subscriptions.some(subs => subs.itemId === treeItem.id.value)) {
+                    subscriptions.push({
+                        itemId: treeItem.id.value,
+                        ...treeItem.isEditing.subscribe(isEditing => {
+                            if (isEditing) {
+                                treeItem.items.value.forEach(flowItem => {
+                                    if (flowItem.isSelected.value) {
+                                        setSelectedFlowItem(flowItem);
                                     }
 
+                                    if (!subscriptions.some(subs => subs.itemId === flowItem.isSelected.id)) {
+                                        subscriptions.push({
+                                            itemId: flowItem.isSelected.id,
+                                            ...flowItem.isSelected.subscribe(isSelected => {
+                                                if (isSelected) {
+                                                    setSelectedFlowItem(flowItem);
+                                                } else if (selectedFlowItem?.id.value === flowItem.id.value) {
+                                                    setSelectedFlowItem(undefined);
+                                                }
+                                            })
+                                        });
+                                    }
                                 });
-                            });
 
-                            allParamsToProps = getAllInputParamsFromActionByName(mappedItemProp.value);
+                                subscriptions.push({
+                                    itemId: treeItem.items.id,
+                                    ...treeItem.items.subscribe(items => {
+                                        items.forEach(flowItem => {
+                                            if (flowItem.isSelected.value) {
+                                                setSelectedFlowItem(flowItem);
+                                            }
 
-                            break;
-
-                        default:
-                            break;
-                    }
-
-                    return mappedItemProp;
-                })
-            ];
-
-            // Adiciona nas props os parâmetros encontrados acima
-            mappedItem.properties = [
-                ...mappedItem.properties,
-                ...allParamsToProps,
-            ];
-
-            // Mapea os items para modal
-            mappedItem.properties.map(prop => {
-                if (prop.id && prop.name) {
-                    prop.onPickerNameClick = () => ContextModalListService.showModal({ editingId: prop.id || '' });
-                    prop.onPickerValueClick = () => ContextModalListService.showModal({ editingId: prop.id || '' });
-                };
-                return prop;
+                                            if (!subscriptions.some(subs => subs.itemId === flowItem.isSelected.id)) {
+                                                subscriptions.push({
+                                                    itemId: flowItem.isSelected.id,
+                                                    ...flowItem.isSelected.subscribe(isSelected => {
+                                                        if (isSelected) {
+                                                            setSelectedFlowItem(flowItem);
+                                                        } else if (selectedFlowItem?.id.value === flowItem.id.value) {
+                                                            setSelectedFlowItem(undefined);
+                                                        }
+                                                    })
+                                                });
+                                            }
+                                        });
+                                    }),
+                                });
+                            } else if (selectedFlowItem?.id.value === treeItem.id.value) {
+                                setSelectedFlowItem(undefined);
+                            }
+                        }),
+                    })
+                }
             });
 
-            return mappedItem;
-        }
+            subscriptions.push({
+                itemId: tab.items.id,
+                ...tab.items.subscribe(items => {
+                    items.forEach(treeItem => {
+                        if (treeItem.isEditing.value) {
+                            treeItem.items.value.forEach(flowItem => {
+                                if (flowItem.isSelected.value) {
+                                    setSelectedFlowItem(flowItem);
+                                }
 
-        return nullRes;
-    }, [getItemTreeByName, getItemTreeEditing, project.tabs]);
+                                if (!subscriptions.some(subs => subs.itemId === flowItem.isSelected.id)) {
+                                    subscriptions.push({
+                                        itemId: flowItem.isSelected.id,
+                                        ...flowItem.isSelected.subscribe(isSelected => {
+                                            if (isSelected) {
+                                                setSelectedFlowItem(flowItem);
+                                            }
+                                        })
+                                    });
+                                }
+                            });
 
-    return (
-        <PropertiesEditor
-            onChange={handleOnChangeItems}
-            item={getSelectedItem(project.currentFocus)}
-        />
-    );
+                            subscriptions.push({
+                                itemId: treeItem.items.id,
+                                ...treeItem.items.subscribe(items => {
+                                    items.forEach(flowItem => {
+                                        if (flowItem.isSelected.value) {
+                                            setSelectedFlowItem(flowItem);
+                                        }
+
+                                        if (!subscriptions.some(subs => subs.itemId === flowItem.isSelected.id)) {
+                                            subscriptions.push({
+                                                itemId: flowItem.isSelected.id,
+                                                ...flowItem.isSelected.subscribe(isSelected => {
+                                                    if (isSelected) {
+                                                        setSelectedFlowItem(flowItem);
+                                                    } else if (selectedFlowItem?.id.value === flowItem.id.value) {
+                                                        setSelectedFlowItem(undefined);
+                                                    }
+                                                })
+                                            });
+                                        }
+                                    });
+                                }),
+                            });
+                        }
+
+                        if (!subscriptions.some(subs => subs.itemId === treeItem.id.value)) {
+                            subscriptions.push({
+                                itemId: treeItem.id.value,
+                                ...treeItem.isEditing.subscribe(isEditing => {
+                                    if (isEditing) {
+                                        treeItem.items.value.forEach(flowItem => {
+                                            if (flowItem.isSelected.value) {
+                                                setSelectedFlowItem(flowItem);
+                                            }
+
+                                            if (!subscriptions.some(subs => subs.itemId === flowItem.isSelected.id)) {
+                                                subscriptions.push({
+                                                    itemId: flowItem.isSelected.id,
+                                                    ...flowItem.isSelected.subscribe(isSelected => {
+                                                        if (isSelected) {
+                                                            setSelectedFlowItem(flowItem);
+                                                        }
+                                                    })
+                                                });
+                                            }
+                                        });
+                                    } else if (selectedFlowItem?.id.value === treeItem.id.value) {
+                                        setSelectedFlowItem(undefined);
+                                    }
+                                }),
+                            })
+                        }
+                    });
+                }),
+            });
+        });
+
+        return () => subscriptions.forEach(subs => subs?.unsubscribe());
+    }, [selectedFlowItem, tabs]);
+
+    if (!selectedFlowItem) return undefined;
+
+    return {
+        id: selectedFlowItem.id,
+        name: selectedFlowItem.label,
+        subname: selectedFlowItem.type,
+        properties: selectedFlowItem.properties,
+    };
+}
+
+export const PropertiesEditorController: React.FC = () => {
+    const selectedFlowItemProperties = useFlowSelectedItem();
+    const selectedTreeItemProperties = useTreeSelectedItem();
+
+    const { currentFocusStore } = useCurrentFocus();
+    const currentFocus = useObserverValue(currentFocusStore);
+
+    if (selectedTreeItemProperties && currentFocus === ECurrentFocus.tree) {
+        return (
+            <PropertiesEditor item={selectedTreeItemProperties} />
+        );
+    }
+
+    if (selectedFlowItemProperties && currentFocus === ECurrentFocus.flow) {
+        return (
+            <PropertiesEditor item={selectedFlowItemProperties} />
+        );
+    } else {
+        return null
+    }
 }

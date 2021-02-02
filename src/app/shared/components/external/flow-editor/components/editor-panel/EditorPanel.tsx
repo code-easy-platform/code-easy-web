@@ -1,8 +1,8 @@
-import React, { memo, useRef } from 'react';
+import React, { useCallback, useEffect, useRef } from 'react';
 import { useDrop, DropTargetMonitor, XYCoord } from 'react-dnd';
 
-import { useBoardSize } from '../../shared/hooks';
 import { IDroppableItem } from '../../shared/interfaces';
+import { useBoardSize } from '../../shared/hooks';
 
 type EditorPanelProps = Omit<{
     dotColor?: string;
@@ -26,15 +26,16 @@ type EditorPanelProps = Omit<{
 
 /**
  * Base para os items de fluxo.
- * È composto de um svg normal com o hook de drop do dnd.
+ * É composto de um svg normal com o hook de drop do dnd.
  *
  * @param allowedsInDrop - **string[]** - Usado para adicionar mais items suportados no drop
  * @param onDropItem - **Function** - Função executada quando um elemento for dropado no painel
  * @param backgroundType - **'dotted'** | **'checkered'** | **'custom'** - Parâmetro que controla o estilo do background do painel
  */
-const EditorPanel = React.forwardRef(({ allowedsInDrop, onDropItem, onDropPlaceholderChange, onChangeZoom, dotColor = '', elevationColor = 'black', useElevation = false, backgroundColor = '', dottedSize = 15, backgroundType = 'dotted', onArrowKeyDown, onKeyDownCtrlC, onKeyDownCtrlD, onKeyDownCtrlV, onKeyDownCtrlA, onKeyDownDelete, onAnyKeyDown, ...props }: EditorPanelProps, ref: any) => {
+export const EditorPanel = React.forwardRef(({ allowedsInDrop, onDropItem, onDropPlaceholderChange, onChangeZoom, dotColor = '', elevationColor = 'black', useElevation = false, backgroundColor = '', dottedSize = 15, backgroundType = 'dotted', onArrowKeyDown, onKeyDownCtrlC, onKeyDownCtrlD, onKeyDownCtrlV, onKeyDownCtrlA, onKeyDownDelete, onAnyKeyDown, ...props }: EditorPanelProps, ref: any) => {
     const { height, width } = useBoardSize();
 
+    const [background, setBackground] = React.useState<string>();
     const [zoom, setZoom] = React.useState(1);
     const wheel = (e: React.WheelEvent<SVGSVGElement>) => {
         if (e.altKey) {
@@ -49,35 +50,31 @@ const EditorPanel = React.forwardRef(({ allowedsInDrop, onDropItem, onDropPlaceh
 
     if (!ref) ref = useRef<SVGSVGElement>(null);
 
-    if (ref?.current) {
+    const handleKeyDown = useCallback((e: React.KeyboardEvent<SVGSVGElement>) => {
+        /** Delete   */ if (e.key === 'Delete') onKeyDownDelete && onKeyDownDelete(e);
+        /** Ctrl + a */ if (e.ctrlKey && (e.key === 'a')) onKeyDownCtrlA && onKeyDownCtrlA(e);
+        /** Ctrl + c */ if (e.ctrlKey && (e.key === 'c')) onKeyDownCtrlC && onKeyDownCtrlC(e);
+        /** Ctrl + v */ if (e.ctrlKey && (e.key === 'v')) onKeyDownCtrlV && onKeyDownCtrlV(e);
+        /** Ctrl + d */ if (e.ctrlKey && (e.key === 'd')) onKeyDownCtrlD && onKeyDownCtrlD(e);
 
-        /** Identifica teclas que foram acionadas enquando o editor está focado. */
-        ref.current.onkeydown = (event: React.KeyboardEvent<SVGSVGElement>) => {
+        if (e.key === 'ArrowUp') { onArrowKeyDown && onArrowKeyDown("ArrowUp", e); e.preventDefault(); };
+        if (e.key === 'ArrowDown') { onArrowKeyDown && onArrowKeyDown("ArrowDown", e); e.preventDefault(); };
+        if (e.key === 'ArrowLeft') { onArrowKeyDown && onArrowKeyDown("ArrowLeft", e); e.preventDefault(); };
+        if (e.key === 'ArrowRight') { onArrowKeyDown && onArrowKeyDown("ArrowRight", e); e.preventDefault(); };
 
-            /** Delete   */ if (event.key === 'Delete') onKeyDownDelete && onKeyDownDelete(event);
-            /** Ctrl + a */ if (event.ctrlKey && (event.key === 'a')) onKeyDownCtrlA && onKeyDownCtrlA(event);
-            /** Ctrl + c */ if (event.ctrlKey && (event.key === 'c')) onKeyDownCtrlC && onKeyDownCtrlC(event);
-            /** Ctrl + v */ if (event.ctrlKey && (event.key === 'v')) onKeyDownCtrlV && onKeyDownCtrlV(event);
-            /** Ctrl + d */ if (event.ctrlKey && (event.key === 'd')) onKeyDownCtrlD && onKeyDownCtrlD(event);
+        onAnyKeyDown && onAnyKeyDown(e);
+    }, [onAnyKeyDown, onArrowKeyDown, onKeyDownCtrlA, onKeyDownCtrlC, onKeyDownCtrlD, onKeyDownCtrlV, onKeyDownDelete]);
 
-            if (event.key === 'ArrowUp') { onArrowKeyDown && onArrowKeyDown("ArrowUp", event); event.preventDefault(); };
-            if (event.key === 'ArrowDown') { onArrowKeyDown && onArrowKeyDown("ArrowDown", event); event.preventDefault(); };
-            if (event.key === 'ArrowLeft') { onArrowKeyDown && onArrowKeyDown("ArrowLeft", event); event.preventDefault(); };
-            if (event.key === 'ArrowRight') { onArrowKeyDown && onArrowKeyDown("ArrowRight", event); event.preventDefault(); };
-
-            onAnyKeyDown && onAnyKeyDown(event);
+    // Set background style
+    useEffect(() => {
+        if (backgroundType === 'dotted') {
+            setBackground(`radial-gradient(${dotColor} 5%, ${backgroundColor} 5%)`);
+        } else if (backgroundType === 'checkered') {
+            setBackground(`linear-gradient(0deg, ${dotColor} 1px, ${backgroundColor} 0px), linear-gradient(90deg, ${dotColor} 1px, ${backgroundColor} 0px)`)
+        } else {
+            setBackground(props.style?.backgroundImage);
         }
-    }
-
-    // Este bloco serve para configurar o estilo do background do painel
-    let background;
-    if (backgroundType === 'dotted') {
-        background = `radial-gradient(${dotColor} 5%, ${backgroundColor} 5%)`;
-    } else if (backgroundType === 'checkered') {
-        background = `linear-gradient(0deg, ${dotColor} 1px, ${backgroundColor} 0px), linear-gradient(90deg, ${dotColor} 1px, ${backgroundColor} 0px)`
-    } else {
-        background = props.style?.backgroundImage;
-    }
+    }, [background, backgroundColor, backgroundType, dotColor, props.style]);
 
     /** Usado para que seja possível o drop de items no editor. */
     const [, dropRef] = useDrop<IDroppableItem, any, any>({
@@ -113,12 +110,13 @@ const EditorPanel = React.forwardRef(({ allowedsInDrop, onDropItem, onDropPlaceh
 
     return (
         <svg
-            {...props}
             ref={ref}
+            {...props}
             tabIndex={0}
             width={width}
             height={height}
             onWheel={wheel}
+            onKeyDown={handleKeyDown}
             preserveAspectRatio="none"
             style={{
                 outline: 'none',
@@ -132,5 +130,3 @@ const EditorPanel = React.forwardRef(({ allowedsInDrop, onDropItem, onDropPlaceh
     );
 
 });
-
-export default memo(EditorPanel);

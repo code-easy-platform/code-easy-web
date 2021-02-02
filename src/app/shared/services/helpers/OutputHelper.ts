@@ -8,7 +8,7 @@ class OutputHelperService {
     public getOutput(project: Project): ITreeItem[] {
         let res: ITreeItem[] = [];
 
-        if (res.length === 0) {
+        /* if (res.length === 0) {
             res.push({
                 label: "No output detected",
                 isDisabledSelect: true,
@@ -17,7 +17,7 @@ class OutputHelperService {
                 id: undefined,
                 type: "ITEM",
             });
-        }
+        } */
 
         return res;
     }
