@@ -1,14 +1,14 @@
 import React, { memo, useCallback, useMemo } from 'react';
 import { IconTrash, IconFlowStart, IconFlowAction, IconFlowIf, IconFlowForeach, IconFlowSwitch, IconFlowAssign, IconFlowEnd, IconFlowComment } from 'code-easy-components';
-import { set, observe, useSetObserver, transform } from 'react-observing';
+import { set, observe, useSetObserver } from 'react-observing';
 
 import { FlowItemAction, FlowItemAssign, FlowItemComment, FlowItemComponent, FlowItemEnd, FlowItemForeach, FlowItemIf, FlowItemStart, FlowItemSwitch } from '../../../shared/models';
 import { FlowEditor, IFlowItem, EItemType, EFlowItemType, EItemTypeList } from '../../../shared/components/external';
-import { CurrentFocusStore, PropertiesEditorStore } from '../../../shared/stores';
 import { BackgroundEmpty, BackgroundEmptyLeft, BackgroundEmptyLeftToTop } from '../../../assets';
 import { EComponentType, ECurrentFocus } from '../../../shared/enuns';
 import { IContextItemList } from '../../../shared/interfaces';
 import { openContextMenu } from '../../../shared/services';
+import { CurrentFocusStore } from '../../../shared/stores';
 import { useFlowEditorItems } from '../../../shared/hooks';
 import { useIdeConfigs } from '../../../shared/contexts';
 
@@ -61,15 +61,6 @@ export const FlowEditorController: React.FC = memo(() => {
 
     const handleOnChangeItems = useCallback((updatedItems: IFlowItem[]) => {
 
-        const setPropertiesEditor = (item: FlowItemComponent) => {
-            set(PropertiesEditorStore, {
-                id: item.id,
-                name: item.label,
-                subname: item.type,
-                properties: item.properties,
-            });
-        };
-
         // Added a new item in the list of items.
         updatedItems.forEach(updatedItem => {
             if (!flowItems.some(oldItem => oldItem.id.value === updatedItem.id.value)) {
@@ -80,7 +71,6 @@ export const FlowEditorController: React.FC = memo(() => {
                             connections: updatedItem.connections.value,
                             properties: FlowItemAssign.newItem(updatedItem.top.value, updatedItem.left.value, undefined, true).properties.value,
                         });
-                        setPropertiesEditor(inputVariable);
                         setItems(oldItems => [...oldItems, inputVariable]);;
                         break;
                     case EComponentType.localVariable:
@@ -89,7 +79,6 @@ export const FlowEditorController: React.FC = memo(() => {
                             connections: updatedItem.connections.value,
                             properties: FlowItemAssign.newItem(updatedItem.top.value, updatedItem.left.value, undefined, true).properties.value,
                         });
-                        setPropertiesEditor(localVariable);
                         setItems(oldItems => [...oldItems, localVariable]);
                         break;
                     case EComponentType.outputVariable:
@@ -98,7 +87,6 @@ export const FlowEditorController: React.FC = memo(() => {
                             connections: updatedItem.connections.value,
                             properties: FlowItemAssign.newItem(updatedItem.top.value, updatedItem.left.value, undefined, true).properties.value,
                         });
-                        setPropertiesEditor(outputVariable);
                         setItems(oldItems => [...oldItems, outputVariable]);
                         break;
                     case EComponentType.globalAction:
@@ -107,7 +95,6 @@ export const FlowEditorController: React.FC = memo(() => {
                             connections: updatedItem.connections.value,
                             properties: FlowItemAction.newItem(updatedItem.top.value, updatedItem.left.value, undefined, true).properties.value,
                         });
-                        setPropertiesEditor(globalAction);
                         setItems(oldItems => [...oldItems, globalAction]);
                         break;
                     case EItemType.ACTION:
@@ -116,7 +103,6 @@ export const FlowEditorController: React.FC = memo(() => {
                             connections: updatedItem.connections.value,
                             properties: FlowItemAction.newItem(updatedItem.top.value, updatedItem.left.value, undefined, true).properties.value,
                         });
-                        setPropertiesEditor(action);
                         setItems(oldItems => [...oldItems, action]);
                         break;
                     case EItemType.COMMENT:
@@ -125,7 +111,6 @@ export const FlowEditorController: React.FC = memo(() => {
                             connections: updatedItem.connections.value,
                             properties: FlowItemComment.newItem(updatedItem.top.value, updatedItem.left.value, true).properties.value,
                         });
-                        setPropertiesEditor(comment);
                         setItems(oldItems => [...oldItems, comment]);
                         break;
                     case EItemType.ASSIGN:
@@ -134,7 +119,6 @@ export const FlowEditorController: React.FC = memo(() => {
                             connections: updatedItem.connections.value,
                             properties: FlowItemAssign.newItem(updatedItem.top.value, updatedItem.left.value, undefined, true).properties.value,
                         });
-                        setPropertiesEditor(assign);
                         setItems(oldItems => [...oldItems, assign]);
                         break;
                     case EItemType.END:
@@ -142,7 +126,6 @@ export const FlowEditorController: React.FC = memo(() => {
                             id: updatedItem.id.value,
                             properties: FlowItemEnd.newItem(updatedItem.top.value, updatedItem.left.value, true).properties.value,
                         });
-                        setPropertiesEditor(end);
                         setItems(oldItems => [...oldItems, end]);
                         break;
                     case EItemType.FOREACH:
@@ -151,7 +134,6 @@ export const FlowEditorController: React.FC = memo(() => {
                             connections: updatedItem.connections.value,
                             properties: FlowItemForeach.newItem(updatedItem.top.value, updatedItem.left.value, undefined, true).properties.value,
                         });
-                        setPropertiesEditor(foreach);
                         setItems(oldItems => [...oldItems, foreach]);
                         break;
                     case EItemType.IF:
@@ -160,7 +142,6 @@ export const FlowEditorController: React.FC = memo(() => {
                             connections: updatedItem.connections.value,
                             properties: FlowItemIf.newItem(updatedItem.top.value, updatedItem.left.value, undefined, true).properties.value,
                         });
-                        setPropertiesEditor(ifComponent);
                         setItems(oldItems => [...oldItems, ifComponent]);
                         break;
                     case EItemType.START:
@@ -169,7 +150,6 @@ export const FlowEditorController: React.FC = memo(() => {
                             connections: updatedItem.connections.value,
                             properties: FlowItemStart.newItem(updatedItem.top.value, updatedItem.left.value, undefined, true).properties.value,
                         });
-                        setPropertiesEditor(start);
                         setItems(oldItems => [...oldItems, start]);
                         break;
                     case EItemType.SWITCH:
@@ -178,7 +158,6 @@ export const FlowEditorController: React.FC = memo(() => {
                             connections: updatedItem.connections.value,
                             properties: FlowItemSwitch.newItem(updatedItem.top.value, updatedItem.left.value, undefined, true).properties.value,
                         });
-                        setPropertiesEditor(switchComponent);
                         setItems(oldItems => [...oldItems, switchComponent]);
                         break;
                     default: break;
@@ -202,16 +181,6 @@ export const FlowEditorController: React.FC = memo(() => {
         const left: number = e.clientX;
         const top: number = e.clientY;
 
-
-        const setPropertiesEditor = (item: FlowItemComponent) => {
-            set(PropertiesEditorStore, {
-                id: item.id,
-                name: item.label,
-                subname: item.type,
-                properties: item.properties,
-            });
-        };
-
         const options: IContextItemList[] = [
             ...toolBoxItems.map(item => ({
                 icon: (item.icon.value as any).content,
@@ -228,51 +197,39 @@ export const FlowEditorController: React.FC = memo(() => {
                         switch (item.itemType.value) {
                             case EComponentType.inputVariable:
                                 const inputVariable = FlowItemAssign.newItem(top, left, undefined, true);
-                                setPropertiesEditor(inputVariable);
                                 return [...oldItems, inputVariable];
                             case EComponentType.localVariable:
                                 const localVariable = FlowItemAssign.newItem(top, left, undefined, true);
-                                setPropertiesEditor(localVariable);
                                 return [...oldItems, localVariable];
                             case EComponentType.outputVariable:
                                 const outputVariable = FlowItemAssign.newItem(top, left, undefined, true);
-                                setPropertiesEditor(outputVariable);
                                 return [...oldItems, outputVariable];
                             case EComponentType.globalAction:
                                 const globalAction = FlowItemAction.newItem(top, left, undefined, true);
-                                setPropertiesEditor(globalAction);
                                 return [...oldItems, globalAction];
                             case EItemType.ACTION:
                                 const action = FlowItemAction.newItem(top, left, undefined, true);
-                                setPropertiesEditor(action);
                                 return [...oldItems, action];
                             case EItemType.COMMENT:
                                 const comment = FlowItemComment.newItem(top, left, true);
-                                setPropertiesEditor(comment);
                                 return [...oldItems, comment];
                             case EItemType.ASSIGN:
                                 const assign = FlowItemAssign.newItem(top, left, undefined, true);
-                                setPropertiesEditor(assign);
                                 return [...oldItems, assign];
                             case EItemType.END:
                                 const end = FlowItemEnd.newItem(top, left, true);
-                                setPropertiesEditor(end);
                                 return [...oldItems, end];
                             case EItemType.FOREACH:
                                 const foreach = FlowItemForeach.newItem(top, left, undefined, true);
-                                setPropertiesEditor(foreach);
                                 return [...oldItems, foreach];
                             case EItemType.IF:
                                 const ifComponent = FlowItemIf.newItem(top, left, undefined, true);
-                                setPropertiesEditor(ifComponent);
                                 return [...oldItems, ifComponent];
                             case EItemType.START:
                                 const start = FlowItemStart.newItem(top, left, undefined, true);
-                                setPropertiesEditor(start);
                                 return [...oldItems, start];
                             case EItemType.SWITCH:
                                 const switchComponent = FlowItemSwitch.newItem(top, left, undefined, true);
-                                setPropertiesEditor(switchComponent);
                                 return [...oldItems, switchComponent];
                             default: return oldItems;
                         }
@@ -315,20 +272,6 @@ export const FlowEditorController: React.FC = memo(() => {
         setCurrentFocus(ECurrentFocus.flow);
     }, [setCurrentFocus]);
 
-    const handleOnSelect = useCallback((uids: string[]) => {
-        const selectedsItems = flowItems.filter(item => uids.includes(item.id.value || ''));
-        if (selectedsItems.length > 0) {
-            set(PropertiesEditorStore, {
-                id: selectedsItems[0].id,
-                name: transform(selectedsItems[0].label, value => String(value), value => String(value)),
-                subname: transform(selectedsItems[0].itemType || observe(''), value => String(value)),
-                properties: observe([]),
-            })
-        } else {
-            set(PropertiesEditorStore, undefined);
-        }
-    }, [flowItems]);
-
     return (
         <FlowEditor
             items={flowItems}
@@ -336,7 +279,6 @@ export const FlowEditorController: React.FC = memo(() => {
             onFocus={handleOnFocus}
             breadcrumbs={breadcamps}
             toolItems={toolBoxItems}
-            onSelect={handleOnSelect}
             onContextMenu={handleOnContextMenu}
             onChangeItems={handleOnChangeItems}
             childrenWhenItemsEmpty={getBackgroundEmpty}

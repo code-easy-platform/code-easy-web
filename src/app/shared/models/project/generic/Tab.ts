@@ -1,12 +1,12 @@
 import { IObservable, observe, set } from "react-observing";
 
 import { TreeItemFolder, TreeItemGlobalAction, TreeItemInputVariable, TreeItemLocalVariable, TreeItemOutpuVariable, TreeItemRouterConsume, TreeItemRouterExpose, TreeItemExtension, TreeItemLocalAction } from "../tree-items";
-import { PropertiesEditorStore, tabListStore } from "./../../../stores";
 import { ITreeItemComponent, ITab } from "./../../../interfaces";
 import { BasicConfigurations } from "./../BasicConfigurations";
 import { EComponentType, ETabType } from "./../../../enuns";
 import { IProperty } from "./../../../components/external";
 import { TreeItemComponent } from "./TreeItemComponent";
+import { tabListStore } from "./../../../stores";
 
 /**
  * Fields passeds in constructor
@@ -111,11 +111,6 @@ export class Tab<T extends ETabType = ETabType> extends BasicConfigurations<T> i
 
       // Remove item from the tab
       tabListStore.closeTab(itemId);
-
-      // Remove item in the properties editor
-      if (PropertiesEditorStore.value?.id.value === itemId) {
-        set(PropertiesEditorStore, undefined);
-      }
 
       return items.filter(item => item.id.value !== itemId);
     }

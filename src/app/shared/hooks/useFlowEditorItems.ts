@@ -2,9 +2,10 @@ import { useEffect, useState } from "react";
 import { ISubscription, observe, set, useSetObserver } from "react-observing";
 
 import { IBreadCrumbButton, IFlowItem } from "../components/external";
+import { EComponentType, ECurrentFocus } from "../enuns";
 import { useEditorContext } from "./useEditorContext";
 import { TreeItemComponent } from "../models";
-import { EComponentType } from "../enuns";
+import { CurrentFocusStore } from "../stores";
 
 
 export const useFlowEditorItems = () => {
@@ -146,6 +147,8 @@ export const useFlowEditorItems = () => {
                             {
                                 label: treeItem.label,
                                 onClick: observe(() => {
+                                    set(CurrentFocusStore, ECurrentFocus.tree);
+
                                     tabs.forEach(tabToUpdate => {
                                         set(tabToUpdate.isEditing, tabToUpdate.id.value === tab.id.value)
                                         tabToUpdate.items.value.forEach(item => {
