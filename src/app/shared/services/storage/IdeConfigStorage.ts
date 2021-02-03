@@ -51,4 +51,22 @@ export class IdeConfigStorage {
         localStorage.setItem(id, size.toString());
         return size;
     }
+
+
+    /**
+     * Get the saved state from a ColumnResizable at localstorage
+     * 
+     * @returns `number` or `0`
+     */
+    public static getResizableColumns(id: string): number {
+        let props = localStorage.getItem(id);
+        return parseInt(props || '0');
+    }
+
+    /** Save the state from a ColumnResizable in the localstorage */
+    public static setResizableColumns(id: string, size: number): number {
+        localStorage.setItem(id, size.toString());
+        return size;
+    }
+
 }

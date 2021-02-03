@@ -46,7 +46,7 @@ export const HomePage = () => {
     }, []);
 
     return (
-        <div className="main-page">
+        <div className="flex-column">
             <div className="tool-bar background-bars">
                 <TabButtonSimple
                     title="Menu"

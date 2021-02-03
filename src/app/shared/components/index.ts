@@ -4,6 +4,7 @@ export * from './loading-indicator/LoadingIndicator';
 export * from './botton-status-bar/BottonStatusBar';
 export * from './editable-content/EditableContent';
 export * from './context-modais/ContextModalList';
+export * from './resizable-columns/ResizableRows';
 export * from './context-menu/ContextMenu';
 export * from './output-panel/OutputPanel';
 export * from './version/IdeVersion';

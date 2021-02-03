@@ -1,7 +1,2 @@
 .main-page {
-  background-color: var(--main-background);
-  height: var(--size-window-vh-fill);
-  width: var(--size-window-vw-fill);
-  flex-direction: column;
-  display: flex;
 }

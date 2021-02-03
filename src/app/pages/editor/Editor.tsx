@@ -10,17 +10,31 @@ export const Editor: React.FC = () => {
         <CodeEditorProvider>
             <TabListProvider>
                 <CurrentFocusProvider>
-                    <div className="main-page">
+
+
+
+
+
+
+                    <div className="flex-column">
                         <ToolBar />
+
                         <hr className="hr" />
 
-                        <div className="fade-in" style={{ height: "calc(100vh - (var(--tool-bar-height) + var(--status-bar-height) + 2))" }}>{/* 2px is in 2x <hr/> */}
+                        <div className="fade-in">
                             <Playground />
                         </div>
 
                         <hr className="hr z1" />
+
                         <BottonStatusBar />
                     </div>
+
+
+
+
+
+
                     <ContextModalList />
                 </CurrentFocusProvider>
             </TabListProvider>
