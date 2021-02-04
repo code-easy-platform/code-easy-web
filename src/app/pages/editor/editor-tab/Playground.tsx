@@ -1,13 +1,13 @@
 import React, { memo } from 'react';
 
-import { TwoRowsResizable, OutputPanel, ResizableColumns } from '../../../shared/components';
+import { TwoRowsResizable, OutputPanel, TwoColumnsResizable } from '../../../shared/components';
 import { PropertiesEditorController } from './PropertiesEditor.Controller';
 import { TreeManagerController } from './TreeManager.Controller';
 import { FlowEditorController } from './FlowEditor.Controller';
 
 export const Playground: React.FC = memo(() => {
     return (
-        <ResizableColumns>
+        <TwoColumnsResizable minWidth={150} maxWidth={500}>
             <TwoRowsResizable
                 key={"OutputColumn"}
                 minBottomHeight={"1%"}
@@ -31,6 +31,6 @@ export const Playground: React.FC = memo(() => {
                     bottom={<PropertiesEditorController />}
                 />
             </div>
-        </ResizableColumns>
+        </TwoColumnsResizable>
     );
 });

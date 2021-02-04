@@ -1,55 +1,101 @@
-import React, { Component } from 'react';
+import React, { useCallback, useRef, useState } from 'react';
 
 import { IdeConfigStorage } from '../../services';
 
-interface IRecipeProps {
-    id: string,
-    left: JSX.Element,
-    right: JSX.Element,
-    aligment: 'left' | 'center' | 'right',
+interface TwoColumnsResizableProps {
+    minWidth?: number;
+    maxWidth?: number;
+    variant?: "left" | "right";
+    children: [React.ReactElement, React.ReactElement];
 }
-export class TwoColumnsResizable extends Component<IRecipeProps> {
-    private isRight = this.props.aligment === 'right';
+export const TwoColumnsResizable: React.FC<TwoColumnsResizableProps> = ({ variant = 'right', children: [leftChild, rightChild], minWidth, maxWidth }) => {
+    const oldPageX = useRef(0);
 
-    state = { colX: 300 }
+    const [[sizeLeft, sizeRight], setSizes] = useState([
+        variant === 'left' ? IdeConfigStorage.getResizableColumns(String(leftChild.key)) : 0,
+        variant === 'right' ? IdeConfigStorage.getResizableColumns(String(rightChild.key)) : 0,
+    ]);
 
-    componentDidMount() {
-        this.setState({ colX: IdeConfigStorage.getColumnsResizableSize(this.props.id) });
-        window.addEventListener("resize", () => this.setState({}));
-    }
+    const handleMouseMove = useCallback((e: any) => {
+        const movementX = e.pageX - oldPageX.current;
+        oldPageX.current = e.pageX;
 
-    componentWillUnmount() {
-        window.removeEventListener("resize", () => this.setState({}));
-    }
+        setSizes(oldSizes => {
+            if (variant === 'left') {
+                oldSizes[0] += movementX;
+            } else {
+                oldSizes[1] -= movementX;
+            }
+            return [...oldSizes];
+        });
+    }, [variant]);
 
-    mouseMove = (event: any) => {
-        this.setState({ colX: this.isRight ? (window.innerWidth - event.pageX + 6) : event.pageX });
-    }
-
-    mouseUp = () => {
+    const handleMouseUp = useCallback(() => {
+        oldPageX.current = 0;
         window.onmouseup = null;
         window.onmousemove = null;
         window.document.body.style.cursor = 'unset';
-        IdeConfigStorage.setColumnsResizableSize(this.props.id, this.state.colX);
-    }
+        setSizes(oldSizes => {
+            if (variant === 'left') {
+                if (maxWidth && oldSizes[0] > maxWidth) {
+                    oldSizes[0] = maxWidth;
+                } else if (minWidth && oldSizes[0] < minWidth) {
+                    oldSizes[0] = minWidth;
+                }
+            } else {
+                if (maxWidth && oldSizes[1] > maxWidth) {
+                    oldSizes[1] = maxWidth;
+                } else if (minWidth && oldSizes[1] < minWidth) {
+                    oldSizes[1] = minWidth;
+                }
+            }
+            return [...oldSizes];
+        });
+    }, [variant, maxWidth, minWidth]);
 
-    mouseDown = () => {
+    const handleMouseDown = useCallback((e: React.MouseEvent<any, MouseEvent>) => {
+        window.onmousemove = (e: any) => handleMouseMove(e);
         window.document.body.style.cursor = 'e-resize';
-        window.onmousemove = this.mouseMove;
-        window.onmouseup = this.mouseUp;
-    }
+        window.onmouseup = handleMouseUp;
+        oldPageX.current = e.pageX;
+    }, [handleMouseUp, handleMouseMove]);
 
-    render = () => (
-        <div className="flex1 full-width">
-            <div className="col-align-left display-block" style={{ width: window.innerWidth - this.state.colX }}>{this.props.left}</div>
-            <hr className='hr hr-vertical' />
-            <div className={`display-block col-align-${this.props.aligment}`} style={{ width: !this.isRight ? (window.innerWidth - this.state.colX) : this.state.colX }}>
-                <div className="grabber-col-right" onMouseDown={this.mouseDown} />
-                <div className="full-height full-width">
-                    {this.props.right}
-                </div>
+    return (
+        <div className="full-width">
+            <div
+                className={`${variant === 'right' && 'flex1'}`}
+                style={{
+                    width: variant === 'left' ? sizeLeft : undefined,
+                    maxWidth: variant === 'left' ? maxWidth : undefined,
+                    minWidth: variant === 'left' ? minWidth : undefined,
+                }}
+            >
+                {leftChild}
+            </div>
+            <div
+                className={`${variant === 'left' && 'flex1'}`}
+                style={{
+                    width: variant === 'right' ? sizeRight : undefined,
+                    maxWidth: variant === 'right' ? maxWidth : undefined,
+                    minWidth: variant === 'right' ? minWidth : undefined,
+                }}
+            >
+                <div
+                    onMouseDown={e => handleMouseDown(e)}
+                    style={{
+                        zIndex: 1,
+                        cursor: 'e-resize',
+                        width: 'var(--main-grapper-size)',
+                        marginRight: 'calc(var(--main-grapper-size) - (2 * var(--main-grapper-size)))',
+                    }}
+                />
+                <hr
+                    className="hr hr-vertical"
+                    onMouseDown={e => handleMouseDown(e)}
+                    style={{ cursor: 'e-resize', zIndex: 1 }}
+                />
+                {rightChild}
             </div>
         </div>
     );
-
 }

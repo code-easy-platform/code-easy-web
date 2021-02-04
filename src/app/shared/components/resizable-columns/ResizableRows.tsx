@@ -1,37 +1,55 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 
-import { IdeConfigStorage } from '../../services';
-
 interface ResizableColumnsProps {
     minWidth?: number;
     children: React.ReactElement[];
+    maxWidths?: (number | string)[];
 }
-export const ResizableColumns: React.FC<ResizableColumnsProps> = ({ children, minWidth = 100 }) => {
+export const ResizableColumns: React.FC<ResizableColumnsProps> = ({ children, maxWidths = children.map(() => 'auto'), minWidth = 100 }) => {
     const containerRef = useRef<HTMLDivElement>(null);
 
-    const [sizes, setSizes] = useState<number[]>(children.map(child => IdeConfigStorage.getResizableColumns(String(child.key))));
+    const [sizes, setSizes] = useState<number[]>(children.map(() => 0));
     const oldBodyClientWidth = useRef(0);
     const extraWidthRef = useRef(0);
+    const oldPageX = useRef(0);
 
     // Initialize oldBodyClientWidth
     useEffect(() => {
         oldBodyClientWidth.current = document.body.clientWidth;
     }, []);
 
+    // Validate maxWidths
+    useEffect(() => {
+        if (maxWidths.length !== children.length) {
+            throw new Error("The number of items in maxWidths must be the same as children in the 'ResizableColumns' component");
+        }
+    }, [children.length, maxWidths]);
+
     // Initialize childs sizes 
     useEffect(() => {
         setSizes(oldSizes => {
-            const currentSizeLenght = oldSizes.reduce((size, currentSize) => size > minWidth ? currentSize + size : currentSize, 0);
-            const hasNoValueLenght = oldSizes.filter(size => size < minWidth).length;
-            const value = ((containerRef.current?.clientWidth || 0) - currentSizeLenght) / hasNoValueLenght;
+            /** The ResizableColumns main container client width */
+            const containerClientWidth = containerRef.current?.clientWidth || 0;
 
-            oldSizes = oldSizes.map(size => size < minWidth ? size = value : size);
+            /** The sum of all old sizes */
+            const sumOfAllOldSizes = oldSizes.reduce((size, curSize) => size > minWidth ? curSize + size : curSize, 0);
 
-            if (oldSizes.reduce((size, currentSize) => size > minWidth ? currentSize + size : currentSize, 0) < (containerRef.current?.clientWidth || 0)) {
+            /** The number of sizes that are less than minWidth */
+            const numberOfSizesLessThanMinWidth = oldSizes.filter(size => size < minWidth).length;
+
+            /** The value to sizes less than min width */
+            const valueToSizesLessThanMinWidth = (containerClientWidth - sumOfAllOldSizes) / numberOfSizesLessThanMinWidth;
+
+            // Change value to sizes less than minWidth
+            oldSizes = oldSizes.map(() => valueToSizesLessThanMinWidth);
+
+            /* if (sumOfAllOldSizes < containerClientWidth) {
                 if (oldSizes.length > 0) {
-                    oldSizes[0] += (containerRef.current?.clientWidth || 0) - oldSizes.reduce((size, currentSize) => size > minWidth ? currentSize + size : currentSize, 0);
+                    oldSizes[0] += containerClientWidth - sumOfAllOldSizes;
                 }
-            }
+            } else if (sumOfAllOldSizes > containerClientWidth) {
+                console.log('entrou')
+            } */
 
             return [...oldSizes];
         });
@@ -66,42 +84,31 @@ export const ResizableColumns: React.FC<ResizableColumnsProps> = ({ children, mi
     }, [handleWindowResize]);
 
     const handleMouseMove = useCallback((e: any, index: number) => {
+        const movementX = e.pageX - oldPageX.current;
+        oldPageX.current = e.pageX;
+
         setSizes(oldSizes => {
             if (extraWidthRef.current > 5 || extraWidthRef.current < -5) {
-                extraWidthRef.current += e.movementX;
-            } else if (index === 1) {
-                if ((oldSizes[index - 1] + e.movementX) < minWidth || (oldSizes[index] - e.movementX) < minWidth) {
-                    extraWidthRef.current += e.movementX;
+                extraWidthRef.current += movementX;
+                return [...oldSizes];
+            } else {
+                if (
+                    (oldSizes[index - 1] + movementX) > maxWidths[index] ||
+                    (oldSizes[index] - movementX) > maxWidths[index] ||
+                    (oldSizes[index - 1] + movementX) < minWidth ||
+                    (oldSizes[index] - movementX) < minWidth
+                ) {
+                    extraWidthRef.current += movementX;
                     return oldSizes;
                 }
 
-                oldSizes[index - 1] += e.movementX;
-                oldSizes[index] -= e.movementX;
-            } else if (index > 0 && index === (oldSizes.length - 1)) {
-                if ((oldSizes[index - 1] + e.movementX) < minWidth || (oldSizes[index] - e.movementX) < minWidth) {
-                    extraWidthRef.current += e.movementX;
-                    return oldSizes;
-                }
+                oldSizes[index - 1] += movementX;
+                oldSizes[index] -= movementX;
 
-                oldSizes[index - 1] += e.movementX;
-                oldSizes[index] -= e.movementX;
-            } else if (index > 0 && index < (oldSizes.length - 1)) {
-                if ((oldSizes[index - 1] + e.movementX) < minWidth || (oldSizes[index] - e.movementX) < minWidth) {
-                    extraWidthRef.current += e.movementX;
-                    return oldSizes;
-                }
-
-                oldSizes[index - 1] += e.movementX;
-                oldSizes[index] -= e.movementX;
+                return [...oldSizes];
             }
-
-            oldSizes.forEach((size, index) => {
-                IdeConfigStorage.setResizableColumns(String(children[index].key), size);
-            });
-
-            return [...oldSizes];
         });
-    }, [children, minWidth]);
+    }, [maxWidths, minWidth]);
 
     const handleMouseUp = useCallback(() => {
         extraWidthRef.current = 0;
@@ -110,20 +117,27 @@ export const ResizableColumns: React.FC<ResizableColumnsProps> = ({ children, mi
         window.document.body.style.cursor = 'unset';
     }, []);
 
-    const handleMouseDown = useCallback((index: number) => {
+    const handleMouseDown = useCallback((e: React.MouseEvent<any, MouseEvent>, index: number) => {
         window.onmousemove = (e: any) => handleMouseMove(e, index);
         window.document.body.style.cursor = 'e-resize';
         window.onmouseup = handleMouseUp;
+        oldPageX.current = e.pageX;
     }, [handleMouseUp, handleMouseMove]);
 
     return (
-        <div ref={containerRef} className="flex1 full-width">
+        <div ref={containerRef} className="full-width">
             {children.map((child, index) => (
-                <div key={index} style={{ width: sizes[index] > minWidth ? sizes[index] : minWidth }}>
+                <div
+                    key={index}
+                    style={{
+                        maxWidth: maxWidths ? maxWidths[index] : 'auto',
+                        width: sizes[index] > minWidth ? sizes[index] : minWidth
+                    }}
+                >
                     {index !== 0 && (
                         <>
                             <div
-                                onMouseDown={() => handleMouseDown(index)}
+                                onMouseDown={e => handleMouseDown(e, index)}
                                 style={{
                                     zIndex: 1,
                                     cursor: 'e-resize',
@@ -134,7 +148,7 @@ export const ResizableColumns: React.FC<ResizableColumnsProps> = ({ children, mi
                             <hr
                                 className="hr hr-vertical"
                                 style={{ cursor: 'e-resize', zIndex: 1 }}
-                                onMouseDown={() => handleMouseDown(index)}
+                                onMouseDown={e => handleMouseDown(e, index)}
                             />
                         </>
                     )}
