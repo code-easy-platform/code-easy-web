@@ -51,13 +51,6 @@ export const TreeItem: React.FC<TreeItemProps> = (props) => {
     const icon = useObserverValue(_icon);
     const id = useObserverValue(_id);
 
-    // Scroll elements
-    useEffect(() => {
-        if (isSelected && itemRef.current) {
-            itemRef.current.scrollIntoView({ behavior: 'smooth' });
-        }
-    }, [isSelected]);
-
     const handleExpandNode = useCallback((e: React.MouseEvent<HTMLImageElement | HTMLInputElement, MouseEvent>) => {
         if (!isAllowedToggleNodeExpand) return;
 

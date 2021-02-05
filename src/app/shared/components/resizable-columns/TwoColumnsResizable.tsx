@@ -2,19 +2,20 @@ import React, { Component } from 'react';
 
 import { IdeConfigStorage } from '../../services';
 
-interface IRecipeProps {
+interface ITwoColumnsResizableProps {
     id: string,
-    left: JSX.Element,
-    right: JSX.Element,
-    aligment: 'left' | 'center' | 'right',
+    children: [JSX.Element, JSX.Element],
+    variant: 'left' | 'center' | 'right',
 }
-export class TwoColumnsResizable extends Component<IRecipeProps> {
-    private isRight = this.props.aligment === 'right';
+export class TwoColumnsResizable extends Component<ITwoColumnsResizableProps> {
+    private isRight = this.props.variant === 'right';
 
-    state = { colX: 300 }
+    leftChild = this.props.children[0];
+    rightChild = this.props.children[1];
+
+    state = { colX: IdeConfigStorage.getColumnsResizableSize(this.props.id) }
 
     componentDidMount() {
-        this.setState({ colX: IdeConfigStorage.getColumnsResizableSize(this.props.id) });
         window.addEventListener("resize", () => this.setState({}));
     }
 
@@ -41,15 +42,14 @@ export class TwoColumnsResizable extends Component<IRecipeProps> {
 
     render = () => (
         <div className="flex1 full-width">
-            <div className="col-align-left display-block" style={{ width: window.innerWidth - this.state.colX }}>{this.props.left}</div>
+            <div className="col-align-left display-block" style={{ width: window.innerWidth - this.state.colX }}>{this.leftChild}</div>
             <hr className='hr hr-vertical' />
-            <div className={`display-block col-align-${this.props.aligment}`} style={{ width: !this.isRight ? (window.innerWidth - this.state.colX) : this.state.colX }}>
+            <div className={`display-block col-align-${this.props.variant}`} style={{ width: !this.isRight ? (window.innerWidth - this.state.colX) : this.state.colX }}>
                 <div className="grabber-col-right" onMouseDown={this.mouseDown} />
                 <div className="full-height full-width">
-                    {this.props.right}
+                    {this.rightChild}
                 </div>
             </div>
         </div>
     );
-
 }
