@@ -1,3 +1,4 @@
+export * from './IFileToDownloadAsZip';
 export * from './IConfigurations';
 export * from './IFlowItemsStore';
 export * from './IResponseProps';

@@ -1,23 +1,18 @@
 import { saveAs } from 'file-saver';
 import JSZip from 'jszip';
 
-interface IFileToDownload {
-    name: string;
-    type?: string;
-    content?: string;
-    isFolder: boolean;
-    children?: IFileToDownload[];
-}
+import { IFileToDownloadAsZip } from '../../interfaces';
+
 
 /**
  * Allow download many files and folders
  * @param files List of files to download
  */
-const downloadFilesAsZip = (files: IFileToDownload[]): boolean => {
+const downloadFilesAsZip = (files: /* IFileToDownloadAsZip */any[]): boolean => {
     try {
         const base = new JSZip();
 
-        const zipFolderOrFile = (zip: JSZip, folderOrFile: IFileToDownload) => {
+        const zipFolderOrFile = (zip: JSZip, folderOrFile: IFileToDownloadAsZip) => {
             if (folderOrFile.isFolder) {
                 const folder = zip.folder(folderOrFile.name);
                 if (!folder) {
