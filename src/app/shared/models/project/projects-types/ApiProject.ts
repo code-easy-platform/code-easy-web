@@ -1,12 +1,12 @@
 import { IconAction, IconRouter, Utils } from "code-easy-components";
 import { observe, set } from "react-observing";
 
-import { ETabType, PropertieTypes, EProjectType } from "../../../enuns";
+import { TabAction/* Have circular dependênce with ProjectParse */, TabRoute } from "../tabs";
+import { ETabType, PropertieTypes, EProjectType, EComponentType } from "../../../enuns";
+import { IApiProject, IFileToDownloadAsZip, ITab } from "../../../interfaces";
 import { IProperty, TypeOfValues } from "../../../components/external";
-import { IApiProject, ITab } from "../../../interfaces";
-import { ProjectsStorage } from "../../../services";
-import { TabAction, TabRoute } from "../tabs";
-import { Project } from "./../generic";
+import { FlowToJs, ProjectsStorage } from "../../../services";
+import { Project, ProjectParser } from "./../generic";
 
 /**
  * When you already have properties
@@ -489,5 +489,69 @@ export class ApiProject extends Project implements IApiProject {
         set(newProject.version, version);
         set(newProject.description, description);
         return newProject;
+    }
+
+    public exportAsFiles(): IFileToDownloadAsZip {
+        const getPackageJson = (): string => {
+            const result = {
+                private: true,
+                repository: '',
+                main: 'server.js',
+                name: this.name.value,
+                author: this.author.value,
+                version: this.version.value,
+                description: this.description.value,
+                scripts: {
+                    dev: 'node ./server.js',
+                },
+                dependencies: {
+                    express: "^4.17.1",
+                },
+            };
+            return JSON.stringify(result, null, 2);
+        };
+
+        const getServer = (): string => {
+
+            return `
+import express from 'express';
+
+const app = express();
+app.listen(process.env.PORT || 3333);
+console.log(\`Server is running in port: ${process.env.PORT || 3333}...\`);
+            `;
+        };
+
+        const getAppRoutes = (): string => {
+
+            return '';
+        };
+
+        const project: IFileToDownloadAsZip = {
+            isFolder: true,
+            name: this.name.value,
+            children: [
+                { name: '.codeeasy', isFolder: true, children: [{ name: 'project', type: 'json', isFolder: false, content: ProjectParser.stringify(this) }] },
+                { name: 'package', type: 'json', isFolder: false, content: getPackageJson() },
+                { name: 'Routes', type: 'js', isFolder: false, content: getAppRoutes() },
+                { name: 'server', type: 'js', isFolder: false, content: getServer() },
+                {
+                    name: 'src',
+                    isFolder: true,
+                    children: this.tabs.value.map(tab => ({
+                        name: tab.label.value,
+                        isFolder: true,
+                        children: tab.items.value.map(treeItem => ({
+                            isFolder: treeItem.type.value === EComponentType.grouper,
+                            content: FlowToJs(treeItem, treeItem.items.value),
+                            name: treeItem.label.value,
+                            type: 'js',
+                        }))
+                    }))
+                },
+            ]
+        };
+
+        return project;
     }
 }

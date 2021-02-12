@@ -1,5 +1,5 @@
-import { Utils } from "code-easy-components";
 import { IObservable, observe } from "react-observing";
+import { Utils } from "code-easy-components";
 
 import { EProjectType, PropertieTypes } from "./../../../enuns";
 import { BasicConfigurations } from "./../BasicConfigurations";
