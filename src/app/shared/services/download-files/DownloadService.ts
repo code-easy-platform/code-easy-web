@@ -6,9 +6,10 @@ import { IFileToDownloadAsZip } from '../../interfaces';
 
 /**
  * Allow download many files and folders
+ * @param downloadName The name of the download
  * @param files List of files to download
  */
-const downloadFilesAsZip = (files: /* IFileToDownloadAsZip */any[]): boolean => {
+const downloadFilesAsZip = (downloadName: string, files: IFileToDownloadAsZip[]): boolean => {
     try {
         const base = new JSZip();
 
@@ -31,7 +32,7 @@ const downloadFilesAsZip = (files: /* IFileToDownloadAsZip */any[]): boolean => 
         });
 
         base.generateAsync({ type: "blob" }).then(content => {
-            saveAs(content, 'MyProject')
+            saveAs(content, downloadName);
         });
 
         return true;

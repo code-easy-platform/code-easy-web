@@ -3,15 +3,14 @@ import { VscHome, VscChevronDown, VscSaveAll, VscCheck } from 'react-icons/vsc';
 import { transform, useObserverValue } from 'react-observing';
 import { useHistory } from 'react-router-dom';
 
-import { DownloadService, FlowToJs, openContextMenu, ProjectsStorage } from '../../services';
+import { DownloadService, openContextMenu, ProjectsStorage } from '../../services';
 import { PropertiesTab } from '../../../pages/editor/properties-tab/PropertiesTab';
 import { useEditorContext, useTabList } from '../../hooks';
+import { ApiProject } from '../../models';
 import { TabButtonSimple } from '../tabs';
 import { TabList } from '../tab-list';
 import { Modal } from '../modal';
 import './ToolBar.css';
-import { ProjectParser } from '../../models';
-import { EComponentType } from '../../enuns';
 
 export const ToolBar: React.FC = memo(() => {
     const [isOpenModalProps, setIsOpenModalProps] = useState(false);
@@ -61,26 +60,8 @@ export const ToolBar: React.FC = memo(() => {
     }, [tabListStore]);
 
     const handleExport = useCallback(() => {
-        DownloadService.downloadFilesAsZip([
-            { name: '.codeeasy', isFolder: true, children: [{ name: 'config', type: 'json', isFolder: false, content: ProjectParser.stringify(project) }] },
-            { name: 'package', type: 'json', isFolder: false, content: '{}' },
-            { name: 'Routes', type: 'js', isFolder: false, content: '' },
-            { name: 'index', type: 'js', isFolder: false, content: '' },
-            {
-                name: 'src',
-                isFolder: true,
-                children: project.tabs.value.map(tab => ({
-                    name: tab.label.value,
-                    isFolder: true,
-                    children: tab.items.value.map(treeItem => ({
-                        isFolder: treeItem.type.value === EComponentType.grouper,
-                        content: FlowToJs(treeItem, treeItem.items.value),
-                        name: treeItem.label.value,
-                        type: 'js',
-                    }))
-                }))
-            },
-        ]);
+        const apiProject = new ApiProject({ properties: project.properties.value, tabs: project.tabs.value, id: project.id.value });
+        DownloadService.downloadFilesAsZip(apiProject.label.value, [apiProject.exportAsFiles()]);
     }, [project]);
 
     const openMoreOption = useCallback((e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {

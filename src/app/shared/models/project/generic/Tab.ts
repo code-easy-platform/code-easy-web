@@ -93,6 +93,7 @@ export class Tab<T extends ETabType = ETabType> extends BasicConfigurations<T> i
   }
 
   public addItem(newTreeItem: TreeItemComponent) {
+    this.items.value.forEach(item => set(item.isSelected, false));
     set(this.items, oldItems => [...oldItems, newTreeItem]);
   }
 
