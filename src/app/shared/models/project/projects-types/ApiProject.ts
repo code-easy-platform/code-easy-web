@@ -5,8 +5,8 @@ import { TabAction/* Have circular dependênce with ProjectParse */, TabRoute } 
 import { ETabType, PropertieTypes, EProjectType, EComponentType } from "../../../enuns";
 import { IApiProject, IFileToDownloadAsZip, ITab } from "../../../interfaces";
 import { IProperty, TypeOfValues } from "../../../components/external";
-import { FlowToJs, ProjectsStorage } from "../../../services";
-import { Project, ProjectParser } from "./../generic";
+import { FlowToJs, ProjectsStorage, toKebabCase, toPascalCase } from "../../../services";
+import { Project, ProjectParser, TreeItemComponent } from "./../generic";
 
 /**
  * When you already have properties
@@ -511,47 +511,171 @@ export class ApiProject extends Project implements IApiProject {
             return JSON.stringify(result, null, 2);
         };
 
+        /**
+         * Built the base app
+         */
         const getServer = (): string => {
-
-            return `
-import express from 'express';
-
-const app = express();
-app.listen(process.env.PORT || 3333);
-console.log(\`Server is running in port: ${process.env.PORT || 3333}...\`);
-            `;
+            return [
+                'const express = require(\'express\');',
+                '',
+                'const routers = require(\'./Routes\');',
+                '',
+                'const server = express();',
+                'server.use(express.json());',
+                '',
+                'server.use(routers);',
+                '',
+                'server.listen(process.env.PORT || 3333);',
+                '',
+                `console.log(\`Server is running in port: \${process.env.PORT || 3333}...\`);`,
+                '',
+            ].join('\n');
         };
 
-        const getAppRoutes = (): string => {
+        /**
+         * Define url methods
+         */
+        const getServerRoutes = (): string => {
 
-            return '';
+            const getRoutesImports = (): string[] => {
+                const result: string[] = [];
+                const routes = getRoutes();
+
+                routes.forEach(route => {
+                    result.push(`const ${route.name} = require('./src/routes/${route.name}');`);
+                });
+
+                return result;
+            };
+
+            const routeFile: string[] = [
+                'const express = require(\'express\');',
+                'const routers = express.Router();',
+                '',
+                ...getRoutesImports(),
+                '',
+            ];
+
+
+            const allRoutes = this.tabs.value.flatMap(tab => tab.items.value).filter(item => item.type.value === EComponentType.routeExpose)
+
+            allRoutes.forEach(route => {
+                const methodType = route.properties.value.find(prop => prop.propertieType.value === PropertieTypes.httpMethod)?.value;
+                const path = route.properties.value.find(prop => prop.propertieType.value === PropertieTypes.path)?.value;
+
+                if (route.description.value) {
+                    routeFile.push(`// ${route.description.value}`);
+                }
+
+                routeFile.push(`routers.${methodType?.value}('/${path?.value}', ${toPascalCase(route.label.value)})`);
+            });
+
+            return [
+                ...routeFile,
+                '',
+                'module.exports = routers;',
+                '',
+            ].join('\n');
         };
 
-        const project: IFileToDownloadAsZip = {
+        /**
+         * Build actions used by controllers
+         */
+        const getActions = (): IFileToDownloadAsZip[] => {
+            const allItems = this.tabs.value.flatMap(tab => tab.items.value).filter(item => item.type.value === EComponentType.globalAction);
+
+            const getActionFunction = (bodyFunction: string, treeItem: TreeItemComponent) => {
+                return [
+                    '/**',
+                    `*  ${treeItem.description.value}`,
+                    '*/',
+                    `const ${toPascalCase(treeItem.label.value)} = () => {`,
+                    '',
+                    bodyFunction,
+                    '',
+                    '}',
+                    '',
+                    `module.exports = ${toPascalCase(treeItem.label.value)};`,
+                    '',
+                ].join('\n');
+            };
+
+            return allItems.map(treeItem => ({
+                content: getActionFunction(FlowToJs(treeItem.items.value), treeItem),
+                isFolder: treeItem.type.value === EComponentType.grouper,
+                name: toPascalCase(treeItem.label.value),
+                type: 'js',
+            }));
+        };
+
+        /**
+         * Build actions used by controllers
+         */
+        const getRoutes = (): IFileToDownloadAsZip[] => {
+            const allItems = this.tabs.value.flatMap(tab => tab.items.value).filter(item => item.type.value === EComponentType.routeExpose);
+
+            const getRouteFunction = (bodyFunction: string, treeItem: TreeItemComponent) => {
+                return [
+                    '/**',
+                    `*  ${treeItem.description.value}`,
+                    '*/',
+                    `const ${toPascalCase(treeItem.label.value)} = (req, res) => {`,
+                    '',
+                    bodyFunction,
+                    '',
+                    '  res.send(\'Success\');',
+                    '',
+                    '}',
+                    '',
+                    `module.exports = ${toPascalCase(treeItem.label.value)};`,
+                    '',
+                ].join('\n');
+            };
+
+            return allItems.map(treeItem => ({
+                content: getRouteFunction(FlowToJs(treeItem.items.value), treeItem),
+                isFolder: treeItem.type.value === EComponentType.grouper,
+                name: toPascalCase(treeItem.label.value),
+                type: 'js',
+            }));
+        };
+
+        const gatTabs = (): IFileToDownloadAsZip[] => {
+            const result: IFileToDownloadAsZip[] = [];
+
+            this.tabs.value.forEach(tab => {
+                if (tab.type.value === ETabType.tabRoutes) {
+                    result.push({
+                        name: toKebabCase(tab.label.value),
+                        isFolder: true,
+                        children: [
+                            ...getRoutes(),
+                        ]
+                    });
+                } else {
+                    result.push({
+                        name: toKebabCase(tab.label.value),
+                        isFolder: true,
+                        children: [
+                            ...getActions(),
+                        ]
+                    });
+                }
+            })
+
+            return result;
+        }
+
+        return {
             isFolder: true,
             name: this.name.value,
             children: [
                 { name: '.codeeasy', isFolder: true, children: [{ name: 'project', type: 'json', isFolder: false, content: ProjectParser.stringify(this) }] },
                 { name: 'package', type: 'json', isFolder: false, content: getPackageJson() },
-                { name: 'Routes', type: 'js', isFolder: false, content: getAppRoutes() },
+                { name: 'Routes', type: 'js', isFolder: false, content: getServerRoutes() },
                 { name: 'server', type: 'js', isFolder: false, content: getServer() },
-                {
-                    name: 'src',
-                    isFolder: true,
-                    children: this.tabs.value.map(tab => ({
-                        name: tab.label.value,
-                        isFolder: true,
-                        children: tab.items.value.map(treeItem => ({
-                            isFolder: treeItem.type.value === EComponentType.grouper,
-                            content: FlowToJs(treeItem, treeItem.items.value),
-                            name: treeItem.label.value,
-                            type: 'js',
-                        }))
-                    }))
-                },
+                { name: 'src', isFolder: true, children: gatTabs() },
             ]
         };
-
-        return project;
     }
 }

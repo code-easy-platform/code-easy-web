@@ -1,9 +1,11 @@
-import { IFlowItemComponent, ITreeItemComponent } from "../../interfaces";
+import { IFlowItemComponent } from "../../interfaces";
 
-export const FlowToJs = (treeItem: ITreeItemComponent, flowItems: IFlowItemComponent[]) => {
-    let result = `export const ${treeItem.label.value} = () => {\n`;
+export const FlowToJs = (flowItems: IFlowItemComponent[]) => {
+    const result: string[] = [];
 
-    result = result + flowItems.map(flowItem => `// ${flowItem.name.value}${flowItem.label.value} -  - ${flowItem.type.value} - ${flowItem.flowItemType.value} - `).join('\n');
+    flowItems.forEach(flowItem => {
+        result.push(`// ${flowItem.name.value}${flowItem.label.value} -  - ${flowItem.type.value} - ${flowItem.flowItemType.value} - `);
+    });
 
-    return result + '\n}\n';
+    return result.join('\n');
 }
