@@ -1,11 +1,11 @@
 import { IObservable, observe } from "react-observing";
 
+import { IFileToDownloadAsZip, IProject, ITab } from "./../../../interfaces";
 import { ProjectConfigurations } from "./ProjectConfigurations";
 import { IProperty } from "./../../../components/external";
 import { EProjectType, ETabType } from "./../../../enuns";
 import { TabAction, TabData, TabRoute } from "./../tabs";
-import { IProject, ITab } from "./../../../interfaces";
-import { Tab } from "./../generic";
+import { Tab } from "./Tab";
 
 /**
  * Fields passeds in constructor
@@ -55,5 +55,13 @@ export class Project extends ProjectConfigurations implements IProject {
           });
       }
     }));
+  }
+
+  public exportAsFiles(): IFileToDownloadAsZip {
+    return {
+      children: [],
+      isFolder: true,
+      name: this.name.value,
+    };
   }
 }
