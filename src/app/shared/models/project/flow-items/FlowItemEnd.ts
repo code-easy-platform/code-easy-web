@@ -4,7 +4,7 @@ import { IconFlowEnd, Utils } from "code-easy-components";
 import { EFlowItemType, EItemType, IFileContent, IProperty, TypeOfValues } from "./../../../components/external";
 import { IFlowItemEnd } from "./../../../interfaces";
 import { PropertieTypes } from "./../../../enuns";
-import { FlowItemComponent } from "../generic";
+import { FlowItemComponent, TreeItemComponent } from "../generic";
 
 interface IConstrutor {
     properties?: IProperty[];
@@ -42,16 +42,16 @@ export class FlowItemEnd extends FlowItemComponent<EItemType.END> implements IFl
     public get isEditableOnDoubleClick() {
         return transform(super.isEditableOnDoubleClick, () => false, () => false);
     }
-    constructor(props: IConstrutor) {
-        super({
+    constructor(parent: TreeItemComponent, props: IConstrutor) {
+        super(parent, {
             properties: props.properties || [],
             type: EItemType.END,
             id: props.id,
         });
     }
 
-    public static newItem(top: number, left: number, isSelected: boolean = false) {
-        return new FlowItemEnd({
+    public static newItem(parent: TreeItemComponent, top: number, left: number, isSelected: boolean = false) {
+        return new FlowItemEnd(parent, {
             id: Utils.getUUID(),
             properties: [
                 {

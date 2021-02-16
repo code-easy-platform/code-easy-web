@@ -4,7 +4,7 @@ import { Utils } from "code-easy-components";
 import { EFlowItemType, EItemType, IConnection, IProperty, TypeOfValues } from "./../../../components/external";
 import { IFlowItemComment } from "./../../../interfaces";
 import { PropertieTypes } from "./../../../enuns";
-import { FlowItemComponent } from "../generic";
+import { FlowItemComponent, TreeItemComponent } from "../generic";
 
 interface IConstrutor {
     connections?: IConnection[];
@@ -72,8 +72,8 @@ export class FlowItemComment extends FlowItemComponent<EItemType.COMMENT> implem
         return prop;
     }
 
-    constructor(props: IConstrutor) {
-        super({
+    constructor(parent: TreeItemComponent, props: IConstrutor) {
+        super(parent, {
             properties: props.properties || [],
             connections: props.connections,
             type: EItemType.COMMENT,
@@ -81,8 +81,8 @@ export class FlowItemComment extends FlowItemComponent<EItemType.COMMENT> implem
         });
     }
 
-    public static newItem(top: number, left: number, isSelected: boolean = false) {
-        return new FlowItemComment({
+    public static newItem(parent: TreeItemComponent, top: number, left: number, isSelected: boolean = false) {
+        return new FlowItemComment(parent, {
             id: Utils.getUUID(),
             properties: [
                 {

@@ -5,7 +5,7 @@ import * as yup from 'yup';
 import { EFlowItemType, EItemType, IConnection, IFileContent, IProperty, TypeOfValues } from "./../../../components/external";
 import { IFlowItemIf } from "./../../../interfaces";
 import { PropertieTypes } from "./../../../enuns";
-import { FlowItemComponent } from "../generic";
+import { FlowItemComponent, TreeItemComponent } from "../generic";
 
 interface IConstrutor {
     connections?: IConnection[];
@@ -87,8 +87,8 @@ export class FlowItemIf extends FlowItemComponent<EItemType.IF> implements IFlow
         return prop;
     }
 
-    constructor(props: IConstrutor) {
-        super({
+    constructor(parent: TreeItemComponent, props: IConstrutor) {
+        super(parent, {
             properties: props.properties || [],
             connections: props.connections,
             type: EItemType.IF,
@@ -205,10 +205,10 @@ export class FlowItemIf extends FlowItemComponent<EItemType.IF> implements IFlow
         });
     }
 
-    public static newItem(top: number, left: number, targetId?: string, isSelected: boolean = false) {
+    public static newItem(parent: TreeItemComponent, top: number, left: number, targetId?: string, isSelected: boolean = false) {
         const id = Utils.getUUID();
 
-        return new FlowItemIf({
+        return new FlowItemIf(parent, {
             id,
             connections: (
                 targetId

@@ -1,5 +1,5 @@
 import { IconAction, Utils } from "code-easy-components";
-import { observe } from "react-observing";
+import { observe, set } from "react-observing";
 
 import { IFlowItemComponent, ITreeItemLocalAction } from "./../../../interfaces";
 import { IProperty, TypeOfValues } from "./../../../components/external";
@@ -28,11 +28,8 @@ export class TreeItemLocalAction extends TreeItemComponent<EComponentType.localA
     }
 
     public static newAction(label: string, ascendantId?: string) {
-        const end = FlowItemEnd.newItem(328, 100);
-        const start = FlowItemStart.newItem(128, 100, end.id.value);
-
-        return new TreeItemLocalAction({
-            items: [start, end],
+        const localAction = new TreeItemLocalAction({
+            items: [],
             properties: [
                 {
                     value: observe(label),
@@ -190,5 +187,12 @@ export class TreeItemLocalAction extends TreeItemComponent<EComponentType.localA
                 },
             ],
         });
+
+        const end = FlowItemEnd.newItem(localAction, 328, 100);
+        const start = FlowItemStart.newItem(localAction, 128, 100, end.id.value);
+
+        set(localAction.items, [start, end]);
+
+        return localAction;
     }
 }

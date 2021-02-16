@@ -4,7 +4,7 @@ import { IconFlowStart, Utils } from "code-easy-components";
 import { EFlowItemType, EItemType, IConnection, IFileContent, IProperty, TypeOfValues } from "./../../../components/external";
 import { IFlowItemStart } from "./../../../interfaces";
 import { PropertieTypes } from "./../../../enuns";
-import { FlowItemComponent } from "../generic";
+import { FlowItemComponent, TreeItemComponent } from "../generic";
 
 interface IConstrutor {
     connections?: IConnection[];
@@ -54,8 +54,8 @@ export class FlowItemStart extends FlowItemComponent<EItemType.START> implements
         return transform(super.isEditableOnDoubleClick, () => false, () => false);
     }
 
-    constructor(props: IConstrutor) {
-        super({
+    constructor(parent: TreeItemComponent, props: IConstrutor) {
+        super(parent, {
             properties: props.properties || [],
             connections: props.connections,
             type: EItemType.START,
@@ -63,10 +63,10 @@ export class FlowItemStart extends FlowItemComponent<EItemType.START> implements
         });
     }
 
-    public static newItem(top: number, left: number, targetId?: string, isSelected: boolean = false) {
+    public static newItem(parent: TreeItemComponent, top: number, left: number, targetId?: string, isSelected: boolean = false) {
         const id = Utils.getUUID();
 
-        return new FlowItemStart({
+        return new FlowItemStart(parent, {
             id,
             connections: (
                 targetId

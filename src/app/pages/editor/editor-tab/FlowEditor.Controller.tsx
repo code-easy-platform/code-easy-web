@@ -12,7 +12,7 @@ import { openContextMenu } from '../../../shared/services';
 import { useIdeConfigs } from '../../../shared/contexts';
 
 export const FlowEditorController: React.FC = memo(() => {
-    const { flowItems, breadcamps, hasSomethingEditing, hasSomethingToEdit, setItems } = useFlowEditorItems();
+    const { flowItems, breadcamps, hasSomethingEditing, hasSomethingToEdit, editingTreeItem, setItems } = useFlowEditorItems();
     const { flowBackgroundType, snapGridWhileDragging } = useIdeConfigs();
     const { setCurrentFocus } = useCurrentFocus();
 
@@ -62,100 +62,100 @@ export const FlowEditorController: React.FC = memo(() => {
 
         // Added a new item in the list of items.
         updatedItems.forEach(updatedItem => {
-            if (!flowItems.some(oldItem => oldItem.id.value === updatedItem.id.value)) {
+            if (editingTreeItem && !flowItems.some(oldItem => oldItem.id.value === updatedItem.id.value)) {
                 switch (updatedItem.itemType?.value) {
                     case EComponentType.inputVariable:
-                        const inputVariable = new FlowItemAssign({
+                        const inputVariable = new FlowItemAssign(editingTreeItem, {
                             id: updatedItem.id.value,
                             connections: updatedItem.connections.value,
-                            properties: FlowItemAssign.newItem(updatedItem.top.value, updatedItem.left.value, undefined, true).properties.value,
+                            properties: FlowItemAssign.newItem(editingTreeItem, updatedItem.top.value, updatedItem.left.value, undefined, true).properties.value,
                         });
                         setItems(oldItems => [...oldItems, inputVariable]);;
                         break;
                     case EComponentType.localVariable:
-                        const localVariable = new FlowItemAssign({
+                        const localVariable = new FlowItemAssign(editingTreeItem, {
                             id: updatedItem.id.value,
                             connections: updatedItem.connections.value,
-                            properties: FlowItemAssign.newItem(updatedItem.top.value, updatedItem.left.value, undefined, true).properties.value,
+                            properties: FlowItemAssign.newItem(editingTreeItem, updatedItem.top.value, updatedItem.left.value, undefined, true).properties.value,
                         });
                         setItems(oldItems => [...oldItems, localVariable]);
                         break;
                     case EComponentType.outputVariable:
-                        const outputVariable = new FlowItemAssign({
+                        const outputVariable = new FlowItemAssign(editingTreeItem, {
                             id: updatedItem.id.value,
                             connections: updatedItem.connections.value,
-                            properties: FlowItemAssign.newItem(updatedItem.top.value, updatedItem.left.value, undefined, true).properties.value,
+                            properties: FlowItemAssign.newItem(editingTreeItem, updatedItem.top.value, updatedItem.left.value, undefined, true).properties.value,
                         });
                         setItems(oldItems => [...oldItems, outputVariable]);
                         break;
                     case EComponentType.globalAction:
-                        const globalAction = new FlowItemAction({
+                        const globalAction = new FlowItemAction(editingTreeItem, {
                             id: updatedItem.id.value,
                             connections: updatedItem.connections.value,
-                            properties: FlowItemAction.newItem(updatedItem.top.value, updatedItem.left.value, undefined, true).properties.value,
+                            properties: FlowItemAction.newItem(editingTreeItem, updatedItem.top.value, updatedItem.left.value, undefined, true).properties.value,
                         });
                         setItems(oldItems => [...oldItems, globalAction]);
                         break;
                     case EItemType.ACTION:
-                        const action = new FlowItemAction({
+                        const action = new FlowItemAction(editingTreeItem, {
                             id: updatedItem.id.value,
                             connections: updatedItem.connections.value,
-                            properties: FlowItemAction.newItem(updatedItem.top.value, updatedItem.left.value, undefined, true).properties.value,
+                            properties: FlowItemAction.newItem(editingTreeItem, updatedItem.top.value, updatedItem.left.value, undefined, true).properties.value,
                         });
                         setItems(oldItems => [...oldItems, action]);
                         break;
                     case EItemType.COMMENT:
-                        const comment = new FlowItemComment({
+                        const comment = new FlowItemComment(editingTreeItem, {
                             id: updatedItem.id.value,
                             connections: updatedItem.connections.value,
-                            properties: FlowItemComment.newItem(updatedItem.top.value, updatedItem.left.value, true).properties.value,
+                            properties: FlowItemComment.newItem(editingTreeItem, updatedItem.top.value, updatedItem.left.value, true).properties.value,
                         });
                         setItems(oldItems => [...oldItems, comment]);
                         break;
                     case EItemType.ASSIGN:
-                        const assign = new FlowItemAssign({
+                        const assign = new FlowItemAssign(editingTreeItem, {
                             id: updatedItem.id.value,
                             connections: updatedItem.connections.value,
-                            properties: FlowItemAssign.newItem(updatedItem.top.value, updatedItem.left.value, undefined, true).properties.value,
+                            properties: FlowItemAssign.newItem(editingTreeItem, updatedItem.top.value, updatedItem.left.value, undefined, true).properties.value,
                         });
                         setItems(oldItems => [...oldItems, assign]);
                         break;
                     case EItemType.END:
-                        const end = new FlowItemEnd({
+                        const end = new FlowItemEnd(editingTreeItem, {
                             id: updatedItem.id.value,
-                            properties: FlowItemEnd.newItem(updatedItem.top.value, updatedItem.left.value, true).properties.value,
+                            properties: FlowItemEnd.newItem(editingTreeItem, updatedItem.top.value, updatedItem.left.value, true).properties.value,
                         });
                         setItems(oldItems => [...oldItems, end]);
                         break;
                     case EItemType.FOREACH:
-                        const foreach = new FlowItemForeach({
+                        const foreach = new FlowItemForeach(editingTreeItem, {
                             id: updatedItem.id.value,
                             connections: updatedItem.connections.value,
-                            properties: FlowItemForeach.newItem(updatedItem.top.value, updatedItem.left.value, undefined, true).properties.value,
+                            properties: FlowItemForeach.newItem(editingTreeItem, updatedItem.top.value, updatedItem.left.value, undefined, true).properties.value,
                         });
                         setItems(oldItems => [...oldItems, foreach]);
                         break;
                     case EItemType.IF:
-                        const ifComponent = new FlowItemIf({
+                        const ifComponent = new FlowItemIf(editingTreeItem, {
                             id: updatedItem.id.value,
                             connections: updatedItem.connections.value,
-                            properties: FlowItemIf.newItem(updatedItem.top.value, updatedItem.left.value, undefined, true).properties.value,
+                            properties: FlowItemIf.newItem(editingTreeItem, updatedItem.top.value, updatedItem.left.value, undefined, true).properties.value,
                         });
                         setItems(oldItems => [...oldItems, ifComponent]);
                         break;
                     case EItemType.START:
-                        const start = new FlowItemStart({
+                        const start = new FlowItemStart(editingTreeItem, {
                             id: updatedItem.id.value,
                             connections: updatedItem.connections.value,
-                            properties: FlowItemStart.newItem(updatedItem.top.value, updatedItem.left.value, undefined, true).properties.value,
+                            properties: FlowItemStart.newItem(editingTreeItem, updatedItem.top.value, updatedItem.left.value, undefined, true).properties.value,
                         });
                         setItems(oldItems => [...oldItems, start]);
                         break;
                     case EItemType.SWITCH:
-                        const switchComponent = new FlowItemSwitch({
+                        const switchComponent = new FlowItemSwitch(editingTreeItem, {
                             id: updatedItem.id.value,
                             connections: updatedItem.connections.value,
-                            properties: FlowItemSwitch.newItem(updatedItem.top.value, updatedItem.left.value, undefined, true).properties.value,
+                            properties: FlowItemSwitch.newItem(editingTreeItem, updatedItem.top.value, updatedItem.left.value, undefined, true).properties.value,
                         });
                         setItems(oldItems => [...oldItems, switchComponent]);
                         break;
@@ -168,7 +168,7 @@ export const FlowEditorController: React.FC = memo(() => {
         setItems(oldItems => {
             return oldItems.filter(flowItem => updatedItems.some(oldItem => oldItem.id.value === flowItem.id.value))
         });
-    }, [flowItems, setItems]);
+    }, [editingTreeItem, flowItems, setItems]);
 
     /** Quando clicado com o botão esquerdo do mouse no interior do editor esta função é acionada. */
     const handleOnContextMenu = useCallback((e: React.MouseEvent<any, MouseEvent>) => {
@@ -186,6 +186,8 @@ export const FlowEditorController: React.FC = memo(() => {
                 label: 'Add ' + item.label.value,
                 action: () => {
 
+                    if (!editingTreeItem) return;
+
                     // Add a new item
                     setItems(oldItems => {
                         if (!item.itemType) return oldItems;
@@ -195,40 +197,40 @@ export const FlowEditorController: React.FC = memo(() => {
 
                         switch (item.itemType.value) {
                             case EComponentType.inputVariable:
-                                const inputVariable = FlowItemAssign.newItem(top, left, undefined, true);
+                                const inputVariable = FlowItemAssign.newItem(editingTreeItem, top, left, undefined, true);
                                 return [...oldItems, inputVariable];
                             case EComponentType.localVariable:
-                                const localVariable = FlowItemAssign.newItem(top, left, undefined, true);
+                                const localVariable = FlowItemAssign.newItem(editingTreeItem, top, left, undefined, true);
                                 return [...oldItems, localVariable];
                             case EComponentType.outputVariable:
-                                const outputVariable = FlowItemAssign.newItem(top, left, undefined, true);
+                                const outputVariable = FlowItemAssign.newItem(editingTreeItem, top, left, undefined, true);
                                 return [...oldItems, outputVariable];
                             case EComponentType.globalAction:
-                                const globalAction = FlowItemAction.newItem(top, left, undefined, true);
+                                const globalAction = FlowItemAction.newItem(editingTreeItem, top, left, undefined, true);
                                 return [...oldItems, globalAction];
                             case EItemType.ACTION:
-                                const action = FlowItemAction.newItem(top, left, undefined, true);
+                                const action = FlowItemAction.newItem(editingTreeItem, top, left, undefined, true);
                                 return [...oldItems, action];
                             case EItemType.COMMENT:
-                                const comment = FlowItemComment.newItem(top, left, true);
+                                const comment = FlowItemComment.newItem(editingTreeItem, top, left, true);
                                 return [...oldItems, comment];
                             case EItemType.ASSIGN:
-                                const assign = FlowItemAssign.newItem(top, left, undefined, true);
+                                const assign = FlowItemAssign.newItem(editingTreeItem, top, left, undefined, true);
                                 return [...oldItems, assign];
                             case EItemType.END:
-                                const end = FlowItemEnd.newItem(top, left, true);
+                                const end = FlowItemEnd.newItem(editingTreeItem, top, left, true);
                                 return [...oldItems, end];
                             case EItemType.FOREACH:
-                                const foreach = FlowItemForeach.newItem(top, left, undefined, true);
+                                const foreach = FlowItemForeach.newItem(editingTreeItem, top, left, undefined, true);
                                 return [...oldItems, foreach];
                             case EItemType.IF:
-                                const ifComponent = FlowItemIf.newItem(top, left, undefined, true);
+                                const ifComponent = FlowItemIf.newItem(editingTreeItem, top, left, undefined, true);
                                 return [...oldItems, ifComponent];
                             case EItemType.START:
-                                const start = FlowItemStart.newItem(top, left, undefined, true);
+                                const start = FlowItemStart.newItem(editingTreeItem, top, left, undefined, true);
                                 return [...oldItems, start];
                             case EItemType.SWITCH:
-                                const switchComponent = FlowItemSwitch.newItem(top, left, undefined, true);
+                                const switchComponent = FlowItemSwitch.newItem(editingTreeItem, top, left, undefined, true);
                                 return [...oldItems, switchComponent];
                             default: return oldItems;
                         }
@@ -265,7 +267,7 @@ export const FlowEditorController: React.FC = memo(() => {
         }
 
         openContextMenu(left, top, options);
-    }, [flowItems, hasSomethingEditing, hasSomethingToEdit, setItems, toolBoxItems]);
+    }, [editingTreeItem, flowItems, hasSomethingEditing, hasSomethingToEdit, setItems, toolBoxItems]);
 
     const handleOnFocus = useCallback(() => {
         setCurrentFocus(ECurrentFocus.flow);

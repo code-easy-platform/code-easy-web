@@ -68,54 +68,54 @@ export class TreeItemComponent<T extends EComponentType = EComponentType> extend
       this.items = observe(props.items.map(item => {
         switch (item.type.value) {
           case EItemType.ACTION:
-            return new FlowItemAction({
+            return new FlowItemAction(this, {
               id: item.id.value,
               connections: item.connections.value,
               properties: item.properties.value || [],
             });
           case EItemType.ASSIGN:
-            return new FlowItemAssign({
+            return new FlowItemAssign(this, {
               id: item.id.value,
               connections: item.connections.value,
               properties: item.properties.value || [],
             });
           case EItemType.COMMENT:
-            return new FlowItemComment({
+            return new FlowItemComment(this, {
               id: item.id.value,
               connections: item.connections.value,
               properties: item.properties.value || [],
             });
           case EItemType.END:
-            return new FlowItemEnd({
+            return new FlowItemEnd(this, {
               id: item.id.value,
               properties: item.properties.value || [],
             });
           case EItemType.FOREACH:
-            return new FlowItemForeach({
+            return new FlowItemForeach(this, {
               id: item.id.value,
               connections: item.connections.value,
               properties: item.properties.value || [],
             });
           case EItemType.IF:
-            return new FlowItemIf({
+            return new FlowItemIf(this, {
               id: item.id.value,
               connections: item.connections.value,
               properties: item.properties.value || [],
             });
           case EItemType.START:
-            return new FlowItemStart({
+            return new FlowItemStart(this, {
               id: item.id.value,
               connections: item.connections.value,
               properties: item.properties.value || [],
             });
           case EItemType.SWITCH:
-            return new FlowItemSwitch({
+            return new FlowItemSwitch(this, {
               id: item.id.value,
               connections: item.connections.value,
               properties: item.properties.value || [],
             });
           default:
-            return new FlowItemComponent({
+            return new FlowItemComponent(this, {
               id: item.id.value,
               type: item.type.value,
               connections: item.connections.value,

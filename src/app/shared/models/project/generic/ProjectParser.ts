@@ -131,7 +131,12 @@ export class ProjectParser {
                     id: treeItem.id,
                     type: treeItem.type,
                     properties: treeItem.properties.map((prop: any) => newPropertie(prop)),
-                    items: treeItem.items.map((flowItem: any) => new FlowItemComponent({
+                    /*
+                        Even without receiving an instance of TreeItemComponent, 
+                        within TreeItemComponent these items are rebuilt with a
+                        valid instance of TreeItemComponent
+                    */
+                    items: treeItem.items.map((flowItem: any) => new FlowItemComponent(treeItem, {
                         id: flowItem.id,
                         type: flowItem.type,
                         properties: flowItem.properties.map((prop: any) => newPropertie(prop)),

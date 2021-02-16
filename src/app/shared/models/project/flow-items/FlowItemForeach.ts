@@ -5,7 +5,7 @@ import * as yup from 'yup';
 import { EFlowItemType, EItemType, IConnection, IFileContent, IProperty, TypeOfValues } from "./../../../components/external";
 import { IFlowItemForeach } from "./../../../interfaces";
 import { PropertieTypes } from "./../../../enuns";
-import { FlowItemComponent } from "../generic";
+import { FlowItemComponent, TreeItemComponent } from "../generic";
 
 interface IConstrutor {
     connections?: IConnection[];
@@ -87,8 +87,8 @@ export class FlowItemForeach extends FlowItemComponent<EItemType.FOREACH> implem
         return prop;
     }
 
-    constructor(props: IConstrutor) {
-        super({
+    constructor(parent: TreeItemComponent, props: IConstrutor) {
+        super(parent, {
             properties: props.properties || [],
             connections: props.connections,
             type: EItemType.FOREACH,
@@ -99,10 +99,10 @@ export class FlowItemForeach extends FlowItemComponent<EItemType.FOREACH> implem
         this._valideConnections();
     }
 
-    public static newItem(top: number, left: number, targetId?: string, isSelected: boolean = false) {
+    public static newItem(parent: TreeItemComponent, top: number, left: number, targetId?: string, isSelected: boolean = false) {
         const id = Utils.getUUID();
 
-        return new FlowItemForeach({
+        return new FlowItemForeach(parent, {
             id,
             connections: (
                 targetId

@@ -4,7 +4,8 @@ import { Utils } from "code-easy-components";
 import { EFlowItemType, EItemType, IConnection, IFileContent, IProperty, TypeOfValues } from "./../../../components/external";
 import { BasicConfigurations } from "../BasicConfigurations";
 import { IFlowItemComponent } from "./../../../interfaces";
-import { PropertieTypes } from "./../../../enuns";
+import { TreeItemComponent } from "./TreeItemComponent";
+import { EComponentType, PropertieTypes } from "./../../../enuns";
 
 /** Used in default properties */
 interface INewItemParams {
@@ -426,7 +427,7 @@ export class FlowItemComponent<T extends EItemType = EItemType> extends BasicCon
     return this._connections;
   }
 
-  constructor(props: IConstructor<T>) {
+  constructor(parent: TreeItemComponent<EComponentType>, props: IConstructor<T>) {
     super(props);
     
     this._connections = observe(props.connections || []);

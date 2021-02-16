@@ -69,11 +69,8 @@ export class TreeItemRouterExpose extends TreeItemComponent<EComponentType.route
     }
 
     public static newRoute(label: string, ascendantId?: string) {
-        const end = FlowItemEnd.newItem(328, 100);
-        const start = FlowItemStart.newItem(128, 100, end.id.value);
-
-        return new TreeItemRouterExpose({
-            items: [start, end],
+        const itemRoute = new TreeItemRouterExpose({
+            items: [],
             properties: [
                 {
                     value: observe(label),
@@ -281,6 +278,13 @@ export class TreeItemRouterExpose extends TreeItemComponent<EComponentType.route
                 },
             ],
         });
+
+        const end = FlowItemEnd.newItem(itemRoute, 328, 100);
+        const start = FlowItemStart.newItem(itemRoute, 128, 100, end.id.value);
+
+        set(itemRoute.items, [start, end]);
+
+        return itemRoute;
     }
 
     protected _defaultProperties() {

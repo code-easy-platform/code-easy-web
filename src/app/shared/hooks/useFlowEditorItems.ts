@@ -176,6 +176,7 @@ export const useFlowEditorItems = () => {
         setItems,
         flowItems,
         breadcamps,
+        editingTreeItem,
         hasSomethingToEdit,
         hasSomethingEditing: !!editingTreeItem,
     };
