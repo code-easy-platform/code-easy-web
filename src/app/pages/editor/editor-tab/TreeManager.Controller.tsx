@@ -67,62 +67,72 @@ export const TreeManagerController: React.FC = () => {
 
         /** Add a new param into other type of tree item */
         const addParam = (inputItemId: string | undefined, paramType: EComponentType.inputVariable | EComponentType.localVariable | EComponentType.outputVariable) => {
+            if (!currentTab) return;
+
             if (paramType === EComponentType.inputVariable) {
                 const newName = Utils.newName('Input', itemsCurrent.map(item => item.label.value));
-                const newTreeItem = TreeItemInputVariable.newVariable(newName, inputItemId);
-                currentTab?.addItem(newTreeItem);
+                const newTreeItem = TreeItemInputVariable.newVariable(currentTab, newName, inputItemId);
+                currentTab.addItem(newTreeItem);
             } else if (paramType === EComponentType.localVariable) {
                 const newName = Utils.newName('Local', itemsCurrent.map(item => item.label.value));
-                const newTreeItem = TreeItemLocalVariable.newVariable(newName, inputItemId);
-                currentTab?.addItem(newTreeItem);
+                const newTreeItem = TreeItemLocalVariable.newVariable(currentTab, newName, inputItemId);
+                currentTab.addItem(newTreeItem);
             } else if (paramType === EComponentType.outputVariable) {
                 const newName = Utils.newName('Out', itemsCurrent.map(item => item.label.value));
-                const newTreeItem = TreeItemOutpuVariable.newVariable(newName, inputItemId);
-                currentTab?.addItem(newTreeItem);
+                const newTreeItem = TreeItemOutpuVariable.newVariable(currentTab, newName, inputItemId);
+                currentTab.addItem(newTreeItem);
             }
         }
 
         /** Add a new param into a route */
         const addParamToARoute = (inputItemId: string | undefined, paramType: EComponentType.inputVariable | EComponentType.localVariable | EComponentType.outputVariable) => {
+            if (!currentTab) return;
+
             if (paramType === EComponentType.inputVariable) {
                 const newName = Utils.newName('Input', itemsCurrent.map(item => item.label.value));
-                const newTreeItem = TreeItemRouterInputVariable.newVariable(newName, inputItemId);
-                currentTab?.addItem(newTreeItem);
+                const newTreeItem = TreeItemRouterInputVariable.newVariable(currentTab, newName, inputItemId);
+                currentTab.addItem(newTreeItem);
             } else if (paramType === EComponentType.localVariable) {
                 const newName = Utils.newName('Local', itemsCurrent.map(item => item.label.value));
-                const newTreeItem = TreeItemLocalVariable.newVariable(newName, inputItemId);
-                currentTab?.addItem(newTreeItem);
+                const newTreeItem = TreeItemLocalVariable.newVariable(currentTab, newName, inputItemId);
+                currentTab.addItem(newTreeItem);
             } else if (paramType === EComponentType.outputVariable) {
                 const newName = Utils.newName('Out', itemsCurrent.map(item => item.label.value));
-                const newTreeItem = TreeItemOutpuVariable.newVariable(newName, inputItemId);
-                currentTab?.addItem(newTreeItem);
+                const newTreeItem = TreeItemOutpuVariable.newVariable(currentTab, newName, inputItemId);
+                currentTab.addItem(newTreeItem);
             }
         }
 
         /** Add a new route */
         const addRoute = (inputItemId: string | undefined, routerType: EComponentType.routeConsume | EComponentType.routeExpose) => {
+            if (!currentTab) return;
+
             const newName = Utils.newName('NewRouter', itemsCurrent.map(item => item.label.value));
             if (routerType === EComponentType.routeConsume) {
-                const newTreeItem = TreeItemRouterConsume.newRoute(newName, inputItemId);
-                currentTab?.addItem(newTreeItem);
+                const newTreeItem = TreeItemRouterConsume.newRoute(currentTab, newName, inputItemId);
+                currentTab.addItem(newTreeItem);
             } else if (routerType === EComponentType.routeExpose) {
-                const newTreeItem = TreeItemRouterExpose.newRoute(newName, inputItemId);
-                currentTab?.addItem(newTreeItem);
+                const newTreeItem = TreeItemRouterExpose.newRoute(currentTab, newName, inputItemId);
+                currentTab.addItem(newTreeItem);
             }
         }
 
         /** Add a new global action */
         const addAction = (inputItemId: string | undefined) => {
+            if (!currentTab) return;
+
             const newName = Utils.newName('NewAction', itemsCurrent.map(item => item.label.value));
-            const newTreeItem = TreeItemGlobalAction.newAction(newName, inputItemId);
-            currentTab?.addItem(newTreeItem);
+            const newTreeItem = TreeItemGlobalAction.newAction(currentTab, newName, inputItemId);
+            currentTab.addItem(newTreeItem);
         }
 
         /** Add a new folder */
         const addFolder = () => {
+            if (!currentTab) return;
+
             const newName = Utils.newName('NewFolder', itemsCurrent.map(item => item.label.value));
-            const newTreeItem = TreeItemFolder.newFolder(newName);
-            currentTab?.addItem(newTreeItem);
+            const newTreeItem = TreeItemFolder.newFolder(currentTab, newName);
+            currentTab.addItem(newTreeItem);
         }
 
         /** Remove tree items */

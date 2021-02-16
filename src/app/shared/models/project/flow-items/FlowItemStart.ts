@@ -54,8 +54,8 @@ export class FlowItemStart extends FlowItemComponent<EItemType.START> implements
         return transform(super.isEditableOnDoubleClick, () => false, () => false);
     }
 
-    constructor(public parent: TreeItemComponent, props: IConstrutor) {
-        super(parent, {
+    constructor(public treeItemParent: TreeItemComponent | undefined, props: IConstrutor) {
+        super(treeItemParent, {
             properties: props.properties || [],
             connections: props.connections,
             type: EItemType.START,
@@ -63,10 +63,10 @@ export class FlowItemStart extends FlowItemComponent<EItemType.START> implements
         });
     }
 
-    public static newItem(parent: TreeItemComponent, top: number, left: number, targetId?: string, isSelected: boolean = false) {
+    public static newItem(treeItemParent: TreeItemComponent, top: number, left: number, targetId?: string, isSelected: boolean = false) {
         const id = Utils.getUUID();
 
-        return new FlowItemStart(parent, {
+        return new FlowItemStart(treeItemParent, {
             id,
             connections: (
                 targetId

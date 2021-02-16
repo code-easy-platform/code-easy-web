@@ -87,8 +87,8 @@ export class FlowItemIf extends FlowItemComponent<EItemType.IF> implements IFlow
         return prop;
     }
 
-    constructor(public parent: TreeItemComponent, props: IConstrutor) {
-        super(parent, {
+    constructor(public treeItemParent: TreeItemComponent | undefined, props: IConstrutor) {
+        super(treeItemParent, {
             properties: props.properties || [],
             connections: props.connections,
             type: EItemType.IF,
@@ -205,10 +205,10 @@ export class FlowItemIf extends FlowItemComponent<EItemType.IF> implements IFlow
         });
     }
 
-    public static newItem(parent: TreeItemComponent, top: number, left: number, targetId?: string, isSelected: boolean = false) {
+    public static newItem(treeItemParent: TreeItemComponent, top: number, left: number, targetId?: string, isSelected: boolean = false) {
         const id = Utils.getUUID();
 
-        return new FlowItemIf(parent, {
+        return new FlowItemIf(treeItemParent, {
             id,
             connections: (
                 targetId

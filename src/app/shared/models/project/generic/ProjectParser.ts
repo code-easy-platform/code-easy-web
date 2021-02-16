@@ -126,20 +126,21 @@ export class ProjectParser {
             /*
                 This tabs will be rebuilt inside the project
             */
-            tabs: json.tabs.map((tab: any) => new Tab(json, {
+            tabs: json.tabs.map((tab: any) => new Tab(undefined, {
                 id: tab.id,
                 type: tab.type,
                 properties: tab.properties.map((prop: any) => newPropertie(prop)),
-                items: tab.items.map((treeItem: any) => new TreeItemComponent({
+                /*
+                    This tabs will be rebuilt inside the project
+                */
+                items: tab.items.map((treeItem: any) => new TreeItemComponent(undefined, {
                     id: treeItem.id,
                     type: treeItem.type,
                     properties: treeItem.properties.map((prop: any) => newPropertie(prop)),
                     /*
-                        Even without receiving an instance of TreeItemComponent, 
-                        within TreeItemComponent these items are rebuilt with a
-                        valid instance of TreeItemComponent
+                        This tabs will be rebuilt inside the project
                     */
-                    items: treeItem.items.map((flowItem: any) => new FlowItemComponent(treeItem, {
+                    items: treeItem.items.map((flowItem: any) => new FlowItemComponent(undefined, {
                         id: flowItem.id,
                         type: flowItem.type,
                         properties: flowItem.properties.map((prop: any) => newPropertie(prop)),

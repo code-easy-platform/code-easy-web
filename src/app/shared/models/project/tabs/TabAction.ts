@@ -10,8 +10,8 @@ interface IConstrutor {
     id?: string;
 }
 export class TabAction extends Tab<ETabType.tabActions> implements ITabAction {
-    constructor(public parent: Project, props: IConstrutor) {
-        super(parent, {
+    constructor(public projectParent: Project | undefined, props: IConstrutor) {
+        super(projectParent, {
             properties: props.properties || [],
             type: ETabType.tabActions,
             items: props.items || [],

@@ -427,7 +427,7 @@ export class FlowItemComponent<T extends EItemType = EItemType> extends BasicCon
     return this._connections;
   }
 
-  constructor(public parent: TreeItemComponent, props: IConstructor<T>) {
+  constructor(public treeItemParent: TreeItemComponent | undefined, props: IConstructor<T>) {
     super(props);
     
     this._connections = observe(props.connections || []);

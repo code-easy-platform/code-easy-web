@@ -42,16 +42,16 @@ export class FlowItemEnd extends FlowItemComponent<EItemType.END> implements IFl
     public get isEditableOnDoubleClick() {
         return transform(super.isEditableOnDoubleClick, () => false, () => false);
     }
-    constructor(public parent: TreeItemComponent, props: IConstrutor) {
-        super(parent, {
+    constructor(public treeItemParent: TreeItemComponent | undefined, props: IConstrutor) {
+        super(treeItemParent, {
             properties: props.properties || [],
             type: EItemType.END,
             id: props.id,
         });
     }
 
-    public static newItem(parent: TreeItemComponent, top: number, left: number, isSelected: boolean = false) {
-        return new FlowItemEnd(parent, {
+    public static newItem(treeItemParent: TreeItemComponent, top: number, left: number, isSelected: boolean = false) {
+        return new FlowItemEnd(treeItemParent, {
             id: Utils.getUUID(),
             properties: [
                 {

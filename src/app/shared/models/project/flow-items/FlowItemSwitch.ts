@@ -124,8 +124,8 @@ export class FlowItemSwitch extends FlowItemComponent<EItemType.SWITCH> implemen
         return transform(super.connections, readConnections, setConnections);
     }
 
-    constructor(public parent: TreeItemComponent, props: IConstrutor) {
-        super(parent, {
+    constructor(public treeItemParent: TreeItemComponent | undefined, props: IConstrutor) {
+        super(treeItemParent, {
             properties: props.properties || [],
             connections: props.connections,
             type: EItemType.SWITCH,
@@ -188,10 +188,10 @@ export class FlowItemSwitch extends FlowItemComponent<EItemType.SWITCH> implemen
         });
     }
 
-    public static newItem(parent: TreeItemComponent, top: number, left: number, targetId?: string, isSelected: boolean = false) {
+    public static newItem(treeItemParent: TreeItemComponent, top: number, left: number, targetId?: string, isSelected: boolean = false) {
         const id = Utils.getUUID();
 
-        return new FlowItemSwitch(parent, {
+        return new FlowItemSwitch(treeItemParent, {
             id,
             connections: (
                 targetId

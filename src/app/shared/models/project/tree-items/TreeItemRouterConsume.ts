@@ -4,7 +4,7 @@ import { IconRouterConsume, Utils } from "code-easy-components";
 import { ApiMethods, ApiMethodsList, EComponentType, PropertieTypes } from "./../../../enuns";
 import { IProperty, ISuggestion, TypeOfValues } from "./../../../components/external";
 import { ITreeItemRouterConsume } from "./../../../interfaces";
-import { TreeItemComponent } from "./../generic";
+import { Tab, TreeItemComponent } from "./../generic";
 
 interface IConstrutor {
     properties?: IProperty[];
@@ -23,8 +23,8 @@ export class TreeItemRouterConsume extends TreeItemComponent<EComponentType.rout
         return transform(super.isEditing, () => false, () => false);
     }
 
-    constructor(props: IConstrutor) {
-        super({
+    constructor(public tabParent: Tab | undefined, props: IConstrutor) {
+        super(tabParent, {
             properties: props.properties || [],
             type: EComponentType.routeConsume,
             id: props.id,
@@ -32,8 +32,8 @@ export class TreeItemRouterConsume extends TreeItemComponent<EComponentType.rout
         });
     }
 
-    public static newRoute(label: string, ascendantId?: string) {
-        return new TreeItemRouterConsume({
+    public static newRoute(tabParent: Tab, label: string, ascendantId?: string) {
+        return new TreeItemRouterConsume(tabParent, {
             properties: [
                 {
                     value: observe(label),

@@ -77,8 +77,8 @@ export class FlowItemAction extends FlowItemComponent<EItemType.ACTION> implemen
         return prop;
     }
 
-    constructor(public parent: TreeItemComponent, props: IConstrutor) {
-        super(parent, {
+    constructor(public treeItemParent: TreeItemComponent | undefined, props: IConstrutor) {
+        super(treeItemParent, {
             connections: props.connections || [],
             properties: props.properties || [],
             type: EItemType.ACTION,
@@ -89,10 +89,10 @@ export class FlowItemAction extends FlowItemComponent<EItemType.ACTION> implemen
         this._valideConnections();
     }
 
-    public static newItem(parent: TreeItemComponent, top: number, left: number, targetId?: string, isSelected: boolean = false) {
+    public static newItem(treeItemParent: TreeItemComponent, top: number, left: number, targetId?: string, isSelected: boolean = false) {
         const id = Utils.getUUID();
 
-        return new FlowItemAction(parent, {
+        return new FlowItemAction(treeItemParent, {
             id,
             connections: (
                 targetId

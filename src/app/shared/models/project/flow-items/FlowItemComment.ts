@@ -72,8 +72,8 @@ export class FlowItemComment extends FlowItemComponent<EItemType.COMMENT> implem
         return prop;
     }
 
-    constructor(public parent: TreeItemComponent, props: IConstrutor) {
-        super(parent, {
+    constructor(public treeItemParent: TreeItemComponent | undefined, props: IConstrutor) {
+        super(treeItemParent, {
             properties: props.properties || [],
             connections: props.connections,
             type: EItemType.COMMENT,
@@ -81,8 +81,8 @@ export class FlowItemComment extends FlowItemComponent<EItemType.COMMENT> implem
         });
     }
 
-    public static newItem(parent: TreeItemComponent, top: number, left: number, isSelected: boolean = false) {
-        return new FlowItemComment(parent, {
+    public static newItem(treeItemParent: TreeItemComponent, top: number, left: number, isSelected: boolean = false) {
+        return new FlowItemComment(treeItemParent, {
             id: Utils.getUUID(),
             properties: [
                 {

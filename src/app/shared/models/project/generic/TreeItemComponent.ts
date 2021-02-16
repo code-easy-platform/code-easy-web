@@ -7,6 +7,7 @@ import { IFlowItemComponent, ITreeItemComponent } from "./../../../interfaces";
 import { EComponentType, PropertieTypes } from "./../../../enuns";
 import { BasicConfigurations } from "../BasicConfigurations";
 import { FlowItemComponent } from "./FlowItemComponent";
+import { Tab } from "./Tab";
 
 /**
  * Fields passeds in constructor
@@ -61,7 +62,7 @@ export class TreeItemComponent<T extends EComponentType = EComponentType> extend
     return prop;
   }
 
-  constructor(props: IConstructor<T>) {
+  constructor(public tabParent: Tab | undefined, props: IConstructor<T>) {
     super(props);
 
     if (props.items) {

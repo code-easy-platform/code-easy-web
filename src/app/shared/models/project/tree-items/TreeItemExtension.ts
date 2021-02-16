@@ -4,7 +4,7 @@ import { Utils } from 'code-easy-components';
 import { IProperty, TypeOfValues } from "./../../../components/external";
 import { EComponentType, PropertieTypes } from "./../../../enuns";
 import { ITreeItemExtension } from "./../../../interfaces";
-import { TreeItemComponent } from "./../generic";
+import { Tab, TreeItemComponent } from "./../generic";
 
 interface IConstrutor {
     properties?: IProperty[];
@@ -17,8 +17,8 @@ interface IConstrutor {
 export class TreeItemExtension extends TreeItemComponent<EComponentType.extension> implements ITreeItemExtension {
     items: IObservable<[]> = observe([]);
 
-    constructor(props: IConstrutor) {
-        super({
+    constructor(public tabParent: Tab | undefined, props: IConstrutor) {
+        super(tabParent, {
             properties: props.properties || [],
             type: EComponentType.extension,
             id: props.id,
@@ -26,8 +26,8 @@ export class TreeItemExtension extends TreeItemComponent<EComponentType.extensio
         });
     }
 
-    public static newExtension(label: string, ascendantId?: string) {
-        return new TreeItemExtension({
+    public static newExtension(tabParent: Tab, label: string, ascendantId?: string) {
+        return new TreeItemExtension(tabParent, {
             properties: [
                 {
                     value: observe(label),

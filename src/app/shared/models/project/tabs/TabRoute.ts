@@ -14,8 +14,8 @@ interface IConstrutor {
 export class TabRoute extends Tab<ETabType.tabRoutes> implements ITabRoute {
     public items: IObservable<(TreeItemFolder | TreeItemRouterConsume | TreeItemRouterExpose | TreeItemInputVariable | TreeItemLocalVariable | TreeItemOutpuVariable)[]>;
 
-    constructor(public parent: Project, props?: IConstrutor) {
-        super(parent, {
+    constructor(public projectParent: Project | undefined, props?: IConstrutor) {
+        super(projectParent, {
             properties: props?.properties || [],
             items: props?.items || [],
             type: ETabType.tabRoutes,
@@ -33,38 +33,38 @@ export class TabRoute extends Tab<ETabType.tabRoutes> implements ITabRoute {
         return observe(items.map(item => {
             switch (item.type.value) {
                 case EComponentType.grouper:
-                    return new TreeItemFolder({
+                    return new TreeItemFolder(this, {
                         properties: item.properties.value || [],
                         id: item.id.value,
                     });
                 case EComponentType.routeExpose:
-                    return new TreeItemRouterExpose({
+                    return new TreeItemRouterExpose(this, {
                         properties: item.properties.value || [],
                         items: item.items.value,
                         id: item.id.value,
                     });
                 case EComponentType.routeConsume:
-                    return new TreeItemRouterConsume({
+                    return new TreeItemRouterConsume(this, {
                         properties: item.properties.value || [],
                         id: item.id.value,
                     });
                 case EComponentType.inputVariable:
-                    return new TreeItemInputVariable({
+                    return new TreeItemInputVariable(this, {
                         properties: item.properties.value || [],
                         id: item.id.value,
                     });
                 case EComponentType.localVariable:
-                    return new TreeItemLocalVariable({
+                    return new TreeItemLocalVariable(this, {
                         properties: item.properties.value || [],
                         id: item.id.value,
                     });
                 case EComponentType.outputVariable:
-                    return new TreeItemOutpuVariable({
+                    return new TreeItemOutpuVariable(this, {
                         properties: item.properties.value || [],
                         id: item.id.value,
                     });
                 default:
-                    return new TreeItemFolder({
+                    return new TreeItemFolder(this, {
                         properties: item.properties.value || [],
                         id: item.id.value,
                     });

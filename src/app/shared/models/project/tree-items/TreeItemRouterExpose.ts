@@ -7,7 +7,7 @@ import { IProperty, ISuggestion, TypeOfValues } from "./../../../components/exte
 import { IFlowItemComponent, ITreeItemRouterExpose } from "./../../../interfaces";
 import { FlowItemEnd, FlowItemStart } from "../flow-items";
 import { toKebabCase } from './../../../services';
-import { TreeItemComponent } from "./../generic";
+import { Tab, TreeItemComponent } from "./../generic";
 
 interface IConstrutor {
     items?: IFlowItemComponent[];
@@ -56,8 +56,8 @@ export class TreeItemRouterExpose extends TreeItemComponent<EComponentType.route
         return prop;
     }
 
-    constructor(props: IConstrutor) {
-        super({
+    constructor(public tabParent: Tab | undefined, props: IConstrutor) {
+        super(tabParent, {
             properties: props.properties || [],
             type: EComponentType.routeExpose,
             items: props.items,
@@ -68,8 +68,8 @@ export class TreeItemRouterExpose extends TreeItemComponent<EComponentType.route
         this._valideHttpMethod();
     }
 
-    public static newRoute(label: string, ascendantId?: string) {
-        const itemRoute = new TreeItemRouterExpose({
+    public static newRoute(tabParent: Tab, label: string, ascendantId?: string) {
+        const itemRoute = new TreeItemRouterExpose(tabParent, {
             items: [],
             properties: [
                 {

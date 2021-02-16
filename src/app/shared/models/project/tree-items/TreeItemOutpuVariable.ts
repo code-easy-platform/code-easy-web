@@ -4,7 +4,7 @@ import { IconOutpuParam, Utils } from "code-easy-components";
 import { EDataTypes, DataTypesList, EComponentType, PropertieTypes } from "./../../../enuns";
 import { IProperty, ISuggestion, TypeOfValues } from "./../../../components/external";
 import { ITreeItemOutpuVariable } from "./../../../interfaces";
-import { TreeItemComponent } from "./../generic";
+import { Tab, TreeItemComponent } from "./../generic";
 
 interface IConstrutor {
     properties?: IProperty[];
@@ -23,8 +23,8 @@ export class TreeItemOutpuVariable extends TreeItemComponent<EComponentType.outp
         return transform(super.isEditing, () => false, () => false);
     }
 
-    constructor(props: IConstrutor) {
-        super({
+    constructor(public tabParent: Tab | undefined, props: IConstrutor) {
+        super(tabParent, {
             properties: props.properties || [],
             type: EComponentType.outputVariable,
             id: props.id,
@@ -32,8 +32,8 @@ export class TreeItemOutpuVariable extends TreeItemComponent<EComponentType.outp
         });
     }
 
-    public static newVariable(label: string, ascendantId?: string) {
-        return new TreeItemOutpuVariable({
+    public static newVariable(tabParent: Tab, label: string, ascendantId?: string) {
+        return new TreeItemOutpuVariable(tabParent, {
             properties: [
                 {
                     value: observe(label),

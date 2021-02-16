@@ -4,7 +4,7 @@ import { IObservable, observe, set, transform } from "react-observing";
 import { IFileContent, IProperty, TypeOfValues } from "./../../../components/external";
 import { EComponentType, PropertieTypes } from "./../../../enuns";
 import { ITreeItemFolder } from "./../../../interfaces";
-import { TreeItemComponent } from "./../generic";
+import { Tab, TreeItemComponent } from "./../generic";
 
 interface IConstrutor {
     properties?: IProperty[];
@@ -40,8 +40,8 @@ export class TreeItemFolder extends TreeItemComponent<EComponentType.grouper> im
         });
     }
 
-    constructor(props: IConstrutor) {
-        super({
+    constructor(public tabParent: Tab | undefined, props: IConstrutor) {
+        super(tabParent, {
             properties: props.properties || [],
             type: EComponentType.grouper,
             id: props.id,
@@ -49,8 +49,8 @@ export class TreeItemFolder extends TreeItemComponent<EComponentType.grouper> im
         });
     }
 
-    public static newFolder(label: string, ascendantId?: string) {
-        return new TreeItemFolder({
+    public static newFolder(tabParent: Tab, label: string, ascendantId?: string) {
+        return new TreeItemFolder(tabParent, {
             properties: [
                 {
                     value: observe(label),

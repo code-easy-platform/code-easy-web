@@ -1,5 +1,6 @@
 import { Utils } from "code-easy-components";
 import { observe } from "react-observing";
+import { Tab } from "../generic";
 
 import { ISuggestion, TypeOfValues } from "./../../../components/external";
 import { ParametersLocationList, PropertieTypes } from "./../../../enuns";
@@ -10,10 +11,10 @@ import { TreeItemInputVariable } from "./TreeItemInputVariable";
  * Represents a router input variable implementation
  */
 export class TreeItemRouterInputVariable extends TreeItemInputVariable implements ITreeItemRouterInputVariable {
-    public static newVariable(label: string, ascendantId?: string) {
-        return new TreeItemRouterInputVariable({
+    public static newVariable(tabParent: Tab, label: string, ascendantId?: string) {
+        return new TreeItemRouterInputVariable(tabParent, {
             properties: [
-                ...TreeItemInputVariable.newVariable(label, ascendantId).properties.value,
+                ...TreeItemInputVariable.newVariable(tabParent, label, ascendantId).properties.value,
                 {
                     value: observe(label),
                     id: observe(Utils.getUUID()),

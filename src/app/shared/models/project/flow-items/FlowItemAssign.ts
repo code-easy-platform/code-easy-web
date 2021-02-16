@@ -55,8 +55,8 @@ export class FlowItemAssign extends FlowItemComponent<EItemType.ASSIGN> implemen
         return transform(this.properties, handleReadAssigns, handleSetAssigns);
     }
 
-    constructor(public parent: TreeItemComponent, props: IConstrutor) {
-        super(parent, {
+    constructor(public treeItemParent: TreeItemComponent | undefined, props: IConstrutor) {
+        super(treeItemParent, {
             properties: props.properties || [],
             connections: props.connections,
             type: EItemType.ASSIGN,
@@ -159,10 +159,10 @@ export class FlowItemAssign extends FlowItemComponent<EItemType.ASSIGN> implemen
         }
     }
 
-    public static newItem(parent: TreeItemComponent, top: number, left: number, targetId?: string, isSelected: boolean = false) {
+    public static newItem(treeItemParent: TreeItemComponent, top: number, left: number, targetId?: string, isSelected: boolean = false) {
         const id = Utils.getUUID();
 
-        return new FlowItemAssign(parent, {
+        return new FlowItemAssign(treeItemParent, {
             id,
             connections: (
                 targetId

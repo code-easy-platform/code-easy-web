@@ -87,8 +87,8 @@ export class FlowItemForeach extends FlowItemComponent<EItemType.FOREACH> implem
         return prop;
     }
 
-    constructor(public parent: TreeItemComponent, props: IConstrutor) {
-        super(parent, {
+    constructor(public treeItemParent: TreeItemComponent | undefined, props: IConstrutor) {
+        super(treeItemParent, {
             properties: props.properties || [],
             connections: props.connections,
             type: EItemType.FOREACH,
@@ -99,10 +99,10 @@ export class FlowItemForeach extends FlowItemComponent<EItemType.FOREACH> implem
         this._valideConnections();
     }
 
-    public static newItem(parent: TreeItemComponent, top: number, left: number, targetId?: string, isSelected: boolean = false) {
+    public static newItem(treeItemParent: TreeItemComponent, top: number, left: number, targetId?: string, isSelected: boolean = false) {
         const id = Utils.getUUID();
 
-        return new FlowItemForeach(parent, {
+        return new FlowItemForeach(treeItemParent, {
             id,
             connections: (
                 targetId

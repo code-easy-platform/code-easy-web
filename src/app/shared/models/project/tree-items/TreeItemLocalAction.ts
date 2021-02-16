@@ -5,7 +5,7 @@ import { IFlowItemComponent, ITreeItemLocalAction } from "./../../../interfaces"
 import { IProperty, TypeOfValues } from "./../../../components/external";
 import { EComponentType, PropertieTypes } from "./../../../enuns";
 import { FlowItemEnd, FlowItemStart } from "./../flow-items";
-import { TreeItemComponent } from "./../generic";
+import { Tab, TreeItemComponent } from "./../generic";
 
 interface IConstrutor {
     items?: IFlowItemComponent[];
@@ -18,8 +18,8 @@ interface IConstrutor {
  */
 export class TreeItemLocalAction extends TreeItemComponent<EComponentType.localAction> implements ITreeItemLocalAction {
 
-    constructor(props: IConstrutor) {
-        super({
+    constructor(public tabParent: Tab | undefined, props: IConstrutor) {
+        super(tabParent, {
             properties: props.properties || [],
             type: EComponentType.localAction,
             items: props.items,
@@ -27,8 +27,8 @@ export class TreeItemLocalAction extends TreeItemComponent<EComponentType.localA
         });
     }
 
-    public static newAction(label: string, ascendantId?: string) {
-        const localAction = new TreeItemLocalAction({
+    public static newAction(tabParent: Tab, label: string, ascendantId?: string) {
+        const localAction = new TreeItemLocalAction(tabParent, {
             items: [],
             properties: [
                 {

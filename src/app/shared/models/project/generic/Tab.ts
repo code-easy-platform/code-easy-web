@@ -24,65 +24,63 @@ interface IConstructor<T> {
 export class Tab<T extends ETabType = ETabType> extends BasicConfigurations<T> implements ITab<T> {
   public items: IObservable<TreeItemComponent[]>;
 
-  constructor(public parent: Project, props: IConstructor<T>) {
+  constructor(public projectParent: Project | undefined, props: IConstructor<T>) {
     super(props);
 
     this.items = observe(
       props.items.map(item => {
         switch (item.type.value) {
           case EComponentType.extension:
-            return new TreeItemExtension({
+            return new TreeItemExtension(this, {
               properties: item.properties.value || [],
               id: item.id.value,
             });
           case EComponentType.globalAction:
-            return new TreeItemGlobalAction({
+            return new TreeItemGlobalAction(this, {
               properties: item.properties.value || [],
               items: item.items.value,
               id: item.id.value,
             });
           case EComponentType.grouper:
-            return new TreeItemFolder({
+            return new TreeItemFolder(this, {
               properties: item.properties.value || [],
               id: item.id.value,
             });
           case EComponentType.inputVariable:
-            return new TreeItemInputVariable({
+            return new TreeItemInputVariable(this, {
               properties: item.properties.value || [],
               id: item.id.value,
             });
           case EComponentType.localAction:
-            return new TreeItemLocalAction({
+            return new TreeItemLocalAction(this, {
               properties: item.properties.value || [],
               items: item.items.value,
               id: item.id.value,
             });
           case EComponentType.localVariable:
-            return new TreeItemLocalVariable({
+            return new TreeItemLocalVariable(this, {
               properties: item.properties.value || [],
               id: item.id.value,
             });
           case EComponentType.outputVariable:
-            return new TreeItemOutpuVariable({
+            return new TreeItemOutpuVariable(this, {
               properties: item.properties.value || [],
               id: item.id.value,
             });
           case EComponentType.routeConsume:
-            return new TreeItemRouterConsume({
+            return new TreeItemRouterConsume(this, {
               properties: item.properties.value || [],
               id: item.id.value,
             });
           case EComponentType.routeExpose:
-            return new TreeItemRouterExpose({
+            return new TreeItemRouterExpose(this, {
               properties: item.properties.value || [],
               items: item.items.value,
               id: item.id.value,
             });
 
           default:
-            console.log("Teste")
-            console.log(item)
-            return new TreeItemComponent({
+            return new TreeItemComponent(this, {
               properties: item.properties.value || [],
               items: item.items.value,
               type: item.type.value,
