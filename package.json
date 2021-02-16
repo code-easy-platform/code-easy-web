@@ -4,7 +4,7 @@
   "private": false,
   "license": "Apache 2.0",
   "scripts": {
-    "start": "cross-env REACT_APP_VERSION='0.0.1' react-scripts start",
+    "start": "cross-env BROWSER=none REACT_APP_VERSION='0.0.1' react-scripts start",
     "build": "cross-env REACT_APP_VERSION='0.0.1' react-scripts build",
     "tsc-build": "tsc",
     "test": "react-scripts test",

@@ -5,7 +5,7 @@ import { TabAction/* Have circular dependênce with ProjectParse */, TabRoute } 
 import { ETabType, PropertieTypes, EProjectType, EComponentType } from "../../../enuns";
 import { IApiProject, IFileToDownloadAsZip, ITab } from "../../../interfaces";
 import { IProperty, TypeOfValues } from "../../../components/external";
-import { FlowToJs, ProjectsStorage, toKebabCase, toPascalCase } from "../../../services";
+import { FlowToJs, ProjectsStorage, toCamelCase, toKebabCase, toPascalCase } from "../../../services";
 import { Project, ProjectParser, TreeItemComponent } from "./../generic";
 
 /**
@@ -542,7 +542,7 @@ export class ApiProject extends Project implements IApiProject {
                 const routes = getRoutes();
 
                 routes.forEach(route => {
-                    result.push(`const ${route.name} = require('./src/routes/${route.name}');`);
+                    result.push(`const ${toCamelCase(route.name)} = require('./src/routes/${route.name}');`);
                 });
 
                 return result;
@@ -567,7 +567,7 @@ export class ApiProject extends Project implements IApiProject {
                     routeFile.push(`// ${route.description.value}`);
                 }
 
-                routeFile.push(`routers.${methodType?.value}('/${path?.value}', ${toPascalCase(route.label.value)})`);
+                routeFile.push(`routers.${methodType?.value}('/${path?.value}', ${toCamelCase(route.label.value)})`);
             });
 
             return [
@@ -582,25 +582,33 @@ export class ApiProject extends Project implements IApiProject {
          * Build actions used by controllers
          */
         const getActions = (): IFileToDownloadAsZip[] => {
-            const allItems = this.tabs.value.flatMap(tab => tab.items.value).filter(item => item.type.value === EComponentType.globalAction);
+            const allItems = this.tabs.value.flatMap(tab => tab.items.value);
+            const allActionItems = allItems.filter(item => item.type.value === EComponentType.globalAction);
 
             const getActionFunction = (bodyFunction: string, treeItem: TreeItemComponent) => {
+                const allOutputParamItems = allItems.filter(item => item.type.value === EComponentType.outputVariable && item.ascendantId.value === treeItem.id.value);
+                const allInputParamItems = allItems.filter(item => item.type.value === EComponentType.inputVariable && item.ascendantId.value === treeItem.id.value);
+
                 return [
                     '/**',
                     `*  ${treeItem.description.value}`,
                     '*/',
-                    `const ${toPascalCase(treeItem.label.value)} = () => {`,
+                    `const ${toCamelCase(treeItem.label.value)} = (${allInputParamItems.map(param => toCamelCase(param.name.value)).join(', ')}) => {`,
+                    ...allOutputParamItems.map(param => `  let ${toCamelCase(param.name.value)};`),
                     '',
                     bodyFunction,
                     '',
+                    '  return {',
+                    ...allOutputParamItems.map(param => `    ${toCamelCase(param.name.value)},`),
+                    '  };',
                     '}',
                     '',
-                    `module.exports = ${toPascalCase(treeItem.label.value)};`,
+                    `module.exports = ${toCamelCase(treeItem.label.value)};`,
                     '',
                 ].join('\n');
             };
 
-            return allItems.map(treeItem => ({
+            return allActionItems.map(treeItem => ({
                 content: getActionFunction(FlowToJs(treeItem.items.value), treeItem),
                 isFolder: treeItem.type.value === EComponentType.grouper,
                 name: toPascalCase(treeItem.label.value),
@@ -612,27 +620,36 @@ export class ApiProject extends Project implements IApiProject {
          * Build actions used by controllers
          */
         const getRoutes = (): IFileToDownloadAsZip[] => {
-            const allItems = this.tabs.value.flatMap(tab => tab.items.value).filter(item => item.type.value === EComponentType.routeExpose);
+            const allItems = this.tabs.value.flatMap(tab => tab.items.value);
+            const allRouteItems = allItems.filter(item => item.type.value === EComponentType.routeExpose);
 
             const getRouteFunction = (bodyFunction: string, treeItem: TreeItemComponent) => {
+                const allOutputParamItems = allItems.filter(item => item.type.value === EComponentType.outputVariable && item.ascendantId.value === treeItem.id.value);
+                const allInputParamItems = allItems.filter(item => item.type.value === EComponentType.inputVariable && item.ascendantId.value === treeItem.id.value);
+
                 return [
                     '/**',
                     `*  ${treeItem.description.value}`,
                     '*/',
-                    `const ${toPascalCase(treeItem.label.value)} = (req, res) => {`,
+                    `const ${toCamelCase(treeItem.label.value)} = (req, res) => {`,
+                    ...allInputParamItems.map(param => `  const ${toCamelCase(param.name.value)} = req.query.${toPascalCase(param.name.value)};`),
+                    '',
+                    ...allOutputParamItems.map(param => `  let ${toCamelCase(param.name.value)};`),
                     '',
                     bodyFunction,
                     '',
-                    '  res.send(\'Success\');',
+                    '  res.json({',
+                    ...allOutputParamItems.map(param => `    ${toCamelCase(param.name.value)},`),
+                    '  });',
                     '',
                     '}',
                     '',
-                    `module.exports = ${toPascalCase(treeItem.label.value)};`,
+                    `module.exports = ${toCamelCase(treeItem.label.value)};`,
                     '',
                 ].join('\n');
             };
 
-            return allItems.map(treeItem => ({
+            return allRouteItems.map(treeItem => ({
                 content: getRouteFunction(FlowToJs(treeItem.items.value), treeItem),
                 isFolder: treeItem.type.value === EComponentType.grouper,
                 name: toPascalCase(treeItem.label.value),
