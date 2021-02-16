@@ -4,7 +4,7 @@ import { TreeItemFolder, TreeItemInputVariable, TreeItemLocalVariable, TreeItemO
 import { ITabRoute, ITreeItemComponent } from "./../../../interfaces";
 import { EComponentType, ETabType } from "./../../../enuns";
 import { IProperty } from "./../../../components/external";
-import { Tab } from "../generic";
+import { Project, Tab } from "../generic";
 
 interface IConstrutor {
     items?: ITreeItemComponent[];
@@ -14,8 +14,8 @@ interface IConstrutor {
 export class TabRoute extends Tab<ETabType.tabRoutes> implements ITabRoute {
     public items: IObservable<(TreeItemFolder | TreeItemRouterConsume | TreeItemRouterExpose | TreeItemInputVariable | TreeItemLocalVariable | TreeItemOutpuVariable)[]>;
 
-    constructor(props?: IConstrutor) {
-        super({
+    constructor(public parent: Project, props?: IConstrutor) {
+        super(parent, {
             properties: props?.properties || [],
             items: props?.items || [],
             type: ETabType.tabRoutes,

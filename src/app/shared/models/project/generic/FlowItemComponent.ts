@@ -5,7 +5,7 @@ import { EFlowItemType, EItemType, IConnection, IFileContent, IProperty, TypeOfV
 import { BasicConfigurations } from "../BasicConfigurations";
 import { IFlowItemComponent } from "./../../../interfaces";
 import { TreeItemComponent } from "./TreeItemComponent";
-import { EComponentType, PropertieTypes } from "./../../../enuns";
+import { PropertieTypes } from "./../../../enuns";
 
 /** Used in default properties */
 interface INewItemParams {
@@ -427,7 +427,7 @@ export class FlowItemComponent<T extends EItemType = EItemType> extends BasicCon
     return this._connections;
   }
 
-  constructor(parent: TreeItemComponent<EComponentType>, props: IConstructor<T>) {
+  constructor(public parent: TreeItemComponent, props: IConstructor<T>) {
     super(props);
     
     this._connections = observe(props.connections || []);

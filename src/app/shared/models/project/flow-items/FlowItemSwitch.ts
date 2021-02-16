@@ -124,7 +124,7 @@ export class FlowItemSwitch extends FlowItemComponent<EItemType.SWITCH> implemen
         return transform(super.connections, readConnections, setConnections);
     }
 
-    constructor(parent: TreeItemComponent, props: IConstrutor) {
+    constructor(public parent: TreeItemComponent, props: IConstrutor) {
         super(parent, {
             properties: props.properties || [],
             connections: props.connections,

@@ -29,25 +29,25 @@ export class Project extends ProjectConfigurations implements IProject {
     this.tabs = observe(props.tabs.map(tab => {
       switch (tab.type.value) {
         case ETabType.tabRoutes:
-          return new TabRoute({
+          return new TabRoute(this, {
             id: tab.id.value,
             items: tab.items.value,
             properties: tab.properties.value || [],
           });
         case ETabType.tabActions:
-          return new TabAction({
+          return new TabAction(this, {
             id: tab.id.value,
             items: tab.items.value,
             properties: tab.properties.value || [],
           });
         case ETabType.tabDatas:
-          return new TabData({
+          return new TabData(this, {
             id: tab.id.value,
             items: tab.items.value,
             properties: tab.properties.value || [],
           });
         default:
-          return new Tab({
+          return new Tab(this, {
             id: tab.id.value,
             type: tab.type.value,
             items: tab.items.value,

@@ -72,7 +72,7 @@ export class FlowItemComment extends FlowItemComponent<EItemType.COMMENT> implem
         return prop;
     }
 
-    constructor(parent: TreeItemComponent, props: IConstrutor) {
+    constructor(public parent: TreeItemComponent, props: IConstrutor) {
         super(parent, {
             properties: props.properties || [],
             connections: props.connections,

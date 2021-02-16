@@ -77,7 +77,7 @@ export class FlowItemAction extends FlowItemComponent<EItemType.ACTION> implemen
         return prop;
     }
 
-    constructor(parent: TreeItemComponent, props: IConstrutor) {
+    constructor(public parent: TreeItemComponent, props: IConstrutor) {
         super(parent, {
             connections: props.connections || [],
             properties: props.properties || [],

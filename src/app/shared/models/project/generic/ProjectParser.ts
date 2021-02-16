@@ -123,7 +123,10 @@ export class ProjectParser {
             id: json.id,
             type: json.type,
             properties: json.properties.map((prop: any) => newPropertie(prop)),
-            tabs: json.tabs.map((tab: any) => new Tab({
+            /*
+                This tabs will be rebuilt inside the project
+            */
+            tabs: json.tabs.map((tab: any) => new Tab(json, {
                 id: tab.id,
                 type: tab.type,
                 properties: tab.properties.map((prop: any) => newPropertie(prop)),

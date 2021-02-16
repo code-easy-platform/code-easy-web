@@ -55,7 +55,7 @@ export class FlowItemAssign extends FlowItemComponent<EItemType.ASSIGN> implemen
         return transform(this.properties, handleReadAssigns, handleSetAssigns);
     }
 
-    constructor(parent: TreeItemComponent, props: IConstrutor) {
+    constructor(public parent: TreeItemComponent, props: IConstrutor) {
         super(parent, {
             properties: props.properties || [],
             connections: props.connections,

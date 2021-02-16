@@ -6,6 +6,7 @@ import { BasicConfigurations } from "./../BasicConfigurations";
 import { EComponentType, ETabType } from "./../../../enuns";
 import { IProperty } from "./../../../components/external";
 import { TreeItemComponent } from "./TreeItemComponent";
+import { Project } from "./Project";
 
 /**
  * Fields passeds in constructor
@@ -23,7 +24,7 @@ interface IConstructor<T> {
 export class Tab<T extends ETabType = ETabType> extends BasicConfigurations<T> implements ITab<T> {
   public items: IObservable<TreeItemComponent[]>;
 
-  constructor(props: IConstructor<T>) {
+  constructor(public parent: Project, props: IConstructor<T>) {
     super(props);
 
     this.items = observe(

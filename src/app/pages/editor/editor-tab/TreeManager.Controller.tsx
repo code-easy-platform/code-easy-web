@@ -2,19 +2,19 @@ import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { ISubscription, observe, transform, useObserver, useObserverValue } from 'react-observing';
 import { IconTrash, Utils } from 'code-easy-components';
 
-import { Tab, TabRoute, TreeItemFolder, TreeItemGlobalAction, TreeItemInputVariable, TreeItemLocalVariable, TreeItemOutpuVariable, TreeItemRouterConsume, TreeItemRouterExpose, TreeItemRouterInputVariable } from '../../../shared/models';
+import { Tab, TreeItemFolder, TreeItemGlobalAction, TreeItemInputVariable, TreeItemLocalVariable, TreeItemOutpuVariable, TreeItemRouterConsume, TreeItemRouterExpose, TreeItemRouterInputVariable } from '../../../shared/models';
 import { TreeManager, ITreeItem, CustomDragLayer } from '../../../shared/components/external';
+import { useEditorContext, useTabList, useCurrentFocus } from '../../../shared/hooks';
 import { ECurrentFocus, EComponentType, ETabType, } from '../../../shared/enuns';
 import { AssetsService, openContextMenu } from '../../../shared/services';
-import { useEditorContext, useTabList, useCurrentFocus } from '../../../shared/hooks';
 import { IContextItemList } from '../../../shared/interfaces';
 
 const useCurrentTab = () => {
-    const [currentTab, setCurrentTab] = useState<Tab>(new TabRoute());
+    const [currentTab, setCurrentTab] = useState<Tab>();
 
     const { project } = useEditorContext();
     const tabs = useObserverValue(project.tabs);
-    const [itemsCurrent, setItemsCurrent] = useObserver(currentTab.items);
+    const [itemsCurrent, setItemsCurrent] = useObserver(currentTab?.items || observe([]));
 
     useEffect(() => {
         const subscriptions: ISubscription[] = [];
@@ -52,7 +52,7 @@ export const TreeManagerController: React.FC = () => {
             const itemsToRemove = itemsCurrent.filter(itemCurrent => itemCurrent.isSelected.value);
             itemsToRemove.forEach(itemToRemove => {
                 if (itemToRemove.id.value) {
-                    currentTab.removeItem(itemToRemove.id.value);
+                    currentTab?.removeItem(itemToRemove.id.value);
 
                     // Remove item from the tab
                     tabListStore.closeTab(itemToRemove.id.value);
@@ -70,15 +70,15 @@ export const TreeManagerController: React.FC = () => {
             if (paramType === EComponentType.inputVariable) {
                 const newName = Utils.newName('Input', itemsCurrent.map(item => item.label.value));
                 const newTreeItem = TreeItemInputVariable.newVariable(newName, inputItemId);
-                currentTab.addItem(newTreeItem);
+                currentTab?.addItem(newTreeItem);
             } else if (paramType === EComponentType.localVariable) {
                 const newName = Utils.newName('Local', itemsCurrent.map(item => item.label.value));
                 const newTreeItem = TreeItemLocalVariable.newVariable(newName, inputItemId);
-                currentTab.addItem(newTreeItem);
+                currentTab?.addItem(newTreeItem);
             } else if (paramType === EComponentType.outputVariable) {
                 const newName = Utils.newName('Out', itemsCurrent.map(item => item.label.value));
                 const newTreeItem = TreeItemOutpuVariable.newVariable(newName, inputItemId);
-                currentTab.addItem(newTreeItem);
+                currentTab?.addItem(newTreeItem);
             }
         }
 
@@ -87,15 +87,15 @@ export const TreeManagerController: React.FC = () => {
             if (paramType === EComponentType.inputVariable) {
                 const newName = Utils.newName('Input', itemsCurrent.map(item => item.label.value));
                 const newTreeItem = TreeItemRouterInputVariable.newVariable(newName, inputItemId);
-                currentTab.addItem(newTreeItem);
+                currentTab?.addItem(newTreeItem);
             } else if (paramType === EComponentType.localVariable) {
                 const newName = Utils.newName('Local', itemsCurrent.map(item => item.label.value));
                 const newTreeItem = TreeItemLocalVariable.newVariable(newName, inputItemId);
-                currentTab.addItem(newTreeItem);
+                currentTab?.addItem(newTreeItem);
             } else if (paramType === EComponentType.outputVariable) {
                 const newName = Utils.newName('Out', itemsCurrent.map(item => item.label.value));
                 const newTreeItem = TreeItemOutpuVariable.newVariable(newName, inputItemId);
-                currentTab.addItem(newTreeItem);
+                currentTab?.addItem(newTreeItem);
             }
         }
 
@@ -104,10 +104,10 @@ export const TreeManagerController: React.FC = () => {
             const newName = Utils.newName('NewRouter', itemsCurrent.map(item => item.label.value));
             if (routerType === EComponentType.routeConsume) {
                 const newTreeItem = TreeItemRouterConsume.newRoute(newName, inputItemId);
-                currentTab.addItem(newTreeItem);
+                currentTab?.addItem(newTreeItem);
             } else if (routerType === EComponentType.routeExpose) {
                 const newTreeItem = TreeItemRouterExpose.newRoute(newName, inputItemId);
-                currentTab.addItem(newTreeItem);
+                currentTab?.addItem(newTreeItem);
             }
         }
 
@@ -115,26 +115,26 @@ export const TreeManagerController: React.FC = () => {
         const addAction = (inputItemId: string | undefined) => {
             const newName = Utils.newName('NewAction', itemsCurrent.map(item => item.label.value));
             const newTreeItem = TreeItemGlobalAction.newAction(newName, inputItemId);
-            currentTab.addItem(newTreeItem);
+            currentTab?.addItem(newTreeItem);
         }
 
         /** Add a new folder */
         const addFolder = () => {
             const newName = Utils.newName('NewFolder', itemsCurrent.map(item => item.label.value));
             const newTreeItem = TreeItemFolder.newFolder(newName);
-            currentTab.addItem(newTreeItem);
+            currentTab?.addItem(newTreeItem);
         }
 
         /** Remove tree items */
         const removeItem = (inputItemId: string | undefined) => {
             if (!inputItemId) return;
-            currentTab.removeItem(inputItemId);
+            currentTab?.removeItem(inputItemId);
 
             // Remove item from the tab
             tabListStore.closeTab(inputItemId);
         };
 
-        switch (currentTab.type.value) {
+        switch (currentTab?.type.value) {
             case ETabType.tabRoutes:
                 const itemTabRoutes = itemsCurrent.find(item => item.id.value === itemId);
                 if (itemId === undefined || itemTabRoutes?.type.value === EComponentType.grouper) {
@@ -374,15 +374,15 @@ export const TreeManagerController: React.FC = () => {
     const handleOnSelect = useCallback((uids: string[]) => {
         if (uids.length === 0) return;
 
-        const selectedItems = currentTab.items.value.filter(item => uids.includes(String(item.id.value)));
-        if (selectedItems.length === 0) return;
+        const selectedItems = currentTab?.items.value.filter(item => uids.includes(String(item.id.value)));
+        if (selectedItems?.length === 0) return;
 
-    }, [currentTab.items.value]);
+    }, [currentTab]);
 
     const handleOnEdit = useCallback((uid: string | undefined) => {
         if (!uid) return;
 
-        const newEditingItem = currentTab.items.value.find(item => item.id.value === uid);
+        const newEditingItem = currentTab?.items.value.find(item => item.id.value === uid);
         if (!newEditingItem) return;
 
         tabListStore.addTab({
@@ -394,7 +394,7 @@ export const TreeManagerController: React.FC = () => {
             description: newEditingItem.description,
             id: transform(newEditingItem.id, id => String(id), id => id),
         });
-    }, [currentTab.items.value, tabListStore]);
+    }, [currentTab, tabListStore]);
 
     const handleOnFocus = useCallback(() => {
         setCurrentFocus(ECurrentFocus.tree);
