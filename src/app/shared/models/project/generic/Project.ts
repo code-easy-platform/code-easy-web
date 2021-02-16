@@ -57,7 +57,7 @@ export class Project extends ProjectConfigurations implements IProject {
     }));
   }
 
-  public exportAsFiles(): IFileToDownloadAsZip {
+  public async exportAsFiles(): Promise<IFileToDownloadAsZip> {
     return {
       children: [],
       isFolder: true,

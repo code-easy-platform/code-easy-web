@@ -61,7 +61,9 @@ export const ToolBar: React.FC = memo(() => {
 
     const handleExport = useCallback(() => {
         const apiProject = new ApiProject({ properties: project.properties.value, tabs: project.tabs.value, id: project.id.value });
-        DownloadService.downloadFilesAsZip(apiProject.label.value, [apiProject.exportAsFiles()]);
+        apiProject.exportAsFiles().then(file => {
+            DownloadService.downloadFilesAsZip(apiProject.label.value, [file]);
+        });
     }, [project]);
 
     const openMoreOption = useCallback((e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {

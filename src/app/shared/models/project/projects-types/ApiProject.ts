@@ -491,7 +491,7 @@ export class ApiProject extends Project implements IApiProject {
         return newProject;
     }
 
-    public exportAsFiles(): IFileToDownloadAsZip {
+    public async exportAsFiles(): Promise<IFileToDownloadAsZip> {
         const getPackageJson = (): string => {
             const result = {
                 private: true,

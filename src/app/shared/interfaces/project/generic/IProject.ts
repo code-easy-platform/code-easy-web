@@ -19,5 +19,5 @@ export interface IProject {
   /**
    * Allow export the project as files
    */
-  exportAsFiles: () => IFileToDownloadAsZip;
+  exportAsFiles: () => Promise<IFileToDownloadAsZip>;
 }
