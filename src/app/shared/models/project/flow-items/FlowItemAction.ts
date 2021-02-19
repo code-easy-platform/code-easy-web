@@ -2,9 +2,9 @@ import { IObservable, observe, set, transform } from "react-observing";
 import { IconFlowAction, Utils } from "code-easy-components";
 import * as yup from 'yup';
 
-import { EFlowItemType, EItemType, IConnection, IFileContent, IProperty, TypeOfValues } from "./../../../components/external";
+import { EFlowItemType, EItemType, IConnection, IFileContent, IProperty, ISuggestion, TypeOfValues } from "./../../../components/external";
 import { IFlowItemAction } from "./../../../interfaces";
-import { PropertieTypes } from "./../../../enuns";
+import { EComponentType, PropertieTypes } from "./../../../enuns";
 import { FlowItemComponent, TreeItemComponent } from "./../generic";
 
 interface IConstrutor {
@@ -24,7 +24,18 @@ export class FlowItemAction extends FlowItemComponent<EItemType.ACTION> implemen
         return transform(super.flowItemType, () => EFlowItemType.acorn, () => EFlowItemType.acorn);
     }
     public get icon(): IObservable<IFileContent> {
-        return transform(super.icon, () => ({ content: IconFlowAction }), () => ({ content: IconFlowAction }));
+        return transform(this.action, actionName => {
+            // Find action icon
+            const availableActionLinks = this.treeItemParent?.tabParent?.projectParent?.tabs.value.flatMap(tab => tab.items.value).filter(treeItem => (
+                treeItem.type.value === EComponentType.globalAction ||
+                treeItem.type.value === EComponentType.routeConsume ||
+                treeItem.type.value === EComponentType.extension
+            ));
+
+            const usedLink = availableActionLinks?.find(link => link.name.value === actionName);
+
+            return usedLink?.icon.value || ({ content: IconFlowAction });
+        });
     }
 
     public get isEnabledNewConnetion(): IObservable<boolean> {
@@ -48,21 +59,33 @@ export class FlowItemAction extends FlowItemComponent<EItemType.ACTION> implemen
 
         prop = observe('');
 
+        const suggestions = this.treeItemParent?.tabParent?.projectParent?.tabs.value.flatMap(tab => tab.items.value).filter(treeItem => (
+            treeItem.type.value === EComponentType.globalAction ||
+            treeItem.type.value === EComponentType.routeConsume ||
+            treeItem.type.value === EComponentType.extension
+        ));
+
         this.properties.value = [
             ...this.properties.value,
             {
                 value: prop,
                 id: observe(Utils.getUUID()),
-                type: observe(TypeOfValues.expression),
                 name: observe(PropertieTypes.action),
+                type: observe(TypeOfValues.expression),
                 propertieType: observe(PropertieTypes.action),
                 nameHasError: transform(this.errosIds, values => values.includes(prop?.id || '')),
                 valueHasError: transform(this.errosIds, values => values.includes(prop?.id || '')),
                 nameHasWarning: transform(this.warningIds, values => values.includes(prop?.id || '')),
                 valueHasWarning: transform(this.warningIds, values => values.includes(prop?.id || '')),
+                suggestions: observe(suggestions?.map((suggestion): ISuggestion<string | number> => ({
+                    name: suggestion.name,
+                    value: suggestion.name,
+                    label: suggestion.label,
+                    disabled: observe(false),
+                    description: transform(suggestion.description, value => String(value)),
+                }))),
 
                 group: observe(undefined),
-                suggestions: observe(undefined),
                 information: observe(undefined),
                 fileMaxSize: observe(undefined),
                 focusOnRender: observe(undefined),
@@ -233,48 +256,48 @@ export class FlowItemAction extends FlowItemComponent<EItemType.ACTION> implemen
                     onPickerValueClick: observe(undefined),
                 },
                 {
-                  value: observe(true),
-                  id: observe(Utils.getUUID()),
-                  type: observe(TypeOfValues.hidden),
-                  name: observe(PropertieTypes.isEditableOnDoubleClick),
-                  propertieType: observe(PropertieTypes.isEditableOnDoubleClick),
-          
-                  group: observe(undefined),
-                  suggestions: observe(undefined),
-                  information: observe(undefined),
-                  fileMaxSize: observe(undefined),
-                  nameHasError: observe(undefined),
-                  valueHasError: observe(undefined),
-                  focusOnRender: observe(undefined),
-                  nameHasWarning: observe(undefined),
-                  valueHasWarning: observe(undefined),
-                  nameSuggestions: observe(undefined),
-                  editNameDisabled: observe(undefined),
-                  onPickerNameClick: observe(undefined),
-                  editValueDisabled: observe(undefined),
-                  onPickerValueClick: observe(undefined),
+                    value: observe(true),
+                    id: observe(Utils.getUUID()),
+                    type: observe(TypeOfValues.hidden),
+                    name: observe(PropertieTypes.isEditableOnDoubleClick),
+                    propertieType: observe(PropertieTypes.isEditableOnDoubleClick),
+
+                    group: observe(undefined),
+                    suggestions: observe(undefined),
+                    information: observe(undefined),
+                    fileMaxSize: observe(undefined),
+                    nameHasError: observe(undefined),
+                    valueHasError: observe(undefined),
+                    focusOnRender: observe(undefined),
+                    nameHasWarning: observe(undefined),
+                    valueHasWarning: observe(undefined),
+                    nameSuggestions: observe(undefined),
+                    editNameDisabled: observe(undefined),
+                    onPickerNameClick: observe(undefined),
+                    editValueDisabled: observe(undefined),
+                    onPickerValueClick: observe(undefined),
                 },
                 {
-                  value: observe(true),
-                  id: observe(Utils.getUUID()),
-                  type: observe(TypeOfValues.hidden),
-                  name: observe(PropertieTypes.isEditingTitle),
-                  propertieType: observe(PropertieTypes.isEditingTitle),
-          
-                  group: observe(undefined),
-                  suggestions: observe(undefined),
-                  information: observe(undefined),
-                  fileMaxSize: observe(undefined),
-                  nameHasError: observe(undefined),
-                  valueHasError: observe(undefined),
-                  focusOnRender: observe(undefined),
-                  nameHasWarning: observe(undefined),
-                  valueHasWarning: observe(undefined),
-                  nameSuggestions: observe(undefined),
-                  editNameDisabled: observe(undefined),
-                  onPickerNameClick: observe(undefined),
-                  editValueDisabled: observe(undefined),
-                  onPickerValueClick: observe(undefined),
+                    value: observe(true),
+                    id: observe(Utils.getUUID()),
+                    type: observe(TypeOfValues.hidden),
+                    name: observe(PropertieTypes.isEditingTitle),
+                    propertieType: observe(PropertieTypes.isEditingTitle),
+
+                    group: observe(undefined),
+                    suggestions: observe(undefined),
+                    information: observe(undefined),
+                    fileMaxSize: observe(undefined),
+                    nameHasError: observe(undefined),
+                    valueHasError: observe(undefined),
+                    focusOnRender: observe(undefined),
+                    nameHasWarning: observe(undefined),
+                    valueHasWarning: observe(undefined),
+                    nameSuggestions: observe(undefined),
+                    editNameDisabled: observe(undefined),
+                    onPickerNameClick: observe(undefined),
+                    editValueDisabled: observe(undefined),
+                    onPickerValueClick: observe(undefined),
                 }
             ],
         });
@@ -307,8 +330,8 @@ export class FlowItemAction extends FlowItemComponent<EItemType.ACTION> implemen
             });
 
         // Subscribe to all changes
-        this.action.subscribe(connections => {
-            schema.validate(connections)
+        this.action.subscribe(linkedActionName => {
+            schema.validate(linkedActionName)
                 .then(() => {
                     set(this.errosIds, oldErros => {
                         if (oldErros.includes(this.action.id)) {
