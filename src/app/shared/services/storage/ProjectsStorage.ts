@@ -60,15 +60,15 @@ export class ProjectsStorage {
     }
 
     /** Get a project by id */
-    public static async getProjectById(id?: string): Promise<Project> {
+    public static async getProjectById(id?: string): Promise<Project | undefined> {
         const projects = await ProjectsStorage.getProjects();
 
-        let project = projects.find(proj => proj.id.value === id);
+        const project = projects.find(proj => proj.id.value === id);
 
         if (project) {
             return project;
         } else {
-            return new Project({ properties: [], tabs: [], type: EProjectType.api });
+            return undefined;
         }
     }
 

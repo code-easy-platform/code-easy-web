@@ -1,10 +1,12 @@
-import { observe } from "react-observing";
 
-import { Tab, TreeItemComponent, FlowItemComponent } from "./../generic";
 import { IProperty } from "./../../../components/external";
+import { PropertyParser } from "./PropertyParser";
+import { ApiProject } from "../projects-types";
+import { EProjectType } from "../../../enuns";
+import { TabParser } from "./TabParser";
 import { Project } from "./Project";
 
-export class ProjectParser {
+export abstract class ProjectParser {
     /**
      * Turns the project class into a string to make it easier to save to local storage.
      *  @param project Project that will be transformed into a string
@@ -80,82 +82,21 @@ export class ProjectParser {
      * Transform a string into a structure
      * @param value Content that will be transformed into a Project
      */
-    public static parse(value: string): Project {
+    public static parse(value: string): Project | null {
         const json = JSON.parse(value);
 
-        const newPropertie = (value: any): IProperty => {
-            return {
-                id: observe(value.id),
-                name: observe(value.name),
-                type: observe(value.type),
-                value: observe(value.value),
-                group: observe(value.group),
-                information: observe(value.information),
-                fileMaxSize: observe(value.fileMaxSize),
-                nameHasError: observe(value.nameHasError),
-                focusOnRender: observe(value.focusOnRender),
-                propertieType: observe(value.propertieType),
-                valueHasError: observe(value.valueHasError),
-                nameHasWarning: observe(value.nameHasWarning),
-                valueHasWarning: observe(value.valueHasWarning),
-                editNameDisabled: observe(value.editNameDisabled),
-                onPickerNameClick: observe(value.onPickerNameClick),
-                editValueDisabled: observe(value.editValueDisabled),
-                onPickerValueClick: observe(value.onPickerValueClick),
-                suggestions: observe(value.suggestions?.map((suggestion: any) => ({
-                    name: observe(suggestion.name),
-                    value: observe(suggestion.value),
-                    label: observe(suggestion.label),
-                    disabled: observe(suggestion.disabled),
-                    description: observe(suggestion.description),
-                })) || []),
-                nameSuggestions: observe(value.nameSuggestions?.map((suggestion: any) => ({
-                    name: observe(suggestion.name),
-                    value: observe(suggestion.value),
-                    label: observe(suggestion.label),
-                    disabled: observe(suggestion.disabled),
-                    description: observe(suggestion.description),
-                })) || []),
-            };
-        };
+        switch (json.type) {
+            case EProjectType.api:
+                const project = new ApiProject({
+                    id: json.id,
+                    tabs: TabParser.jsonToInstances(json.tabs),
+                    properties: json.properties.map((prop: any) => PropertyParser.jsonToProperty(prop)),
+                });
 
-        return new Project({
-            id: json.id,
-            type: json.type,
-            properties: json.properties.map((prop: any) => newPropertie(prop)),
-            /*
-                This tabs will be rebuilt inside the project
-            */
-            tabs: json.tabs.map((tab: any) => new Tab(undefined, {
-                id: tab.id,
-                type: tab.type,
-                properties: tab.properties.map((prop: any) => newPropertie(prop)),
-                /*
-                    This tabs will be rebuilt inside the project
-                */
-                items: tab.items.map((treeItem: any) => new TreeItemComponent(undefined, {
-                    id: treeItem.id,
-                    type: treeItem.type,
-                    properties: treeItem.properties.map((prop: any) => newPropertie(prop)),
-                    /*
-                        This tabs will be rebuilt inside the project
-                    */
-                    items: treeItem.items.map((flowItem: any) => new FlowItemComponent(undefined, {
-                        id: flowItem.id,
-                        type: flowItem.type,
-                        properties: flowItem.properties.map((prop: any) => newPropertie(prop)),
-                        connections: flowItem.connections.map((connection: any) => ({
-                            id: observe(connection.id),
-                            originId: observe(connection.originId),
-                            targetId: observe(connection.targetId),
-                            isSelected: observe(connection.isSelected),
-                            connectionLabel: observe(connection.connectionLabel),
-                            connectionDescription: observe(connection.connectionDescription),
-                        })),
-                    })),
-                })),
-            })),
-        });
+                return project;
+
+            default: return null;
+        }
     }
 
     /**
@@ -172,9 +113,17 @@ export class ProjectParser {
      */
     public static parseProjects(projectsInString: string): Project[] {
         try {
-            const listString: string[] | undefined = JSON.parse(projectsInString);
+            const listString: string[] | null = JSON.parse(projectsInString);
             if (listString) {
-                return listString.map(projectString => ProjectParser.parse(projectString));
+                const projects: Project[] = [];
+
+                listString.map(projectString => ProjectParser.parse(projectString)).forEach(project => {
+                    if (project) {
+                        projects.push(project);
+                    }
+                });
+
+                return projects;
             } else {
                 return [];
             }

@@ -6,7 +6,6 @@ import { useHistory } from 'react-router-dom';
 import { DownloadService, openContextMenu, ProjectsStorage } from '../../services';
 import { PropertiesTab } from '../../../pages/editor/properties-tab/PropertiesTab';
 import { useEditorContext, useTabList } from '../../hooks';
-import { ApiProject } from '../../models';
 import { TabButtonSimple } from '../tabs';
 import { TabList } from '../tab-list';
 import { Modal } from '../modal';
@@ -60,9 +59,8 @@ export const ToolBar: React.FC = memo(() => {
     }, [tabListStore]);
 
     const handleExport = useCallback(() => {
-        const apiProject = new ApiProject({ properties: project.properties.value, tabs: project.tabs.value, id: project.id.value });
-        apiProject.exportAsFiles().then(file => {
-            DownloadService.downloadFilesAsZip(apiProject.label.value, [file]);
+        project.exportAsFiles().then(file => {
+            DownloadService.downloadFilesAsZip(project.label.value, [file]);
         });
     }, [project]);
 

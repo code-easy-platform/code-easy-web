@@ -208,8 +208,32 @@ export class ApiProject extends Project implements IApiProject {
             ],
         });
 
-        set(this.tabs, [
-            new TabRoute(this, {
+        set(this.tabs, oldTabs => oldTabs.map(tab => {
+            if (tab.type.value === ETabType.tabRoutes) {
+                return new TabRoute(this, {
+                    id: tab.id.value,
+                    items: tab.items.value,
+                    properties: tab.properties.value,
+                });
+            } else {
+                return new TabAction(this, {
+                    id: tab.id.value,
+                    items: tab.items.value,
+                    properties: tab.properties.value,
+                });
+            }
+        }));
+    }
+
+    /** Return a full project */
+    public static newProject(name: string, version: string, description: string) {
+        const newProject = new ApiProject();
+
+        set(newProject.label, name);
+        set(newProject.version, version);
+        set(newProject.description, description);
+        set(newProject.tabs, [
+            new TabRoute(newProject, {
                 properties: [
                     {
                         value: observe(false),
@@ -345,7 +369,7 @@ export class ApiProject extends Project implements IApiProject {
                     },
                 ]
             }),
-            new TabAction(this, {
+            new TabAction(newProject, {
                 properties: [
                     {
                         value: observe(false),
@@ -482,14 +506,7 @@ export class ApiProject extends Project implements IApiProject {
                 ]
             }),
         ]);
-    }
 
-    /** Return a full project */
-    public static newProject(name: string, version: string, description: string) {
-        const newProject = new ApiProject();
-        set(newProject.label, name);
-        set(newProject.version, version);
-        set(newProject.description, description);
         return newProject;
     }
 

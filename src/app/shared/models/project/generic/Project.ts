@@ -20,7 +20,7 @@ interface IConstructor {
 /**
  * Represents a full project
  */
-export class Project extends ProjectConfigurations implements IProject {
+export abstract class Project extends ProjectConfigurations implements IProject {
   public tabs: IObservable<Tab[]>;
 
   constructor(props: IConstructor) {
@@ -47,9 +47,9 @@ export class Project extends ProjectConfigurations implements IProject {
             properties: tab.properties.value || [],
           });
         default:
-          return new Tab(this, {
+          //TODO: Ajustar
+          return new TabData(this, {
             id: tab.id.value,
-            type: tab.type.value,
             items: tab.items.value,
             properties: tab.properties.value || [],
           });
