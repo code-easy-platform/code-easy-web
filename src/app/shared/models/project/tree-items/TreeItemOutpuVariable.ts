@@ -5,6 +5,7 @@ import { EDataTypes, DataTypesList, EComponentType, PropertieTypes } from "./../
 import { IProperty, ISuggestion, TypeOfValues } from "./../../../components/external";
 import { ITreeItemOutpuVariable } from "./../../../interfaces";
 import { Tab, TreeItemComponent } from "./../generic";
+import { toPascalCase } from "../../../services";
 
 interface IConstrutor {
     properties?: IProperty[];
@@ -15,6 +16,15 @@ interface IConstrutor {
  * Represents a full output variable implementation
  */
 export class TreeItemOutpuVariable extends TreeItemComponent<EComponentType.outputVariable> implements ITreeItemOutpuVariable {
+
+    public get name() {
+        return transform(super.name, value => toPascalCase(value));
+    }
+
+    public get label() {
+        return transform(super.label, value => toPascalCase(value), value => toPascalCase(value));
+    }
+
     items: IObservable<[]> = observe([]);
     get isEditing(): IObservable<false> {
         if (super.isEditing.value) {

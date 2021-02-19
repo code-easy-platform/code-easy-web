@@ -1,11 +1,12 @@
+import { observe, set, transform } from "react-observing";
 import { IconAction, Utils } from "code-easy-components";
-import { observe, set } from "react-observing";
 
 import { IFlowItemComponent, ITreeItemGlobalAction } from "./../../../interfaces";
 import { IProperty, TypeOfValues } from "./../../../components/external";
 import { EComponentType, PropertieTypes } from "./../../../enuns";
 import { FlowItemEnd, FlowItemStart } from "./../flow-items";
 import { Tab, TreeItemComponent } from "./../generic";
+import { toPascalCase } from "../../../services";
 
 interface IConstrutor {
     items?: IFlowItemComponent[];
@@ -17,6 +18,14 @@ interface IConstrutor {
  * Represents a full global action implementation
  */
 export class TreeItemGlobalAction extends TreeItemComponent<EComponentType.globalAction> implements ITreeItemGlobalAction {
+
+    public get name() {
+        return transform(super.name, value => toPascalCase(value));
+    }
+
+    public get label() {
+        return transform(super.label, value => toPascalCase(value), value => toPascalCase(value));
+    } 
 
     constructor(public tabParent: Tab | undefined, props: IConstrutor) {
         super(tabParent, {

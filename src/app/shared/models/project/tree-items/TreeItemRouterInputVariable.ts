@@ -1,16 +1,26 @@
 import { Utils } from "code-easy-components";
-import { observe } from "react-observing";
-import { Tab } from "../generic";
+import { observe, transform } from "react-observing";
 
 import { ISuggestion, TypeOfValues } from "./../../../components/external";
 import { ParametersLocationList, PropertieTypes } from "./../../../enuns";
 import { ITreeItemRouterInputVariable } from "./../../../interfaces";
 import { TreeItemInputVariable } from "./TreeItemInputVariable";
+import { toPascalCase } from "../../../services";
+import { Tab } from "../generic";
 
 /**
  * Represents a router input variable implementation
  */
 export class TreeItemRouterInputVariable extends TreeItemInputVariable implements ITreeItemRouterInputVariable {
+
+    public get name() {
+        return transform(super.name, value => toPascalCase(value));
+    }
+
+    public get label() {
+        return transform(super.label, value => toPascalCase(value), value => toPascalCase(value));
+    }
+
     public static newVariable(tabParent: Tab, label: string, ascendantId?: string) {
         return new TreeItemRouterInputVariable(tabParent, {
             properties: [

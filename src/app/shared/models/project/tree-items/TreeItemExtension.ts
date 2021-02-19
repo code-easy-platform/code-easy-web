@@ -1,10 +1,11 @@
-import { IObservable, observe } from "react-observing";
+import { IObservable, observe, transform } from "react-observing";
 import { Utils } from 'code-easy-components';
 
 import { IProperty, TypeOfValues } from "./../../../components/external";
 import { EComponentType, PropertieTypes } from "./../../../enuns";
 import { ITreeItemExtension } from "./../../../interfaces";
 import { Tab, TreeItemComponent } from "./../generic";
+import { toPascalCase } from "../../../services";
 
 interface IConstrutor {
     properties?: IProperty[];
@@ -15,6 +16,15 @@ interface IConstrutor {
  * Represents a full extension implementation
  */
 export class TreeItemExtension extends TreeItemComponent<EComponentType.extension> implements ITreeItemExtension {
+
+    public get name() {
+        return transform(super.name, value => toPascalCase(value));
+    }
+
+    public get label() {
+        return transform(super.label, value => toPascalCase(value), value => toPascalCase(value));
+    }
+
     items: IObservable<[]> = observe([]);
 
     constructor(public tabParent: Tab | undefined, props: IConstrutor) {
