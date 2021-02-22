@@ -721,6 +721,35 @@ export class ApiProject extends Project implements IApiProject {
             }));
         };
 
+        const getIntegrations = (): IFileToDownloadAsZip[] => {
+            const allItems = this.tabs.value.flatMap(tab => tab.items.value);
+            const allRouteItems = allItems.filter(item => item.type.value === EComponentType.routeConsume);
+
+            const getRouteFunction = (bodyFunction: string, treeItem: TreeItemComponent) => {
+                const allInputParamItems = allItems.filter(item => item.type.value === EComponentType.inputVariable && item.ascendantId.value === treeItem.id.value);
+
+
+                return [
+                    '/**',
+                    ` *  ${treeItem.description.value}`,
+                    ' */',
+                    `const ${toCamelCase(treeItem.label.value)} = async (${allInputParamItems.map(param => toCamelCase(param.name.value)).join(', ')}) => {`,
+                    '',
+                    '}',
+                    '',
+                    `module.exports = ${toCamelCase(treeItem.label.value)};`,
+                    '',
+                ].join('\n');
+            };
+
+            return allRouteItems.map(treeItem => ({
+                content: getRouteFunction(FlowToJs(treeItem.items.value, 2), treeItem),
+                isFolder: treeItem.type.value === EComponentType.grouper,
+                name: toPascalCase(treeItem.label.value),
+                type: 'js',
+            }));
+        }
+
         const gatTabs = (): IFileToDownloadAsZip[] => {
             const result: IFileToDownloadAsZip[] = [];
 
@@ -731,6 +760,13 @@ export class ApiProject extends Project implements IApiProject {
                         isFolder: true,
                         children: [
                             ...getRoutes(),
+                        ]
+                    });
+                    result.push({
+                        name: toKebabCase('integrations'),
+                        isFolder: true,
+                        children: [
+                            ...getIntegrations(),
                         ]
                     });
                 } else {
