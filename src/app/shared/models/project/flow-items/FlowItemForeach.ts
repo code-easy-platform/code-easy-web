@@ -2,9 +2,9 @@ import { IObservable, observe, set, transform } from "react-observing";
 import { IconFlowForeach, Utils } from "code-easy-components";
 import * as yup from 'yup';
 
-import { EFlowItemType, EItemType, IConnection, IFileContent, IProperty, TypeOfValues } from "./../../../components/external";
+import { EFlowItemType, EItemType, IConnection, IFileContent, IProperty, ISuggestion, TypeOfValues } from "./../../../components/external";
+import { EComponentType, EDataTypes, PropertieTypes } from "./../../../enuns";
 import { IFlowItemForeach } from "./../../../interfaces";
-import { PropertieTypes } from "./../../../enuns";
 import { FlowItemComponent, TreeItemComponent } from "../generic";
 
 interface IConstrutor {
@@ -72,7 +72,35 @@ export class FlowItemForeach extends FlowItemComponent<EItemType.FOREACH> implem
                 valueHasWarning: transform(this.warningIds, values => values.includes(prop?.id || '')),
 
                 group: observe(undefined),
-                suggestions: observe(undefined),
+                suggestions: this.treeItemParent?.tabParent
+                    ? transform(this.treeItemParent?.tabParent?.items, (treeItems): ISuggestion<string | number>[] => {
+                        const suggestion = treeItems.filter(treeItem => {
+                            if (treeItem.ascendantId.value === this.treeItemParent?.id.value) {
+                                const treeItemDatatype = treeItem.properties.value.find(prop => prop.propertieType.value === PropertieTypes.dataType);
+
+                                if (treeItem.type.value === EComponentType.inputVariable && treeItemDatatype?.value.value === EDataTypes.list) {
+                                    return true;
+                                } else if (treeItem.type.value === EComponentType.localVariable && treeItemDatatype?.value.value === EDataTypes.list) {
+                                    return true;
+                                } else if (treeItem.type.value === EComponentType.outputVariable && treeItemDatatype?.value.value === EDataTypes.list) {
+                                    return true;
+                                } else {
+                                    return false;
+                                }
+                            } else {
+                                return false;
+                            }
+                        });
+
+                        return suggestion.map(suggestion => ({
+                            description: transform(suggestion.description, value => String(value)),
+                            disabled: observe(false),
+                            label: suggestion.label,
+                            value: suggestion.label,
+                            name: suggestion.name,
+                        }));
+                    })
+                    : observe(undefined),
                 information: observe(undefined),
                 fileMaxSize: observe(undefined),
                 focusOnRender: observe(undefined),
@@ -117,7 +145,7 @@ export class FlowItemForeach extends FlowItemComponent<EItemType.FOREACH> implem
                     type: observe(TypeOfValues.string),
                     name: observe(PropertieTypes.label),
                     propertieType: observe(PropertieTypes.label),
-
+                    
                     group: observe(undefined),
                     suggestions: observe(undefined),
                     information: observe(undefined),
@@ -221,48 +249,48 @@ export class FlowItemForeach extends FlowItemComponent<EItemType.FOREACH> implem
                     onPickerValueClick: observe(undefined),
                 },
                 {
-                  value: observe(true),
-                  id: observe(Utils.getUUID()),
-                  type: observe(TypeOfValues.hidden),
-                  name: observe(PropertieTypes.isEditableOnDoubleClick),
-                  propertieType: observe(PropertieTypes.isEditableOnDoubleClick),
-          
-                  group: observe(undefined),
-                  suggestions: observe(undefined),
-                  information: observe(undefined),
-                  fileMaxSize: observe(undefined),
-                  nameHasError: observe(undefined),
-                  valueHasError: observe(undefined),
-                  focusOnRender: observe(undefined),
-                  nameHasWarning: observe(undefined),
-                  valueHasWarning: observe(undefined),
-                  nameSuggestions: observe(undefined),
-                  editNameDisabled: observe(undefined),
-                  onPickerNameClick: observe(undefined),
-                  editValueDisabled: observe(undefined),
-                  onPickerValueClick: observe(undefined),
+                    value: observe(true),
+                    id: observe(Utils.getUUID()),
+                    type: observe(TypeOfValues.hidden),
+                    name: observe(PropertieTypes.isEditableOnDoubleClick),
+                    propertieType: observe(PropertieTypes.isEditableOnDoubleClick),
+
+                    group: observe(undefined),
+                    suggestions: observe(undefined),
+                    information: observe(undefined),
+                    fileMaxSize: observe(undefined),
+                    nameHasError: observe(undefined),
+                    valueHasError: observe(undefined),
+                    focusOnRender: observe(undefined),
+                    nameHasWarning: observe(undefined),
+                    valueHasWarning: observe(undefined),
+                    nameSuggestions: observe(undefined),
+                    editNameDisabled: observe(undefined),
+                    onPickerNameClick: observe(undefined),
+                    editValueDisabled: observe(undefined),
+                    onPickerValueClick: observe(undefined),
                 },
                 {
-                  value: observe(true),
-                  id: observe(Utils.getUUID()),
-                  type: observe(TypeOfValues.hidden),
-                  name: observe(PropertieTypes.isEditingTitle),
-                  propertieType: observe(PropertieTypes.isEditingTitle),
-          
-                  group: observe(undefined),
-                  suggestions: observe(undefined),
-                  information: observe(undefined),
-                  fileMaxSize: observe(undefined),
-                  nameHasError: observe(undefined),
-                  valueHasError: observe(undefined),
-                  focusOnRender: observe(undefined),
-                  nameHasWarning: observe(undefined),
-                  valueHasWarning: observe(undefined),
-                  nameSuggestions: observe(undefined),
-                  editNameDisabled: observe(undefined),
-                  onPickerNameClick: observe(undefined),
-                  editValueDisabled: observe(undefined),
-                  onPickerValueClick: observe(undefined),
+                    value: observe(true),
+                    id: observe(Utils.getUUID()),
+                    type: observe(TypeOfValues.hidden),
+                    name: observe(PropertieTypes.isEditingTitle),
+                    propertieType: observe(PropertieTypes.isEditingTitle),
+
+                    group: observe(undefined),
+                    suggestions: observe(undefined),
+                    information: observe(undefined),
+                    fileMaxSize: observe(undefined),
+                    nameHasError: observe(undefined),
+                    valueHasError: observe(undefined),
+                    focusOnRender: observe(undefined),
+                    nameHasWarning: observe(undefined),
+                    valueHasWarning: observe(undefined),
+                    nameSuggestions: observe(undefined),
+                    editNameDisabled: observe(undefined),
+                    onPickerNameClick: observe(undefined),
+                    editValueDisabled: observe(undefined),
+                    onPickerValueClick: observe(undefined),
                 }
             ],
         });
