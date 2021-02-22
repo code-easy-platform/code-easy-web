@@ -2,10 +2,10 @@ import { IconAction, IconRouter, Utils } from "code-easy-components";
 import { observe, set } from "react-observing";
 
 import { TabAction/* Have circular dependênce with ProjectParse */, TabRoute } from "../tabs";
-import { ETabType, PropertieTypes, EProjectType, EComponentType } from "../../../enuns";
-import { IApiProject, IFileToDownloadAsZip, ITab } from "../../../interfaces";
-import { IProperty, TypeOfValues } from "../../../components/external";
+import { ETabType, PropertieTypes, EProjectType, EComponentType, ParametersLocation } from "../../../enuns";
 import { FlowToJs, ProjectsStorage, toCamelCase, toKebabCase, toPascalCase } from "../../../services";
+import { EItemType, IProperty, TypeOfValues } from "../../../components/external";
+import { IApiProject, IFileToDownloadAsZip, ITab } from "../../../interfaces";
 import { Project, ProjectParser, TreeItemComponent } from "./../generic";
 
 /**
@@ -575,7 +575,6 @@ export class ApiProject extends Project implements IApiProject {
                 '',
             ];
 
-
             const allRoutes = this.tabs.value.flatMap(tab => tab.items.value).filter(item => item.type.value === EComponentType.routeExpose)
 
             allRoutes.forEach(route => {
@@ -605,15 +604,29 @@ export class ApiProject extends Project implements IApiProject {
             const allActionItems = allItems.filter(item => item.type.value === EComponentType.globalAction);
 
             const getActionFunction = (bodyFunction: string, treeItem: TreeItemComponent) => {
+
+                const allImports = treeItem.items.value.map(flowItem => {
+                    if (flowItem.type.value === EItemType.ACTION) {
+                        const actionProp = flowItem.properties.value.find(prop => prop.propertieType.value === PropertieTypes.action)
+                        return actionProp;
+                    } else {
+                        return undefined;
+                    }
+                });
+
                 const allOutputParamItems = allItems.filter(item => item.type.value === EComponentType.outputVariable && item.ascendantId.value === treeItem.id.value);
                 const allInputParamItems = allItems.filter(item => item.type.value === EComponentType.inputVariable && item.ascendantId.value === treeItem.id.value);
+                const allLocalParamItems = allItems.filter(item => item.type.value === EComponentType.localVariable && item.ascendantId.value === treeItem.id.value);
 
                 return [
+                    allImports.map(actionToImport => actionToImport ? `const ${toCamelCase(actionToImport?.value.value)} = require('./${toPascalCase(actionToImport?.value.value)}');\n` : '').join(''),
+                    '',
                     '/**',
-                    `*  ${treeItem.description.value}`,
-                    '*/',
+                    ` *  ${treeItem.description.value}`,
+                    ' */',
                     `const ${toCamelCase(treeItem.label.value)} = (${allInputParamItems.map(param => toCamelCase(param.name.value)).join(', ')}) => {`,
-                    ...allOutputParamItems.map(param => `  let ${toCamelCase(param.name.value)};`),
+                    ...allOutputParamItems.map(param => `  /** ${param.description.value} */\n  let ${toCamelCase(param.name.value)};`),
+                    ...allLocalParamItems.map(param => `  /** ${param.description.value} */\n  let ${toCamelCase(param.name.value)};`),
                     '',
                     bodyFunction,
                     '',
@@ -628,7 +641,7 @@ export class ApiProject extends Project implements IApiProject {
             };
 
             return allActionItems.map(treeItem => ({
-                content: getActionFunction(FlowToJs(treeItem.items.value), treeItem),
+                content: getActionFunction(FlowToJs(treeItem.items.value, 2), treeItem),
                 isFolder: treeItem.type.value === EComponentType.grouper,
                 name: toPascalCase(treeItem.label.value),
                 type: 'js',
@@ -643,17 +656,49 @@ export class ApiProject extends Project implements IApiProject {
             const allRouteItems = allItems.filter(item => item.type.value === EComponentType.routeExpose);
 
             const getRouteFunction = (bodyFunction: string, treeItem: TreeItemComponent) => {
+
+                const allImports = treeItem.items.value.map(flowItem => {
+                    if (flowItem.type.value === EItemType.ACTION) {
+                        const actionProp = flowItem.properties.value.find(prop => prop.propertieType.value === PropertieTypes.action)
+                        return actionProp;
+                    } else {
+                        return undefined;
+                    }
+                });
+
+                const receiveParamIn = (param: TreeItemComponent): 'query' | 'header' | 'body' | 'params' => {
+                    const receiveParamIn = param.properties.value.find(prop => prop.propertieType.value === PropertieTypes.parametersIn);
+                    if (!receiveParamIn) return 'query';
+
+                    switch (receiveParamIn.value.value) {
+                        case ParametersLocation.body:
+                            return 'body'
+                        case ParametersLocation.header:
+                            return 'header'
+                        case ParametersLocation.query:
+                            return 'query'
+                        case ParametersLocation.route:
+                            return 'params'
+
+                        default: return 'query';
+                    }
+                }
+
                 const allOutputParamItems = allItems.filter(item => item.type.value === EComponentType.outputVariable && item.ascendantId.value === treeItem.id.value);
                 const allInputParamItems = allItems.filter(item => item.type.value === EComponentType.inputVariable && item.ascendantId.value === treeItem.id.value);
+                const allLocalParamItems = allItems.filter(item => item.type.value === EComponentType.localVariable && item.ascendantId.value === treeItem.id.value);
 
                 return [
-                    '/**',
-                    `*  ${treeItem.description.value}`,
-                    '*/',
-                    `const ${toCamelCase(treeItem.label.value)} = (req, res) => {`,
-                    ...allInputParamItems.map(param => `  const ${toCamelCase(param.name.value)} = req.query.${toPascalCase(param.name.value)};`),
+                    allImports.map(actionToImport => actionToImport ? `const ${toCamelCase(actionToImport?.value.value)} = require('./../actions/${toPascalCase(actionToImport?.value.value)}');\n` : '').join(''),
                     '',
-                    ...allOutputParamItems.map(param => `  let ${toCamelCase(param.name.value)};`),
+                    '/**',
+                    ` *  ${treeItem.description.value}`,
+                    ' */',
+                    `const ${toCamelCase(treeItem.label.value)} = (req, res) => {`,
+                    ...allInputParamItems.map(param => `  /** ${param.description.value} */\n  let ${toCamelCase(param.name.value)} = req.${receiveParamIn(param)}.${toPascalCase(param.name.value)};`),
+                    '',
+                    ...allOutputParamItems.map(param => `  /** ${param.description.value} */\n  let ${toCamelCase(param.name.value)};`),
+                    ...allLocalParamItems.map(param => `  /** ${param.description.value} */\n  let ${toCamelCase(param.name.value)};`),
                     '',
                     bodyFunction,
                     '',
@@ -669,7 +714,7 @@ export class ApiProject extends Project implements IApiProject {
             };
 
             return allRouteItems.map(treeItem => ({
-                content: getRouteFunction(FlowToJs(treeItem.items.value), treeItem),
+                content: getRouteFunction(FlowToJs(treeItem.items.value, 2), treeItem),
                 isFolder: treeItem.type.value === EComponentType.grouper,
                 name: toPascalCase(treeItem.label.value),
                 type: 'js',
