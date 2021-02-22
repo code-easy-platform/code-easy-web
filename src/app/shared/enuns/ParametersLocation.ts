@@ -1,11 +1,13 @@
 export enum ParametersLocation {
     header="Header",
+    query="Query",    
+    route="Route",    
     body="Body",
-    url="Url",    
 }
 
 export const ParametersLocationList: ParametersLocation[] = [
     ParametersLocation.header,
     ParametersLocation.body,
-    ParametersLocation.url,
+    ParametersLocation.query,
+    ParametersLocation.route,
 ];
