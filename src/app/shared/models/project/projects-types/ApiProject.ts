@@ -579,13 +579,13 @@ export class ApiProject extends Project implements IApiProject {
 
             allRoutes.forEach(route => {
                 const methodType = route.properties.value.find(prop => prop.propertieType.value === PropertieTypes.httpMethod)?.value;
-                const path = route.properties.value.find(prop => prop.propertieType.value === PropertieTypes.path)?.value;
+                const pathComplete = route.properties.value.find(prop => prop.propertieType.value === PropertieTypes.pathComplete)?.value;
 
                 if (route.description.value) {
                     routeFile.push(`// ${route.description.value}`);
                 }
 
-                routeFile.push(`routers.${methodType?.value}('/${path?.value}', ${toCamelCase(route.label.value)})`);
+                routeFile.push(`routers.${methodType?.value}('${pathComplete?.value}', ${toCamelCase(route.label.value)})`);
             });
 
             return [

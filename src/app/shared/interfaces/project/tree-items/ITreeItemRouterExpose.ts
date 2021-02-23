@@ -11,4 +11,8 @@ export interface ITreeItemRouterExpose extends ITreeItemComponent<EComponentType
      * Store router path
      */
     path: IObservable<string>;
+    /**
+     * Store router path complete
+     */
+    pathComplete: IObservable<string>;
 }

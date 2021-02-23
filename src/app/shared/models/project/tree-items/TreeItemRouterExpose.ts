@@ -1,12 +1,12 @@
 import { IconRouterExpose, Utils } from "code-easy-components";
-import { IObservable, observe, set } from "react-observing";
+import { IObservable, observe, set, transform } from "react-observing";
 import * as yup from 'yup';
 
-import { ApiMethods, ApiMethodsList, EComponentType, PropertieTypes } from "./../../../enuns";
+import { ApiMethods, ApiMethodsList, EComponentType, ParametersLocation, PropertieTypes } from "./../../../enuns";
 import { IProperty, ISuggestion, TypeOfValues } from "./../../../components/external";
 import { IFlowItemComponent, ITreeItemRouterExpose } from "./../../../interfaces";
 import { FlowItemEnd, FlowItemStart } from "../flow-items";
-import { toKebabCase } from './../../../services';
+import { toKebabCase, toPascalCase } from './../../../services';
 import { Tab, TreeItemComponent } from "./../generic";
 
 interface IConstrutor {
@@ -25,14 +25,14 @@ export class TreeItemRouterExpose extends TreeItemComponent<EComponentType.route
             return prop;
         }
 
-        prop = observe('');
+        prop = transform(observe(''), value => value, value => toKebabCase(value));
 
         this.properties.value = [
             ...this.properties.value,
             {
                 value: prop,
                 id: observe(Utils.getUUID()),
-                type: observe(TypeOfValues.hidden),
+                type: observe(TypeOfValues.string),
                 name: observe(PropertieTypes.path),
                 propertieType: observe(PropertieTypes.path),
 
@@ -51,6 +51,61 @@ export class TreeItemRouterExpose extends TreeItemComponent<EComponentType.route
                 editValueDisabled: observe(undefined),
                 onPickerValueClick: observe(undefined),
             }
+        ];
+
+        return prop;
+    }
+
+    public get pathComplete(): IObservable<string> {
+        let prop = this.properties.value.find(prop => prop.propertieType.value === PropertieTypes.pathComplete)?.value;
+        if (prop) {
+            return prop;
+        }
+
+        prop = transform(this.path, path => {
+            const allInputRouteParams = this.tabParent?.items.value
+                .filter(treeItem => (treeItem.ascendantId.value === this.id.value && treeItem.type.value === EComponentType.inputVariable))
+                .filter(param => {
+                    const paramIn = param.properties.value.find(prop => prop.propertieType.value === PropertieTypes.parametersIn);
+
+                    if (paramIn && paramIn.value.value === ParametersLocation.route) {
+                        return true;
+                    } else {
+                        return false;
+                    }
+                });
+
+            if (allInputRouteParams && allInputRouteParams.length > 0) {
+                return `/${path}/:${allInputRouteParams.map(param => toPascalCase(param.label.value)).join('/:')}`;
+            } else {
+                return `/${path}`;
+            }
+        });
+
+        this.properties.value = [
+            ...this.properties.value,
+            {
+                value: prop,
+                id: observe(Utils.getUUID()),
+                type: observe(TypeOfValues.viewOnly),
+                name: observe(PropertieTypes.pathComplete),
+                propertieType: observe(PropertieTypes.pathComplete),
+
+                group: observe(undefined),
+                suggestions: observe(undefined),
+                information: observe(undefined),
+                fileMaxSize: observe(undefined),
+                nameHasError: observe(undefined),
+                valueHasError: observe(undefined),
+                focusOnRender: observe(undefined),
+                nameHasWarning: observe(undefined),
+                valueHasWarning: observe(undefined),
+                nameSuggestions: observe(undefined),
+                editNameDisabled: observe(undefined),
+                editValueDisabled: observe(undefined),
+                onPickerNameClick: observe(undefined),
+                onPickerValueClick: observe(undefined),
+            },
         ];
 
         return prop;
@@ -95,12 +150,11 @@ export class TreeItemRouterExpose extends TreeItemComponent<EComponentType.route
                     onPickerValueClick: observe(undefined),
                 },
                 {
-                    value: observe(''),
                     id: observe(Utils.getUUID()),
-                    editValueDisabled: observe(true),
                     name: observe(PropertieTypes.path),
                     type: observe(TypeOfValues.string),
                     propertieType: observe(PropertieTypes.path),
+                    value: transform(observe(''), value => value, value => toKebabCase(value)),
 
                     group: observe(undefined),
                     suggestions: observe(undefined),
@@ -113,6 +167,7 @@ export class TreeItemRouterExpose extends TreeItemComponent<EComponentType.route
                     valueHasWarning: observe(undefined),
                     nameSuggestions: observe(undefined),
                     editNameDisabled: observe(undefined),
+                    editValueDisabled: observe(undefined),
                     onPickerNameClick: observe(undefined),
                     onPickerValueClick: observe(undefined),
                 },
@@ -290,10 +345,7 @@ export class TreeItemRouterExpose extends TreeItemComponent<EComponentType.route
     protected _defaultProperties() {
         super._defaultProperties();
 
-        set(this.path, toKebabCase(this.label.value));
-        this.label.subscribe(label => {
-            set(this.path, toKebabCase(label));
-        });
+        this.pathComplete.subscribe(() => { });
     }
 
     private _valideHttpMethod() {

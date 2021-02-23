@@ -1,11 +1,11 @@
 {
   "name": "code-easy-web",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "private": false,
   "license": "Apache 2.0",
   "scripts": {
-    "start": "cross-env BROWSER=none REACT_APP_VERSION='0.0.1' react-scripts start",
-    "build": "cross-env REACT_APP_VERSION='0.0.1' react-scripts build",
+    "start": "cross-env BROWSER=none REACT_APP_VERSION='0.0.2' react-scripts start",
+    "build": "cross-env REACT_APP_VERSION='0.0.2' react-scripts build",
     "tsc-build": "tsc",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
