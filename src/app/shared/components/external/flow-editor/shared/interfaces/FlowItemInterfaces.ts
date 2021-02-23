@@ -1,4 +1,5 @@
 import { EFlowItemType } from "../enums/EFlowItemType";
+import { IObservable } from 'react-observing';
 
 /**
  * Used to represente lines in the flow between flow items
@@ -7,72 +8,94 @@ export interface IConnection {
     /**
      * This will apper in the line as a tooltip
      */
-    connectionDescription?: string;
+    connectionDescription: IObservable<string | undefined>;
     /**
      * This will apper in the line as a title
      */
-    connectionLabel?: string;
+    connectionLabel: IObservable<string | undefined>;
     /**
      * Unique id to identify the connection
      */
-    id: string | undefined;
+    id: IObservable<string | undefined>;
     /**
      * Used to identify when the user click over the line
      */
-    isSelected: boolean;
+    isSelected: IObservable<boolean>;
     /**
-     * Identifier of the element that is connected by the line 
+     * Identifier of the element that is connected by the line
      */
-    originId: string;
+    originId: IObservable<string>;
     /**
-     * Identifier of the element that is connected by the line 
+     * Identifier of the element that is connected by the line
      */
-    targetId: string;
+    targetId: IObservable<string>;
 }
 /**
- * 
+ *
  */
 export interface IBasicFlowItem {
-    label?: string;
-    top: number | 0;
-    left: number | 0;
-    isSelected?: boolean;
-    description?: string;
-    isDisabled?: boolean;
+    top: IObservable<number | 0>;
+    left: IObservable<number | 0>;
+    isSelected: IObservable<boolean>;
+    isDisabled: IObservable<boolean>;
+    label: IObservable<string | undefined>;
+    description: IObservable<string | undefined>;
     /**
      * Unique id to identify the element
      */
-    id: string | undefined;
-    flowItemType: EFlowItemType;
+    id: IObservable<string | undefined>;
+    flowItemType: IObservable<EFlowItemType>;
 }
 /**
- * 
+ *
  */
 export interface ILine {
     /**
      * Unique id to identify the element
      */
-    id: string;
-    originId?: string;
-    targetId?: string | undefined;
+    id: IObservable<string>;
+    originId?: IObservable<string>;
+    targetId?: IObservable<string | undefined>;
 }
 /**
- * 
+ * Default file structure
+ */
+interface IFileContent {
+    content?: string | ArrayBuffer | null,
+    lastModified?: number,
+    name?: string,
+    size?: number,
+    type?: string,
+}
+/**
+ *
  */
 export interface IFlowItem extends IBasicFlowItem {
-    icon?: any;
-    width?: number;
-    height?: number;
     /**
      * Used to define a type of the item.
      * Ex: start, assign, foreach, etc...
      */
-    itemType?: string;
-    hasError?: boolean;
-    hasWarning?: boolean;
-    connections?: IConnection[];
+    itemType?: IObservable<string>;
+    width: IObservable<number | undefined>;
+    height: IObservable<number | undefined>;
+    connections: IObservable<IConnection[]>;
+    hasError: IObservable<boolean | undefined>;
+    hasWarning: IObservable<boolean | undefined>;
     /**
      * Used to validate that this item can be connected with another item
      */
-    isEnabledNewConnetion?: boolean;
+    isEditingTitle: IObservable<boolean | undefined>;
+    /**
+     * Used to show a input text when doucle click over the title
+     */
+    isEditableOnDoubleClick: IObservable<boolean | undefined>;
+    icon: IObservable<string | IFileContent | undefined>;
+    /**
+     * Used to validate that this item can be connected with another item
+     */
+    isEnabledNewConnetion: IObservable<boolean | undefined>;
+    /**
+     * Used to validate that this item can be used as a connection
+     */
+    isAcceptingConnections: IObservable<boolean | undefined>;
 }

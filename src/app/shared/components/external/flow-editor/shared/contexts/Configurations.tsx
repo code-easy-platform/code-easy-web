@@ -20,6 +20,7 @@ export const ConfigurationProvider: React.FC<{ configs: IFlowEditorConfigs }> = 
     configs.useElevation = configs.useElevation !== undefined ? configs.useElevation : false;
     configs.dotColor = configs.dotColor !== undefined ? configs.dotColor : '#484848';
     configs.dottedSize = configs.dottedSize !== undefined ? configs.dottedSize : 15;
+    configs.rulers = configs.rulers !== undefined ? configs.rulers : [];
 
     // BREADCRUMBS
     configs.breadcrumbBackgroundColor = configs.breadcrumbBackgroundColor !== undefined ? configs.breadcrumbBackgroundColor : '#232323';
@@ -46,7 +47,7 @@ export const ConfigurationProvider: React.FC<{ configs: IFlowEditorConfigs }> = 
     configs.flowItemTextColor = configs.flowItemTextColor !== undefined ? configs.flowItemTextColor : 'white';
     configs.commentTextColor = configs.commentTextColor !== undefined ? configs.commentTextColor : 'white';
     configs.disableOpacity = configs.disableOpacity !== undefined ? configs.disableOpacity : 0.5;
-    configs.commentColor = configs.commentColor !== undefined ? configs.commentColor : 'green';
+    configs.commentColor = configs.commentColor !== undefined ? configs.commentColor : '#54a878';
     configs.linesColor = configs.linesColor !== undefined ? configs.linesColor : 'gray';
     configs.lineWidth = configs.lineWidth !== undefined ? configs.lineWidth : 1;
 

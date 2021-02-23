@@ -1,4 +1,4 @@
-import React, { memo } from 'react';
+import React, { memo, useCallback } from 'react';
 
 interface SingleLineProps {
     id: string;
@@ -16,17 +16,17 @@ interface SingleLineProps {
 }
 export const SingleLine: React.FC<SingleLineProps> = memo(({ id, left1 = 0, top1 = 0, lineWidth = 1, lineType = 'normal', lineDistance = 0, rotate = 0, strokeColor = 'gray', visible = true, isCurved = false, onMouseDown, onContextMenu }) => {
 
-    const handleOnContextMenu = (e: React.MouseEvent<SVGPathElement, MouseEvent>) => {
+    const handleOnContextMenu = useCallback((e: React.MouseEvent<SVGPathElement, MouseEvent>) => {
         e.stopPropagation();
         e.preventDefault();
         onContextMenu && onContextMenu(e);
-    }
+    }, [onContextMenu]);
 
-    const handleOnMouseDown = (e: React.MouseEvent<SVGPathElement, MouseEvent>) => {
+    const handleOnMouseDown = useCallback((e: React.MouseEvent<SVGPathElement, MouseEvent>) => {
         e.stopPropagation();
         e.preventDefault();
         onMouseDown && onMouseDown(e);
-    }
+    }, [onMouseDown]);
 
     return (<>
         <path

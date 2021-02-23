@@ -1,4 +1,4 @@
-import React, { memo } from 'react';
+import React from 'react';
 
 import ListItemDraggable from './components/ListItemDraggable';
 import { IFlowItem } from '../../shared/interfaces';
@@ -9,19 +9,20 @@ interface ToolbarProps {
     borderColor?: string;
     items: IFlowItem[];
     itemWidth?: number;
+    onFocus?(): void;
     isShow: boolean;
 }
-const Toolbar: React.FC<ToolbarProps> = ({ items, isShow, itemWidth, backgroundColor, borderColor }) => {
+export const Toolbar: React.FC<ToolbarProps> = ({ items, isShow, itemWidth, backgroundColor, borderColor, onFocus }) => {
     return (
         (items.length > 0) && isShow
-            ? <div className="toolbar" style={{ backgroundColor, borderColor }}>
+            ? <div className="toolbar" onFocus={onFocus} style={{ backgroundColor, borderColor }}>
                 {items.map((item: IFlowItem, index) => {
                     return <ListItemDraggable
-                        flowItemType={item.flowItemType}
-                        itemType={item.itemType}
-                        label={item.label}
+                        icon={typeof item.icon?.value === 'string' ? item.icon?.value : String(item.icon?.value?.content)}
+                        flowItemType={item.flowItemType.value}
+                        itemType={item.itemType?.value}
+                        label={item.label?.value}
                         width={itemWidth}
-                        icon={item.icon}
                         key={index}
                     />;
                 })}
@@ -29,5 +30,3 @@ const Toolbar: React.FC<ToolbarProps> = ({ items, isShow, itemWidth, backgroundC
             : null
     );
 };
-
-export default memo(Toolbar);

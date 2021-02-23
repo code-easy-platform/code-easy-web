@@ -1,49 +1,49 @@
-import React, { useState, useCallback, useEffect } from 'react';
+import React from 'react';
+import { useObserver, useObserverValue } from 'react-observing';
 
 import { FieldWrapper } from './../field-wrapper/FieldWrapper';
 import { Switch } from '../../toggle-swicth/Switch';
 import { IProperty } from '../../../interfaces';
 import { useConfigs } from '../../../contexts';
 
-interface InputSwitchProps extends IProperty<boolean> {
-    onChange?(data: IProperty<boolean>): void;
-}
-export const InputSwitch: React.FC<InputSwitchProps> = ({ onChange, ...props }) => {
+interface InputSwitchProps extends IProperty<boolean> { }
+export const InputSwitch: React.FC<InputSwitchProps> = ({ ...props }) => {
     const { inputBorderError, inputBorderWarning, inputBorderDefault } = useConfigs();
-    
-    const [value, setValue] = useState(props.value);
-    useEffect(() => setValue(props.value), [props.value]);
 
-    const handleOnChange = useCallback((value: boolean) => {
-        if (onChange) {
-            onChange({ ...props, value });
-        }
-        setValue(value);
-    }, [onChange, props]);
+    const editValueDisabled = useObserverValue(props.editValueDisabled);
+    const valueHasWarning = useObserverValue(props.valueHasWarning);
+    const nameHasWarning = useObserverValue(props.nameHasWarning);
+    const focusOnRender = useObserverValue(props.focusOnRender);
+    const valueHasError = useObserverValue(props.valueHasError);
+    const nameHasError = useObserverValue(props.nameHasError);
+    const information = useObserverValue(props.information);
+    const [value, setValue] = useObserver(props.value);
+    const name = useObserverValue(props.name);
+    const id = useObserverValue(props.id);
 
     return (
         <FieldWrapper
             minWidth={60}
-            id={props.id || ''}
-            name={props.name || ''}
-            information={props.information}
-            nameHasError={props.nameHasError}
-            nameHasWarning={props.nameHasWarning}
+            id={id || ''}
+            name={name || ''}
+            information={information}
+            nameHasError={nameHasError}
+            nameHasWarning={nameHasWarning}
         >
             {inputId => (<>
                 <div className="flex1" />
                 <Switch
-                    id={inputId}
-                    checked={value}
-                    onChange={handleOnChange}
-                    border={inputBorderDefault}
-                    hasError={props.valueHasError}
-                    borderError={inputBorderError}
-                    autoFocus={props.focusOnRender}
-                    hasWarning={props.valueHasWarning}
-                    disabled={props.editValueDisabled}
-                    borderWarning={inputBorderWarning}
                     backgroundColor={'var(--main-background-bars)'}
+                    onChange={value => setValue(value)}
+                    borderWarning={inputBorderWarning}
+                    borderError={inputBorderError}
+                    hasWarning={valueHasWarning}
+                    disabled={editValueDisabled}
+                    border={inputBorderDefault}
+                    autoFocus={focusOnRender}
+                    hasError={valueHasError}
+                    checked={value}
+                    id={inputId}
                 />
             </>)}
         </FieldWrapper>

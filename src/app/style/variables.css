@@ -49,8 +49,10 @@
     --color-context-menu-list-item-hover: #114226;
     --color-context-menu-list-item-active: var(--color-list-item-active);
     --box-shadow-context-menu: var(--box-shadow-small-center);
+    /* Status bar */
+    --status-bar-height: 20px;
     /* Toolbar */
-    --tool-bar-height: 40px;
+    --tool-bar-height: 35px;
     --toolbar-item-border-hover: #525252;
     --toolbar-item-background-active: #52525252;
 }

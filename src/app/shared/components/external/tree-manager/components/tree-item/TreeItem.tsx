@@ -1,32 +1,55 @@
 import React, { useCallback, useRef, useEffect } from 'react';
 import { IconCollapsedFolder, IconExpandedFolder } from 'code-easy-components';
+import { IObservable, useObserver, useObserverValue } from 'react-observing';
 import { getEmptyImage } from 'react-dnd-html5-backend';
 import { useDrag, useDrop } from 'react-dnd';
 
-import { useItems, useConfigs } from '../../shared/hooks';
 import { ITreeItem, IDroppableItem } from '../../shared/interfaces';
+import { useItems, useConfigs } from '../../shared/hooks';
 import { Icon } from '../icon/icon';
 
 interface TreeItemProps extends ITreeItem {
     paddingLeft: number;
-    showExpandIcon: boolean;
     disabledToDrop?: string[];
+    showExpandIcon: IObservable<boolean>;
     onContextMenu?(itemTreeId: string | undefined, e: React.MouseEvent<HTMLDivElement, MouseEvent>): void | undefined;
 }
 export const TreeItem: React.FC<TreeItemProps> = (props) => {
-    const itemRef = useRef(null);
+    const { isUseDrag, isUseDrop, id: treeIdentifier, customDragLayer } = useConfigs();
+    const { editItem, selectItem, changeAscById } = useItems();
+
     const radioItemRef = useRef<HTMLInputElement>(null);
+    const itemRef = useRef<HTMLLabelElement>(null);
 
     const {
-        showExpandIcon, nodeExpanded, description, hasError, hasWarning,
-        id, label, isSelected, isDisabled, canDropList, isDisabledClick,
-        disabledToDrop = [], onContextMenu, isDisabledDoubleClick, type,
-        icon, useCustomIconToExpand, iconSize, isDisabledDrop, isDisabledSelect,
-        isAllowedToggleNodeExpand = true, paddingLeft, isDisabledDrag, isEditing,
+        useCustomIconToExpand: _useCustomIconToExpand, iconSize: _iconSize, isDisabledDrop: _isDisabledDrop, isDisabledSelect: _isDisabledSelect, canDropList: _canDropList,
+        showExpandIcon: _showExpandIcon, description: _description, hasError: _hasError, hasWarning: _hasWarning, isDisabled: _isDisabled, isDisabledClick: _isDisabledClick,
+        isAllowedToggleNodeExpand: _isAllowedToggleNodeExpand, paddingLeft, isDisabledDrag: _isDisabledDrag, isEditing: _isEditing,
+        id: _id, label: _label, isSelected: _isSelected, nodeExpanded: _nodeExpanded, icon: _icon, type: _type,
+        disabledToDrop = [], onContextMenu, isDisabledDoubleClick: _isDisabledDoubleClick
     } = props;
 
-    const { expandItemById, changeAscById, selectItemById, editItemById } = useItems();
-    const { isUseDrag, isUseDrop, id: treeIdentifier, customDragLayer } = useConfigs();
+    const [isAllowedToggleNodeExpand = true] = useObserver(_isAllowedToggleNodeExpand);
+    const useCustomIconToExpand = useObserverValue(_useCustomIconToExpand);
+    const isDisabledDoubleClick = useObserverValue(_isDisabledDoubleClick);
+    const [nodeExpanded, setNodeExpanded] = useObserver(_nodeExpanded);
+    const isDisabledSelect = useObserverValue(_isDisabledSelect);
+    const isDisabledClick = useObserverValue(_isDisabledClick);
+    const isDisabledDrag = useObserverValue(_isDisabledDrag);
+    const isDisabledDrop = useObserverValue(_isDisabledDrop);
+    const showExpandIcon = useObserverValue(_showExpandIcon);
+    const description = useObserverValue(_description);
+    const canDropList = useObserverValue(_canDropList);
+    const hasWarning = useObserverValue(_hasWarning);
+    const isDisabled = useObserverValue(_isDisabled);
+    const isSelected = useObserverValue(_isSelected);
+    const isEditing = useObserverValue(_isEditing);
+    const hasError = useObserverValue(_hasError);
+    const iconSize = useObserverValue(_iconSize);
+    const label = useObserverValue(_label);
+    const type = useObserverValue(_type);
+    const icon = useObserverValue(_icon);
+    const id = useObserverValue(_id);
 
     const handleExpandNode = useCallback((e: React.MouseEvent<HTMLImageElement | HTMLInputElement, MouseEvent>) => {
         if (!isAllowedToggleNodeExpand) return;
@@ -34,9 +57,8 @@ export const TreeItem: React.FC<TreeItemProps> = (props) => {
         e.stopPropagation();
         e.preventDefault();
 
-        expandItemById(id);
-
-    }, [expandItemById, id, isAllowedToggleNodeExpand]);
+        setNodeExpanded(oldValue => !oldValue);
+    }, [isAllowedToggleNodeExpand, setNodeExpanded]);
 
     const handleKeyDown = useCallback((e: React.KeyboardEvent<HTMLInputElement>) => {
         if (e.keyCode === 39 && !nodeExpanded) {
@@ -44,9 +66,9 @@ export const TreeItem: React.FC<TreeItemProps> = (props) => {
         } else if (e.keyCode === 37 && nodeExpanded) {
             handleExpandNode(e as any);
         } else if (e.keyCode === 13) {
-            editItemById(id);
+            editItem(_isEditing);
         }
-    }, [editItemById, handleExpandNode, id, nodeExpanded]);
+    }, [editItem, handleExpandNode, _isEditing, nodeExpanded]);
 
     const handleOnDrop = useCallback((droppedId: string | undefined) => {
         changeAscById(droppedId, id)
@@ -64,17 +86,17 @@ export const TreeItem: React.FC<TreeItemProps> = (props) => {
 
         e.stopPropagation();
 
-        selectItemById(id, e.ctrlKey);
-    }, [id, isDisabled, isDisabledClick, selectItemById]);
+        selectItem(_isSelected, e.ctrlKey);
+    }, [_isSelected, isDisabled, isDisabledClick, selectItem]);
 
     // Emits an event to identify which element was focused.
     const handleOnItemsFocus = useCallback((e: React.FocusEvent<HTMLInputElement>) => {
-        if (isDisabled || isDisabledClick) return;
+        if (isDisabled || isDisabledClick || isSelected) return;
 
         e.stopPropagation();
 
-        selectItemById(id, false);
-    }, [id, isDisabled, isDisabledClick, selectItemById]);
+        selectItem(_isSelected, false);
+    }, [isDisabled, isDisabledClick, isSelected, selectItem, _isSelected]);
 
     // Emits an event to identify which element was clicked.
     const handleOnDoubleClick = useCallback((e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
@@ -83,24 +105,24 @@ export const TreeItem: React.FC<TreeItemProps> = (props) => {
         e.stopPropagation();
         e.preventDefault();
 
-        editItemById(id);
-    }, [isDisabled, isDisabledDoubleClick, editItemById, id]);
+        editItem(_isEditing);
+    }, [isDisabled, isDisabledDoubleClick, _isEditing, editItem]);
 
     /** Permite que um elemento seja arrastado e dropado em outro lugar.. */
-    const [{ isDragging }, dragRef, preview] = useDrag<IDroppableItem, any, any>({
+    const [{ isDragging }, dragRef, preview] = useDrag<IDroppableItem, any, { isDragging: boolean }>({
+        collect: monitor => ({ isDragging: monitor.isDragging() }),
+        canDrag: isUseDrag && !isDisabledDrag,
         item: {
             type,
             itemProps: {
                 itemType: type,
                 height: 0,
                 width: 0,
-                id: id,
                 label,
                 icon,
+                id,
             }
         },
-        canDrag: isUseDrag && !isDisabledDrag,
-        collect: monitor => ({ isDragging: monitor.isDragging() }),
     });
     dragRef(itemRef); /** Agrupa as referências do drop com as da ref. */
 
@@ -112,7 +134,7 @@ export const TreeItem: React.FC<TreeItemProps> = (props) => {
     }, [customDragLayer, preview]);
 
     /** Usado para que seja possível o drop de itens no editor. */
-    const [{ isDraggingOver }, dropRef] = useDrop<IDroppableItem, any, any>({
+    const [{ isDraggingOver }, dropRef] = useDrop<IDroppableItem, any, { isDraggingOver: boolean }>({
         accept: canDropList || [],
         drop: item => handleOnDrop(item.itemProps.id),
         collect: (monitor) => ({ isDraggingOver: monitor.isOver() }),
@@ -151,10 +173,10 @@ export const TreeItem: React.FC<TreeItemProps> = (props) => {
                     iconName={nodeExpanded ? "btn-collapse-folder" : "btn-expand-folder"}
                 />
                 <Icon
-                    icon={icon}
                     iconName={label}
                     iconSize={iconSize || 16}
                     show={icon !== undefined}
+                    icon={typeof icon === 'string' ? icon : String(icon?.content)}
                     onClick={useCustomIconToExpand ? handleExpandNode : undefined}
                 />
                 {label}
@@ -163,10 +185,10 @@ export const TreeItem: React.FC<TreeItemProps> = (props) => {
                 // Usada para mostrar o preview com titulo do item que está sendo arrastado
                 customDragLayer(<>
                     <Icon
-                        icon={icon}
                         iconSize={12}
                         iconName={label}
                         show={icon !== undefined}
+                        icon={typeof icon === 'string' ? icon : String(icon?.content)}
                     />
                     {label}
                 </>)

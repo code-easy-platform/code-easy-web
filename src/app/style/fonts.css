@@ -1,7 +1,7 @@
 /* =============================== *
  * Fonts                           *
  * =============================== */
-
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap');
 :root {
     --font-size-xxs: 2px;
     --font-size-xs: 4px;
@@ -19,7 +19,7 @@
     --font-size-h1: 32px;
     --font-size-display: 36px;
     /* Font family */
-    --font-family-normal: Roboto, Verdana, Geneva, Tahoma, sans-serif;
+    --font-family-normal: Roboto, Ubuntu, Verdana, Geneva, Tahoma, sans-serif;
     --font-family-vs-code: "Droid Sans Mono", "monospace", monospace, "Droid Sans Fallback";
     /* Font colors */
     --font-color-label-propertie-editor: #adadad;

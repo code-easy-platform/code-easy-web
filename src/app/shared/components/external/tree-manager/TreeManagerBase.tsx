@@ -1,16 +1,14 @@
 import React, { useCallback } from 'react';
 
 import { ITreeManagerProps, ITreeManagerEvents } from './shared/interfaces';
-import { useConfigs, useItems } from './shared/hooks';
-import { EmptyFeedback, Tree } from './components';
+import { useBaseItems, useConfigs } from './shared/hooks';
+import { EmptyFeedback, OnEditListener, OnSelectListener, Tree } from './components';
 import './TreeManagerBase.css';
 
-interface TreeManagerBaseProps extends Omit<ITreeManagerProps, 'items'>, Omit<ITreeManagerEvents, 'onChangeItems'> {
-
-}
-export const TreeManagerBase: React.FC<TreeManagerBaseProps> = ({ childrenWhenEmpty, onFocus, onContextMenu, onKeyDown }) => {
+interface TreeManagerBaseProps extends Omit<ITreeManagerProps, 'items'>, ITreeManagerEvents { }
+export const TreeManagerBase: React.FC<TreeManagerBaseProps> = ({ childrenWhenEmpty, onFocus, onContextMenu, onKeyDown, onSelect, onEdit }) => {
     const { showEmptyMessage } = useConfigs();
-    const { baseItems } = useItems();
+    const baseItems = useBaseItems();
 
     const handleContextMenu = useCallback((e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
         e.stopPropagation();
@@ -26,9 +24,8 @@ export const TreeManagerBase: React.FC<TreeManagerBaseProps> = ({ childrenWhenEm
             onContextMenu={handleContextMenu}
         >
             {baseItems.length > 0 && baseItems.map((item, index) => (
-                <div className="tree-base-internal">
+                <div key={index} className="tree-base-internal">
                     <Tree
-                        key={index}
                         item={item}
                         onContextMenu={onContextMenu}
                     />
@@ -37,6 +34,8 @@ export const TreeManagerBase: React.FC<TreeManagerBaseProps> = ({ childrenWhenEm
             {!((childrenWhenEmpty && baseItems.length === 0) || showEmptyMessage) &&
                 <div style={{ padding: 50 }} />
             }
+            <OnEditListener onEdit={onEdit} />
+            <OnSelectListener onSelect={onSelect} />
             <EmptyFeedback
                 children={childrenWhenEmpty}
                 onContextMenu={handleContextMenu}

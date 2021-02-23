@@ -1,0 +1,68 @@
+/* ================================= *
+ * Tabs list                         *
+ * ================================= */
+
+.tab-list {
+    overflow-y: hidden;
+    overflow-x: auto;
+    flex: 1;
+}
+
+.tab-list::-webkit-scrollbar {
+    height: var(--size-xs)!important;
+    width: var(--size-none);
+}
+
+.tab-list::-webkit-scrollbar-thumb {
+    background-color: transparent;
+}
+
+.tab-list:hover::-webkit-scrollbar-thumb {
+    background-color: var(--color-scroll-bar-hover);
+}
+
+.tab-list .tab-item {
+    max-width: 200px;
+}
+
+.tab-list .tab-item:not(.tab-selected)>span {
+    opacity: 0.7;
+}
+
+.tab-list .tab-item:focus {
+    opacity: 1;
+}
+
+.tab-list .tab-item:hover .btn-close {
+    opacity: 0.7;
+}
+
+.tab-list .tab-item .btn-close {
+    height: var(--size-g);
+    width: var(--size-g);
+    padding: unset;
+}
+
+.tab-list .tab-item.tab-highlighted {
+    background-color: #ffffff0f;
+    opacity: 1;
+}
+
+.tab-list .tab-item.tab-selected {
+    background-color: var(--main-background-panels);
+    opacity: 1;
+}
+
+.tab-list .tab-item.tab-selected .btn-close {
+    background-color: transparent;
+    opacity: 0.7;
+}
+
+.tab-list .tab-item:hover .btn-close:hover, .tab-list .tab-item.tab-selected .btn-close:hover {
+    opacity: 1;
+}
+
+.tab-list .btn-close:active {
+    transform: scale(1.2);
+    opacity: 1;
+}

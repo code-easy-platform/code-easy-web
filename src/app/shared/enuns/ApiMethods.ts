@@ -1,15 +1,15 @@
-export enum MethodsApi {
-    get="get",
-    put="put",
-    post="post",
-    patch="patch",
-    delete="delete",
+export enum ApiMethods {
+    get = "get",
+    put = "put",
+    post = "post",
+    patch = "patch",
+    delete = "delete",
 }
 
-export const MethodsApiList: MethodsApi[] = [
-    MethodsApi.get,
-    MethodsApi.put,
-    MethodsApi.post,
-    MethodsApi.patch,
-    MethodsApi.delete,
+export const ApiMethodsList: ApiMethods[] = [
+    ApiMethods.get,
+    ApiMethods.put,
+    ApiMethods.post,
+    ApiMethods.patch,
+    ApiMethods.delete,
 ];

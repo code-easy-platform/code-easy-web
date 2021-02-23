@@ -1,56 +1,28 @@
-import React, { useCallback, useEffect, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useRef } from 'react';
+import { useObserver } from 'react-observing';
 
-import { ContextMenuService } from './ContextMenuService';
+import { ContextMenuStore } from '../../stores';
 import './ContextMenu.css';
-
-export interface IContextItemList {
-    icon?: any;
-    label: string;
-    action(): any;
-    disabled?: boolean;
-    useConfirmation?: boolean;
-    confirmationMessage?: string;
-}
-
-interface ContextMenuSate {
-    actions: IContextItemList[],
-    isShow: boolean,
-    left: number,
-    top: number,
-}
 
 export const ContextMenu: React.FC<{ title?: string }> = ({ title }) => {
     const contextMenuRef = useRef<HTMLDivElement | null>(null);
-    const subscription = useRef<any>();
 
-    const [state, setState] = useState<ContextMenuSate>({
-        isShow: false,
-        actions: [],
-        left: 0,
-        top: 0,
-    });
+    const [state, setState] = useObserver(ContextMenuStore);
+
     useEffect(() => {
-        subscription.current = ContextMenuService.getMessage().subscribe(data => {
-            setState({
-                actions: data.actions,
-                left: data.left,
-                top: data.top,
-                isShow: true,
-            });
-        });
-
-        return subscription.current.unsubscribe;
-    }, []);
+        if (contextMenuRef.current && state.isShow) {
+            contextMenuRef.current.focus();
+        }
+    }, [state.isShow]);
 
     const handleLostFocus = useCallback(() => {
-        ContextMenuService.clearMessages();
         setState({
             isShow: false,
             actions: [],
             left: -100,
             top: -100,
         });
-    }, []);
+    }, [setState]);
 
     if (!state.isShow) return null;
 
@@ -73,7 +45,10 @@ export const ContextMenu: React.FC<{ title?: string }> = ({ title }) => {
                     <div
                         key={index}
                         className={`context-menu-list-item padding-horizontal-sm flex-items-center${disabled ? ' disabled' : ' cursor-pointer'}`}
-                        onClick={() => {
+                        onClick={e => {
+                            e.stopPropagation();
+                            e.preventDefault();
+
                             if (disabled) return;
 
                             // Close context menu and clear options list
@@ -81,10 +56,10 @@ export const ContextMenu: React.FC<{ title?: string }> = ({ title }) => {
 
                             if (useConfirmation) {
                                 if (window.confirm(confirmationMessage || 'Continue?')) {
-                                    action();
+                                    action && action();
                                 }
                             } else {
-                                action();
+                                action && action();
                             }
                         }}
                     >
@@ -100,7 +75,6 @@ export const ContextMenu: React.FC<{ title?: string }> = ({ title }) => {
                     </div>
                 )
             })}
-            {(contextMenuRef.current?.focus())}
         </div>
     );
 }

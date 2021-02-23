@@ -1,90 +1,103 @@
+import { IObservable } from 'react-observing';
+
+/**
+ * Default file structure
+ */
+interface IFileContent {
+    content?: string | ArrayBuffer | null,
+    lastModified?: number,
+    name?: string,
+    size?: number,
+    type?: string,
+}
+
 export interface ITreeItem {
     /**
      * Current item type
      */
-    type: string;
-    /**
-     * Custom Icon
-     */
-    icon?: any;
+    type: IObservable<string>;
     /**
      * Text that will be displayed in the items
      */
-    label: string;
-    /**
-     * Custom icon size
-     */
-    iconSize?: number;
-    /**
-     * Leaves item text in red to indicate an error
-     */
-    hasError?: boolean;
-    /**
-     * Leaves item text in yellow to indicate an error
-     */
-    hasWarning?: boolean;
-    /**
-     * Indicates that the current feature is being edited
-     */
-    isEditing?: boolean;
-    /**
-     * Used to be found by the item that comes before, your igniter.
-     */
-    ascendantId?: string;
+    label: IObservable<string>;
     /**
      * Indicates that the current element is being selected
      */
-    isSelected: boolean;
-    /**
-     * Message displayed when hovering over an item in the tree
-     */
-    description?: string;
-    /**
-     * Property indicates whether the item in the tree is disabled, preventing most standard events for that type of item from running
-     */
-    isDisabled?: boolean;
+    isSelected: IObservable<boolean>;
     /**
      * Property that controls whether the item's node is expanded or not
      */
-    nodeExpanded: boolean;
+    nodeExpanded: IObservable<boolean>;
     /**
-     * List of types allowed to be dropped on the current item
+     * Custom Icon
      */
-    canDropList?: string[];
+    icon: IObservable<string | IFileContent | undefined>;
     /**
      * Unique identifier
      */
-    id: string | undefined;
+    id: IObservable<string | undefined>;
+    /**
+     * Custom icon size
+     */
+    iconSize: IObservable<number | undefined>;
+    /**
+     * Leaves item text in red to indicate an error
+     */
+    hasError: IObservable<boolean | undefined>;
+    /**
+     * Leaves item text in yellow to indicate an error
+     */
+    hasWarning: IObservable<boolean | undefined>;
+    /**
+     * Indicates that the current feature is being edited
+     */
+    isEditing: IObservable<boolean | undefined>;
+    /**
+     * Used to be found by the item that comes before, your igniter.
+     */
+    ascendantId: IObservable<string | undefined>;
+    /**
+     * Message displayed when hovering over an item in the tree
+     */
+    description: IObservable<string | undefined>;
+    /**
+     * Property indicates whether the item in the tree is disabled, preventing most standard events for that type of item from running
+     */
+    isDisabled: IObservable<boolean | undefined>;
+    /**
+     * List of types allowed to be dropped on the current item
+     */
+    canDropList: IObservable<string[] | undefined>;
     /**
      * Property that controls whether the expand and shrink node icon is displayed or not
      */
-    showExpandIcon?: boolean;
+    showExpandIcon: IObservable<boolean | undefined>;
     /**
      * Enables or disables dragging the current item
      */
-    isDisabledDrag?: boolean;
+    isDisabledDrag: IObservable<boolean | undefined>;
     /**
      * Enables or disables the drop of the current item
      */
-    isDisabledDrop?: boolean;
-    /**
-     * Enables or disables the selection of the current item
-     */
-    isDisabledSelect?: boolean;
+    isDisabledDrop: IObservable<boolean | undefined>;
     /**
      * Enables or disables the click over the current item
      */
-    isDisabledClick?: boolean;
+    isDisabledClick: IObservable<boolean | undefined>;
+    /**
+     * Enables or disables the selection of the current item
+     */
+    isDisabledSelect: IObservable<boolean | undefined>;
     /**
      * Enables or disables the double click over the current item
      */
-    isDisabledDoubleClick?: boolean;
+    isDisabledDoubleClick: IObservable<boolean | undefined>;
     /**
      * Use custom icon to expand the node
      */
-    useCustomIconToExpand?: boolean;
+    useCustomIconToExpand: IObservable<boolean | undefined>;
     /**
      * Indicates whether or not the current item's node will be allowed to be expanded or collapsed
      */
-    isAllowedToggleNodeExpand?: boolean;
+    isAllowedToggleNodeExpand: IObservable<boolean | undefined>;
 }

@@ -1,24 +1,24 @@
 import React, { Component } from 'react';
 
-import { ProjectsStorage } from '../../services/storage/ProjectsStorage';
+import { IdeConfigStorage } from '../../services';
 import './ResizeTemplate.css';
 
-interface IRecipeProps {
+interface ITwoRowsResizableProps {
+    children: [JSX.Element, JSX.Element],
+    minBottomHeight?: string | number,
+    maxBottomHeight?: string | number,
     useMinMaxHeight?: boolean,
-    bottom: JSX.Element,
-    maxBottomHeight?: string,
-    minBottomHeight?: string,
-    top: JSX.Element,
     id: string,
 }
 
-export class TwoRowsResizable extends Component<IRecipeProps> {
+export class TwoRowsResizable extends Component<ITwoRowsResizableProps> {
+    topChild = this.props.children[0];
+    bottomChild = this.props.children[1];
 
-    state = { bottomHeight: 400 }
+    state = { bottomHeight: IdeConfigStorage.getColumnsResizableSize(this.props.id) }
 
     componentDidMount() {
         window.addEventListener("resize", () => this.setState({}));
-        this.setState({ bottomHeight: ProjectsStorage.getColumnsResizableSize(this.props.id) });
     }
 
     componentWillUnmount() {
@@ -26,14 +26,18 @@ export class TwoRowsResizable extends Component<IRecipeProps> {
     }
 
     mouseMove = (event: any) => {
-        this.setState({ bottomHeight: (window.innerHeight - event.pageY) - 20, });
+        if (!this.props.minBottomHeight || this.state.bottomHeight > this.props.minBottomHeight) {
+            this.setState({ bottomHeight: (window.innerHeight - event.pageY) - 20, });
+        } else if ((window.innerHeight - event.pageY) - 20 > this.state.bottomHeight) {
+            this.setState({ bottomHeight: (window.innerHeight - event.pageY) - 20, });
+        }
     }
 
     mouseUp = () => {
         window.onmouseup = null;
         window.onmousemove = null;
         window.document.body.style.cursor = 'unset';
-        ProjectsStorage.setColumnsResizableSize(this.props.id, this.state.bottomHeight);
+        IdeConfigStorage.setColumnsResizableSize(this.props.id, this.state.bottomHeight);
     }
 
     mouseDown = () => {
@@ -51,7 +55,7 @@ export class TwoRowsResizable extends Component<IRecipeProps> {
                     maxHeight: useMinMaxHeight && (this.props.maxBottomHeight || '90%'),
                     minHeight: useMinMaxHeight && (this.props.minBottomHeight || '10%'),
                     height: (window.innerHeight - this.state.bottomHeight) - 56,
-                }}>{this.props.top}</div>
+                }}>{this.topChild}</div>
 
                 <hr className="hr" />
                 <div className="grabber-col-right-resize-y" onMouseDown={this.mouseDown} />
@@ -59,10 +63,10 @@ export class TwoRowsResizable extends Component<IRecipeProps> {
                 <div className="full-width" style={{
                     height: this.state.bottomHeight,
                     maxHeight: useMinMaxHeight && (this.props.maxBottomHeight || '95%'),
-                    minHeight: useMinMaxHeight && (this.props.minBottomHeight || '10%'),
+                    minHeight: useMinMaxHeight && (this.props.minBottomHeight || 100),
                 }}>
                     <div className="flex1 full-width full-height">
-                        {this.props.bottom}
+                        {this.bottomChild}
                     </div>
                 </div>
             </div>

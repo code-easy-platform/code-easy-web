@@ -124,13 +124,13 @@ const _Modal: React.ForwardRefRenderFunction<ModalElement, ModalProps> = ({ chil
                 e.currentTarget.style.cursor = 'ne-resize';
             } else {
                 if (mouseLeft <= 4) {
-                    e.currentTarget.style.cursor = 'col-resize';
+                    e.currentTarget.style.cursor = 'e-resize';
                 } else if (mouseLeft >= (e.currentTarget.offsetWidth - 4)) {
-                    e.currentTarget.style.cursor = 'col-resize';
+                    e.currentTarget.style.cursor = 'e-resize';
                 } else if (mouseTop <= 4) {
-                    e.currentTarget.style.cursor = 'row-resize';
+                    e.currentTarget.style.cursor = 'n-resize';
                 } else if (mouseTop >= (e.currentTarget.offsetHeight - 4)) {
-                    e.currentTarget.style.cursor = 'row-resize';
+                    e.currentTarget.style.cursor = 'n-resize';
                 } else {
                     e.currentTarget.style.cursor = 'unset';
                 }

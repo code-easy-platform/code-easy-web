@@ -1,2 +1,1 @@
-export { TabGroup, TabButton } from './TabsSimple';
-export { TabsManager } from './TabsManager';
+export { TabGroup, TabButtonSimple } from './TabsSimple';

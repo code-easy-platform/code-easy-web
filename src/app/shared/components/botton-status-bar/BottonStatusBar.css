@@ -1,5 +1,5 @@
 .status-bar-main {
+    height: var(--status-bar-height);
     font-weight: 400;
     font-size: 14px;
-    height: 20px;
 }

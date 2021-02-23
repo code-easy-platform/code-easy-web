@@ -1,96 +1,150 @@
-import React, { useState, memo } from 'react';
+import React, { useState, memo, useEffect, useCallback } from 'react';
+import { VscHome, VscChevronDown, VscSaveAll, VscCheck } from 'react-icons/vsc';
+import { transform, useObserverValue } from 'react-observing';
+import { useHistory } from 'react-router-dom';
 
+import { DownloadService, openContextMenu, ProjectsStorage } from '../../services';
 import { PropertiesTab } from '../../../pages/editor/properties-tab/PropertiesTab';
-import { TabButton, TabGroup, TabsManager } from '../tabs';
-import { useEditorContext } from '../../contexts';
-import { AssetsService } from '../../services';
-import { Tab } from '../../models';
+import { useEditorContext, useTabList } from '../../hooks';
+import { TabButtonSimple } from '../tabs';
+import { TabList } from '../tab-list';
 import { Modal } from '../modal';
 import './ToolBar.css';
 
 export const ToolBar: React.FC = memo(() => {
     const [isOpenModalProps, setIsOpenModalProps] = useState(false);
-    const { project, setProject, getIconByItemId } = useEditorContext();
-    const tabs: Tab[] = (project?.tabs || []);
+    const [isSaved, setIsSaved] = useState(false);
+    const { tabs, project } = useEditorContext();
+    const history = useHistory();
+
+    const { tabListStore } = useTabList();
+    const tabList = useObserverValue(tabListStore.tabs);
+
+    // Add event listener to Crtl + s
+    useEffect(() => {
+        const handleOnSave = (e: KeyboardEvent) => {
+            if (e.ctrlKey && e.key === 's') {
+                e.preventDefault();
+                setIsSaved(true);
+
+                if (!isSaved) {
+                    ProjectsStorage.setProjectById(project);
+                }
+            }
+        };
+        window.addEventListener('keydown', handleOnSave);
+        return () => window.removeEventListener('keydown', handleOnSave)
+    }, [project, isSaved]);
+
+    // IsSaved timeout 
+    useEffect(() => {
+        if (isSaved) {
+            setTimeout(() => {
+                setIsSaved(false);
+            }, 2000);
+        }
+    }, [isSaved]);
+
+    const handleContextMenu = useCallback((tabId: string, e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
+        openContextMenu(e.clientX, 35, [
+            {
+                label: 'Close tab',
+                action: () => tabListStore.closeTab(tabId)
+            },
+            {
+                label: 'Close all',
+                action: () => tabListStore.closeAll()
+            },
+        ]);
+    }, [tabListStore]);
+
+    const handleExport = useCallback(() => {
+        project.exportAsFiles().then(file => {
+            DownloadService.downloadFilesAsZip(project.label.value, [file]);
+        });
+    }, [project]);
+
+    const openMoreOption = useCallback((e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+        openContextMenu(e.clientX, 35, [
+            {
+                label: 'Properties',
+                action: () => setIsOpenModalProps(true)
+            },
+            {
+                action: handleExport,
+                icon: <VscChevronDown />,
+                label: 'Export JS source code',
+            },
+        ]);
+    }, [handleExport]);
 
     return (<>
         <div className="tool-bar background-bars">
-            <div style={{ width: "90px" }}>
-                <TabButton
-                    id="tabMenu"
+            <div>
+                <TabButtonSimple
                     title="Menu"
-                    to="/projects"
-                    className=" btn background-transparent btn-open-menu-tab outline-none"
-                />
+                    role="tab-menu"
+                    className="btn outline-none"
+                    onClick={() => history.push('/projects')}
+                >
+                    <VscHome className="padding-horizontal-s" style={{ height: 20, width: 20 }} />
+                </TabButtonSimple>
                 <hr className="hr hr-vertical" />
-                <TabButton
-                    id="tabPropriedades"
-                    title="Propriedades do projeto"
-                    className=" btn-open-properties-tab"
-                    onClick={() => setIsOpenModalProps(true)}
-                />
+                <TabButtonSimple
+                    role="button-save"
+                    className={"btn outline-none"}
+                    title="Save project (Ctrl + s)"
+                    onClick={() => {
+                        ProjectsStorage.setProjectById(project);
+                        setIsSaved(true);
+                    }}
+                >
+                    {isSaved
+                        ? <VscCheck className="padding-horizontal-s fade-in" style={{ height: 20, width: 20 }} />
+                        : <VscSaveAll className="padding-horizontal-s fade-in" style={{ height: 20, width: 20 }} />
+                    }
+                </TabButtonSimple>
+                <hr className="hr hr-vertical" />
+                <TabButtonSimple
+                    title="More options"
+                    role="tab-more-options"
+                    onClick={openMoreOption}
+                    className="btn outline-none"
+                >
+                    <VscChevronDown className="padding-horizontal-s" style={{ height: 20, width: 20 }} />
+                </TabButtonSimple>
             </div>
             <hr className="hr hr-vertical" />
-            <TabsManager
-                tabs={
-                    project.getWindows().map(tab => ({
-                        ...tab,
-                        icon: getIconByItemId(tab.id)
-                    }))
-                }
-                onChange={windowId => {
-                    if (project.configurations.id && project.windows.find(windowTab => windowTab.isSelected)?.id !== windowId) {
-                        project.selectWindowById(windowId);
-                        setProject(project);
-                    }
-                }}
-                onCloseWindowTab={windowId => {
-                    if (project.configurations.id) {
-
-                        project.removeWindowById(windowId);
-
-                        setProject(project);
-                    }
-                }}
+            <TabList
+                tabs={tabList}
+                isHighlighted={true}
+                onContextTab={handleContextMenu}
+                onCloseTab={id => tabListStore.closeTab(id)}
             />
             <hr className="hr hr-vertical" />
             <div style={{ justifyContent: "flex-end" }}>
-                <TabGroup>
-                    {tabs.map((tab: Tab, index) => {
-                        return (
-                            <TabButton
-                                id={tab.name}
-                                key={tab.name}
-                                hasError={tab.hasError}
-                                title={tab.description}
-                                isSelected={tab.isEditing}
-                                hasWarning={tab.hasWarning}
-                                className="btn-open-routers-tab flex1 padding-horizontal-sm"
-                                content={<>
-                                    <img height="90%" className="padding-right-s no-draggable" src={AssetsService.getIcon(tab.type)} alt={tab.type} />
-                                    {tab.label}
-                                </>}
-                                onClick={() => {
-                                    if (!project.tabs[index].isEditing) {
-                                        project.tabs.forEach(currentTab => currentTab.isEditing = false);
-                                        project.tabs[index].isEditing = true;
-                                        setProject(project);
-                                    }
-                                }}
-                            />
-                        );
-                    })}
-                </TabGroup>
+                <TabList
+                    useClose={false}
+                    tabs={tabs.map(tab => ({
+                        icon: tab.icon,
+                        title: tab.label,
+                        hasError: tab.hasError,
+                        isSelected: tab.isEditing,
+                        hasWarning: tab.hasWarning,
+                        description: tab.description,
+                        id: transform(tab.id, value => String(value), value => String(value)),
+                    }))}
+                />
             </div>
         </div>
         <Modal
-            initialWidth={850}
-            initialHeight={640}
+            initialWidth={720}
+            initialHeight={470}
             title={"Properties"}
             allowMaximize={false}
             isOpen={isOpenModalProps}
             children={<PropertiesTab />}
-            onClose={() => { setIsOpenModalProps(false); }}
+            onClose={() => setIsOpenModalProps(false)}
         />
     </>);
 });

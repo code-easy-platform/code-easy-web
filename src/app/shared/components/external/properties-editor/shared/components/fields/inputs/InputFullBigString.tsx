@@ -1,4 +1,5 @@
-import React, { useState, useCallback, useEffect } from 'react';
+import React from 'react';
+import { useObserver, useObserverValue } from 'react-observing';
 
 import { IProperty } from '../../../interfaces';
 import { useConfigs } from '../../../contexts';
@@ -9,52 +10,30 @@ const css_prop_item: React.CSSProperties = {
     alignItems: 'center',
     position: 'relative',
 }
-interface InputFullBigStringProps extends IProperty<string> {
-    onChange?(data: IProperty<string>): void;
-}
-export const InputFullBigString: React.FC<InputFullBigStringProps> = ({ onChange, ...props }) => {
+interface InputFullBigStringProps extends IProperty<string> { }
+export const InputFullBigString: React.FC<InputFullBigStringProps> = ({ ...props }) => {
     const { inputBorderError, inputBorderWarning, inputBorderDefault, inputTextError, inputTextWarning, inputTextDefault } = useConfigs();
 
-    const [value, setValue] = useState(props.value);
-    useEffect(() => setValue(props.value), [props.value]);
-
-    const handleOnChange = useCallback((e: React.ChangeEvent<HTMLTextAreaElement>) => {
-        if (props.useOnChange && onChange) {
-            onChange({ ...props, value: e.currentTarget.value });
-            setValue(e.currentTarget.value);
-        } else {
-            setValue(e.currentTarget.value);
-        }
-    }, [onChange, props]);
-
-    const handleOnBlur = useCallback((e: React.FocusEvent<HTMLTextAreaElement>) => {
-        if (props.value !== value && onChange) {
-            onChange({ ...props, value });
-        }
-    }, [onChange, props, value]);
-
-    const hadleOnKeyPress = useCallback((e: React.KeyboardEvent<HTMLTextAreaElement>) => {
-        if (e.ctrlKey && e.key === 'Enter' && onChange) {
-            onChange({ ...props, value: e.currentTarget.value });
-            setValue(e.currentTarget.value);
-        }
-    }, [onChange, props]);
+    const editValueDisabled = useObserverValue(props.editValueDisabled);
+    const valueHasWarning = useObserverValue(props.valueHasWarning);
+    const focusOnRender = useObserverValue(props.focusOnRender);
+    const valueHasError = useObserverValue(props.valueHasError);
+    const [value, setValue] = useObserver(props.value);
+    const id = useObserverValue(props.id);
 
     return (
         <div style={css_prop_item} className="padding-s padding-bottom-none">
             <textarea
+                onChange={e => setValue(e.currentTarget.value)}
                 className={"full-width background-bars"}
-                disabled={props.editValueDisabled}
-                autoFocus={props.focusOnRender}
-                onKeyPress={hadleOnKeyPress}
-                id={'prop_id_' + props.id}
-                onChange={handleOnChange}
-                onBlur={handleOnBlur}
+                disabled={editValueDisabled}
+                autoFocus={focusOnRender}
+                id={'prop_id_' + id}
                 autoComplete={"off"}
                 value={value}
                 style={{
-                    textDecoration: props.valueHasError ? inputTextError : props.valueHasWarning ? inputTextWarning : inputTextDefault,
-                    border: props.valueHasError ? inputBorderError : props.valueHasWarning ? inputBorderWarning : inputBorderDefault,
+                    textDecoration: valueHasError ? inputTextError : valueHasWarning ? inputTextWarning : inputTextDefault,
+                    border: valueHasError ? inputBorderError : valueHasWarning ? inputBorderWarning : inputBorderDefault,
                     resize: 'vertical',
                     height: '100px',
                 }}

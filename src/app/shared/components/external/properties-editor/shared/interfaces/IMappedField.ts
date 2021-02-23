@@ -1,3 +1,5 @@
+import { IObservable } from "react-observing";
+
 import { IProperty } from "./IFieldProperties";
 
 /**
@@ -7,9 +9,9 @@ export interface IMappedField {
     /**
      * 
      */
-    fieldValue: string;
+    properties: IObservable<IProperty[]>;
     /**
      * 
      */
-    properties: IProperty[]
+    fieldValue: IObservable<string>;
 }
