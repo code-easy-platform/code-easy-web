@@ -5,6 +5,8 @@ import { PropertieTypes } from "../../enuns";
 
 export const FlowToJs = (flowItems: IFlowItemComponent[], identation: number = 0) => {
 
+    const allCommentFlowItems = flowItems.filter(flowItem => flowItem.type.value === EItemType.COMMENT);
+
     const connectedFlowItems = flowItems.filter((item, _, array) => {
         if (array.some(arrayItem => arrayItem.connections.value.some(conn => conn.targetId.value === item.id.value))) {
             return true;
@@ -134,6 +136,25 @@ export const FlowToJs = (flowItems: IFlowItemComponent[], identation: number = 0
     const recursiveConversion = (item: IFlowItemComponent, items: IFlowItemComponent[], identation: number = 0, stopId?: string): string[] => {
         const result: string[] = [];
 
+        let identationSpaces = '';
+        for (let index = 0; index < identation; index++) {
+            identationSpaces = identationSpaces + ' ';
+        }
+
+        // Add to result the comment flow items by flow items id
+        const comments = allCommentFlowItems.filter(flowItem => flowItem.connections.value.some(connection => connection.targetId.value === item.id.value));
+        if (comments.length > 0) {
+            comments.forEach(comment => {
+                if (!comment.description.value) return;
+
+                result.push(`${identationSpaces}/*`);
+                comment.description.value.split('\n').forEach(line => {
+                    result.push(`${identationSpaces}${line}`);
+                });
+                result.push(`${identationSpaces}*/`);
+            });
+        }
+
         let next: IFlowItemComponent | undefined = undefined;
         switch (item.type.value) {
             case EItemType.ASSIGN:
@@ -148,10 +169,6 @@ export const FlowToJs = (flowItems: IFlowItemComponent[], identation: number = 0
                 ];
             case EItemType.ACTION:
                 if (item.description.value) {
-                    let identationSpaces = '';
-                    for (let index = 0; index < identation; index++) {
-                        identationSpaces = identationSpaces + ' ';
-                    }
                     result.push(`${identationSpaces}// ${item.description.value}`);
                 }
 
@@ -166,10 +183,6 @@ export const FlowToJs = (flowItems: IFlowItemComponent[], identation: number = 0
                 ];
             case EItemType.IF:
                 if (item.label.value) {
-                    let identationSpaces = '';
-                    for (let index = 0; index < identation; index++) {
-                        identationSpaces = identationSpaces + ' ';
-                    }
                     result.push(`${identationSpaces}// ${item.label.value}`);
                 }
 
@@ -184,10 +197,6 @@ export const FlowToJs = (flowItems: IFlowItemComponent[], identation: number = 0
                 return result;
             case EItemType.SWITCH:
                 if (item.label.value) {
-                    let identationSpaces = '';
-                    for (let index = 0; index < identation; index++) {
-                        identationSpaces = identationSpaces + ' ';
-                    }
                     result.push(`${identationSpaces}// ${item.label.value}`);
                 }
 
@@ -217,10 +226,6 @@ export const FlowToJs = (flowItems: IFlowItemComponent[], identation: number = 0
 
             default:
                 if (item.description.value) {
-                    let identationSpaces = '';
-                    for (let index = 0; index < identation; index++) {
-                        identationSpaces = identationSpaces + ' ';
-                    }
                     result.push(`${identationSpaces}// ${item.description.value}`);
                 }
 
