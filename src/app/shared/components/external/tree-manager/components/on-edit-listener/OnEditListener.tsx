@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, { memo, useContext, useEffect, useState } from 'react';
 import { ISubscription } from 'react-observing';
 
 import { ItemsContext } from '../../shared/contexts';
@@ -6,7 +6,7 @@ import { ItemsContext } from '../../shared/contexts';
 interface OnSelectListenerProps {
     onSelect?: (uids: string[]) => void;
 }
-export const OnSelectListener: React.FC<OnSelectListenerProps> = ({ onSelect }) => {
+export const OnSelectListener: React.FC<OnSelectListenerProps> = memo(({ onSelect }) => {
     const { items } = useContext(ItemsContext);
 
     const [uids, setUids] = useState<string[]>([]);
@@ -54,4 +54,4 @@ export const OnSelectListener: React.FC<OnSelectListenerProps> = ({ onSelect }) 
     }, [uids, onSelect]);
 
     return null;
-}
+});

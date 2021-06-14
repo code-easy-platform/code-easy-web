@@ -1,51 +1,55 @@
 :root {
-    --selected-item-color: #1f724320;
-    --focused-item-color: #1f724320;
-    --editing-item-color: #1f724340;
+    --border-selected-item-color: #ffffff30;
+    --selected-item-color: #ffffff10;
+    --hovered-item-color: #ffffff10;
+    --editing-item-color: #ffffff15;
     /*  */
     --warning-item-text-color: yellow;
     --error-item-text-color: red;
+    /*  */
+    --font-size: smaller;
 }
 
 /* Estiliza a base da árvore*/
 
 .tree-base {
+    border: thin solid transparent;
+    font-size: var(--font-size);
     scroll-behavior: smooth;
     flex-direction: column;
-    font-size: smaller;
-    overflow: auto;
+    overflow-y: overlay;
+    overflow-x: hidden;
+    display: block;
+    outline: none;
     flex: 1;
 }
 
-.tree-base-internal {
-    flex-direction: column;
-    width: fit-content;
-    min-width: 100%;
-}
-
 .tree-base:focus {
+    border: thin solid var(--border-selected-item-color);
     outline: none;
 }
 
+/* Scroll */
+
 .tree-base::-webkit-scrollbar {
-    width: 10px;
+    width: 12px;
     height: 20px;
 }
 
 .tree-base::-webkit-scrollbar-thumb {
-    background-color: #ffffff10;
+    background-color: #ffffff00;
 }
 
 .tree-base:hover::-webkit-scrollbar-thumb {
-    background-color: #ffffff40;
+    background-color: #ffffff10;
 }
 
 .tree-base::-webkit-scrollbar-thumb:hover {
-    background-color: #ffffff50;
+    background-color: #ffffff30;
 }
 
 .tree-base::-webkit-scrollbar-thumb:active {
-    background-color: #ffffff70;
+    background-color: #ffffff50;
 }
 
 .tree-base::-webkit-scrollbar-corner {
@@ -54,76 +58,11 @@
 
 /* Configure tree item */
 
-.tree-item input {
-    position: absolute;
-    float: right;
-    opacity: 0;
-    height: 0;
-    width: 0;
-}
-
-.tree-item label {
-    flex: 1;
-    padding: 4px;
-    display: flex;
-    cursor: pointer;
-    text-align: start;
-    align-items: center;
-    white-space: nowrap;
-    word-break: keep-all;
-}
-
-.tree-item label:hover {
-    background-color: var(--focused-item-color);
-}
-
-.tree-item label.error {
-    color: var(--error-item-text-color);
-    text-decoration: underline wavy;
-}
-
-.tree-item label.warning {
-    color: var(--warning-item-text-color);
-    text-decoration: underline wavy;
-}
-
-.tree-item.disabled label {
-    filter: brightness(0.6);
-}
-
-.tree-item.selected label {
-    background-color: var(--selected-item-color);
-}
-
 .tree-item.dragging label {
     filter: brightness(0.4);
     background-color: #ffffff10;
 }
 
 .tree-item.dragging-over label {
-    animation-name: animation-dragging-over;
-    animation-iteration-count: infinite;
     background-color: #ffffff10;
-    animation-duration: 1s;
-    border-radius: 50px;
-}
-
-.tree-item :checked:focus+label {
-    background-color: var(--focused-item-color);
-}
-
-.tree-item.editing label, .tree-item.editing.selected label, .tree-item.editing.selected :checked:focus+label label {
-    background-color: var(--editing-item-color);
-}
-
-@keyframes animation-dragging-over {
-    0% {
-        opacity: 0.2;
-    }
-    50% {
-        opacity: 1;
-    }
-    100% {
-        opacity: 0.2;
-    }
 }

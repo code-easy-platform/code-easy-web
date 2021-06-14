@@ -16,7 +16,7 @@ export interface ITreeManagerEvents {
     /**
      * Event emitted whenever the key press is identified
      */
-    onKeyDown?: (e: React.KeyboardEvent<HTMLDivElement> | React.FocusEvent<HTMLDivElement>) => void;
+    onKeyDown?: (e: React.KeyboardEvent<HTMLDivElement | HTMLLabelElement>) => void;
     /**
      * Event emitted whenever an item of the allowed type is dropped on any element of the tree
      */

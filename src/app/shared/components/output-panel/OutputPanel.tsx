@@ -67,6 +67,7 @@ export const OutputPanel: React.FC<OutputPanelProps> = memo(({ notification, out
                                 id: observe(undefined),
                                 type: observe("ITEM"),
 
+                                order: observe(0),
                                 icon: observe(undefined),
                                 iconSize: observe(undefined),
                                 hasError: observe(undefined),
@@ -102,6 +103,7 @@ export const OutputPanel: React.FC<OutputPanelProps> = memo(({ notification, out
                                 id: observe(undefined),
                                 type: observe("ITEM"),
 
+                                order: observe(0),
                                 icon: observe(undefined),
                                 iconSize: observe(undefined),
                                 hasError: observe(undefined),
@@ -137,6 +139,7 @@ export const OutputPanel: React.FC<OutputPanelProps> = memo(({ notification, out
                                 id: observe(undefined),
                                 type: observe("ITEM"),
 
+                                order: observe(0),
                                 icon: observe(undefined),
                                 iconSize: observe(undefined),
                                 hasError: observe(undefined),

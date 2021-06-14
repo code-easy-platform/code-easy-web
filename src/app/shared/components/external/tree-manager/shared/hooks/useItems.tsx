@@ -84,7 +84,21 @@ export const useItemsByAscendentId = (id: string | undefined) => {
         return () => subscriptions.forEach(subs => subs?.unsubscribe());
     }, [id, items]);
 
-    return childs;
+    useEffect(() => {
+        const subscriptions: ISubscription[] = [];
+
+        childs.forEach(item => {
+            subscriptions.push(
+                item.order.subscribe(() => {
+                    setChilds([...childs.sort((a, b) => a.order.value - b.order.value)]);
+                })
+            );
+        });
+
+        return () => subscriptions.forEach(subs => subs?.unsubscribe());
+    }, [childs]);
+
+    return childs.sort((a, b) => a.order.value - b.order.value);
 }
 
 export const useItems = () => {
@@ -114,22 +128,93 @@ export const useItems = () => {
         });
     }, [items]);
 
-    const changeAscendentById = useCallback((id: string | undefined, targetId: string | undefined) => {
+    const changeAscendentById = useCallback((id: string | undefined, targetId: string | undefined, position: 'up' | 'center' | 'down' = 'center') => {
         if (!id && !targetId) return;
 
         if (id === targetId) return;
 
+        /* Current drag item */
         const droppedItem = items.find(item => item.id.value === id);
-        if (droppedItem) {
+        if (!droppedItem) return;
+
+        /* Current target item */
+        const targetItem = items.find(item => item.id.value === targetId);
+        if (!targetItem) return;
+
+        /* All childs of the target iterm */
+        const targetChilds = items.filter(item => item.ascendantId.value === targetId);
+
+        /* All childs of the target parent item */
+        const parentChilds = items.filter(item => item.ascendantId.value === targetItem.ascendantId.value);
+
+        // Insert the item in the last position
+        if (position === 'center') {
+            const filteredTargetChilds = targetChilds.filter(item => item.id.value !== id);
+
             set(droppedItem.ascendantId, targetId);
+
+            filteredTargetChilds.splice(filteredTargetChilds.length, 0, droppedItem);
+
+            filteredTargetChilds.forEach((child, index) => set(child.order, index));
+            return;
         }
+
+        // Insert the item in the parent at the current order
+        else if (position === 'up') {
+            const filteredParentChilds = parentChilds.filter(item => item.id.value !== id);
+
+            // Find the index to insert
+            const indexToInsert = filteredParentChilds.findIndex(item => item.id.value === targetItem.id.value);
+            if (indexToInsert === -1) return;
+
+            filteredParentChilds.splice(indexToInsert, 0, droppedItem);
+
+            set(droppedItem.ascendantId, targetItem.ascendantId.value);
+
+            filteredParentChilds.forEach((child, index) => set(child.order, index));
+            return;
+        }
+
+        // If this item is expanded insert the dragged item inside. If this item is collapsed insert in the current order + 1
+        else if (position === 'down') {
+            const filteredTargetChilds = targetChilds.filter(item => item.id.value !== id);
+
+            if (filteredTargetChilds.length > 0 && targetItem.nodeExpanded.value) {
+                set(droppedItem.ascendantId, targetId);
+
+                filteredTargetChilds.splice(0, 0, droppedItem);
+
+                filteredTargetChilds.forEach((child, index) => set(child.order, index));
+            } else {
+                const filteredParentChilds = parentChilds.filter(item => item.id.value !== id);
+
+                // Find the index to insert
+                const indexToInsert = filteredParentChilds.findIndex(item => item.id.value === targetItem.id.value);
+                if (indexToInsert === -1) return;
+
+                filteredParentChilds.splice(indexToInsert + 1, 0, droppedItem);
+
+                set(droppedItem.ascendantId, targetItem.ascendantId.value);
+
+                filteredParentChilds.forEach((child, index) => set(child.order, index));
+            }
+            return;
+        }
+    }, [items]);
+
+    const handleSelectAll = useCallback(() => {
+        items.forEach(item => {
+            if (item.isDisabledSelect.value || item.isDisabled.value || item.isDisabledClick.value) return;
+
+            set(item.isSelected, true);
+        });
     }, [items]);
 
     return {
         /**
          * Change the `ascendantId` by the received id
          */
-        changeAscById: changeAscendentById,
+        changeAscendentById,
         /**
          * Select a item and deselects others if necessary
          */
@@ -138,5 +223,9 @@ export const useItems = () => {
          * Edit only a item 
          */
         editItem,
+        /**
+         * Edit only a item 
+         */
+        selectAll: handleSelectAll,
     }
-} 
+}

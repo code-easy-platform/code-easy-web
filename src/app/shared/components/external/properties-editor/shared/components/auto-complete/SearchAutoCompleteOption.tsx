@@ -21,7 +21,7 @@ export const SearchAutoCompleteOption: React.FC<ISearchAutoCompleteOptionProps> 
         id={String(id)}
         disabled={disabled}
         onKeyDown={e => {
-          if (onSelect && !disabled && (e.keyCode === 13 || e.keyCode === 32)) {
+          if (!disabled && (e.keyCode === 13 || e.keyCode === 32)) {
             onSelect();
           }
         }}

@@ -1,12 +1,8 @@
 export interface ITreeManagerConfigs {
     /**
-     * When an item is dragged, a custom layer remains on the element. React DND Draglayer must be configured
-     */
-    customDragLayer?(item: React.ReactNode): React.ReactNode;
-    /**
      * Background color of the item that has focused
      */
-    focusedItemBackgroundColor?: string,
+    hoveredItemBackgroundColor?: string,
     /**
      * Background color of the item that has the property isEditing = true
      */
@@ -25,23 +21,33 @@ export interface ITreeManagerConfigs {
     warningTextColor?: string,
     /**
      * Show empty message
+     * 
+     * @default true
      */
     showEmptyMessage?: boolean;
     /**
      * Enabled to drop items on this item
+     * 
+     * @default true
      */
     isUseDrop?: boolean;
     /**
      * Enabled to drag this item
+     * 
+     * @default true
      */
     isUseDrag?: boolean;
     /**
      * Used to form the tree view for items.
      * When informed it represents the size of the left padding
+     * 
+     * @default 8px
      */
     leftPadding?: number;
     /**
-     * Identifier
+     * Identify the tree in the dom
+     * 
+     * @default '...abc...' // random uuid
      */
-    id?: string | undefined;
+    id?: string;
 }

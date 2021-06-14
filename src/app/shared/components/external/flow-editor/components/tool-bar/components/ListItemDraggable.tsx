@@ -15,6 +15,7 @@ const ListItemDraggable: React.FC<ListItemProps> = ({ flowItemType, itemType, la
 
     /** Permite que uym elemento seja arrastado e adicionado dentro do editor de fluxo. */
     const [, dragRef] = useDrag<IDroppableItem, any, any>({
+        type: itemType || 'undefined',
         item: { type: itemType || 'undefined', itemProps: { id: undefined, label, itemType, flowItemType, icon, width: 40, height: 40 } },
         collect: monitor => ({ isDragging: monitor.isDragging() }),
     });

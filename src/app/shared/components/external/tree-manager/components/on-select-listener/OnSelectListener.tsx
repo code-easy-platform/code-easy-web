@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, { memo, useContext, useEffect, useState } from 'react';
 import { ISubscription } from 'react-observing';
 
 import { ItemsContext } from '../../shared/contexts';
@@ -6,7 +6,7 @@ import { ItemsContext } from '../../shared/contexts';
 interface OnEditListenerProps {
     onEdit?: (uid: string | undefined) => void;
 }
-export const OnEditListener: React.FC<OnEditListenerProps> = ({ onEdit }) => {
+export const OnEditListener: React.FC<OnEditListenerProps> = memo(({ onEdit }) => {
     const { items } = useContext(ItemsContext);
 
     const [uid, setUid] = useState<string>();
@@ -42,4 +42,4 @@ export const OnEditListener: React.FC<OnEditListenerProps> = ({ onEdit }) => {
     }, [uid, onEdit]);
 
     return null;
-}
+});

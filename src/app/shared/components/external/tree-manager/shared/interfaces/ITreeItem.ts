@@ -37,6 +37,10 @@ export interface ITreeItem {
      */
     id: IObservable<string | undefined>;
     /**
+     * Custom element order
+     */
+    order: IObservable<number>;
+    /**
      * Custom icon size
      */
     iconSize: IObservable<number | undefined>;

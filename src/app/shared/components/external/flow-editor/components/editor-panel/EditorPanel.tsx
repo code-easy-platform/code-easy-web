@@ -48,7 +48,8 @@ export const EditorPanel = React.forwardRef(({ allowedsInDrop, onDropItem, onDro
         }
     }
 
-    if (!ref) ref = useRef<SVGSVGElement>(null);
+    const newRef = useRef<SVGSVGElement>(null);
+    if (!ref) ref = newRef;
 
     const handleKeyDown = useCallback((e: React.KeyboardEvent<SVGSVGElement>) => {
         /** Delete   */ if (e.key === 'Delete') onKeyDownDelete && onKeyDownDelete(e);

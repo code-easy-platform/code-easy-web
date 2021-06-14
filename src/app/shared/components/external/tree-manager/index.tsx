@@ -1,5 +1,5 @@
 import React from 'react';
-import HTML5Backend from 'react-dnd-html5-backend';
+import { HTML5Backend } from 'react-dnd-html5-backend';
 import { DndProvider } from 'react-dnd';
 
 import { ITreeManagerConfigs, ITreeManagerEvents, ITreeManagerProps } from './shared/interfaces';
@@ -21,5 +21,4 @@ export const TreeManager: React.FC<TreeManagerProps> = ({ configs, items, ...res
     );
 }
 
-export { CustomDragLayer } from './components';
 export * from './shared/interfaces/ITreeItem';

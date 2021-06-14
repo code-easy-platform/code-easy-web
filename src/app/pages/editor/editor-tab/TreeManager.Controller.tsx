@@ -3,7 +3,7 @@ import { ISubscription, observe, transform, useObserver, useObserverValue } from
 import { IconTrash, Utils } from 'code-easy-components';
 
 import { Tab, TreeItemFolder, TreeItemGlobalAction, TreeItemInputVariable, TreeItemLocalVariable, TreeItemOutpuVariable, TreeItemRouterConsume, TreeItemRouterExpose, TreeItemRouterInputVariable } from '../../../shared/models';
-import { TreeManager, ITreeItem, CustomDragLayer } from '../../../shared/components/external';
+import { TreeManager, ITreeItem } from '../../../shared/components/external';
 import { useEditorContext, useTabList, useCurrentFocus } from '../../../shared/hooks';
 import { ECurrentFocus, EComponentType, ETabType, } from '../../../shared/enuns';
 import { AssetsService, openContextMenu } from '../../../shared/services';
@@ -378,6 +378,7 @@ export const TreeManagerController: React.FC = () => {
             isDisabledDrop: observe(undefined),
             isDisabled: observe(undefined),
             iconSize: observe(undefined),
+            order: observe(0),
         }));
     }, [itemsCurrent]);
 
@@ -425,11 +426,7 @@ export const TreeManagerController: React.FC = () => {
                 id: 'Inspector',
                 isUseDrag: true,
                 isUseDrop: true,
-                activeItemBackgroundColor: '#ffffff05',
-                focusedItemBackgroundColor: '#ffffff05',
-                editingItemBackgroundColor: '#ffffff10',
                 showEmptyMessage: treeManagerItems.length === 0,
-                customDragLayer: item => <CustomDragLayer children={item} />
             }}
         />
     );

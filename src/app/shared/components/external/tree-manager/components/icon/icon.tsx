@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react';
+import React, { memo, useCallback } from 'react';
 import './icon.css';
 
 /**
@@ -16,34 +16,34 @@ interface IconProps {
     onClick?(e: React.MouseEvent<HTMLImageElement, MouseEvent>): void;
     onDoubleClick?(e: React.MouseEvent<HTMLImageElement, MouseEvent>): void;
 }
-export const Icon: React.FC<IconProps> = ({ onClick, onDoubleClick, icon, iconName, show, iconSize = 25 }) => {
-    
+export const Icon: React.FC<IconProps> = memo(({ onClick, onDoubleClick, icon, iconName, show, iconSize = 25 }) => {
+
     const handleOnClick = useCallback((e: React.MouseEvent<HTMLImageElement, MouseEvent>) => {
         e.stopPropagation();
         e.preventDefault();
 
         onClick && onClick(e);
-    }, [onClick]);    
-    
+    }, [onClick]);
+
     const handleOnDoubleClick = useCallback((e: React.MouseEvent<HTMLImageElement, MouseEvent>) => {
         e.stopPropagation();
         e.preventDefault();
 
         onDoubleClick && onDoubleClick(e);
-    }, [onDoubleClick]);    
+    }, [onDoubleClick]);
 
     if (show === undefined) return null;
     if (show === false) return null;
 
     return (
         <img
+            alt=""
             src={icon}
             width={iconSize}
             height={iconSize}
             onMouseDown={handleOnClick}
-            alt={"TreeItem_" + iconName}
             onDoubleClick={handleOnDoubleClick}
-            style={{ marginRight: 4 }}
+            style={{ marginRight: 4, marginLeft: 4 }}
         />
     );
-}
+});

@@ -1,10 +1,10 @@
-import React from 'react';
+import React, { memo } from 'react';
 
 interface EmptyFeedbackProps {
     show: boolean;
     onContextMenu?(e: React.MouseEvent<HTMLDivElement, MouseEvent>): void;
 }
-export const EmptyFeedback: React.FC<EmptyFeedbackProps> = ({ show, children, onContextMenu }) => {
+export const EmptyFeedback: React.FC<EmptyFeedbackProps> = memo(({ show, children, onContextMenu }) => {
     if (!show) return null;
     return (
         <div onContextMenu={onContextMenu} style={{ flex: 1 }}>
@@ -14,4 +14,4 @@ export const EmptyFeedback: React.FC<EmptyFeedbackProps> = ({ show, children, on
             }
         </div>
     );
-}
+});
